@@ -99,7 +99,7 @@ function generatePassword()
         
     }
     else if (includeSymbols){
-        allchar.push(symbols+include);
+        allchar.push(symbols);
         seed *= 7;
     }
 
