@@ -117,7 +117,7 @@ function generatePassword()
         pw += allchar[setNum][charPos];
     }
     
-    pw_display.innerHTML = "Your password is :<br>" + pw +"<br>"+allchar;
+    pw_display.innerHTML = "Your password is :<br>" + pw ;
     
     event.preventDefault();
 }
