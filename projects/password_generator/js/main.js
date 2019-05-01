@@ -29,10 +29,10 @@ function randomsort(arr) {
     var ret = [];
     var pos = [];
 
-    for (i=0; i<l; i++){
+    for (var i=0; i<l; i++){
         pos.push(i);
     }
-    for (i=0; i<l; i++){
+    for (var i=0; i<l; i++){
         var p = srandom(0, pos.length);        
         ret.push(arr[pos[p]]);
         pos[p] = pos[pos.length-1];
@@ -45,7 +45,7 @@ function generateSeed(seed)
 {
     
     var ids = ["firstname", "lastname", "bday", "email", "username", "account", "length","exclude"];
-    for (i=0; i<ids.length; i++){
+    for (var i=0; i<ids.length; i++){
         var element = document.getElementById(ids[i]).value;
         for (char=0; char<element.length; char++){
             seed += element.charCodeAt(char);
@@ -94,8 +94,8 @@ function generatePassword()
         seed += 1;
     }
 
-    for (i=0;i<exclude.length;i++){
-        for (j=0;j<allchar.length;j++){
+    for (var i=0;i<exclude.length;i++){
+        for (var j=0;j<allchar.length;j++){
             var pos = allchar[j].indexOf(exclude[i])
             if (pos != -1){
                 allchar[j] = allchar[j].substr(0, pos) + allchar[j].substr(pos+1, allchar[j].length);
@@ -105,12 +105,12 @@ function generatePassword()
 
     Math.seed = generateSeed(seed);
     
-    for (i=0; i<allchar.length; i++)
+    for (var i=0; i<allchar.length; i++)
     {
         allchar[i] = randomsort(allchar[i]);
     }
     
-    for (i=0; i<length; i++)
+    for (var i=0; i<length; i++)
     {   
         var setNum = srandom(0, allchar.length);
         var charPos = srandom(0, allchar[setNum].length);           
