@@ -14,8 +14,8 @@ Math.seededRandom = function(max, min) {
 function srandom(min, max)
 {
     var r = Math.round(Math.seededRandom()*max);
-    if (r < 0){
-        r = 0;
+    if (r < min){
+        r = min;
     }
     else if (r >= max){
         r = max-1;
@@ -100,6 +100,10 @@ function generatePassword()
             if (pos != -1){
                 allchar[j] = allchar[j].substr(0, pos) + allchar[j].substr(pos+1, allchar[j].length);
             }
+            if (allchar[j].length == 0){
+                allchar[j] = allchar[allchar.length-1];
+                allchar.pop();
+            }
         }    
     }
 
@@ -119,5 +123,5 @@ function generatePassword()
     
     pw_display.innerHTML = "Your password is :<br>" + pw ;
     
-    event.preventDefault();
+    event.preventDefault();    
 }
