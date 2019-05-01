@@ -1,11 +1,15 @@
 # RPRPG (Reproducible Pseudo Random Password Generator)
+RPRPG is a password generator that can relies on pseudo random number generation to generate a password.
 
+Rather than having to remember the same password for many different accounts, which is unsafe, or remember many different passwords for different accounts, which is easy to forget, RPRPG only requires you to remember answers to fields (such as your name and account information) and allows an extra passphrase to customize and create complex passwords.
+
+The benefits of using RPRPG is that you do not need to worry about your password being stored in any device. Instead, a password is generated based on the fields you fill on the page form locally on your browser. No information is required to be passed through the network, and by cloning this project, you'll be able to run RPRPG offline on your browser. 
 
 ## Requirements
-Any browser, preferably the latest version of Google Chrome
+Any browser, preferably the latest version of Google Chrome.
 
 ## Usage
-Go to 
+Go to https://brianfong96.github.io/projects/RPRPG/
 
 ## Author
 Brian Fong / @brianfong96
