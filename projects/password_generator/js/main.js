@@ -38,7 +38,7 @@ function randomsort(arr) {
         pos[p] = pos[pos.length-1];
         pos.pop();
     }
-	return ret;
+	return ret.join("");
 }
 
 function generateSeed(seed)
@@ -108,7 +108,6 @@ function generatePassword()
     for (i=0; i<allchar.length; i++)
     {
         allchar[i] = randomsort(allchar[i]);
-        console.log(allchar[i]);
     }
     
     for (i=0; i<length; i++)
