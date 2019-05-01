@@ -98,6 +98,10 @@ function generatePassword()
         }
         
     }
+    else if (includeSymbols){
+        allchar.push(symbols+include);
+        seed *= 7;
+    }
 
     for (var i=0;i<exclude.length;i++){
         for (var j=0;j<allchar.length;j++){
