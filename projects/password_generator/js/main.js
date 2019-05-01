@@ -41,11 +41,10 @@ function randomsort(arr) {
 	return ret;
 }
 
-function generateSeed()
+function generateSeed(seed)
 {
-    var seed = 0;
     
-    var ids = ["firstname", "lastname", "bday", "email", "username", "account", "length"];
+    var ids = ["firstname", "lastname", "bday", "email", "username", "account", "length","exclude"];
     for (i=0; i<ids.length; i++){
         var element = document.getElementById(ids[i]).value;
         for (char=0; char<element.length; char++){
@@ -68,32 +67,48 @@ function generatePassword()
     var includeUpper = document.getElementById("includeUpper").checked;
     var includeNumber = document.getElementById("includeNumbers").checked;
     var includeSymbols = document.getElementById("includeSymbols").checked;
-
+    var exclude = document.getElementById("exclude").value;    
+    var seed = 0;
     var pw = "";
     var allchar = [];
 
     if (includeLower && includeUpper)
     {
         allchar.push(lower+upper);
+        seed += 1;
     }
     else if (includeLower){
         allchar.push(lower);
+        seed += 1;
     }
     else if (includeUpper){
         allchar.push(upper);
+        seed += 1;
     }
     if (includeNumber){
         allchar.push(numbers);
+        seed += 1;
     }
     if (includeSymbols){
         allchar.push(symbols);
+        seed += 1;
     }
 
-    Math.seed = generateSeed();
+    for (i=0;i<exclude.length;i++){
+        for (j=0;j<allchar.length;j++){
+            var pos = allchar[j].indexOf(exclude[i])
+            if (pos != -1){
+                allchar[j] = allchar[j].substr(0, pos) + allchar[j].substr(pos+1, allchar[j].length);
+            }
+        }    
+    }
+
+    Math.seed = generateSeed(seed);
     
     for (i=0; i<allchar.length; i++)
     {
         allchar[i] = randomsort(allchar[i]);
+        console.log(allchar[i]);
     }
     
     for (i=0; i<length; i++)
@@ -103,7 +118,7 @@ function generatePassword()
         pw += allchar[setNum][charPos];
     }
     
-    pw_display.innerHTML = "Your password is :<br>" + pw;
+    pw_display.innerHTML = "Your password is :<br>" + pw +"<br>"+allchar;
     
     event.preventDefault();
 }
