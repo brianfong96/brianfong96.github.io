@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <script src="js/main.js"> </script>
+    <link rel="stylesheet" href="css/main.css">
+
+    <head>
+        <title>Password Generator</title>
+    </head>
+
+    <body>
+        <h1>Password Generator</h1>
+        <form method="POST">
+            Password Length: <br>
+            <input type="number" id="length" name="length" min="1" max="256" step="1" value="32"><br>
+
+            Include Lowercase Letters?<br>
+            <input type="radio" id="includeLower" name="lowercase" value="yes" checked> Yes<br>
+            <input type="radio" name="lowercase" value="no"> No<br>
+            
+            Include Uppercase Letters?<br>
+            <input type="radio" id="includeUpper" name="uppercase" value="yes" checked> Yes<br>
+            <input type="radio" name="uppercase" value="no"> No<br>
+            
+            Include Numbers?<br>
+            <input type="radio" id="includeNumbers" name="numbers" value="yes" checked> Yes<br>
+            <input type="radio" name="numbers" value="no"> No<br>
+
+            Include these symbols? '!@#$%^&*()-=_+[]:;',./?`~'
+            <br>
+            <input type="radio" id="includeSymbols" name="symbols" value="yes" checked> Yes<br>
+            <input type="radio" name="symbols" value="no"> No<br>
+
+            Enter any characters to exclude:<br>
+            <input type="text" id="exclude" name="Exclude"><br>
+            First name:<br>
+            <input type="text" id="firstname" name="firstname"><br>
+            Last name:<br>
+            <input type="text" id="lastname" name="lastname"><br>
+            Birthday:<br>
+            <input type="date" id="bday" name="bday"><br>
+            Email:<br>
+            <input type="text" id="email" name="email"><br>
+            Username:<br>
+            <input type="text" id="username" name="username"><br>
+            Account:<br>
+            <input type="text" id="account" name="account"><br>
+            <br>
+            <input type="submit" value="Submit" onclick="generatePassword()"> <br>            
+        </form>
+
+        <p id="pw">
+            
+        </p>
+    </body>
+    
+</html>
