@@ -23,7 +23,7 @@ function srandom(min, max)
     return r;
 }
 
-// https://www.quora.com/How-do-I-shuffle-strings-with-javascript
+
 function randomsort(arr) { 
     var l = arr.length;
     var ret = [];
