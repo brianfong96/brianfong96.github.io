@@ -32,7 +32,7 @@
     "path": "@PROJECT_PATH@",
     "versionFirst": "4.9.7",
     "siteFonts": [],
-    "uniqCompNum": 20,
+    "uniqCompNum": 16,
     "versionPublish": "4.9.7",
     "screenshot": "screenshot.png",
     "publishType": "github",

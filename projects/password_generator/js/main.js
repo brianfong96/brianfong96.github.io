@@ -44,7 +44,7 @@ function randomsort(arr) {
 function generateSeed(seed)
 {
     
-    var ids = ["firstname", "lastname", "bday", "email", "username", "account", "length","exclude","extra"];
+    var ids = ["firstname", "lastname", "bday", "email", "username", "account", "length","exclude","extra", "include"];
     for (var i=0; i<ids.length; i++){
         var element = document.getElementById(ids[i]).value;
         for (char=0; char<element.length; char++){
@@ -64,6 +64,7 @@ function generatePassword()
     var upper = lower.toUpperCase();
     var numbers = "1234567890"
     var symbols = "!@#$%^&*()-=_+[]:;',./?`~"
+    var include = document.getElementById("include").value;
     var includeLower = document.getElementById("includeLower").checked;
     var includeUpper = document.getElementById("includeUpper").checked;
     var includeNumber = document.getElementById("includeNumbers").checked;
@@ -85,9 +86,17 @@ function generatePassword()
         allchar.push(numbers);
         seed *= 4;
     }
-    if (includeSymbols){
-        allchar.push(symbols);
-        seed *= 5;
+    
+    if (include.length > 0){
+        if (includeSymbols){
+            allchar.push(symbols+include);
+            seed *= 5;
+        }
+        else{
+            allchar.push(include);
+            seed *= 6;
+        }
+        
     }
 
     for (var i=0;i<exclude.length;i++){
@@ -111,8 +120,11 @@ function generatePassword()
     }
     
     for (var i=0; i<length; i++)
-    {   
+    {           
         var setNum = randomInt(0, allchar.length);
+        if (i < allchar.length && i < length){
+            setNum = i;               
+        }
         var charPos = randomInt(0, allchar[setNum].length);           
         pw += allchar[setNum][charPos];
     }
