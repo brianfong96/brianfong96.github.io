@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
-    <script src="js/main.js"> </script>
-    <link rel="stylesheet" href="css/main.css">
-
+    <script src="js/main.js"> </script>    
+    <link rel="stylesheet" href="css/main.css">    
     <head>
         <title>Password Generator</title>
     </head>
@@ -11,7 +10,7 @@
         <h1>Password Generator</h1>
         <form method="POST">
             Password Length: <br>
-            <input type="number" id="length" name="length" min="1" max="256" step="1" value="32"><br>
+            <input type="number" id="length" name="length" min="4" max="1024" step="1" value="32"><br>
 
             Include Lowercase Letters?<br>
             <input type="radio" id="includeLower" name="lowercase" value="yes" checked> Yes<br>
@@ -44,8 +43,10 @@
             <input type="text" id="username" name="username"><br>
             Account:<br>
             <input type="text" id="account" name="account"><br>
+            Extra Passphrase:<br>
+            <input type="text" id="extra" name="extra"><br>
             <br>
-            <input type="submit" value="Submit" onclick="generatePassword()"> <br>            
+            <input type="submit" value="Generate" onclick="generatePassword()"> <br>            
         </form>
 
         <p id="pw">

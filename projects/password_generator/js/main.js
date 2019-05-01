@@ -11,7 +11,7 @@ Math.seededRandom = function(max, min) {
     return min + rnd * (max - min);
 }
 
-function srandom(min, max)
+function randomInt(min, max)
 {
     var r = Math.round(Math.seededRandom()*max);
     if (r < min){
@@ -33,7 +33,7 @@ function randomsort(arr) {
         pos.push(i);
     }
     for (var i=0; i<l; i++){
-        var p = srandom(0, pos.length);        
+        var p = randomInt(0, pos.length);        
         ret.push(arr[pos[p]]);
         pos[p] = pos[pos.length-1];
         pos.pop();
@@ -44,16 +44,17 @@ function randomsort(arr) {
 function generateSeed(seed)
 {
     
-    var ids = ["firstname", "lastname", "bday", "email", "username", "account", "length","exclude"];
+    var ids = ["firstname", "lastname", "bday", "email", "username", "account", "length","exclude","extra"];
     for (var i=0; i<ids.length; i++){
         var element = document.getElementById(ids[i]).value;
         for (char=0; char<element.length; char++){
-            seed += element.charCodeAt(char);
+            seed += element.charCodeAt(char) + (i+1)*(char+1);
         }
     }
-
+        
     return seed;
 }
+  
 
 function generatePassword()
 {
@@ -68,30 +69,25 @@ function generatePassword()
     var includeNumber = document.getElementById("includeNumbers").checked;
     var includeSymbols = document.getElementById("includeSymbols").checked;
     var exclude = document.getElementById("exclude").value;    
-    var seed = 0;
+    var seed = 1;
     var pw = "";
     var allchar = [];
-
-    if (includeLower && includeUpper)
-    {
-        allchar.push(lower+upper);
-        seed += 1;
-    }
-    else if (includeLower){
+    
+    if (includeLower){
         allchar.push(lower);
-        seed += 1;
+        seed *= 2;
     }
-    else if (includeUpper){
+    if (includeUpper){
         allchar.push(upper);
-        seed += 1;
+        seed *= 3;
     }
     if (includeNumber){
         allchar.push(numbers);
-        seed += 1;
+        seed *= 4;
     }
     if (includeSymbols){
         allchar.push(symbols);
-        seed += 1;
+        seed *= 5;
     }
 
     for (var i=0;i<exclude.length;i++){
@@ -116,11 +112,11 @@ function generatePassword()
     
     for (var i=0; i<length; i++)
     {   
-        var setNum = srandom(0, allchar.length);
-        var charPos = srandom(0, allchar[setNum].length);           
+        var setNum = randomInt(0, allchar.length);
+        var charPos = randomInt(0, allchar[setNum].length);           
         pw += allchar[setNum][charPos];
     }
-    
+    pw = randomsort(pw);
     pw_display.innerHTML = "Your password is :<br>" + pw ;
     
     event.preventDefault();    
