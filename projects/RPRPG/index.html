@@ -3,57 +3,74 @@
     <script src="js/main.js"> </script>    
     <link rel="stylesheet" href="css/main.css">    
     <head>
-        <title>RPRPG (Reproducible Pseudo Random Password Generator)</title>
+        <title>R.P.R.P.G. (Reproducible Pseudo Random Password Generator)</title>
     </head>
 
     <body>
-        <h1>RPRPG (Reproducible Pseudo Random Password Generator)</h1>
-        <form method="POST" autocomplete="off">
-            Password Length: <br>
-            <input type="number" id="length" name="length" min="4" max="1024" step="1" value="32"><br>
-
-            Include Lowercase Letters?<br>
-            <input type="radio" id="includeLower" name="lowercase" value="yes" checked> Yes<br>
-            <input type="radio" name="lowercase" value="no"> No<br>
-            
-            Include Uppercase Letters?<br>
-            <input type="radio" id="includeUpper" name="uppercase" value="yes" checked> Yes<br>
-            <input type="radio" name="uppercase" value="no"> No<br>
-            
-            Include Numbers?<br>
-            <input type="radio" id="includeNumbers" name="numbers" value="yes" checked> Yes<br>
-            <input type="radio" name="numbers" value="no"> No<br>
-
-            Include these symbols? '!@#$%^&*()-=_+[]:;',./?`~'
+        <h1>
+            R.P.R.P.G. 
             <br>
-            <input type="radio" id="includeSymbols" name="symbols" value="yes" checked> Yes<br>
-            <input type="radio" name="symbols" value="no"> No<br>
+            (Reproducible Pseudo Random Password Generator)
+        </h1>
+        <link rel="stylesheet" href="test.css">
+            <div class="sub-entry">                
+                Password Length: <br>
+                <input type="number" id="length" name="length" min="4" max="1024" step="1" value="32"><br>
+                Enter any characters to exclude:<br>
+                <input type="text" id="exclude" name="Exclude"><br>
+                Enter any characters to include:<br>
+                <input type="text" id="include" name="Include"><br>
+                <br>
+            </div>
+            <div class="sub-entry">
+            <form method="POST" autocomplete="off">                
+                Include Lowercase Letters?<br>
+                <input type="radio" id="includeLower" name="lowercase" value="yes" checked> Yes<br>
+                <input type="radio" name="lowercase" value="no"> No<br>
+                
+                Include Uppercase Letters?<br>
+                <input type="radio" id="includeUpper" name="uppercase" value="yes" checked> Yes<br>
+                <input type="radio" name="uppercase" value="no"> No<br>
+                
+                Include Numbers?<br>
+                <input type="radio" id="includeNumbers" name="numbers" value="yes" checked> Yes<br>
+                <input type="radio" name="numbers" value="no"> No<br>
 
-            Enter any characters to exclude:<br>
-            <input type="text" id="exclude" name="Exclude"><br>
-            Enter any characters to include:<br>
-            <input type="text" id="include" name="Include"><br>
-            First name:<br>
-            <input type="text" id="firstname" name="firstname"><br>
-            Last name:<br>
-            <input type="text" id="lastname" name="lastname"><br>
-            Birthday:<br>
-            <input type="date" id="bday" name="bday"><br>
-            Email:<br>
-            <input type="text" id="email" name="email"><br>
-            Username:<br>
-            <input type="text" id="username" name="username"><br>
-            Account:<br>
-            <input type="text" id="account" name="account"><br>
-            Extra Passphrase:<br>
-            <input type="text" id="extra" name="extra"><br>
-            <br>
-            <input type="submit" value="Generate" onclick="generatePassword()"> <br>            
+                Include these symbols? <br>'!@#$%^&*()-=_+[]:;',./?`~'
+                <br>
+                <input type="radio" id="includeSymbols" name="symbols" value="yes" checked> Yes<br>
+                <input type="radio" name="symbols" value="no"> No<br>                
+            </div>
+            <div class="sub-entry">                
+                First name:<br>
+                <input type="text" id="firstname" name="firstname"><br>
+                Last name:<br>
+                <input type="text" id="lastname" name="lastname"><br>
+                Birthday:<br>
+                <input type="date" id="bday" name="bday"><br>
+                Email:<br>
+                <input type="text" id="email" name="email"><br>
+                Username:<br>
+                <input type="text" id="username" name="username"><br>
+                Account:<br>
+                <input type="text" id="account" name="account"><br>
+                
+                <br>
+            </div>
+            <div class="sub-entry"></div>
+                Extra Passphrase:<br>
+                <input type="text" id="extra" name="extra"><br>
+                <input type="submit" value="Generate" onclick="generatePassword()"> <br>            
+                <p id="pw">
+            
+                </p>
+            </div>
+            <div class="sub-entry"></div>
+                
+            </div>
+        
         </form>
-
-        <p id="pw">
-            
-        </p>
+        
     </body>
     
 </html>
