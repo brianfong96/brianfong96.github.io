@@ -1,5 +1,5 @@
-# RPRPG (Reproducible Pseudo Random Password Generator)
-RPRPG is a password generator that can relies on pseudo random number generation to generate a password.
+# R.P.R.P.G. (Reproducible Pseudo Random Password Generator)
+R.P.R.P.G. is a password generator that relies on pseudo random number generation to generate a password.
 
 Rather than having to remember the same password for many different accounts, which is unsafe, or remember many different passwords for different accounts, which is easy to forget, RPRPG only requires you to remember answers to fields (such as your name and account information) and allows an extra passphrase to customize and create complex passwords.
 

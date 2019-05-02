@@ -3,7 +3,7 @@
     <script src="js/main.js"> </script>    
     <link rel="stylesheet" href="css/main.css">    
     <head>
-        <title>R.P.R.P.G. (Reproducible Pseudo Random Password Generator)</title>
+        <title>R.P.R.P.G.</title>
     </head>
 
     <body>
@@ -12,14 +12,28 @@
             <br>
             (Reproducible Pseudo Random Password Generator)
         </h1>
-        <link rel="stylesheet" href="test.css">
+        <link rel="stylesheet" href="main.css">
+            <div class="sub-entry-wide">
+                <p id="readme">
+                    R.P.R.P.G. is a password generator that relies on pseudo random number generation to generate a password.
+                    <br>
+                    <br>
+                    Rather than having to remember the same password for many different accounts, which is unsafe, or remember many different passwords for different accounts, which is easy to forget, RPRPG only requires you to remember answers to fields (such as your name and account information) and allows an extra passphrase to customize and create complex passwords.
+                    <br>
+                    <br>
+                    The benefits of using RPRPG is that you do not need to worry about your password being stored in any device. Instead, a password is generated based on the fields you fill on the page form locally on your browser. No information is required to be passed through the network, and by cloning this project, you'll be able to run RPRPG offline on your browser.                     
+                    <br>
+                    <br>
+                    Here's the link to the repository: <a href="https://github.com/brianfong96/brianfong96.github.io/tree/master/projects/RPRPG">https://github.com/brianfong96/brianfong96.github.io/tree/master/projects/RPRPG</a>
+                </p>                
+            </div>
             <div class="sub-entry">                
                 Password Length: <br>
-                <input type="number" id="length" name="length" min="4" max="1024" step="1" value="32"><br>
-                Enter any characters to exclude:<br>
-                <input type="text" id="exclude" name="Exclude"><br>
-                Enter any characters to include:<br>
-                <input type="text" id="include" name="Include"><br>
+                <input type="number" id="length" name="length" min="4" max="1024" step="1" value="16"><br>
+                Characters to exclude:<br>
+                <input type="text" id="exclude" name="Exclude" size="10"><br>
+                Characters to include:<br>
+                <input type="text" id="include" name="Include" size="10"><br>
                 <br>
             </div>
             <div class="sub-entry">
@@ -43,31 +57,27 @@
             </div>
             <div class="sub-entry">                
                 First name:<br>
-                <input type="text" id="firstname" name="firstname"><br>
+                <input type="text" id="firstname" name="firstname" size="10"><br>
                 Last name:<br>
-                <input type="text" id="lastname" name="lastname"><br>
+                <input type="text" id="lastname" name="lastname" size="10"><br>
                 Birthday:<br>
-                <input type="date" id="bday" name="bday"><br>
+                <input type="date" id="bday" name="bday" ><br>
                 Email:<br>
-                <input type="text" id="email" name="email"><br>
+                <input type="text" id="email" name="email" size="10"><br>
                 Username:<br>
-                <input type="text" id="username" name="username"><br>
+                <input type="text" id="username" name="username" size="10"><br>
                 Account:<br>
-                <input type="text" id="account" name="account"><br>
-                
+                <input type="text" id="account" name="account" size="10"><br>                
                 <br>
             </div>
-            <div class="sub-entry"></div>
+            <div class="sub-entry">
                 Extra Passphrase:<br>
-                <input type="text" id="extra" name="extra"><br>
+                <input type="text" id="extra" name="extra" size="10"><br>
                 <input type="submit" value="Generate" onclick="generatePassword()"> <br>            
                 <p id="pw">
             
                 </p>
-            </div>
-            <div class="sub-entry"></div>
-                
-            </div>
+            </div>            
         
         </form>
         

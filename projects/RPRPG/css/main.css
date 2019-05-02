@@ -27,8 +27,14 @@ body {
   }
 
 .sub-entry {
-    width: 15%;
+    width: 10%;
     float: left;
+}
+
+.sub-entry-wide {
+    width: 45%;
+    float: left;
+    padding-right: 40px;
 }
 
 .button {
