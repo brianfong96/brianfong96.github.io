@@ -27,12 +27,12 @@ body {
   }
 
 .sub-entry {
-    width: 10%;
+    width: 20%;
     float: left;
 }
 
 .sub-entry-wide {
-    width: 45%;
+    width: 35%;
     float: left;
     padding-right: 40px;
 }
