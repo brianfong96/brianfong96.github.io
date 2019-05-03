@@ -30,7 +30,7 @@
         </p>           
 
         <link rel="stylesheet" href="main.css">
-            
+        <form method="POST" autocomplete="off">                
             <div class="sub-entry">                
                 Password Length: <br>
                 <input type="number" id="length" name="length" min="4" max="1024" step="1" value="16"><br>
@@ -40,8 +40,7 @@
                 <input type="text" id="include" name="Include" size="10"><br>
                 <br>
             </div>
-            <div class="sub-entry">
-            <form method="POST" autocomplete="off">                
+            <div class="sub-entry">            
                 Include Lowercase Letters?<br>
                 <input type="radio" id="includeLower" name="lowercase" value="yes" checked> Yes<br>
                 <input type="radio" name="lowercase" value="no"> No<br>
@@ -77,14 +76,13 @@
             <div class="sub-entry-wide">
                 Extra Passphrase:<br>
                 <input type="text" id="extra" name="extra" size="10"><br>
-                <input type="submit" value="Generate" onclick="generatePassword()"> <br>            
+                <input type="submit" value="Generate" onclick="generatePassword()"> <br>                        
                 <form>
                     Your Password is:<br>
                     <input type="text" id=pw name=pw >
                 </form>                
             </div>            
-        
-        </form>
+        </form>        
         
     </body>
     
