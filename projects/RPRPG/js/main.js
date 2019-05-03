@@ -24,9 +24,9 @@ function randomInt(min, max)
 }
 
 
-function randomsort(arr) { 
-    var l = arr.length;
-    var ret = [];
+function randomSort(s) { 
+    var l = s.length;
+    var ret = "";
     var pos = [];
 
     for (var i=0; i<l; i++){
@@ -34,11 +34,19 @@ function randomsort(arr) {
     }
     for (var i=0; i<l; i++){
         var p = randomInt(0, pos.length);        
-        ret.push(arr[pos[p]]);
+        ret += s[pos[p]];
         pos[p] = pos[pos.length-1];
         pos.pop();
     }
-	return ret.join("");
+	return ret;
+}
+
+function randomSortAll(arr){
+    for (var i=0; i<arr.length; i++)
+    {
+        arr[i] = randomSort(arr[i]);
+    }
+    return arr;
 }
 
 function generateSeed(seed)
@@ -117,14 +125,11 @@ function generatePassword()
     }
 
     Math.seed = generateSeed(seed);
-    
-    for (var i=0; i<allchar.length; i++)
-    {
-        allchar[i] = randomsort(allchar[i]);
-    }
+        
     
     for (var i=0; i<length; i++)
-    {           
+    {         
+        allchar = randomSortAll(allchar);  
         var setNum = randomInt(0, allchar.length);
         if (i < allchar.length && i < length){
             setNum = i;               
@@ -132,8 +137,9 @@ function generatePassword()
         var charPos = randomInt(0, allchar[setNum].length);           
         pw += allchar[setNum][charPos];
     }
-    pw = randomsort(pw);
-    pw_display.innerHTML = "Your password is :<br>" + pw ;
+    pw = randomSort(pw);
+    
+    pw_display.value = pw ;
     
     event.preventDefault();    
 }
