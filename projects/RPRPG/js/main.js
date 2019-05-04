@@ -143,3 +143,9 @@ function generatePassword()
     
     event.preventDefault();    
 }
+
+$(document).ready(function(){  
+    $("userinput").keydown(function(){  
+        generatePassword();  
+    });      
+});  

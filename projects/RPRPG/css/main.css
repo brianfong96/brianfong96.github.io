@@ -6,7 +6,7 @@ body {
     font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif;
     font-size: 16px;
     line-height: 1.6;
-    background: #b8b4b4;
+    background: #8a8686;    
   }
   
 
@@ -32,7 +32,7 @@ body {
 }
 
 .sub-entry-wide {
-    width: 35%;
+    width: 100%;
     float: left;
     padding-right: 40px;
 }

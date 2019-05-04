@@ -1,45 +1,52 @@
 <!DOCTYPE html>
-<html>
-    <script src="js/main.js"> </script>    
+<html>    
     <link rel="stylesheet" href="css/main.css">    
     <head>
         <title>R.P.R.P.G.</title>
     </head>
 
     <body>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script src="js/main.js"> </script>    
         <h1>
             R.P.R.P.G. 
             <br>
             (Reproducible Pseudo Random Password Generator)
         </h1>
-        <p id="readme">
-            <hr>
-            R.P.R.P.G. is a password generator that relies on pseudo random number generation to generate a password.
-            <br>
-            <br>
-            Rather than having to remember the same password for many different accounts, which is unsafe, or remember many different passwords for different accounts, which is easy to forget, R.P.R.P.G. only requires you to remember answers to fields (such as your name and account information) and allows an extra passphrase to customize and create complex passwords.
-            <br>
-            <br>
-            The benefits of using R.P.R.P.G. is that you do not need to worry about your password being stored in any device. Instead, a password is generated based on the fields you fill on the page form locally on your browser. No information is required to be passed through the network, and by cloning this project, you'll be able to run R.P.R.P.G. offline on your browser.                     
-            <br>
-            <br>
-            Here's the link to the repository: <a href="https://github.com/brianfong96/brianfong96.github.io/tree/master/projects/RPRPG">https://github.com/brianfong96/brianfong96.github.io/tree/master/projects/RPRPG</a>
-            <br>
-            Here's the link to go to my website:  <a href="https://brianfong96.github.io">https://brianfong96.github.io</a>
-            <hr>
-        </p>           
-
+        
         <link rel="stylesheet" href="main.css">
-        <form method="POST" autocomplete="off">                
+        <form id="userinput" autocomplete="off">                                    
             <div class="sub-entry">                
+                First name:<br>
+                <input type="text" id="firstname" name="firstname" size="10"><br>
+                Last name:<br>
+                <input type="text" id="lastname" name="lastname" size="10"><br>
+                Birthday:<br>
+                <input type="date" id="bday" name="bday" ><br>
+                Email:<br>
+                <input type="text" id="email" name="email" size="10"><br>
+                Username:<br>
+                <input type="text" id="username" name="username" size="10"><br>
+                Account:<br>
+                <input type="text" id="account" name="account" size="10"><br>                
+                <br>
+            </div>                                    
+            <div class="sub-entry">
                 Password Length: <br>
                 <input type="number" id="length" name="length" min="4" max="1024" step="1" value="16"><br>
                 Characters to exclude:<br>
                 <input type="text" id="exclude" name="Exclude" size="10"><br>
                 Characters to include:<br>
                 <input type="text" id="include" name="Include" size="10"><br>
-                <br>
-            </div>
+                Extra Passphrase:<br>
+                <input type="password" id="extra" name="extra" size="10"><br>
+                <input type="button" value="Generate" onclick="generatePassword()"> 
+                <input type="reset" value="Clear" /> <br>                
+                <form>
+                    Your Password is:<br>
+                    <input type="text" id=pw name=pw >
+                </form>                
+            </div>     
             <div class="sub-entry">            
                 Include Lowercase Letters?<br>
                 <input type="radio" id="includeLower" name="lowercase" value="yes" checked> Yes<br>
@@ -57,33 +64,27 @@
                 <br>
                 <input type="radio" id="includeSymbols" name="symbols" value="yes" checked> Yes<br>
                 <input type="radio" name="symbols" value="no"> No<br>                
-            </div>
-            <div class="sub-entry">                
-                First name:<br>
-                <input type="text" id="firstname" name="firstname" size="10"><br>
-                Last name:<br>
-                <input type="text" id="lastname" name="lastname" size="10"><br>
-                Birthday:<br>
-                <input type="date" id="bday" name="bday" ><br>
-                Email:<br>
-                <input type="text" id="email" name="email" size="10"><br>
-                Username:<br>
-                <input type="text" id="username" name="username" size="10"><br>
-                Account:<br>
-                <input type="text" id="account" name="account" size="10"><br>                
-                <br>
-            </div>
-            <div class="sub-entry-wide">
-                Extra Passphrase:<br>
-                <input type="text" id="extra" name="extra" size="10"><br>
-                <input type="submit" value="Generate" onclick="generatePassword()"> <br>                        
-                <form>
-                    Your Password is:<br>
-                    <input type="text" id=pw name=pw >
-                </form>                
-            </div>            
+            </div>       
         </form>        
-        
+        <div class="sub-entry-wide">
+                <p id="readme">
+                    <hr>
+                    R.P.R.P.G. is a password generator that relies on pseudo random number generation to generate a password.
+                    <br>
+                    <br>
+                    Rather than having to remember the same password for many different accounts, which is unsafe, or remember many different passwords for different accounts, which is easy to forget, R.P.R.P.G. only requires you to remember answers to fields (such as your name and account information) and allows an extra passphrase to customize and create complex passwords.
+                    <br>
+                    <br>
+                    The benefits of using R.P.R.P.G. is that you do not need to worry about your password being stored in any device. Instead, a password is generated based on the fields you fill on the page form locally on your browser. No information is required to be passed through the network, and by cloning this project, you'll be able to run R.P.R.P.G. offline on your browser.                     
+                    <br>
+                    <br>
+                    Here's the link to the repository: <a href="https://github.com/brianfong96/brianfong96.github.io/tree/master/projects/RPRPG">https://github.com/brianfong96/brianfong96.github.io/tree/master/projects/RPRPG</a>
+                    <br>
+                    Here's the link to go to my website:  <a href="https://brianfong96.github.io">https://brianfong96.github.io</a>
+                    <hr>
+                </p>           
+        </div>
+    
     </body>
     
 </html>
