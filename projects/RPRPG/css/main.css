@@ -27,7 +27,7 @@ body {
   }
 
 .readme{
-    visibility: hidden;
+    display: none;
 }
 
 .sub-entry {
@@ -37,8 +37,7 @@ body {
 
 .sub-entry-wide {
     width: 100%;
-    float: left;
-    padding-right: 40px;
+    float: left;    
 }
 
 .button {

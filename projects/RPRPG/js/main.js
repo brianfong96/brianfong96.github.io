@@ -149,13 +149,13 @@ function toggle()
 {
     var toggle = document.getElementById("toggle");
     var readme = document.getElementById("readme");
-    if (toggle.value == "Hide Help") {
-        toggle.value = "Show Help";
-        readme.style.visibility = "hidden";              
+    if (toggle.value == "Hide README") {
+        toggle.value = "Show README";
+        readme.style.display = "none";              
     }
     else{
-        toggle.value = "Hide Help";
-        readme.style.visibility = "inherit";         
+        toggle.value = "Hide README";
+        readme.style.display = "initial";         
     }
     event.preventDefault();    
 }
