@@ -144,6 +144,22 @@ function generatePassword()
     event.preventDefault();    
 }
 
+
+function toggle()
+{
+    var toggle = document.getElementById("toggle");
+    var readme = document.getElementById("readme");
+    if (toggle.value == "Hide Help") {
+        toggle.value = "Show Help";
+        readme.style.visibility = "hidden";              
+    }
+    else{
+        toggle.value = "Hide Help";
+        readme.style.visibility = "inherit";         
+    }
+    event.preventDefault();    
+}
+
 $(document).ready(function(){  
     $("#userinput").keyup(function(){  
         generatePassword();  

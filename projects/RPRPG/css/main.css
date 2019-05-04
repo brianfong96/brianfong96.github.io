@@ -26,6 +26,10 @@ body {
     font-family: Consolas, Courier, monospace;
   }
 
+.readme{
+    visibility: hidden;
+}
+
 .sub-entry {
     width: 20%;
     float: left;
