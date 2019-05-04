@@ -1,5 +1,5 @@
 # R.P.R.P.G. (Reproducible Pseudo Random Password Generator)
-R.P.R.P.G. is a password generator that relies on pseudo random number generation to generate a password.
+R.P.R.P.G. is a password generator that relies on pseudo random number generation and user input to generate a password.
 
 Rather than having to remember the same password for many different accounts, which is unsafe, or remember many different passwords for different accounts, which is easy to forget, R.P.R.P.G. only requires you to remember answers to fields (such as your name and account information) and allows an extra passphrase to customize and create complex passwords.
 
@@ -10,6 +10,10 @@ Any browser, preferably the latest version of Google Chrome.
 
 ## Usage
 Go to https://brianfong96.github.io/projects/RPRPG/
+
+R.P.R.P.G. can generate a random password given any input, even when no fields are filled. Without any input, R.P.R.P.G. will always generate the same password. 
+
+Fields can be filled into any manner for password customiation. To reproduce the exact same password, all fields must be filled in exactly same order and the cases must be exactly the same. 
 
 ## Author
 Brian Fong / @brianfong96
