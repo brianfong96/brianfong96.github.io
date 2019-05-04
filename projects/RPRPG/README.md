@@ -16,4 +16,4 @@ R.P.R.P.G. can generate a random password given any input, even when no fields a
 Fields can be filled into any manner for password customiation. To reproduce the exact same password, all fields must be filled in exactly same order and the cases must be exactly the same. 
 
 ## Author
-Brian Fong / @brianfong96
+Brian Fong / [@brianfong96](https://brianfong96.github.io)
