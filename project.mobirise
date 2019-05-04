@@ -34,7 +34,10 @@
     "siteFonts": [],
     "uniqCompNum": 20,
     "versionPublish": "4.9.7",
-    "screenshot": "screenshot.png"
+    "screenshot": "screenshot.png",
+    "publishType": "github",
+    "gitHubName": "brianfong96",
+    "gitHubPath": ""
   },
   "pages": {
     "index.html": {
