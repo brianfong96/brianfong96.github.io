@@ -145,7 +145,7 @@ function generatePassword()
 }
 
 $(document).ready(function(){  
-    $("userinput").keydown(function(){  
+    $("#userinput").keyup(function(){  
         generatePassword();  
-    });      
+    });     
 });  
