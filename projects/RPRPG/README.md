@@ -24,3 +24,6 @@ Any browser, preferably the latest version of Google Chrome.
 
 ## Author
 Brian Fong / [@brianfong96](https://brianfong96.github.io)
+
+## License
+[MIT](https://github.com/brianfong96/brianfong96.github.io/blob/master/LICENSE)
