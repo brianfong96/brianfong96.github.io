@@ -62,6 +62,19 @@ function generateSeed(seed)
         
     return seed;
 }
+
+function newGenerateSeed(seed)
+{
+    var ids = ["firstname", "lastname", "bday", "email", "username", "account", "length","exclude","extra", "include"];
+    for (var i=0; i<ids.length; i++){
+        var element = document.getElementById(ids[i]).value;
+        for (char=0; char<element.length; char++){
+            seed += element.charCodeAt(char) * (i+char+1);
+        }
+    }
+        
+    return seed;
+}
   
 
 function generatePassword()
@@ -125,7 +138,9 @@ function generatePassword()
     }
 
     Math.seed = generateSeed(seed);
-        
+    if (document.getElementById("newSeedGen").checked){
+        Math.seed = newGenerateSeed(seed);
+    }            
     
     for (var i=0; i<length; i++)
     {         
