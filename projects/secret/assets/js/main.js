@@ -29,30 +29,30 @@ function encrypt(s)
     for(var i = 0; i < s.length; i++)
     {
         var c = s.charCodeAt(i);
-        var k = randomInt(0, 65535);
+        var k = randomInt(0, 10000);
         r = c ^ k;
-        Math.seed = Math.seed + k;        
-        e += '&#'+r+';';
+        Math.seed = Math.seed + k;  
+        e += '&#'+r+';';        
     }    
     return e;
 }
 
 function decrypt()
 {
-    Math.seed = prompt("Please enter the key", "0");
+    Math.seed = prompt("Please enter the key", "yyyymmdd");
     var titles = document.getElementsByClassName("mbr-section-title display-1");
     var bodies = document.getElementsByClassName("lead");
     var results = "";
     for(var i = 0; i < titles.length; i++)
     {
         console.log(titles.item(i).innerHTML);
-        var e = encrypt(titles.item(i).innerHTML);
-        titles.item(i).innerHTML = e;        
+        var e = encrypt(titles.item(i).innerHTML);      
+        titles.item(i).innerHTML = e.replace(/&#60;&#98;&#114;&#62;/g, "<br>");        
         console.log(e);
 
         console.log(bodies.item(i).innerHTML);
         var e = encrypt(bodies.item(i).innerHTML);
-        bodies.item(i).innerHTML = e;  
+        bodies.item(i).innerHTML = e.replace(/&#60;&#98;&#114;&#62;/g, "<br>");        
         console.log(e);
     } 
 }
