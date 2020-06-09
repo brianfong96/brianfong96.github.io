@@ -41,14 +41,7 @@
     "uniqCompNum": 20,
     "versionPublish": "4.12.3",
     "screenshot": "screenshot.png",
-    "imageResize": true,
-    "favicon": false,
-    "robotsSwitcher": false,
-    "sitemapSwitcher": false,
-    "sitemapSwitcherAuto": false,
-    "siteUrl": false,
-    "cookiesAlert": false,
-    "gdpr": false
+    "imageResize": true
   },
   "pages": {
     "index.html": {
