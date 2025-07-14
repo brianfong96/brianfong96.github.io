@@ -70,6 +70,8 @@ body.sidebar-open #sidebar-toggle {
     margin-bottom: 15px;
     border: none;
     border-radius: 4px;
+    background-color: #fff;
+    color: #000;
     box-sizing: border-box;
 }
 
