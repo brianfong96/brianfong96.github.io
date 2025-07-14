@@ -18,3 +18,11 @@ document.querySelectorAll('.section').forEach(section => {
     section.classList.add('fade-in');
     observer.observe(section);
 });
+
+// Toggle dropdown menus for navigation
+document.querySelectorAll('.nav-links li.dropdown > a').forEach(link => {
+    link.addEventListener('click', e => {
+        e.preventDefault();
+        link.parentElement.classList.toggle('open');
+    });
+});
