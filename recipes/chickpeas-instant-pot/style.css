@@ -1,7 +1,7 @@
 :root {
   --bg-color: #121212;
   --text-color: #e0e0e0;
-  --accent-color: #ffa200;
+  --accent-color: #ffffff;
 }
 
 body {
@@ -23,7 +23,7 @@ h1, h2 {
 }
 
 .step {
-  background: #fffaf0;
+  background: #f5f5f5;
   color: #000;
   border-radius: 16px;
   padding: 1.5rem;
@@ -54,7 +54,7 @@ h1, h2 {
 
 .badge {
   display: inline-block;
-  background: #ed8936;
+  background: #666666;
   color: white;
   border-radius: 999px;
   padding: 0.3rem 0.8rem;
@@ -78,7 +78,7 @@ ul {
 }
 
 .inputs {
-  background: #e6fffa;
+  background: #f5f5f5;
   color: #000;
   padding: 1.5rem;
   border-radius: 12px;
@@ -97,7 +97,7 @@ input[type="number"] {
   width: 100%;
   padding: 0.5rem;
   margin-bottom: 1rem;
-  border: 1px solid #cbd5e0;
+  border: 1px solid #cccccc;
   border-radius: 8px;
   color: #000;
   outline: none;
@@ -105,7 +105,7 @@ input[type="number"] {
 
 input[type="number"]:focus {
   outline: none;
-  border-color: #a0aec0;
+  border-color: #aaaaaa;
   box-shadow: none;
 }
 
@@ -130,7 +130,7 @@ input[type="number"]:focus {
 }
 
 .presets button {
-  background-color: #bee3f8;
+  background-color: #dddddd;
   color: #000;
   border: none;
   border-radius: 6px;
@@ -141,17 +141,17 @@ input[type="number"]:focus {
 }
 
 .presets button:hover {
-  background-color: #90cdf4;
+  background-color: #cccccc;
 }
 
 #error {
-  color: red;
+  color: #ffffff;
   font-weight: bold;
 }
 
 #servingEstimate {
   font-weight: bold;
-  color: #3182ce;
+  color: #666666;
 }
 
 .progress-bar {
@@ -166,6 +166,6 @@ input[type="number"]:focus {
 #progress-indicator {
   height: 100%;
   width: 0%;
-  background-color: #68d391;
+  background-color: #888888;
   transition: width 0.4s ease;
 }
