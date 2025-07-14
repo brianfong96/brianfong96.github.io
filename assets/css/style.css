@@ -1,8 +1,8 @@
 :root {
-    --bg-color: #121212;
-    --text-color: #e0e0e0;
+    --bg-color: #2b2b2b;
+    --text-color: #f0f0f0;
     --accent-color: #ffa200;
-    --nav-bg: #1e1e1e;
+    --nav-bg: #3a3a3a;
 }
 
 /* Base Styles */
@@ -114,7 +114,15 @@ body.sidebar-open #sidebar-toggle {
 }
 
 .nav-links a:active {
-    background-color: #444;
+    background-color: #555;
+}
+
+.nav-links a:focus {
+    outline: 2px solid var(--accent-color);
+}
+
+.nav-links a:visited {
+    color: var(--text-color);
 }
 .dropdown-content {
     display: none;
@@ -208,4 +216,34 @@ body.sidebar-open .content {
     color: #000;
     text-decoration: none;
     border-radius: 4px;
+}
+
+.list-buttons {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.list-buttons li {
+    margin-bottom: 10px;
+}
+
+.list-buttons a {
+    display: block;
+    padding: 10px;
+    border: 1px solid var(--accent-color);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text-color);
+    background-color: var(--nav-bg);
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.list-buttons a:hover {
+    background-color: var(--accent-color);
+    color: #000;
+}
+
+.list-buttons a:active {
+    background-color: #555;
 }

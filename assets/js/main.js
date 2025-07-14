@@ -36,6 +36,7 @@ function populateList(id, items) {
     const ul = document.getElementById(id);
     if (!ul || !items) return;
     ul.innerHTML = '';
+    ul.classList.add('list-buttons');
     items.forEach(item => {
         const li = document.createElement('li');
         const a = document.createElement('a');
