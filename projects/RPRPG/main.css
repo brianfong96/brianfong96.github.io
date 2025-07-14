@@ -58,7 +58,8 @@ object{
 
 .sub-entry-wide {
     width: 100%;
-    float: left;    
+    float: left;
+    clear: both; /* keep footer from overlapping */
 }
 
 .button {
