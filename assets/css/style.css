@@ -1,8 +1,8 @@
 :root {
-    --bg-color: #121212;
-    --text-color: #e0e0e0;
+    --bg-color: #2b2b2b;
+    --text-color: #f0f0f0;
     --accent-color: #ffa200;
-    --nav-bg: #1e1e1e;
+    --nav-bg: #3a3a3a;
 }
 
 /* Base Styles */
@@ -23,6 +23,7 @@ h1, h2, h3 {
     padding: 40px 20px;
     max-width: 800px;
     margin: 0 auto;
+    overflow: auto; /* ensure floated children don't overlap footer */
 }
 
 /* Sidebar Navigation */
@@ -64,12 +65,14 @@ body.sidebar-open #sidebar-toggle {
     transition: left 0.3s ease;
 }
 
-#search {
+#contents-search {
     width: 100%;
     padding: 8px;
     margin-bottom: 15px;
     border: none;
     border-radius: 4px;
+    background-color: #fff;
+    color: #000;
     box-sizing: border-box;
 }
 
@@ -77,6 +80,10 @@ body.sidebar-open #sidebar-toggle {
     font-weight: bold;
     color: var(--text-color);
     margin-bottom: 20px;
+    border: 1px solid var(--accent-color);
+    padding: 6px 10px;
+    display: inline-block;
+    border-radius: 4px;
 }
 
 .nav-links {
@@ -90,20 +97,34 @@ body.sidebar-open #sidebar-toggle {
     position: relative;
 }
 
+
 .nav-links a {
     text-decoration: none;
     color: var(--text-color);
     display: block;
-    padding: 8px;
-    border-radius: 4px;
-    transition: background-color 0.3s;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid var(--text-color);
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
 .nav-links a:hover {
     background-color: var(--accent-color);
+    border-color: var(--accent-color);
     color: #000;
 }
 
+.nav-links a:active {
+    background-color: #555;
+}
+
+.nav-links a:focus {
+    outline: 2px solid var(--accent-color);
+}
+
+.nav-links a:visited {
+    color: var(--text-color);
+}
 .dropdown-content {
     display: none;
     list-style: none;
@@ -163,6 +184,7 @@ body.sidebar-open .content {
     padding: 20px;
     background-color: var(--nav-bg);
     border-top: 1px solid #333;
+    clear: both;
 }
 
 /* Fade-in animation */
@@ -185,4 +207,45 @@ body.sidebar-open .content {
     body.sidebar-open .content {
         margin-left: 0;
     }
+}
+
+
+.back-button {
+    display: inline-block;
+    margin: 20px 0;
+    padding: 8px 12px;
+    background-color: var(--accent-color);
+    color: #000;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.list-buttons {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.list-buttons li {
+    margin-bottom: 10px;
+}
+
+.list-buttons a {
+    display: block;
+    padding: 10px;
+    border: 1px solid var(--accent-color);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text-color);
+    background-color: var(--nav-bg);
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.list-buttons a:hover {
+    background-color: var(--accent-color);
+    color: #000;
+}
+
+.list-buttons a:active {
+    background-color: #555;
 }
