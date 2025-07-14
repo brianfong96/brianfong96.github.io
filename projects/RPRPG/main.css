@@ -1,7 +1,7 @@
 :root {
     --bg-color: #2b2b2b;
     --text-color: #f0f0f0;
-    --accent-color: #ffa200;
+    --accent-color: #ffffff;
     --nav-bg: #3a3a3a;
 }
 
@@ -82,4 +82,15 @@ object{
     color: #000;
     text-decoration: none;
     border-radius: 4px;
+}
+
+@media (max-width: 700px) {
+    .sub-entry {
+        width: 100%;
+        margin-right: 0;
+        float: none;
+    }
+    .sub-entry:last-child {
+        margin-right: 0;
+    }
 }
