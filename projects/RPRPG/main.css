@@ -1,0 +1,58 @@
+body {
+    max-width: 1760px;
+    margin: 0 auto;
+    padding: 25px;
+    color: #333333;
+    font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    background: #8a8686;    
+  }
+  
+
+  h1 {
+    line-height: 1;
+  }
+  
+  h2 {
+    border-bottom: solid 1px #aaa;
+  }
+  
+  code {
+    border-radius: 5px;
+    background-color: #eee;
+    display: inline-block;
+    padding: 0 8px;
+    font-family: Consolas, Courier, monospace;
+  }
+
+#readmehtml{
+  background: #ffffff;
+}
+
+object{
+  border-style: solid;
+  border-width: 5px;
+  border-color: black;
+  
+}
+
+.readme{
+    display: none;    
+}
+
+.sub-entry {
+    width: 20%;
+    float: left;
+}
+
+.sub-entry-wide {
+    width: 100%;
+    float: left;    
+}
+
+.button {
+    text-align: center;
+    padding-top: 20px;
+    clear: both;
+}
