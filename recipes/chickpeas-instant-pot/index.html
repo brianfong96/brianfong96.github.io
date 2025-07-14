@@ -4,10 +4,30 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chickpea Cooking Guide</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="container" aria-label="Chickpea Cooking Instructions">
+  <button id="sidebar-toggle" aria-label="Toggle navigation">&#9776;</button>
+  <nav class="sidebar" id="sidebar">
+      <a class="logo" href="../../index.html">Brian Fong</a>
+      <ul class="nav-links">
+          <li><a href="../../contents.html">Contents</a></li>
+          <li><a href="../../index.html">Home</a></li>
+          <li><a href="../../about.html">About</a></li>
+          <li><a href="../../projects.html">Projects</a></li>
+          <li><a href="../../blog.html">Blog</a></li>
+          <li><a href="../../recipes.html">Recipes</a></li>
+      </ul>
+  </nav>
+  <div class="content">
+      <header class="hero small">
+          <div class="hero-content">
+              <h1>Chickpea Cooking Guide</h1>
+              <a href="../../recipes.html" class="back-button">Back to Recipes</a>
+          </div>
+      </header>
+      <main class="container" aria-label="Chickpea Cooking Instructions">
     <h1>🌱 How to Soak & Cook Chickpeas 🥜</h1>
 
     <div class="inputs">
@@ -74,7 +94,13 @@
         <li>Store in fridge for 4 days or freeze in portions <span class="emoji-animate">❄️</span></li>
       </div>
     </section>
-  </main>
+      </main>
+      <footer class="footer">
+          <p>&copy; <span id="year"></span> Brian Fong. All Rights Reserved.</p>
+      </footer>
+  </div>
   <script src="script.js"></script>
+  <script src="../../assets/js/data.js"></script>
+  <script src="../../assets/js/main.js"></script>
 </body>
 </html>

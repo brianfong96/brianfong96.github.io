@@ -66,3 +66,13 @@ object{
     padding-top: 20px;
     clear: both;
 }
+
+.back-button {
+    display: inline-block;
+    margin: 20px 0;
+    padding: 8px 12px;
+    background-color: var(--accent-color);
+    color: #000;
+    text-decoration: none;
+    border-radius: 4px;
+}

@@ -30,15 +30,19 @@ if (sidebar && toggleBtn) {
     });
 }
 
-// Simple search filter for navigation links
-const searchInput = document.getElementById('search');
-if (searchInput) {
-    searchInput.addEventListener('input', () => {
-        const query = searchInput.value.toLowerCase();
-        document.querySelectorAll('.nav-links li').forEach(li => {
-            const text = li.textContent.toLowerCase();
-            li.style.display = text.includes(query) ? '' : 'none';
-        });
+
+// Helper to populate lists from siteData
+function populateList(id, items) {
+    const ul = document.getElementById(id);
+    if (!ul || !items) return;
+    ul.innerHTML = '';
+    items.forEach(item => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = item.url;
+        a.textContent = item.title;
+        li.appendChild(a);
+        ul.appendChild(li);
     });
 }
 
@@ -52,4 +56,12 @@ if (tocSearch) {
             li.style.display = text.includes(q) ? '' : 'none';
         });
     });
+}
+
+// Populate dynamic lists when siteData is available
+if (typeof siteData !== 'undefined') {
+    populateList('projects-list', siteData.projects);
+    populateList('recipes-list', siteData.recipes);
+    const all = [].concat(siteData.projects, siteData.recipes, siteData.blogs);
+    populateList('toc-list', all);
 }

@@ -64,7 +64,7 @@ body.sidebar-open #sidebar-toggle {
     transition: left 0.3s ease;
 }
 
-#search {
+#contents-search {
     width: 100%;
     padding: 8px;
     margin-bottom: 15px;
@@ -79,6 +79,10 @@ body.sidebar-open #sidebar-toggle {
     font-weight: bold;
     color: var(--text-color);
     margin-bottom: 20px;
+    border: 1px solid var(--accent-color);
+    padding: 6px 10px;
+    display: inline-block;
+    border-radius: 4px;
 }
 
 .nav-links {
@@ -92,20 +96,26 @@ body.sidebar-open #sidebar-toggle {
     position: relative;
 }
 
+
 .nav-links a {
     text-decoration: none;
     color: var(--text-color);
     display: block;
-    padding: 8px;
-    border-radius: 4px;
-    transition: background-color 0.3s;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid var(--text-color);
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
 .nav-links a:hover {
     background-color: var(--accent-color);
+    border-color: var(--accent-color);
     color: #000;
 }
 
+.nav-links a:active {
+    background-color: #444;
+}
 .dropdown-content {
     display: none;
     list-style: none;
@@ -187,4 +197,15 @@ body.sidebar-open .content {
     body.sidebar-open .content {
         margin-left: 0;
     }
+}
+
+
+.back-button {
+    display: inline-block;
+    margin: 20px 0;
+    padding: 8px 12px;
+    background-color: var(--accent-color);
+    color: #000;
+    text-decoration: none;
+    border-radius: 4px;
 }
