@@ -59,6 +59,11 @@ h1, h2, h3 {
     cursor: pointer;
 }
 
+body.sidebar-open #sidebar-toggle {
+    left: 230px;
+    transition: left 0.3s ease;
+}
+
 #search {
     width: 100%;
     padding: 8px;
