@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chickpea Cooking Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container" aria-label="Chickpea Cooking Instructions">
+    <h1>🌱 How to Soak & Cook Chickpeas 🥜</h1>
+
+    <div class="inputs">
+      <label for="driedChickpeas">How many cups of dried chickpeas are you starting with?</label>
+      <input type="number" id="driedChickpeas" value="1" min="0.25" step="0.25" oninput="updateFromDried()">
+
+      <div class="unit-toggle">
+        <label><input type="radio" name="unit" value="cups" checked onchange="updateFromDried()"> Cups</label>
+        <label><input type="radio" name="unit" value="grams" onchange="updateFromDried()"> Grams</label>
+      </div>
+
+      <div class="presets">
+        <button onclick="setPreset(0.5)">Single</button>
+        <button onclick="setPreset(1)">Meal Prep</button>
+        <button onclick="setPreset(2)">Family</button>
+      </div>
+
+      <p><strong>Estimated servings:</strong> <span id="servingEstimate">~3</span> cups cooked (1 cup = 1 serving)</p>
+      <p class="note">💡 <strong>Note:</strong> 1 cup of dried chickpeas yields about <strong>3 cups</strong> of soaked (and later cooked) chickpeas.</p>
+      <p id="inputError" class="error" aria-live="assertive"></p>
+    </div>
+
+    <div class="progress-bar"><span id="progress-indicator"></span></div>
+
+    <section class="step active" onclick="toggleStep(this)" aria-expanded="true">
+      <div class="badge">Step 1</div>
+      <h2><span class="emoji-animate">💧</span> Soak the Chickpeas <img src="chickpea1.png" alt="Chickpea icon" width="30"></h2>
+      <div class="details">
+        <p><strong>Ingredients:</strong></p>
+        <ul id="soak-ingredients"></ul>
+        <p><strong>Instructions:</strong></p>
+        <ul>
+          <li>Rinse chickpeas thoroughly <span class="emoji-animate">💧</span></li>
+          <li>Use a <strong>large pot</strong> to soak — chickpeas triple in size!</li>
+          <li>Cover with plenty of water and soak 8–12 hours or overnight <span class="emoji-animate">🌙</span></li>
+          <li>Drain and rinse before cooking</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="step" onclick="toggleStep(this)" aria-expanded="false">
+      <div class="badge">Step 2</div>
+      <h2><span class="emoji-animate">🔥</span> Cook in Instant Pot <img src="chickpea2.png" alt="Chickpea cooking icon" width="30"></h2>
+      <div class="details">
+        <p><strong>Ingredients:</strong></p>
+        <ul id="cook-ingredients"></ul>
+        <p><strong>Instructions:</strong></p>
+        <ul>
+          <li><strong>Use all the soaked chickpeas from Step 1</strong>. Do not discard or reduce — the recipe scales with what you soaked.</li>
+          <li>Add soaked chickpeas, water (see amount above), and oil to the Instant Pot</li>
+          <li>Optional for better flavor: add sliced onion, bay leaf, garlic, or 1 tsp cumin</li>
+          <li>Set to High Pressure: 12 min (firm) or 15 min (soft)</li>
+          <li>Natural pressure release for 10–15 minutes <span class="emoji-animate">💨</span></li>
+          <li>Add salt <strong>after</strong> cooking to avoid tough skins</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="step" onclick="toggleStep(this)" aria-expanded="false">
+      <div class="badge">Yield</div>
+      <h2><span class="emoji-animate">💰</span> How Much Does it Make? <img src="chickpea3.png" alt="Yield icon" width="30"></h2>
+      <div class="details">
+        <ul id="yield-info"></ul>
+        <li>Store in fridge for 4 days or freeze in portions <span class="emoji-animate">❄️</span></li>
+      </div>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
