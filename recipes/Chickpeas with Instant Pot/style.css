@@ -1,0 +1,161 @@
+body {
+  font-family: 'Quicksand', sans-serif;
+  background: linear-gradient(135deg, #fdf6e3, #fceabb);
+  margin: 0;
+  padding: 2rem;
+  color: #2d3748;
+}
+
+h1, h2 {
+  text-align: center;
+  color: #2b6cb0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.step {
+  background: #fffaf0;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.step:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.details {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.6s ease, opacity 0.4s ease;
+}
+
+.step.active .details {
+  max-height: 800px;
+  opacity: 1;
+  margin-top: 1rem;
+}
+
+.badge {
+  display: inline-block;
+  background: #ed8936;
+  color: white;
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+ul {
+  padding-left: 1.2rem;
+}
+
+.emoji-animate {
+  display: inline-block;
+  animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+.inputs {
+  background: #e6fffa;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border: none;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+input[type="number"] {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  outline: none;
+}
+
+input[type="number"]:focus {
+  outline: none;
+  border-color: #a0aec0;
+  box-shadow: none;
+}
+
+.unit-toggle {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.unit-toggle label {
+  display: flex;
+  align-items: center;
+  font-weight: normal;
+  gap: 0.3rem;
+}
+
+.presets {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.presets button {
+  background-color: #bee3f8;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s ease;
+}
+
+.presets button:hover {
+  background-color: #90cdf4;
+}
+
+#error {
+  color: red;
+  font-weight: bold;
+}
+
+#servingEstimate {
+  font-weight: bold;
+  color: #3182ce;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: transparent;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+#progress-indicator {
+  height: 100%;
+  width: 0%;
+  background-color: #68d391;
+  transition: width 0.4s ease;
+}
