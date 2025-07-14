@@ -19,13 +19,6 @@ document.querySelectorAll('.section').forEach(section => {
     observer.observe(section);
 });
 
-// Toggle dropdown menus for navigation
-document.querySelectorAll('.nav-links li.dropdown > a').forEach(link => {
-    link.addEventListener('click', e => {
-        e.preventDefault();
-        link.parentElement.classList.toggle('open');
-    });
-});
 
 // Sidebar toggle behavior
 const sidebar = document.getElementById('sidebar');
