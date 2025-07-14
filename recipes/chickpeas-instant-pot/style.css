@@ -1,14 +1,20 @@
+:root {
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --accent-color: #ffa200;
+}
+
 body {
-  font-family: 'Quicksand', sans-serif;
-  background: linear-gradient(135deg, #fdf6e3, #fceabb);
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-color);
   margin: 0;
   padding: 2rem;
-  color: #2d3748;
+  color: var(--text-color);
 }
 
 h1, h2 {
   text-align: center;
-  color: #2b6cb0;
+  color: var(--accent-color);
 }
 
 .container {

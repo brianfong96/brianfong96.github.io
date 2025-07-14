@@ -41,3 +41,15 @@ if (searchInput) {
         });
     });
 }
+
+// Search filter for table of contents page
+const tocSearch = document.getElementById('contents-search');
+if (tocSearch) {
+    tocSearch.addEventListener('input', () => {
+        const q = tocSearch.value.toLowerCase();
+        document.querySelectorAll('#toc-list li').forEach(li => {
+            const text = li.textContent.toLowerCase();
+            li.style.display = text.includes(q) ? '' : 'none';
+        });
+    });
+}
