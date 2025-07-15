@@ -34,6 +34,11 @@ h1, h2 {
   position: relative;
 }
 
+/* Ensure step headings are readable on the light step background */
+.step h2 {
+  color: #000;
+}
+
 .step:hover {
   transform: scale(1.02);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
