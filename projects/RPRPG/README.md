@@ -10,16 +10,9 @@ Go to https://brianfong96.github.io/projects/RPRPG/
 
 R.P.R.P.G. can generate a random password given any input, even when no fields are filled. Without any input, R.P.R.P.G. will always generate the same password. 
 
-Fields can be filled into any manner for password customiation. To reproduce the exact same password, all fields must be filled in exactly same order and the cases must be exactly the same. 
+Fields can be filled into any manner for password customiation. To reproduce the exact same password, all fields must be filled in exactly same order and the cases must be exactly the same.
 
-## Update README in index.html
-Use the provided Python script to embed the README into `index.html`:
-
-```bash
-python3 embed_readme.py
-```
-
-This requires the `markdown` Python package.
+View the full source code on [GitHub](https://github.com/brianfong96/brianfong96.github.io/tree/master/projects/RPRPG).
 
 ## Requirements
 Any browser, preferably the latest version of Google Chrome.

@@ -160,21 +160,6 @@ function generatePassword()
 }
 
 
-function toggle()
-{
-    var toggle = document.getElementById("toggle");
-    var readme = document.getElementById("readme");
-    if (toggle.value == "Hide README") {
-        toggle.value = "Show README";
-        readme.style.display = "none";              
-    }
-    else{
-        toggle.value = "Hide README";
-        readme.style.display = "initial";         
-    }
-    event.preventDefault();    
-}
-
 $(document).ready(function(){  
     $("#userinput").keyup(function(){  
         generatePassword();  

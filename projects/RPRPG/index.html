@@ -29,19 +29,14 @@
         <main class="section">
         <details class="description">
             <summary>Description</summary>
-            <p>R.P.R.P.G. is a pseudo-random password generator that creates reproducible passwords from your inputs.</p>
-            <h3>Strengths</h3>
+            <p>R.P.R.P.G. is an offline password generator. It combines your personal inputs with a deterministic algorithm so you can reproduce the same password anywhere without storing anything.</p>
             <ul>
-                <li>No password storage means nothing can be breached or lost.</li>
-                <li>Works offline on any device with no cloud sync risks.</li>
-                <li>High entropy from combining many personal fields.</li>
-                <li>Different account names yield unique passwords.</li>
+                <li>No passwords are ever saved or transmitted.</li>
+                <li>Works in any modern browser, even without an internet connection.</li>
+                <li>Unique passwords for each service by changing the account field.</li>
+                <li>High entropy thanks to multiple customizable fields.</li>
             </ul>
-            <h3>Weaknesses</h3>
-            <ul>
-                <li>Susceptible to social engineering or physical observation.</li>
-                <li>Predictable personal data can reduce security.</li>
-            </ul>
+            <p>To use it, fill in the form, adjust the character options and click <strong>Generate</strong>. Use the same details again to recreate the password later.</p>
         </details>
         <form id="userinput" autocomplete="off">
             <div class="sub-entry">                
@@ -106,30 +101,6 @@
             <form action="https://github.com/brianfong96/brianfong96.github.io/tree/master/projects/RPRPG" method="get" target="_blank">
                 <button type="submit">Go to Repo</button>
             </form>
-            <input type="button" id="toggle" value="Show README" onclick="toggle()">
-            <div class="readme" id="readme">
-                <!-- README_START -->
-<h1 id="rprpg-reproducible-pseudo-random-password-generator">R.P.R.P.G. (Reproducible Pseudo Random Password Generator)</h1>
-<p>R.P.R.P.G. is a password generator that relies on pseudo random number generation and user input to generate a password.</p>
-<p>Rather than having to remember the same password for many different accounts, which is unsafe, or remember many different passwords for different accounts, which is easy to forget, R.P.R.P.G. only requires you to remember answers to fields (such as your name and account information) and allows an extra passphrase to customize and create complex passwords.</p>
-<p>The benefits of using R.P.R.P.G. is that you do not need to worry about your password being stored in any device. Instead, a password is generated based on the fields you fill on the page form locally on your browser. No information is required to be passed through the network, and by cloning this project, you'll be able to run R.P.R.P.G. offline on your browser. </p>
-<h2 id="usage">Usage</h2>
-<p>Go to <a href="https://brianfong96.github.io/projects/RPRPG/">https://brianfong96.github.io/projects/RPRPG/</a></p>
-<p>R.P.R.P.G. can generate a random password given any input, even when no fields are filled. Without any input, R.P.R.P.G. will always generate the same password. </p>
-<p>Fields can be filled into any manner for password customiation. To reproduce the exact same password, all fields must be filled in exactly same order and the cases must be exactly the same. </p>
-<h2 id="update-readme-in-indexhtml">Update README in index.html</h2>
-<p>In RPRPG directory, run:</p>
-<p><code>python3 embed_readme.py</code></p>
-<p>Refer to this repository: <a href="https://github.com/markdown-it/markdown-it">https://github.com/markdown-it/markdown-it</a></p>
-<h2 id="requirements">Requirements</h2>
-<p>Any browser, preferably the latest version of Google Chrome.</p>
-<h2 id="author">Author</h2>
-<p>Brian Fong / <a href="https://brianfong96.github.io">@brianfong96</a></p>
-<h2 id="license">License</h2>
-<p><a href="https://github.com/brianfong96/brianfong96.github.io/blob/master/LICENSE">MIT</a></p>
-                <!-- README_END -->
-            </div>
-            
         </div>
         </main>
         <footer class="footer">
