@@ -41,7 +41,18 @@ function populateList(id, items) {
         const li = document.createElement('li');
         const a = document.createElement('a');
         a.href = item.url;
-        a.textContent = item.title;
+
+        const titleDiv = document.createElement('div');
+        titleDiv.textContent = item.title;
+        a.appendChild(titleDiv);
+
+        if (item.description) {
+            const desc = document.createElement('div');
+            desc.className = 'item-desc';
+            desc.textContent = item.description;
+            a.appendChild(desc);
+        }
+
         li.appendChild(a);
         ul.appendChild(li);
     });
