@@ -43,6 +43,12 @@ function populateList(id, items) {
         a.href = item.url;
         a.textContent = item.title;
         li.appendChild(a);
+        if (item.description) {
+            const desc = document.createElement('p');
+            desc.className = 'item-desc';
+            desc.textContent = item.description;
+            li.appendChild(desc);
+        }
         ul.appendChild(li);
     });
 }

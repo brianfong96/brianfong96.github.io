@@ -249,3 +249,15 @@ body.sidebar-open .content {
 .list-buttons a:active {
     background-color: #555;
 }
+
+.item-desc {
+    margin: 5px 0 0 0;
+    font-size: 0.9em;
+    color: #ccc;
+}
+
+.description {
+    margin-bottom: 20px;
+    font-size: 1rem;
+    color: #ddd;
+}
