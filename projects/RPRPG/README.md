@@ -13,11 +13,13 @@ R.P.R.P.G. can generate a random password given any input, even when no fields a
 Fields can be filled into any manner for password customiation. To reproduce the exact same password, all fields must be filled in exactly same order and the cases must be exactly the same. 
 
 ## Update README in index.html
-In RPRPG directory, run:
+Use the provided Python script to embed the README into `index.html`:
 
-"node js/generateReadMe.js"
+```bash
+python3 embed_readme.py
+```
 
-Refer to this repository: [https://github.com/markdown-it/markdown-it](https://github.com/markdown-it/markdown-it)
+This requires the `markdown` Python package.
 
 ## Requirements
 Any browser, preferably the latest version of Google Chrome.
