@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cumin-Soy Instant Pot Drumsticks</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button id="sidebar-toggle" aria-label="Toggle navigation">&#9776;</button>
+  <nav class="sidebar" id="sidebar">
+      <a class="logo" href="../../index.html">Brian Fong</a>
+      <ul class="nav-links">
+          <li><a href="../../index.html#contents">Contents</a></li>
+          <li><a href="../../index.html">Home</a></li>
+          <li><a href="../../about.html">About</a></li>
+          <li><a href="../../projects.html">Projects</a></li>
+          <li><a href="../../blog.html">Blog</a></li>
+          <li><a href="../../recipes.html">Recipes</a></li>
+      </ul>
+  </nav>
+  <div class="content">
+      <header class="hero small">
+          <div class="hero-content">
+              <h1>Cumin-Soy Instant Pot Drumsticks</h1>
+              <a href="../../recipes.html" class="back-button">Back to Recipes</a>
+          </div>
+      </header>
+      <main class="container" aria-label="Chicken Drumstick Instructions">
+    <h1>🍗 Cumin-Soy Instant Pot Drumsticks</h1>
+
+    <div class="inputs">
+      <label for="drumstickCount">How many drumsticks are you cooking?</label>
+      <input type="number" id="drumstickCount" value="6" min="1" step="1" oninput="updateFromDrumsticks()">
+
+      <div class="presets">
+        <button onclick="setPreset(4)">Small</button>
+        <button onclick="setPreset(6)">Standard</button>
+        <button onclick="setPreset(8)">Family</button>
+      </div>
+
+      <p><strong>Total drumsticks:</strong> <span id="servingEstimate">6</span></p>
+      <p id="inputError" class="error" aria-live="assertive"></p>
+    </div>
+
+    <div class="progress-bar"><span id="progress-indicator"></span></div>
+
+    <section class="step active" onclick="toggleStep(this)" aria-expanded="true">
+      <div class="badge">Step 1</div>
+      <h2><span class="emoji-animate">🥄</span> Mix Seasoning &amp; Drumsticks</h2>
+      <div class="details">
+        <p><strong>Ingredients:</strong></p>
+        <ul id="season-ingredients"></ul>
+        <p><strong>Instructions:</strong></p>
+        <ul>
+          <li>Add all ingredients to the Instant Pot.</li>
+          <li>Use tongs or clean hands to coat the drumsticks well.</li>
+          <li>Let sit a few minutes if time allows.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="step" onclick="toggleStep(this)" aria-expanded="false">
+      <div class="badge">Step 2</div>
+      <h2><span class="emoji-animate">💧</span> Add Water for Broth</h2>
+      <div class="details">
+        <p><strong>Ingredients:</strong></p>
+        <ul id="water-ingredients"></ul>
+        <p><strong>Instructions:</strong></p>
+        <ul>
+          <li>Pour in the water and gently stir to mix.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="step" onclick="toggleStep(this)" aria-expanded="false">
+      <div class="badge">Step 3</div>
+      <h2><span class="emoji-animate">🔥</span> Pressure Cook</h2>
+      <div class="details">
+        <ul>
+          <li>Close and seal the lid.</li>
+          <li>Set to High Pressure for 10 minutes.</li>
+          <li>Let naturally release for 5 minutes, then quick release.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="step" onclick="toggleStep(this)" aria-expanded="false">
+      <div class="badge">Step 4</div>
+      <h2><span class="emoji-animate">✨</span> Optional: Crisp It Up</h2>
+      <div class="details">
+        <ul>
+          <li>Broil or air fry at high heat for 3–5 minutes.</li>
+          <li>Enjoy the crispy edges!</li>
+        </ul>
+      </div>
+    </section>
+      </main>
+      <footer class="footer">
+          <p>&copy; <span id="year"></span> Brian Fong. All Rights Reserved.</p>
+      </footer>
+  </div>
+  <script src="script.js"></script>
+  <script src="../../assets/js/data.js"></script>
+  <script src="../../assets/js/main.js"></script>
+</body>
+</html>
