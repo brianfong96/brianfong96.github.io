@@ -27,7 +27,17 @@
             </div>
         </header>
         <main class="section">
-        <p class="description">R.P.R.P.G. is a pseudo-random password generator that creates reproducible passwords from your inputs.</p>
+        <details class="description">
+            <summary>Description</summary>
+            <p>R.P.R.P.G. is an offline password generator. It combines your personal inputs with a deterministic algorithm so you can reproduce the same password anywhere without storing anything.</p>
+            <ul>
+                <li>No passwords are ever saved or transmitted.</li>
+                <li>Works in any modern browser, even without an internet connection.</li>
+                <li>Unique passwords for each service by changing the account field.</li>
+                <li>High entropy thanks to multiple customizable fields.</li>
+            </ul>
+            <p>To use it, fill in the form, adjust the character options and click <strong>Generate</strong>. Use the same details again to recreate the password later.</p>
+        </details>
         <form id="userinput" autocomplete="off">
             <div class="sub-entry">                
                 First name:<br>
@@ -91,11 +101,6 @@
             <form action="https://github.com/brianfong96/brianfong96.github.io/tree/master/projects/RPRPG" method="get" target="_blank">
                 <button type="submit">Go to Repo</button>
             </form>
-            <input type="button" id="toggle" value="Show README" onclick="toggle()">
-            <div class="readme" id="readme">
-                <object data="README.html" height="1000" width="100%" type="text/html"></object>
-            </div>            
-            
         </div>
         </main>
         <footer class="footer">
