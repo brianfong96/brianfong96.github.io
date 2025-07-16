@@ -43,7 +43,11 @@ function populateList(id, items) {
         a.href = item.url;
 
         const titleDiv = document.createElement('div');
-        titleDiv.textContent = item.title;
+        if (item.section) {
+            titleDiv.textContent = `${item.title} | ${item.section}`;
+        } else {
+            titleDiv.textContent = item.title;
+        }
         a.appendChild(titleDiv);
 
         if (item.description) {
@@ -74,6 +78,6 @@ if (tocSearch) {
 if (typeof siteData !== 'undefined') {
     populateList('projects-list', siteData.projects);
     populateList('recipes-list', siteData.recipes);
-    const all = [].concat(siteData.projects, siteData.recipes, siteData.blogs);
+    const all = [].concat(siteData.projects, siteData.recipes, siteData.music, siteData.blogs);
     populateList('toc-list', all);
 }
