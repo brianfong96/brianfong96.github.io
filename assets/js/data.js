@@ -3,22 +3,28 @@ const siteData = {
         {
             title: 'R.P.R.P.G.',
             url: 'projects/RPRPG/index.html',
-            description: 'Generate reproducible random passwords using memorable answers.'
+            description: 'Generate reproducible random passwords using memorable answers.',
+            section: 'Projects'
         }
     ],
     recipes: [
         {
             title: 'Chickpeas with Instant Pot',
             url: 'recipes/chickpeas-instant-pot/index.html',
-            description: 'Guide for soaking and cooking chickpeas in the Instant Pot.'
+            description: 'Guide for soaking and cooking chickpeas in the Instant Pot.',
+            section: 'Recipes'
         },
         {
             title: 'Cumin-Soy Instant Pot Drumsticks',
             url: 'recipes/cumin-soy-instant-pot-drumsticks/index.html',
-            description: 'Quick chicken drumsticks seasoned with cumin and soy sauce.'
+            description: 'Quick chicken drumsticks seasoned with cumin and soy sauce.',
+            section: 'Recipes'
         }
     ],
+    music: [
+        { title: 'Music', url: 'music.html', section: 'Music' }
+    ],
     blogs: [
-        { title: 'Blog', url: 'blog.html' }
+        { title: 'Blog', url: 'blog.html', section: 'Blog' }
     ]
 };
