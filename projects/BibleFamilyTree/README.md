@@ -3,7 +3,16 @@
 Visualize genealogies of biblical characters in a simple D3.js tree. The project is a static site that can be viewed on GitHub Pages or locally in any modern browser.
 
 ## View the app
-Open [Bible Family Tree](https://brianfong96.github.io/projects/BibleFamilyTree/) in your browser. To test locally, clone this repository and open `index.html` inside the `projects/BibleFamilyTree` directory.
+Open [Bible Family Tree](https://brianfong96.github.io/projects/BibleFamilyTree/) in your browser.  
+For local testing, run a tiny web server from the project root so that the JSON
+file can be fetched correctly:
+
+```bash
+cd projects/BibleFamilyTree
+python3 -m http.server
+```
+
+Then visit `http://localhost:8000/` in your browser.
 
 ## Editing the data
 Family relationships are stored in `data/family_tree.json`. You can edit this file by hand or use the helper CLI:

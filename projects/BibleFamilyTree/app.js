@@ -1,6 +1,7 @@
 async function loadData() {
-    const data = await fetch('data/family_tree.json').then(r => r.json());
-    return data;
+    const resp = await fetch('./data/family_tree.json');
+    if (!resp.ok) throw new Error('Failed to load data');
+    return resp.json();
 }
 
 function buildHierarchy(data) {
@@ -56,7 +57,14 @@ function renderTree(rootData) {
         .text(d => d.data.name);
 }
 
-loadData().then(data => {
-    const hierarchy = buildHierarchy(data);
-    renderTree(hierarchy);
+document.addEventListener('DOMContentLoaded', () => {
+    loadData()
+        .then(data => {
+            const hierarchy = buildHierarchy(data);
+            renderTree(hierarchy);
+        })
+        .catch(err => {
+            document.getElementById('tree').textContent = err.message;
+            console.error(err);
+        });
 });
