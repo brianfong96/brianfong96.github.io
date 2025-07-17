@@ -6,7 +6,7 @@ Visualize genealogies of biblical characters in a simple D3.js tree. The project
 Open [Bible Family Tree](https://brianfong96.github.io/projects/BibleFamilyTree/) in your browser. The data is embedded directly in the page, so you can also open `index.html` locally without starting a server.
 
 ## Editing the data
-Family relationships are stored in `data/family_tree.json`. You can edit this file by hand or use the helper CLI:
+Family relationships are stored in `data/family_tree.js` as a JavaScript array. You can edit this file by hand or use the helper CLI:
 
 ```bash
 python3 scripts/edit_data.py add "Abel" --parents adam-001 --references "Genesis 4:2" --notes "Son of Adam"

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Simple CLI to edit family_tree.json"""
+"""Simple CLI to edit family_tree.js"""
 import json
 import argparse
 import re
@@ -10,18 +10,19 @@ REF_PATTERN = re.compile(r"^[A-Za-z]+ \d+:\d+(?:-\d+)?$")
 
 
 def load(path):
-    if Path(path).exists():
-        with open(path, 'r', encoding='utf-8') as f:
-            return json.load(f)
+    path = Path(path)
+    if path.exists():
+        text = path.read_text(encoding='utf-8')
+        start = text.find('[')
+        end = text.rfind(']')
+        if start != -1 and end != -1:
+            return json.loads(text[start:end+1])
     return []
 
 
 def save(path, data):
     path = Path(path)
     with open(path, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2)
-    js_path = path.with_suffix('.js')
-    with open(js_path, 'w', encoding='utf-8') as f:
         f.write('window.familyTreeData = ' + json.dumps(data, indent=2) + ';\n')
 
 
@@ -77,7 +78,7 @@ def delete_person(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Edit family tree data")
-    parser.add_argument('--file', default=str(Path(__file__).resolve().parent.parent / 'data/family_tree.json'))
+    parser.add_argument('--file', default=str(Path(__file__).resolve().parent.parent / 'data/family_tree.js'))
     sub = parser.add_subparsers(dest='cmd', required=True)
 
     a = sub.add_parser('add')
