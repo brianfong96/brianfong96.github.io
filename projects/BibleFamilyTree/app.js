@@ -14,7 +14,7 @@ function buildHierarchy(data) {
     map.forEach(node => {
         if (node.parents.length === 0) roots.push(node);
     });
-    return { id: 'root', name: 'Root', children: roots };
+    return { children: roots };
 }
 
 let nodeSelection;
@@ -42,7 +42,7 @@ function renderTree(rootData) {
         .attr('transform', 'translate(80,0)');
 
     g.selectAll('.link')
-        .data(root.links())
+        .data(root.links().filter(d => d.source.depth > 0))
         .enter().append('path')
         .attr('class', 'link')
         .attr('d', d3.linkHorizontal()
@@ -50,7 +50,7 @@ function renderTree(rootData) {
             .y(d => d.x));
 
     nodeSelection = g.selectAll('.node')
-        .data(root.descendants())
+        .data(root.descendants().slice(1))
         .enter().append('g')
         .attr('class', 'node')
         .attr('transform', d => `translate(${d.y},${d.x})`);

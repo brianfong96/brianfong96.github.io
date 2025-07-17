@@ -3,26 +3,50 @@ window.familyTreeData = [
     "id": "adam-001",
     "name": "Adam",
     "aliases": [],
-    "children": [
-      "seth-002"
-    ],
+    "children": ["cain-001", "abel-001", "seth-002"],
     "parents": [],
-    "references": [
-      "Genesis 2:7",
-      "Genesis 5:1-5"
-    ],
+    "references": ["Genesis 2:7", "Genesis 5:1-5"],
     "notes": "First man created by God"
+  },
+  {
+    "id": "eve-001",
+    "name": "Eve",
+    "aliases": [],
+    "children": ["cain-001", "abel-001", "seth-002"],
+    "parents": [],
+    "references": ["Genesis 2:22", "Genesis 3:20"],
+    "notes": "First woman created by God"
+  },
+  {
+    "id": "cain-001",
+    "name": "Cain",
+    "aliases": [],
+    "children": [],
+    "parents": ["adam-001", "eve-001"],
+    "references": ["Genesis 4:1-16"]
+  },
+  {
+    "id": "abel-001",
+    "name": "Abel",
+    "aliases": [],
+    "children": [],
+    "parents": ["adam-001", "eve-001"],
+    "references": ["Genesis 4:2-8"]
   },
   {
     "id": "seth-002",
     "name": "Seth",
     "aliases": [],
+    "children": ["enosh-001"],
+    "parents": ["adam-001", "eve-001"],
+    "references": ["Genesis 4:25", "Genesis 5:3-8"]
+  },
+  {
+    "id": "enosh-001",
+    "name": "Enosh",
+    "aliases": [],
     "children": [],
-    "parents": [
-      "adam-001"
-    ],
-    "references": [
-      "Genesis 5:3-8"
-    ]
+    "parents": ["seth-002"],
+    "references": ["Genesis 4:26", "Genesis 5:6-11"]
   }
 ];
