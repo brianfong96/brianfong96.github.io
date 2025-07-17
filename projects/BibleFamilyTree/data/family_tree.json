@@ -1,0 +1,19 @@
+[
+  {
+    "id": "adam-001",
+    "name": "Adam",
+    "aliases": [],
+    "children": ["seth-002"],
+    "parents": [],
+    "references": ["Genesis 2:7", "Genesis 5:1-5"],
+    "notes": "First man created by God"
+  },
+  {
+    "id": "seth-002",
+    "name": "Seth",
+    "aliases": [],
+    "children": [],
+    "parents": ["adam-001"],
+    "references": ["Genesis 5:3-8"]
+  }
+]

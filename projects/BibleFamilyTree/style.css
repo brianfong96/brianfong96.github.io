@@ -1,0 +1,18 @@
+#tree {
+    width: 100%;
+    height: 80vh;
+}
+
+.node circle {
+    fill: #88aaff;
+}
+
+.node text {
+    fill: var(--text-color);
+}
+
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+}

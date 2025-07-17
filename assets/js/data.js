@@ -5,6 +5,12 @@ const siteData = {
             url: 'projects/RPRPG/index.html',
             description: 'Generate reproducible random passwords using memorable answers.',
             section: 'Projects'
+        },
+        {
+            title: 'Bible Family Tree',
+            url: 'projects/BibleFamilyTree/index.html',
+            description: 'Interactive visualization of biblical family relationships.',
+            section: 'Projects'
         }
     ],
     recipes: [
