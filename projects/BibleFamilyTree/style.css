@@ -3,6 +3,10 @@
     height: 80vh;
 }
 
+.controls {
+    margin-bottom: 1em;
+}
+
 .node circle {
     fill: #88aaff;
 }
@@ -15,4 +19,8 @@
     fill: none;
     stroke: #ccc;
     stroke-width: 2px;
+}
+
+.highlight circle {
+    fill: #ff6666;
 }

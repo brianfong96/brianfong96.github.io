@@ -1,7 +1,8 @@
-async function loadData() {
-    const resp = await fetch('./data/family_tree.json');
-    if (!resp.ok) throw new Error('Failed to load data');
-    return resp.json();
+function getData() {
+    if (window.familyTreeData) {
+        return Promise.resolve(window.familyTreeData);
+    }
+    return Promise.reject(new Error('No data available'));
 }
 
 function buildHierarchy(data) {
@@ -16,21 +17,31 @@ function buildHierarchy(data) {
     return { id: 'root', name: 'Root', children: roots };
 }
 
+let nodeSelection;
+let zoom, svg, g, container, width, height;
+
 function renderTree(rootData) {
-    const width = document.getElementById('tree').clientWidth;
-    const height = document.getElementById('tree').clientHeight;
+    container = d3.select('#tree');
+    width = container.node().clientWidth;
+    height = container.node().clientHeight;
 
     const root = d3.hierarchy(rootData);
     const treeLayout = d3.tree().size([height, width - 160]);
     treeLayout(root);
 
-    const svg = d3.select('#tree').append('svg')
+    zoom = d3.zoom().on('zoom', (event) => {
+        g.attr('transform', event.transform);
+    });
+
+    svg = container.append('svg')
         .attr('width', width)
         .attr('height', height)
-        .append('g')
+        .call(zoom);
+
+    g = svg.append('g')
         .attr('transform', 'translate(80,0)');
 
-    svg.selectAll('.link')
+    g.selectAll('.link')
         .data(root.links())
         .enter().append('path')
         .attr('class', 'link')
@@ -38,30 +49,65 @@ function renderTree(rootData) {
             .x(d => d.y)
             .y(d => d.x));
 
-    const node = svg.selectAll('.node')
+    nodeSelection = g.selectAll('.node')
         .data(root.descendants())
         .enter().append('g')
         .attr('class', 'node')
         .attr('transform', d => `translate(${d.y},${d.x})`);
 
-    node.append('circle')
+    nodeSelection.append('circle')
         .attr('r', 5);
 
-    node.append('title')
+    nodeSelection.append('title')
         .text(d => d.data.references ? d.data.references.join(', ') : '');
 
-    node.append('text')
+    nodeSelection.append('text')
         .attr('dy', 3)
         .attr('x', d => d.children ? -10 : 10)
         .style('text-anchor', d => d.children ? 'end' : 'start')
         .text(d => d.data.name);
 }
 
+function highlightNodes(query) {
+    query = query.trim().toLowerCase();
+    if (!nodeSelection) return;
+    nodeSelection.classed('highlight', d => {
+        if (!query) return false;
+        return d.data.id.toLowerCase().includes(query) ||
+               d.data.name.toLowerCase().includes(query) ||
+               (d.data.aliases || []).some(a => a.toLowerCase().includes(query));
+    });
+}
+
+function centerOnNode(d) {
+    if (!svg) return;
+    svg.transition().duration(750)
+        .call(zoom.transform,
+            d3.zoomIdentity.translate(width / 2 - d.y, height / 2 - d.x));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    loadData()
+    getData()
         .then(data => {
             const hierarchy = buildHierarchy(data);
             renderTree(hierarchy);
+            const input = document.getElementById('search');
+            if (input) {
+                input.addEventListener('input', e => highlightNodes(e.target.value));
+                input.addEventListener('keydown', e => {
+                    if (e.key === 'Enter') {
+                        const q = e.target.value.trim().toLowerCase();
+                        const match = nodeSelection.filter(d =>
+                            d.data.id.toLowerCase().includes(q) ||
+                            d.data.name.toLowerCase().includes(q) ||
+                            (d.data.aliases || []).some(a => a.toLowerCase().includes(q))
+                        );
+                        if (!match.empty()) {
+                            centerOnNode(match.datum());
+                        }
+                    }
+                });
+            }
         })
         .catch(err => {
             document.getElementById('tree').textContent = err.message;

@@ -17,8 +17,12 @@ def load(path):
 
 
 def save(path, data):
+    path = Path(path)
     with open(path, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
+    js_path = path.with_suffix('.js')
+    with open(js_path, 'w', encoding='utf-8') as f:
+        f.write('window.familyTreeData = ' + json.dumps(data, indent=2) + ';\n')
 
 
 def generate_id(name, existing):
