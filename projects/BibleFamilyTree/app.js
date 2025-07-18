@@ -31,21 +31,15 @@ function buildHierarchy(data) {
 
 let nodeSelection;
 let zoom, svg, g, container, width, height;
+let displayData;
+let dragEnabled = false;
+let dragBehavior;
 
-function renderTree(rootData) {
+function initTree(rootData) {
+    displayData = rootData;
     container = d3.select('#tree');
     width = container.node().clientWidth;
     height = container.node().clientHeight;
-
-    const root = d3.hierarchy(rootData);
-    const treeLayout = d3.tree().size([height, width - 160]);
-    treeLayout(root);
-    const nodeMap = new Map(root.descendants().map(n => [n.data.id, n]));
-    const mainLinks = root.links().filter(d => d.source.depth > 0);
-    const extraLinks = (rootData.extraLinks || []).map(l => ({
-        source: nodeMap.get(l.source),
-        target: nodeMap.get(l.target)
-    }));
 
     zoom = d3.zoom().on('zoom', (event) => {
         g.attr('transform', event.transform);
@@ -59,32 +53,89 @@ function renderTree(rootData) {
     g = svg.append('g')
         .attr('transform', 'translate(80,0)');
 
-    const allLinks = mainLinks.concat(extraLinks);
+    dragBehavior = d3.drag()
+        .on('drag', (event, d) => {
+            d.x += event.dy;
+            d.y += event.dx;
+            d3.select(event.subject).attr('transform', `translate(${d.y},${d.x})`);
+            updateLinks();
+        });
+
+    updateTree();
+}
+
+function updateLinks() {
     g.selectAll('.link')
-        .data(allLinks)
-        .enter().append('path')
+        .attr('d', d3.linkHorizontal()
+            .x(d => d.y)
+            .y(d => d.x));
+}
+
+function updateTree() {
+    const root = d3.hierarchy(displayData);
+    const treeLayout = d3.tree().size([height, width - 160]);
+    treeLayout(root);
+    const nodeMap = new Map(root.descendants().map(n => [n.data.id, n]));
+    const mainLinks = root.links().filter(d => d.source.depth > 0);
+    const extraLinks = (displayData.extraLinks || []).map(l => ({
+        source: nodeMap.get(l.source),
+        target: nodeMap.get(l.target)
+    }));
+    const allLinks = mainLinks.concat(extraLinks);
+
+    const linkSel = g.selectAll('.link')
+        .data(allLinks, d => d.source.data.id + '-' + d.target.data.id);
+
+    linkSel.enter().append('path')
         .attr('class', d => extraLinks.includes(d) ? 'link extra-link' : 'link')
+        .merge(linkSel)
         .attr('d', d3.linkHorizontal()
             .x(d => d.y)
             .y(d => d.x));
 
-    nodeSelection = g.selectAll('.node')
-        .data(root.descendants().slice(1))
-        .enter().append('g')
-        .attr('class', 'node')
-        .attr('transform', d => `translate(${d.y},${d.x})`);
+    linkSel.exit().remove();
 
-    nodeSelection.append('circle')
+    nodeSelection = g.selectAll('.node')
+        .data(root.descendants().slice(1), d => d.data.id);
+
+    const nodeEnter = nodeSelection.enter().append('g')
+        .attr('class', 'node')
+        .on('click', (event, d) => {
+            if (d.children) {
+                d._children = d.children;
+                d.children = null;
+            } else if (d._children) {
+                d.children = d._children;
+                d._children = null;
+            }
+            updateTree();
+        });
+
+    nodeEnter.append('circle')
         .attr('r', 5);
 
-    nodeSelection.append('title')
+    nodeEnter.append('title')
         .text(d => d.data.references ? d.data.references.join(', ') : '');
 
-    nodeSelection.append('text')
+    nodeEnter.append('text')
         .attr('dy', 3)
         .attr('x', d => d.children ? -10 : 10)
         .style('text-anchor', d => d.children ? 'end' : 'start')
         .text(d => d.data.name);
+
+    nodeSelection = nodeEnter.merge(nodeSelection);
+
+    nodeSelection
+        .attr('transform', d => `translate(${d.y},${d.x})`)
+        .classed('collapsed', d => !d.children && d._children);
+
+    if (dragEnabled) {
+        nodeSelection.call(dragBehavior);
+    } else {
+        nodeSelection.on('.drag', null);
+    }
+
+    linkSel.raise();
 }
 
 function highlightNodes(query) {
@@ -109,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
     getData()
         .then(data => {
             const hierarchy = buildHierarchy(data);
-            renderTree(hierarchy);
+            initTree(hierarchy);
             const input = document.getElementById('search');
             if (input) {
                 input.addEventListener('input', e => highlightNodes(e.target.value));
@@ -125,6 +176,14 @@ document.addEventListener('DOMContentLoaded', () => {
                             centerOnNode(match.datum());
                         }
                     }
+                });
+            }
+            const toggle = document.getElementById('drag-toggle');
+            if (toggle) {
+                toggle.addEventListener('click', () => {
+                    dragEnabled = !dragEnabled;
+                    toggle.textContent = dragEnabled ? 'Disable Dragging' : 'Enable Dragging';
+                    updateTree();
                 });
             }
         })

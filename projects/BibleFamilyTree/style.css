@@ -9,6 +9,10 @@
     margin-bottom: 1em;
 }
 
+#drag-toggle {
+    margin-left: 0.5em;
+}
+
 .node circle {
     fill: #88aaff;
 }
@@ -28,6 +32,5 @@
 }
 
 .extra-link {
-    stroke: #888;
-    stroke-dasharray: 2 2;
+    stroke: #ccc;
 }

@@ -21,6 +21,8 @@ python3 scripts/edit_data.py delete abel-001
 The script automatically generates unique IDs and validates verse reference format.
 
 The interface supports mouse wheel zooming and a search box to highlight specific people by name, alias or ID.
+Click a person to collapse or expand their branch.
+Use the **Toggle Dragging** button to reposition nodes manually when needed.
 
 ## Requirements
 - Any modern web browser
