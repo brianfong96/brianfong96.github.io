@@ -6,13 +6,21 @@ function getData() {
 }
 
 function buildHierarchy(data) {
-    const map = new Map(data.map(p => [p.id, { ...p }]));
+    const map = new Map(data.map(p => [p.id, { ...p, children: [] }]));
+    // assign each child to only one parent to keep a tree structure
+    data.forEach(p => {
+        p.children.forEach(cid => {
+            const child = map.get(cid);
+            if (child && !child._parent) {
+                child._parent = p.id;
+                map.get(p.id).children.push(child);
+            }
+        });
+    });
+
     const roots = [];
     map.forEach(node => {
-        node.children = node.children.map(id => map.get(id)).filter(Boolean);
-    });
-    map.forEach(node => {
-        if (node.parents.length === 0) roots.push(node);
+        if (!node._parent) roots.push(node);
     });
     return { children: roots };
 }
