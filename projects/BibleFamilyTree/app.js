@@ -50,6 +50,19 @@ function initTree(rootData) {
         .attr('height', height)
         .call(zoom);
 
+    const defs = svg.append('defs');
+    defs.append('marker')
+        .attr('id', 'arrow')
+        .attr('viewBox', '0 0 10 10')
+        .attr('refX', 10)
+        .attr('refY', 5)
+        .attr('markerWidth', 6)
+        .attr('markerHeight', 6)
+        .attr('orient', 'auto')
+      .append('path')
+        .attr('d', 'M0,0 L10,5 L0,10 Z')
+        .attr('fill', '#ccc');
+
     g = svg.append('g')
         .attr('transform', 'translate(80,0)');
 
@@ -88,7 +101,9 @@ function updateTree() {
 
     linkSel.enter().append('path')
         .attr('class', d => extraLinks.includes(d) ? 'link extra-link' : 'link')
+        .attr('marker-end', 'url(#arrow)')
         .merge(linkSel)
+        .attr('marker-end', 'url(#arrow)')
         .attr('d', d3.linkHorizontal()
             .x(d => d.y)
             .y(d => d.x));
@@ -112,15 +127,14 @@ function updateTree() {
         });
 
     nodeEnter.append('circle')
-        .attr('r', 8);
+        .attr('r', 12);
 
     nodeEnter.append('title')
         .text(d => d.data.references ? d.data.references.join(', ') : '');
 
     nodeEnter.append('text')
-        .attr('dy', 3)
-        .attr('x', d => d.children ? -10 : 10)
-        .style('text-anchor', d => d.children ? 'end' : 'start')
+        .attr('dy', 4)
+        .attr('text-anchor', 'middle')
         .text(d => d.data.name);
 
     nodeSelection = nodeEnter.merge(nodeSelection);
@@ -135,7 +149,7 @@ function updateTree() {
         nodeSelection.on('.drag', null);
     }
 
-    linkSel.raise();
+    linkSel.lower();
 }
 
 function highlightNodes(query) {
