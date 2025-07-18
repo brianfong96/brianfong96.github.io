@@ -54,10 +54,10 @@ function initTree(rootData) {
         .attr('transform', 'translate(80,0)');
 
     dragBehavior = d3.drag()
-        .on('drag', (event, d) => {
+        .on('drag', function(event, d) {
             d.x += event.dy;
             d.y += event.dx;
-            d3.select(event.subject).attr('transform', `translate(${d.y},${d.x})`);
+            d3.select(this).attr('transform', `translate(${d.y},${d.x})`);
             updateLinks();
         });
 
