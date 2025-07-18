@@ -7,13 +7,17 @@ function getData() {
 
 function buildHierarchy(data) {
     const map = new Map(data.map(p => [p.id, { ...p, children: [] }]));
-    // assign each child to only one parent to keep a tree structure
+    const extraLinks = [];
+    // attach each child to the first parent for layout but keep other links
     data.forEach(p => {
         p.children.forEach(cid => {
             const child = map.get(cid);
-            if (child && !child._parent) {
+            if (!child) return;
+            if (!child._parent) {
                 child._parent = p.id;
                 map.get(p.id).children.push(child);
+            } else {
+                extraLinks.push({ source: p.id, target: cid });
             }
         });
     });
@@ -22,7 +26,7 @@ function buildHierarchy(data) {
     map.forEach(node => {
         if (!node._parent) roots.push(node);
     });
-    return { children: roots };
+    return { children: roots, extraLinks };
 }
 
 let nodeSelection;
@@ -36,6 +40,12 @@ function renderTree(rootData) {
     const root = d3.hierarchy(rootData);
     const treeLayout = d3.tree().size([height, width - 160]);
     treeLayout(root);
+    const nodeMap = new Map(root.descendants().map(n => [n.data.id, n]));
+    const mainLinks = root.links().filter(d => d.source.depth > 0);
+    const extraLinks = (rootData.extraLinks || []).map(l => ({
+        source: nodeMap.get(l.source),
+        target: nodeMap.get(l.target)
+    }));
 
     zoom = d3.zoom().on('zoom', (event) => {
         g.attr('transform', event.transform);
@@ -49,10 +59,11 @@ function renderTree(rootData) {
     g = svg.append('g')
         .attr('transform', 'translate(80,0)');
 
+    const allLinks = mainLinks.concat(extraLinks);
     g.selectAll('.link')
-        .data(root.links().filter(d => d.source.depth > 0))
+        .data(allLinks)
         .enter().append('path')
-        .attr('class', 'link')
+        .attr('class', d => extraLinks.includes(d) ? 'link extra-link' : 'link')
         .attr('d', d3.linkHorizontal()
             .x(d => d.y)
             .y(d => d.x));

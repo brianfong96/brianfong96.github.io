@@ -26,3 +26,8 @@
 .highlight circle {
     fill: #ff6666;
 }
+
+.extra-link {
+    stroke: #888;
+    stroke-dasharray: 2 2;
+}
