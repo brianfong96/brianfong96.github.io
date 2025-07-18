@@ -112,7 +112,7 @@ function updateTree() {
         });
 
     nodeEnter.append('circle')
-        .attr('r', 5);
+        .attr('r', 8);
 
     nodeEnter.append('title')
         .text(d => d.data.references ? d.data.references.join(', ') : '');
