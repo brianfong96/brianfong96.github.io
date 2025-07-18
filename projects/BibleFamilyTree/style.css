@@ -19,6 +19,11 @@
 
 .node text {
     fill: var(--text-color);
+    font-size: 16px;
+    stroke: var(--bg-color);
+    stroke-width: 2px;
+    paint-order: stroke fill;
+    dominant-baseline: middle;
 }
 
 .link {

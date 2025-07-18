@@ -34,6 +34,18 @@ let zoom, svg, g, container, width, height;
 let displayData;
 let dragEnabled = false;
 let dragBehavior;
+const NODE_RADIUS = 20;
+
+function offsetTarget(link) {
+    const dx = link.target.y - link.source.y;
+    const dy = link.target.x - link.source.x;
+    const dist = Math.hypot(dx, dy);
+    if (dist === 0) return link.target;
+    return {
+        x: link.target.x - dy / dist * NODE_RADIUS,
+        y: link.target.y - dx / dist * NODE_RADIUS
+    };
+}
 
 function initTree(rootData) {
     displayData = rootData;
@@ -50,6 +62,19 @@ function initTree(rootData) {
         .attr('height', height)
         .call(zoom);
 
+    const defs = svg.append('defs');
+    defs.append('marker')
+        .attr('id', 'arrow')
+        .attr('viewBox', '0 0 10 10')
+        .attr('refX', 10)
+        .attr('refY', 5)
+        .attr('markerWidth', 6)
+        .attr('markerHeight', 6)
+        .attr('orient', 'auto')
+      .append('path')
+        .attr('d', 'M0,0 L10,5 L0,10 Z')
+        .attr('fill', '#ccc');
+
     g = svg.append('g')
         .attr('transform', 'translate(80,0)');
 
@@ -65,10 +90,15 @@ function initTree(rootData) {
 }
 
 function updateLinks() {
+    const linkGenerator = d3.linkHorizontal()
+        .x(d => d.y)
+        .y(d => d.x);
+
     g.selectAll('.link')
-        .attr('d', d3.linkHorizontal()
-            .x(d => d.y)
-            .y(d => d.x));
+        .attr('d', d => linkGenerator({
+            source: d.source,
+            target: offsetTarget(d)
+        }));
 }
 
 function updateTree() {
@@ -86,12 +116,19 @@ function updateTree() {
     const linkSel = g.selectAll('.link')
         .data(allLinks, d => d.source.data.id + '-' + d.target.data.id);
 
+    const linkGenerator = d3.linkHorizontal()
+        .x(d => d.y)
+        .y(d => d.x);
+
     linkSel.enter().append('path')
         .attr('class', d => extraLinks.includes(d) ? 'link extra-link' : 'link')
+        .attr('marker-end', 'url(#arrow)')
         .merge(linkSel)
-        .attr('d', d3.linkHorizontal()
-            .x(d => d.y)
-            .y(d => d.x));
+        .attr('marker-end', 'url(#arrow)')
+        .attr('d', d => linkGenerator({
+            source: d.source,
+            target: offsetTarget(d)
+        }));
 
     linkSel.exit().remove();
 
@@ -112,15 +149,14 @@ function updateTree() {
         });
 
     nodeEnter.append('circle')
-        .attr('r', 5);
+        .attr('r', 20);
 
     nodeEnter.append('title')
         .text(d => d.data.references ? d.data.references.join(', ') : '');
 
     nodeEnter.append('text')
-        .attr('dy', 3)
-        .attr('x', d => d.children ? -10 : 10)
-        .style('text-anchor', d => d.children ? 'end' : 'start')
+        .attr('dy', 4)
+        .attr('text-anchor', 'middle')
         .text(d => d.data.name);
 
     nodeSelection = nodeEnter.merge(nodeSelection);
@@ -135,7 +171,7 @@ function updateTree() {
         nodeSelection.on('.drag', null);
     }
 
-    linkSel.raise();
+    linkSel.lower();
 }
 
 function highlightNodes(query) {
