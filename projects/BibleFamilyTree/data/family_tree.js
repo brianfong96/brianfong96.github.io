@@ -702,7 +702,8 @@ window.familyTreeData = [
     "name": "David",
     "aliases": [],
     "children": [
-      "solomon-001"
+      "solomon-001",
+      "nathan-001"
     ],
     "parents": [
       "jesse-001"
@@ -917,7 +918,8 @@ window.familyTreeData = [
       "zerubbabel-001"
     ],
     "parents": [
-      "jeconiah-001"
+      "jeconiah-001",
+      "neri-001"
     ],
     "references": [
       "Ezra 3:2"
@@ -928,7 +930,8 @@ window.familyTreeData = [
     "name": "Zerubbabel",
     "aliases": [],
     "children": [
-      "abiud-001"
+      "abiud-001",
+      "rhesa-001"
     ],
     "parents": [
       "shealtiel-001"
@@ -1080,15 +1083,551 @@ window.familyTreeData = [
     ]
   },
   {
+    "id": "heli-001",
+    "name": "Heli",
+    "aliases": [],
+    "children": [
+      "mary-001"
+    ],
+    "parents": [
+      "matthat-001"
+    ],
+    "references": [
+      "Luke 3:23"
+    ]
+  },
+  {
+    "id": "matthat-001",
+    "name": "Matthat",
+    "aliases": [],
+    "children": [
+      "heli-001"
+    ],
+    "parents": [
+      "levi-002"
+    ],
+    "references": [
+      "Luke 3:24"
+    ]
+  },
+  {
+    "id": "levi-002",
+    "name": "Levi",
+    "aliases": [],
+    "children": [
+      "matthat-001"
+    ],
+    "parents": [
+      "melchi-001"
+    ],
+    "references": [
+      "Luke 3:24"
+    ]
+  },
+  {
+    "id": "melchi-001",
+    "name": "Melchi",
+    "aliases": [],
+    "children": [
+      "levi-002"
+    ],
+    "parents": [
+      "jannai-001"
+    ],
+    "references": [
+      "Luke 3:24"
+    ]
+  },
+  {
+    "id": "jannai-001",
+    "name": "Jannai",
+    "aliases": [],
+    "children": [
+      "melchi-001"
+    ],
+    "parents": [
+      "joseph-003"
+    ],
+    "references": [
+      "Luke 3:24"
+    ]
+  },
+  {
+    "id": "joseph-003",
+    "name": "Joseph",
+    "aliases": [],
+    "children": [
+      "jannai-001"
+    ],
+    "parents": [
+      "mattathias-001"
+    ],
+    "references": [
+      "Luke 3:24"
+    ]
+  },
+  {
+    "id": "mattathias-001",
+    "name": "Mattathias",
+    "aliases": [],
+    "children": [
+      "joseph-003"
+    ],
+    "parents": [
+      "amos-001"
+    ],
+    "references": [
+      "Luke 3:25"
+    ]
+  },
+  {
+    "id": "amos-001",
+    "name": "Amos",
+    "aliases": [],
+    "children": [
+      "mattathias-001"
+    ],
+    "parents": [
+      "nahum-001"
+    ],
+    "references": [
+      "Luke 3:25"
+    ]
+  },
+  {
+    "id": "nahum-001",
+    "name": "Nahum",
+    "aliases": [],
+    "children": [
+      "amos-001"
+    ],
+    "parents": [
+      "esli-001"
+    ],
+    "references": [
+      "Luke 3:25"
+    ]
+  },
+  {
+    "id": "esli-001",
+    "name": "Esli",
+    "aliases": [],
+    "children": [
+      "nahum-001"
+    ],
+    "parents": [
+      "naggai-001"
+    ],
+    "references": [
+      "Luke 3:25"
+    ]
+  },
+  {
+    "id": "naggai-001",
+    "name": "Naggai",
+    "aliases": [],
+    "children": [
+      "esli-001"
+    ],
+    "parents": [
+      "maath-001"
+    ],
+    "references": [
+      "Luke 3:25"
+    ]
+  },
+  {
+    "id": "maath-001",
+    "name": "Maath",
+    "aliases": [],
+    "children": [
+      "naggai-001"
+    ],
+    "parents": [
+      "mattathias-002"
+    ],
+    "references": [
+      "Luke 3:26"
+    ]
+  },
+  {
+    "id": "mattathias-002",
+    "name": "Mattathias",
+    "aliases": [],
+    "children": [
+      "maath-001"
+    ],
+    "parents": [
+      "semein-001"
+    ],
+    "references": [
+      "Luke 3:26"
+    ]
+  },
+  {
+    "id": "semein-001",
+    "name": "Semein",
+    "aliases": [],
+    "children": [
+      "mattathias-002"
+    ],
+    "parents": [
+      "josech-001"
+    ],
+    "references": [
+      "Luke 3:26"
+    ]
+  },
+  {
+    "id": "josech-001",
+    "name": "Josech",
+    "aliases": [],
+    "children": [
+      "semein-001"
+    ],
+    "parents": [
+      "joda-001"
+    ],
+    "references": [
+      "Luke 3:26"
+    ]
+  },
+  {
+    "id": "joda-001",
+    "name": "Joda",
+    "aliases": [],
+    "children": [
+      "josech-001"
+    ],
+    "parents": [
+      "joanan-001"
+    ],
+    "references": [
+      "Luke 3:26"
+    ]
+  },
+  {
+    "id": "joanan-001",
+    "name": "Joanan",
+    "aliases": [],
+    "children": [
+      "joda-001"
+    ],
+    "parents": [
+      "rhesa-001"
+    ],
+    "references": [
+      "Luke 3:27"
+    ]
+  },
+  {
+    "id": "rhesa-001",
+    "name": "Rhesa",
+    "aliases": [],
+    "children": [
+      "joanan-001"
+    ],
+    "parents": [
+      "zerubbabel-001"
+    ],
+    "references": [
+      "Luke 3:27"
+    ]
+  },
+  {
+    "id": "neri-001",
+    "name": "Neri",
+    "aliases": [],
+    "children": [
+      "shealtiel-001"
+    ],
+    "parents": [
+      "melchi-002"
+    ],
+    "references": [
+      "Luke 3:27"
+    ]
+  },
+  {
+    "id": "melchi-002",
+    "name": "Melchi",
+    "aliases": [],
+    "children": [
+      "neri-001"
+    ],
+    "parents": [
+      "addi-001"
+    ],
+    "references": [
+      "Luke 3:28"
+    ]
+  },
+  {
+    "id": "addi-001",
+    "name": "Addi",
+    "aliases": [],
+    "children": [
+      "melchi-002"
+    ],
+    "parents": [
+      "cosam-001"
+    ],
+    "references": [
+      "Luke 3:28"
+    ]
+  },
+  {
+    "id": "cosam-001",
+    "name": "Cosam",
+    "aliases": [],
+    "children": [
+      "addi-001"
+    ],
+    "parents": [
+      "elmadam-001"
+    ],
+    "references": [
+      "Luke 3:28"
+    ]
+  },
+  {
+    "id": "elmadam-001",
+    "name": "Elmadam",
+    "aliases": [],
+    "children": [
+      "cosam-001"
+    ],
+    "parents": [
+      "er-001"
+    ],
+    "references": [
+      "Luke 3:28"
+    ]
+  },
+  {
+    "id": "er-001",
+    "name": "Er",
+    "aliases": [],
+    "children": [
+      "elmadam-001"
+    ],
+    "parents": [
+      "joshua-001"
+    ],
+    "references": [
+      "Luke 3:28"
+    ]
+  },
+  {
+    "id": "joshua-001",
+    "name": "Joshua",
+    "aliases": [],
+    "children": [
+      "er-001"
+    ],
+    "parents": [
+      "eliezer-001"
+    ],
+    "references": [
+      "Luke 3:29"
+    ]
+  },
+  {
+    "id": "eliezer-001",
+    "name": "Eliezer",
+    "aliases": [],
+    "children": [
+      "joshua-001"
+    ],
+    "parents": [
+      "jorim-001"
+    ],
+    "references": [
+      "Luke 3:29"
+    ]
+  },
+  {
+    "id": "jorim-001",
+    "name": "Jorim",
+    "aliases": [],
+    "children": [
+      "eliezer-001"
+    ],
+    "parents": [
+      "matthat-002"
+    ],
+    "references": [
+      "Luke 3:29"
+    ]
+  },
+  {
+    "id": "matthat-002",
+    "name": "Matthat",
+    "aliases": [],
+    "children": [
+      "jorim-001"
+    ],
+    "parents": [
+      "levi-003"
+    ],
+    "references": [
+      "Luke 3:29"
+    ]
+  },
+  {
+    "id": "levi-003",
+    "name": "Levi",
+    "aliases": [],
+    "children": [
+      "matthat-002"
+    ],
+    "parents": [
+      "simeon-002"
+    ],
+    "references": [
+      "Luke 3:29"
+    ]
+  },
+  {
+    "id": "simeon-002",
+    "name": "Simeon",
+    "aliases": [],
+    "children": [
+      "levi-003"
+    ],
+    "parents": [
+      "judah-002"
+    ],
+    "references": [
+      "Luke 3:30"
+    ]
+  },
+  {
+    "id": "judah-002",
+    "name": "Judah",
+    "aliases": [],
+    "children": [
+      "simeon-002"
+    ],
+    "parents": [
+      "joseph-004"
+    ],
+    "references": [
+      "Luke 3:30"
+    ]
+  },
+  {
+    "id": "joseph-004",
+    "name": "Joseph",
+    "aliases": [],
+    "children": [
+      "judah-002"
+    ],
+    "parents": [
+      "jonam-001"
+    ],
+    "references": [
+      "Luke 3:30"
+    ]
+  },
+  {
+    "id": "jonam-001",
+    "name": "Jonam",
+    "aliases": [],
+    "children": [
+      "joseph-004"
+    ],
+    "parents": [
+      "eliakim-002"
+    ],
+    "references": [
+      "Luke 3:30"
+    ]
+  },
+  {
+    "id": "eliakim-002",
+    "name": "Eliakim",
+    "aliases": [],
+    "children": [
+      "jonam-001"
+    ],
+    "parents": [
+      "melea-001"
+    ],
+    "references": [
+      "Luke 3:30"
+    ]
+  },
+  {
+    "id": "melea-001",
+    "name": "Melea",
+    "aliases": [],
+    "children": [
+      "eliakim-002"
+    ],
+    "parents": [
+      "menna-001"
+    ],
+    "references": [
+      "Luke 3:31"
+    ]
+  },
+  {
+    "id": "menna-001",
+    "name": "Menna",
+    "aliases": [],
+    "children": [
+      "melea-001"
+    ],
+    "parents": [
+      "mattatha-001"
+    ],
+    "references": [
+      "Luke 3:31"
+    ]
+  },
+  {
+    "id": "mattatha-001",
+    "name": "Mattatha",
+    "aliases": [],
+    "children": [
+      "menna-001"
+    ],
+    "parents": [
+      "nathan-001"
+    ],
+    "references": [
+      "Luke 3:31"
+    ]
+  },
+  {
+    "id": "nathan-001",
+    "name": "Nathan",
+    "aliases": [],
+    "children": [
+      "mattatha-001"
+    ],
+    "parents": [
+      "david-001"
+    ],
+    "references": [
+      "2 Samuel 5:14",
+      "Luke 3:31"
+    ]
+  },
+  {
     "id": "mary-001",
     "name": "Mary",
     "aliases": [],
     "children": [
       "jesus-001"
     ],
-    "parents": [],
+    "parents": [
+      "heli-001"
+    ],
     "references": [
-      "Matthew 1:16"
+      "Matthew 1:16",
+      "Luke 3:23"
     ]
   },
   {
