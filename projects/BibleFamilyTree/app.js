@@ -35,6 +35,8 @@ let displayData;
 let dragEnabled = false;
 let dragBehavior;
 const NODE_RADIUS = 20;
+const NODE_V_SPACING = 80;
+const NODE_H_SPACING = 160;
 
 function offsetTarget(link) {
     const dx = link.target.y - link.source.y;
@@ -103,7 +105,9 @@ function updateLinks() {
 
 function updateTree() {
     const root = d3.hierarchy(displayData);
-    const treeLayout = d3.tree().size([height, width - 160]);
+    const treeLayout = d3.tree()
+        .nodeSize([NODE_V_SPACING, NODE_H_SPACING])
+        .separation(() => 1);
     treeLayout(root);
     const nodeMap = new Map(root.descendants().map(n => [n.data.id, n]));
     const mainLinks = root.links().filter(d => d.source.depth > 0);
