@@ -5,16 +5,50 @@ function getData() {
     return Promise.reject(new Error('No data available'));
 }
 
+function computeDepths(data) {
+    const map = new Map(data.map(p => [p.id, p]));
+    const depth = new Map();
+
+    function dfs(id, stack = new Set()) {
+        if (depth.has(id)) return depth.get(id);
+        if (stack.has(id)) return 0; // guard against cycles
+        stack.add(id);
+        const node = map.get(id);
+        let d = 0;
+        if (node && node.parents && node.parents.length > 0) {
+            d = Math.max(...node.parents.map(pid => dfs(pid, stack) + 1));
+        }
+        stack.delete(id);
+        depth.set(id, d);
+        return d;
+    }
+
+    map.forEach((_, id) => dfs(id));
+    return depth;
+}
+
 function buildHierarchy(data) {
     const map = new Map(data.map(p => [p.id, { ...p, children: [] }]));
+    const depthMap = computeDepths(data);
     const extraLinks = [];
-    // attach each child to the first parent for layout but keep other links
+
     data.forEach(p => {
+        const parentDepth = depthMap.get(p.id) || 0;
         p.children.forEach(cid => {
             const child = map.get(cid);
             if (!child) return;
             if (!child._parent) {
                 child._parent = p.id;
+                child._parentDepth = parentDepth;
+                map.get(p.id).children.push(child);
+            } else if (parentDepth > (child._parentDepth || -1)) {
+                extraLinks.push({ source: child._parent, target: cid });
+                const prev = map.get(child._parent);
+                if (prev) {
+                    prev.children = prev.children.filter(c => c.id !== child.id);
+                }
+                child._parent = p.id;
+                child._parentDepth = parentDepth;
                 map.get(p.id).children.push(child);
             } else {
                 extraLinks.push({ source: p.id, target: cid });
