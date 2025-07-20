@@ -35,7 +35,9 @@ window.familyTreeData = [
     "id": "cain-001",
     "name": "Cain",
     "aliases": [],
-    "children": [],
+    "children": [
+      "enoch-002"
+    ],
     "parents": [
       "adam-001",
       "eve-001"
@@ -361,7 +363,20 @@ window.familyTreeData = [
     "id": "ishmael-001",
     "name": "Ishmael",
     "aliases": [],
-    "children": [],
+    "children": [
+      "nebaioth-001",
+      "kedar-001",
+      "adbeel-001",
+      "mibsam-001",
+      "mishma-001",
+      "dumah-001",
+      "massa-001",
+      "hadar-001",
+      "tema-001",
+      "jetur-001",
+      "naphish-001",
+      "kedemah-001"
+    ],
     "parents": [
       "abraham-001"
     ],
@@ -453,7 +468,9 @@ window.familyTreeData = [
     "id": "levi-001",
     "name": "Levi",
     "aliases": [],
-    "children": [],
+    "children": [
+      "kohath-001"
+    ],
     "parents": [
       "jacob-001"
     ],
@@ -1644,5 +1661,429 @@ window.familyTreeData = [
     "references": [
       "Matthew 1:16"
     ]
+  },
+  {
+    "id": "zechariah-001",
+    "name": "Zechariah",
+    "aliases": [],
+    "children": [
+      "john-the-baptist-001"
+    ],
+    "parents": [],
+    "references": [
+      "Luke 1:5"
+    ],
+    "notes": "Father of John the Baptist"
+  },
+  {
+    "id": "elizabeth-001",
+    "name": "Elizabeth",
+    "aliases": [],
+    "children": [
+      "john-the-baptist-001"
+    ],
+    "parents": [],
+    "references": [
+      "Luke 1:5"
+    ],
+    "notes": "Mother of John the Baptist"
+  },
+  {
+    "id": "john-the-baptist-001",
+    "name": "John the Baptist",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "zechariah-001",
+      "elizabeth-001"
+    ],
+    "references": [
+      "Luke 1:13"
+    ],
+    "notes": "Forerunner of Jesus"
+  },
+  {
+    "id": "enoch-002",
+    "name": "Enoch",
+    "aliases": [],
+    "children": [
+      "irad-001"
+    ],
+    "parents": [
+      "cain-001"
+    ],
+    "references": [
+      "Genesis 4:17"
+    ],
+    "notes": "Son of Cain"
+  },
+  {
+    "id": "irad-001",
+    "name": "Irad",
+    "aliases": [],
+    "children": [
+      "mehujael-001"
+    ],
+    "parents": [
+      "enoch-002"
+    ],
+    "references": [
+      "Genesis 4:18"
+    ],
+    "notes": "Descendant of Cain"
+  },
+  {
+    "id": "mehujael-001",
+    "name": "Mehujael",
+    "aliases": [],
+    "children": [
+      "methushael-001"
+    ],
+    "parents": [
+      "irad-001"
+    ],
+    "references": [
+      "Genesis 4:18"
+    ],
+    "notes": "Descendant of Cain"
+  },
+  {
+    "id": "methushael-001",
+    "name": "Methushael",
+    "aliases": [],
+    "children": [
+      "lamech-002"
+    ],
+    "parents": [
+      "mehujael-001"
+    ],
+    "references": [
+      "Genesis 4:18"
+    ],
+    "notes": "Descendant of Cain"
+  },
+  {
+    "id": "lamech-002",
+    "name": "Lamech",
+    "aliases": [],
+    "children": [
+      "jabal-001",
+      "jubal-001",
+      "tubal-cain-001",
+      "naamah-001"
+    ],
+    "parents": [
+      "methushael-001"
+    ],
+    "references": [
+      "Genesis 4:18"
+    ],
+    "notes": "Descendant of Cain"
+  },
+  {
+    "id": "jabal-001",
+    "name": "Jabal",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "lamech-002"
+    ],
+    "references": [
+      "Genesis 4:20"
+    ],
+    "notes": "Son of Lamech"
+  },
+  {
+    "id": "jubal-001",
+    "name": "Jubal",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "lamech-002"
+    ],
+    "references": [
+      "Genesis 4:21"
+    ],
+    "notes": "Son of Lamech"
+  },
+  {
+    "id": "tubal-cain-001",
+    "name": "Tubal-cain",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "lamech-002"
+    ],
+    "references": [
+      "Genesis 4:22"
+    ],
+    "notes": "Son of Lamech"
+  },
+  {
+    "id": "naamah-001",
+    "name": "Naamah",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "lamech-002"
+    ],
+    "references": [
+      "Genesis 4:22"
+    ],
+    "notes": "Daughter of Lamech"
+  },
+  {
+    "id": "nebaioth-001",
+    "name": "Nebaioth",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "ishmael-001"
+    ],
+    "references": [
+      "Genesis 25:13"
+    ],
+    "notes": "Son of Ishmael"
+  },
+  {
+    "id": "kedar-001",
+    "name": "Kedar",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "ishmael-001"
+    ],
+    "references": [
+      "Genesis 25:13"
+    ],
+    "notes": "Son of Ishmael"
+  },
+  {
+    "id": "adbeel-001",
+    "name": "Adbeel",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "ishmael-001"
+    ],
+    "references": [
+      "Genesis 25:13"
+    ],
+    "notes": "Son of Ishmael"
+  },
+  {
+    "id": "mibsam-001",
+    "name": "Mibsam",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "ishmael-001"
+    ],
+    "references": [
+      "Genesis 25:13"
+    ],
+    "notes": "Son of Ishmael"
+  },
+  {
+    "id": "mishma-001",
+    "name": "Mishma",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "ishmael-001"
+    ],
+    "references": [
+      "Genesis 25:14"
+    ],
+    "notes": "Son of Ishmael"
+  },
+  {
+    "id": "dumah-001",
+    "name": "Dumah",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "ishmael-001"
+    ],
+    "references": [
+      "Genesis 25:14"
+    ],
+    "notes": "Son of Ishmael"
+  },
+  {
+    "id": "massa-001",
+    "name": "Massa",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "ishmael-001"
+    ],
+    "references": [
+      "Genesis 25:14"
+    ],
+    "notes": "Son of Ishmael"
+  },
+  {
+    "id": "hadar-001",
+    "name": "Hadar",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "ishmael-001"
+    ],
+    "references": [
+      "Genesis 25:15"
+    ],
+    "notes": "Son of Ishmael"
+  },
+  {
+    "id": "tema-001",
+    "name": "Tema",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "ishmael-001"
+    ],
+    "references": [
+      "Genesis 25:15"
+    ],
+    "notes": "Son of Ishmael"
+  },
+  {
+    "id": "jetur-001",
+    "name": "Jetur",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "ishmael-001"
+    ],
+    "references": [
+      "Genesis 25:15"
+    ],
+    "notes": "Son of Ishmael"
+  },
+  {
+    "id": "naphish-001",
+    "name": "Naphish",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "ishmael-001"
+    ],
+    "references": [
+      "Genesis 25:15"
+    ],
+    "notes": "Son of Ishmael"
+  },
+  {
+    "id": "kedemah-001",
+    "name": "Kedemah",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "ishmael-001"
+    ],
+    "references": [
+      "Genesis 25:15"
+    ],
+    "notes": "Son of Ishmael"
+  },
+  {
+    "id": "kohath-001",
+    "name": "Kohath",
+    "aliases": [],
+    "children": [
+      "amram-001"
+    ],
+    "parents": [
+      "levi-001"
+    ],
+    "references": [
+      "Exodus 6:16"
+    ],
+    "notes": "Father of Amram"
+  },
+  {
+    "id": "amram-001",
+    "name": "Amram",
+    "aliases": [],
+    "children": [
+      "moses-001"
+    ],
+    "parents": [
+      "kohath-001"
+    ],
+    "references": [
+      "Exodus 6:18"
+    ],
+    "notes": "Father of Moses"
+  },
+  {
+    "id": "moses-001",
+    "name": "Moses",
+    "aliases": [],
+    "children": [],
+    "parents": [
+      "amram-001"
+    ],
+    "references": [
+      "Exodus 2:10"
+    ],
+    "notes": "Leader of Israel"
+  },
+  {
+    "id": "othniel-001",
+    "name": "Othniel",
+    "aliases": [],
+    "children": [],
+    "parents": [],
+    "references": [
+      "Judges 3:9"
+    ],
+    "notes": "Judge of Israel"
+  },
+  {
+    "id": "ehud-001",
+    "name": "Ehud",
+    "aliases": [],
+    "children": [],
+    "parents": [],
+    "references": [
+      "Judges 3:15"
+    ],
+    "notes": "Judge of Israel"
+  },
+  {
+    "id": "deborah-001",
+    "name": "Deborah",
+    "aliases": [],
+    "children": [],
+    "parents": [],
+    "references": [
+      "Judges 4:4"
+    ],
+    "notes": "Judge of Israel"
+  },
+  {
+    "id": "gideon-001",
+    "name": "Gideon",
+    "aliases": [],
+    "children": [],
+    "parents": [],
+    "references": [
+      "Judges 6:11"
+    ],
+    "notes": "Judge of Israel"
+  },
+  {
+    "id": "samson-001",
+    "name": "Samson",
+    "aliases": [],
+    "children": [],
+    "parents": [],
+    "references": [
+      "Judges 13:24"
+    ],
+    "notes": "Judge of Israel"
   }
 ];
