@@ -33,6 +33,21 @@ h1, h2 {
   cursor: pointer;
   position: relative;
 }
+.dropdown-toggle {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: inherit;
+  transform: rotate(0deg);
+  transition: transform 0.3s ease;
+}
+.step[aria-expanded="true"] .dropdown-toggle {
+  transform: rotate(180deg);
+}
 
 /* Ensure step headings are readable on the light step background */
 .step h2 {
@@ -48,9 +63,6 @@ h1, h2 {
   opacity: 0.6;
 }
 
-.step.done h2 {
-  text-decoration: line-through;
-}
 
 .details {
   max-height: 0;
@@ -196,10 +208,18 @@ input[type="number"]:focus {
   padding: 0.6rem 1rem;
   margin-bottom: 0.6rem;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   cursor: pointer;
   border: 1px solid #dddddd;
+}
+.task label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+.task input[type="checkbox"] {
+  margin-right: 0.5rem;
 }
 
 .task .start-time {
@@ -208,14 +228,13 @@ input[type="number"]:focus {
 }
 
 .task .timer {
-  margin-left: 1rem;
+  margin-left: auto;
   font-weight: bold;
   color: #444444;
 }
 
-.task.done {
+.task.done label {
   opacity: 0.6;
-  text-decoration: line-through;
 }
 .task.running {
   background: #e6e6e6;

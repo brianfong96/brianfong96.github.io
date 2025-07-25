@@ -42,22 +42,27 @@ function toggleTask(taskEl, event) {
   if (event) {
     event.stopPropagation();
   }
+  const checkbox = taskEl.querySelector('.task-check');
+
   if (taskEl.classList.contains('running')) {
     clearInterval(taskEl._timer);
     taskEl.classList.remove('running');
     taskEl.classList.toggle('done');
+    if (checkbox) checkbox.checked = taskEl.classList.contains('done');
     taskEl.querySelector('.timer').textContent = '';
     return;
   }
 
   if (taskEl.classList.contains('done')) {
     taskEl.classList.remove('done');
+    if (checkbox) checkbox.checked = false;
     return;
   }
 
   const duration = parseInt(taskEl.dataset.duration, 10);
   if (!duration) {
     taskEl.classList.add('done');
+    if (checkbox) checkbox.checked = true;
     return;
   }
 
@@ -72,6 +77,7 @@ function toggleTask(taskEl, event) {
       clearInterval(taskEl._timer);
       taskEl.classList.remove('running');
       taskEl.classList.add('done');
+      if (checkbox) checkbox.checked = true;
       timerSpan.textContent = '';
     } else {
       timerSpan.textContent = formatTime(remaining);

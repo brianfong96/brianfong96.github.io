@@ -54,46 +54,51 @@
 
     <div class="progress-bar"><span id="progress-indicator"></span></div>
 
-    <section class="step active" onclick="toggleStep(this)" aria-expanded="true">
+    <section class="step" onclick="toggleStep(this)" aria-expanded="false">
+      <button class="dropdown-toggle" aria-label="Toggle step" onclick="event.stopPropagation(); toggleStep(this.parentElement);">▾</button>
       <div class="badge">Step 1</div>
       <h2><span class="emoji-animate">💧</span> Soak the Chickpeas <img src="chickpea1.png" alt="Chickpea icon" width="30"></h2>
       <div class="details">
         <p><strong>Ingredients:</strong></p>
         <ul id="soak-ingredients"></ul>
         <p><strong>Instructions:</strong></p>
-        <ul>
-          <li>Rinse chickpeas thoroughly <span class="emoji-animate">💧</span></li>
-          <li>Use a <strong>large pot</strong> to soak — chickpeas triple in size!</li>
-          <li>Cover with plenty of water and soak 8–12 hours or overnight <span class="emoji-animate">🌙</span></li>
-          <li>Drain and rinse before cooking</li>
+        <ul class="tasks">
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Rinse chickpeas thoroughly <span class="emoji-animate">💧</span></label></li>
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Use a <strong>large pot</strong> to soak — chickpeas triple in size!</label></li>
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Cover with plenty of water and soak 8–12 hours or overnight <span class="emoji-animate">🌙</span></label></li>
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Drain and rinse before cooking</label></li>
         </ul>
       </div>
     </section>
 
     <section class="step" onclick="toggleStep(this)" aria-expanded="false">
+      <button class="dropdown-toggle" aria-label="Toggle step" onclick="event.stopPropagation(); toggleStep(this.parentElement);">▾</button>
       <div class="badge">Step 2</div>
       <h2><span class="emoji-animate">🔥</span> Cook in Instant Pot <img src="chickpea2.png" alt="Chickpea cooking icon" width="30"></h2>
       <div class="details">
         <p><strong>Ingredients:</strong></p>
         <ul id="cook-ingredients"></ul>
         <p><strong>Instructions:</strong></p>
-        <ul>
-          <li><strong>Use all the soaked chickpeas from Step 1</strong>. Do not discard or reduce — the recipe scales with what you soaked.</li>
-          <li>Add soaked chickpeas, water (see amount above), and oil to the Instant Pot</li>
-          <li>Optional for better flavor: add sliced onion, bay leaf, garlic, or 1 tsp cumin</li>
-          <li>Set to High Pressure: 12 min (firm) or 15 min (soft)</li>
-          <li>Natural pressure release for 10–15 minutes <span class="emoji-animate">💨</span></li>
-          <li>Add salt <strong>after</strong> cooking to avoid tough skins</li>
+        <ul class="tasks">
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> <strong>Use all the soaked chickpeas from Step 1</strong>. Do not discard or reduce — the recipe scales with what you soaked.</label></li>
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Add soaked chickpeas, water (see amount above), and oil to the Instant Pot</label></li>
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Optional for better flavor: add sliced onion, bay leaf, garlic, or 1 tsp cumin</label></li>
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Set to High Pressure: 12 min (firm) or 15 min (soft)</label></li>
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Natural pressure release for 10–15 minutes <span class="emoji-animate">💨</span></label></li>
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Add salt <strong>after</strong> cooking to avoid tough skins</label></li>
         </ul>
       </div>
     </section>
 
     <section class="step" onclick="toggleStep(this)" aria-expanded="false">
+      <button class="dropdown-toggle" aria-label="Toggle step" onclick="event.stopPropagation(); toggleStep(this.parentElement);">▾</button>
       <div class="badge">Yield</div>
       <h2><span class="emoji-animate">💰</span> How Much Does it Make? <img src="chickpea3.png" alt="Yield icon" width="30"></h2>
       <div class="details">
-        <ul id="yield-info"></ul>
-        <li>Store in fridge for 4 days or freeze in portions <span class="emoji-animate">❄️</span></li>
+        <ul id="yield-info" class="tasks"></ul>
+        <ul class="tasks">
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Store in fridge for 4 days or freeze in portions <span class="emoji-animate">❄️</span></label></li>
+        </ul>
       </div>
     </section>
       </main>

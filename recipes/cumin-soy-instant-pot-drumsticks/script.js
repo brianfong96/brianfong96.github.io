@@ -81,3 +81,13 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleStep(firstStep);
   }
 });
+
+function toggleTask(taskEl) {
+  const checkbox = taskEl.querySelector('.task-check');
+  if (!checkbox) return;
+  if (checkbox.checked) {
+    taskEl.classList.add('done');
+  } else {
+    taskEl.classList.remove('done');
+  }
+}
