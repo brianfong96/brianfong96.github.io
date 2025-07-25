@@ -260,11 +260,29 @@ input[type="number"]:focus {
   -webkit-tap-highlight-color: transparent;
 }
 
-.step:active,
-.task:active,
-.dropdown-toggle:active,
+.step:active {
+  background: #f5f5f5;
+  color: inherit;
+  outline: none;
+  box-shadow: none;
+}
+
+.task:active {
+  background: #ffffff;
+  color: inherit;
+  outline: none;
+  box-shadow: none;
+}
+
+.dropdown-toggle:active {
+  background: none;
+  color: inherit;
+  outline: none;
+  box-shadow: none;
+}
+
 .presets button:active {
-  background: inherit;
+  background-color: #dddddd;
   color: inherit;
   outline: none;
   box-shadow: none;
