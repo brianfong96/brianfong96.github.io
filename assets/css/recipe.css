@@ -30,10 +30,30 @@ h1, h2 {
   margin-bottom: 1.5rem;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  cursor: pointer;
+  cursor: default;
   position: relative;
 }
+.dropdown-toggle {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: inherit;
+  transform: rotate(0deg);
+  transition: transform 0.3s ease;
+}
+.step[aria-expanded="true"] .dropdown-toggle {
+  transform: rotate(180deg);
+}
 
+.dropdown-toggle:focus, .dropdown-toggle:active {
+  outline: none;
+  background: none;
+  color: inherit;
+}
 /* Ensure step headings are readable on the light step background */
 .step h2 {
   color: #000;
@@ -43,6 +63,11 @@ h1, h2 {
   transform: scale(1.02);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
+
+.step.done {
+  opacity: 0.6;
+}
+
 
 .details {
   max-height: 0;
@@ -145,6 +170,14 @@ input[type="number"]:focus {
   transition: background 0.2s ease;
 }
 
+.presets button:focus,
+.presets button:active {
+  background-color: #dddddd;
+  color: #000;
+  outline: none;
+  box-shadow: none;
+}
+
 .presets button:hover {
   background-color: #cccccc;
 }
@@ -173,4 +206,84 @@ input[type="number"]:focus {
   width: 0%;
   background-color: #888888;
   transition: width 0.4s ease;
+}
+
+.tasks {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 1rem;
+}
+
+.task {
+  background: #ffffff;
+  color: #000;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border: 1px solid #dddddd;
+}
+.task label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+.task input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+.task .start-time {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.task .timer {
+  margin-left: auto;
+  font-weight: bold;
+  color: #444444;
+}
+
+.task.done label {
+  opacity: 0.6;
+}
+.task.running {
+  background: #e6e6e6;
+}
+
+.step,
+.task,
+.dropdown-toggle,
+.presets button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.step:active {
+  background: #f5f5f5;
+  color: inherit;
+  outline: none;
+  box-shadow: none;
+}
+
+.task:active {
+  background: #ffffff;
+  color: inherit;
+  outline: none;
+  box-shadow: none;
+}
+
+.dropdown-toggle:active {
+  background: none;
+  color: inherit;
+  outline: none;
+  box-shadow: none;
+}
+
+.presets button:active {
+  background-color: #dddddd;
+  color: inherit;
+  outline: none;
+  box-shadow: none;
 }

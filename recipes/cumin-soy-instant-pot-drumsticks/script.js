@@ -1,28 +1,9 @@
-function toggleStep(stepEl) {
-  const isExpanded = stepEl.classList.contains('active');
-  document.querySelectorAll('.step').forEach(section => {
-    section.classList.remove('active');
-    section.setAttribute('aria-expanded', 'false');
-  });
-  if (!isExpanded) {
-    stepEl.classList.add('active');
-    stepEl.setAttribute('aria-expanded', 'true');
-    stepEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    updateProgress(stepEl);
-  }
-}
 
 function setPreset(count) {
   document.getElementById('drumstickCount').value = count;
   updateFromDrumsticks();
 }
 
-function updateProgress(activeStep) {
-  const steps = Array.from(document.querySelectorAll('.step'));
-  const index = steps.indexOf(activeStep);
-  const percent = ((index + 1) / steps.length) * 100;
-  document.getElementById('progress-indicator').style.width = percent + '%';
-}
 
 function updateFromDrumsticks() {
   const input = document.getElementById('drumstickCount');
@@ -69,3 +50,4 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleStep(firstStep);
   }
 });
+

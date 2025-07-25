@@ -25,6 +25,12 @@ const siteData = {
             url: 'recipes/cumin-soy-instant-pot-drumsticks/index.html',
             description: 'Quick chicken drumsticks seasoned with cumin and soy sauce.',
             section: 'Recipes'
+        },
+        {
+            title: '25-Minute Steak, Pasta & Broccolini',
+            url: 'recipes/25-minute-complete-meal/index.html',
+            description: 'Parallel guide for air fryer steak, pasta and broccolini.',
+            section: 'Recipes'
         }
     ],
     music: [

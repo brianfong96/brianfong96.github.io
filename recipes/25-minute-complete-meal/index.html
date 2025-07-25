@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>25-Minute Steak, Pasta & Broccolini</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <link rel="stylesheet" href="../../assets/css/recipe.css">
+</head>
+<body>
+  <button id="sidebar-toggle" aria-label="Toggle navigation">&#9776;</button>
+  <nav class="sidebar" id="sidebar">
+      <a class="logo" href="../../index.html">Brian Fong</a>
+      <ul class="nav-links">
+          <li><a href="../../index.html#contents">Contents</a></li>
+          <li><a href="../../index.html">Home</a></li>
+          <li><a href="../../about.html">About</a></li>
+          <li><a href="../../projects.html">Projects</a></li>
+          <li><a href="../../blog.html">Blog</a></li>
+          <li><a href="../../recipes.html">Recipes</a></li>
+          <li><a href="../../music.html">Music</a></li>
+      </ul>
+  </nav>
+  <div class="content">
+      <header class="hero small">
+          <div class="hero-content">
+              <h1>25-Minute Steak, Pasta & Broccolini</h1>
+              <a href="../../recipes.html" class="back-button">Back to Recipes</a>
+          </div>
+      </header>
+      <main class="container" aria-label="25-Minute Meal Instructions">
+    <h1>🥩🍝🥦 Quick Steak, Pasta & Broccolini</h1>
+    <p class="description">Air fryer steak, Instant Pot garlic parmesan pasta and stovetop broccolini cooked in sync.</p>
+
+    <div class="progress-bar"><span id="progress-indicator"></span></div>
+
+    <section class="step" aria-expanded="false">
+      <button class="dropdown-toggle" aria-label="Toggle step" onclick="event.stopPropagation(); toggleStep(this.parentElement);">▾</button>
+      <div class="badge">Stage 1</div>
+      <h2><span class="emoji-animate">🔪</span> Prep</h2>
+      <div class="details">
+        <p><strong>Ingredients:</strong></p>
+        <ul>
+          <li>2 ribeye or NY strip steaks</li>
+          <li>8 oz penne or rigatoni</li>
+          <li>2&nbsp;tbsp butter, 5–6 garlic cloves</li>
+          <li>2½ cups broth, 1 cup cream, ¾ cup Parmesan</li>
+          <li>1 bunch broccolini</li>
+        </ul>
+        <p><strong>Steak Doneness Guide (400°F):</strong></p>
+        <table>
+          <tr><th>Doneness</th><th>Pull</th><th>Final</th><th>Time</th></tr>
+          <tr><td>Rare</td><td>120–125°F</td><td>125–130°F</td><td>8–9 min</td></tr>
+          <tr><td>Med Rare</td><td>125–130°F</td><td>130–135°F</td><td>9–10 min</td></tr>
+          <tr><td>Medium</td><td>135–140°F</td><td>140–145°F</td><td>10–11 min</td></tr>
+          <tr><td>Med Well</td><td>140–145°F</td><td>145–150°F</td><td>11–12 min</td></tr>
+          <tr><td>Well</td><td>150–155°F</td><td>155–160°F</td><td>12–13 min</td></tr>
+        </table>
+        <ul class="tasks">
+          <li class="task" data-duration="12"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> <span class="start-time">00:00</span> Take steaks out, pat dry and season</label><span class="timer"></span></li>
+          <li class="task" data-duration="2"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> <span class="start-time">00:05</span> Instant Pot sauté butter &amp; garlic</label><span class="timer"></span></li>
+          <li class="task" data-duration="2"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> <span class="start-time">00:07</span> Add broth, cream, pasta &amp; seal lid</label><span class="timer"></span></li>
+          <li class="task" data-duration="2"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> <span class="start-time">00:10</span> Preheat air fryer to 400°F</label><span class="timer"></span></li>
+          <li class="task" data-duration="1"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> <span class="start-time">00:11</span> Start boiling water in pan</label><span class="timer"></span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="step" aria-expanded="false">
+      <button class="dropdown-toggle" aria-label="Toggle step" onclick="event.stopPropagation(); toggleStep(this.parentElement);">▾</button>
+      <div class="badge">Stage 2</div>
+      <h2><span class="emoji-animate">🔥</span> Cook</h2>
+      <div class="details">
+        <ul class="tasks">
+          <li class="task" data-duration="5"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> <span class="start-time">00:09</span> Pressure cook pasta 5&nbsp;min</label><span class="timer"></span></li>
+          <li class="task" data-duration="2"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> <span class="start-time">00:10</span> Finish preheating air fryer</label><span class="timer"></span></li>
+          <li class="task" data-duration="1"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> <span class="start-time">00:11</span> Water simmering in pan</label><span class="timer"></span></li>
+          <li class="task" data-duration="11"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> <span class="start-time">00:12</span> Air fry steaks, flip halfway</label><span class="timer"></span></li>
+          <li class="task" data-duration="4"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> <span class="start-time">00:14</span> Steam broccolini until bright</label><span class="timer"></span></li>
+          <li class="task" data-duration="1"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> <span class="start-time">00:17</span> Quick release IP and stir in cheese</label><span class="timer"></span></li>
+          <li class="task" data-duration="1"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> <span class="start-time">00:18</span> Drain broccolini and season</label><span class="timer"></span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="step" aria-expanded="false">
+      <button class="dropdown-toggle" aria-label="Toggle step" onclick="event.stopPropagation(); toggleStep(this.parentElement);">▾</button>
+      <div class="badge">Stage 3</div>
+      <h2><span class="emoji-animate">🍽️</span> Rest &amp; Serve</h2>
+      <div class="details">
+        <ul class="tasks">
+          <li class="task" data-duration="4"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> <span class="start-time">00:21</span> Let pasta and steaks rest</label><span class="timer"></span></li>
+          <li class="task" data-duration="1"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> <span class="start-time">00:25</span> Plate everything and enjoy</label><span class="timer"></span></li>
+        </ul>
+      </div>
+    </section>
+      </main>
+      <footer class="footer">
+          <p>&copy; <span id="year"></span> Brian Fong. All Rights Reserved.</p>
+      </footer>
+  </div>
+  <script src="../../assets/js/recipe.js"></script>
+  <script src="../../assets/js/data.js"></script>
+  <script src="../../assets/js/main.js"></script>
+</body>
+</html>

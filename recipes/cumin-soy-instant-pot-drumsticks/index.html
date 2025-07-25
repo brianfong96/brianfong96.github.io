@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cumin-Soy Instant Pot Drumsticks</title>
   <link rel="stylesheet" href="../../assets/css/style.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../../assets/css/recipe.css">
 </head>
 <body>
   <button id="sidebar-toggle" aria-label="Toggle navigation">&#9776;</button>
@@ -48,53 +48,57 @@
 
     <div class="progress-bar"><span id="progress-indicator"></span></div>
 
-    <section class="step active" onclick="toggleStep(this)" aria-expanded="true">
+    <section class="step" aria-expanded="false">
+      <button class="dropdown-toggle" aria-label="Toggle step" onclick="event.stopPropagation(); toggleStep(this.parentElement);">▾</button>
       <div class="badge">Step 1</div>
       <h2><span class="emoji-animate">🥄</span> Mix Seasoning &amp; Drumsticks</h2>
       <div class="details">
         <p><strong>Ingredients:</strong></p>
         <ul id="season-ingredients"></ul>
         <p><strong>Instructions:</strong></p>
-        <ul>
-          <li>Add all ingredients to the Instant Pot.</li>
-          <li>Use tongs or clean hands to coat the drumsticks well.</li>
-          <li>Let sit a few minutes if time allows.</li>
+        <ul class="tasks">
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Add all ingredients to the Instant Pot.</label></li>
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Use tongs or clean hands to coat the drumsticks well.</label></li>
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Let sit a few minutes if time allows.</label></li>
         </ul>
       </div>
     </section>
 
-    <section class="step" onclick="toggleStep(this)" aria-expanded="false">
+    <section class="step" aria-expanded="false">
+      <button class="dropdown-toggle" aria-label="Toggle step" onclick="event.stopPropagation(); toggleStep(this.parentElement);">▾</button>
       <div class="badge">Step 2</div>
       <h2><span class="emoji-animate">💧</span> Add Water for Broth</h2>
       <div class="details">
         <p><strong>Ingredients:</strong></p>
         <ul id="water-ingredients"></ul>
         <p><strong>Instructions:</strong></p>
-        <ul>
-          <li>Pour in the water and gently stir to mix.</li>
+        <ul class="tasks">
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Pour in the water and gently stir to mix.</label></li>
         </ul>
       </div>
     </section>
 
-    <section class="step" onclick="toggleStep(this)" aria-expanded="false">
+    <section class="step" aria-expanded="false">
+      <button class="dropdown-toggle" aria-label="Toggle step" onclick="event.stopPropagation(); toggleStep(this.parentElement);">▾</button>
       <div class="badge">Step 3</div>
       <h2><span class="emoji-animate">🔥</span> Pressure Cook</h2>
       <div class="details">
-        <ul>
-          <li>Close and seal the lid.</li>
-          <li>Set to High Pressure for 10 minutes.</li>
-          <li>Let naturally release for 5 minutes, then quick release.</li>
+        <ul class="tasks">
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Close and seal the lid.</label></li>
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Set to High Pressure for 10 minutes.</label></li>
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Let naturally release for 5 minutes, then quick release.</label></li>
         </ul>
       </div>
     </section>
 
-    <section class="step" onclick="toggleStep(this)" aria-expanded="false">
+    <section class="step" aria-expanded="false">
+      <button class="dropdown-toggle" aria-label="Toggle step" onclick="event.stopPropagation(); toggleStep(this.parentElement);">▾</button>
       <div class="badge">Step 4</div>
       <h2><span class="emoji-animate">✨</span> Optional: Crisp It Up</h2>
       <div class="details">
-        <ul>
-          <li>Broil or air fry at high heat for 3–5 minutes.</li>
-          <li>Enjoy the crispy edges!</li>
+        <ul class="tasks">
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Broil or air fry at high heat for 3–5 minutes.</label></li>
+          <li class="task"><label><input type="checkbox" class="task-check" onchange="toggleTask(this.closest('li'))"> Enjoy the crispy edges!</label></li>
         </ul>
       </div>
     </section>
@@ -103,6 +107,7 @@
           <p>&copy; <span id="year"></span> Brian Fong. All Rights Reserved.</p>
       </footer>
   </div>
+  <script src="../../assets/js/recipe.js"></script>
   <script src="script.js"></script>
   <script src="../../assets/js/data.js"></script>
   <script src="../../assets/js/main.js"></script>
