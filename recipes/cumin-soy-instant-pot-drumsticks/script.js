@@ -1,40 +1,9 @@
-function toggleStep(stepEl) {
-  const currentActive = document.querySelector('.step.active');
-
-  if (currentActive === stepEl) {
-    stepEl.classList.toggle('done');
-    stepEl.classList.remove('active');
-    stepEl.setAttribute('aria-expanded', 'false');
-    updateProgress(stepEl);
-    return;
-  }
-
-  if (currentActive) {
-    currentActive.classList.add('done');
-  }
-
-  document.querySelectorAll('.step').forEach(section => {
-    section.classList.remove('active');
-    section.setAttribute('aria-expanded', 'false');
-  });
-
-  stepEl.classList.add('active');
-  stepEl.setAttribute('aria-expanded', 'true');
-  stepEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  updateProgress(stepEl);
-}
 
 function setPreset(count) {
   document.getElementById('drumstickCount').value = count;
   updateFromDrumsticks();
 }
 
-function updateProgress(activeStep) {
-  const steps = Array.from(document.querySelectorAll('.step'));
-  const index = steps.indexOf(activeStep);
-  const percent = ((index + 1) / steps.length) * 100;
-  document.getElementById('progress-indicator').style.width = percent + '%';
-}
 
 function updateFromDrumsticks() {
   const input = document.getElementById('drumstickCount');
@@ -82,12 +51,3 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-function toggleTask(taskEl) {
-  const checkbox = taskEl.querySelector('.task-check');
-  if (!checkbox) return;
-  if (checkbox.checked) {
-    taskEl.classList.add('done');
-  } else {
-    taskEl.classList.remove('done');
-  }
-}
