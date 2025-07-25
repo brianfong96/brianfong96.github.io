@@ -170,6 +170,14 @@ input[type="number"]:focus {
   transition: background 0.2s ease;
 }
 
+.presets button:focus,
+.presets button:active {
+  background-color: #dddddd;
+  color: #000;
+  outline: none;
+  box-shadow: none;
+}
+
 .presets button:hover {
   background-color: #cccccc;
 }
@@ -227,4 +235,21 @@ input[type="number"]:focus {
 }
 .task.done label {
   opacity: 0.6;
+}
+
+.step,
+.task,
+.dropdown-toggle,
+.presets button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.step:active,
+.task:active,
+.dropdown-toggle:active,
+.presets button:active {
+  background: inherit;
+  color: inherit;
+  outline: none;
+  box-shadow: none;
 }
