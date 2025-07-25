@@ -37,3 +37,47 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleStep(firstStep);
   }
 });
+
+function toggleTask(taskEl) {
+  if (taskEl.classList.contains('running')) {
+    clearInterval(taskEl._timer);
+    taskEl.classList.remove('running');
+    taskEl.classList.toggle('done');
+    taskEl.querySelector('.timer').textContent = '';
+    return;
+  }
+
+  if (taskEl.classList.contains('done')) {
+    taskEl.classList.remove('done');
+    return;
+  }
+
+  const duration = parseInt(taskEl.dataset.duration, 10);
+  if (!duration) {
+    taskEl.classList.add('done');
+    return;
+  }
+
+  let remaining = duration * 60;
+  const timerSpan = taskEl.querySelector('.timer');
+  timerSpan.textContent = formatTime(remaining);
+  taskEl.classList.add('running');
+
+  taskEl._timer = setInterval(() => {
+    remaining--;
+    if (remaining <= 0) {
+      clearInterval(taskEl._timer);
+      taskEl.classList.remove('running');
+      taskEl.classList.add('done');
+      timerSpan.textContent = '';
+    } else {
+      timerSpan.textContent = formatTime(remaining);
+    }
+  }, 1000);
+}
+
+function formatTime(seconds) {
+  const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+  const s = (seconds % 60).toString().padStart(2, '0');
+  return `${m}:${s}`;
+}
