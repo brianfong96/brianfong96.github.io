@@ -30,7 +30,7 @@ h1, h2 {
   margin-bottom: 1.5rem;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  cursor: pointer;
+  cursor: default;
   position: relative;
 }
 .dropdown-toggle {
@@ -49,6 +49,11 @@ h1, h2 {
   transform: rotate(180deg);
 }
 
+.dropdown-toggle:focus, .dropdown-toggle:active {
+  outline: none;
+  background: none;
+  color: inherit;
+}
 /* Ensure step headings are readable on the light step background */
 .step h2 {
   color: #000;

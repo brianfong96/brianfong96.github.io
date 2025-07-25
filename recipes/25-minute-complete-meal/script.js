@@ -38,10 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-function toggleTask(taskEl, event) {
-  if (event) {
-    event.stopPropagation();
-  }
+function toggleTask(taskEl) {
   const checkbox = taskEl.querySelector('.task-check');
 
   if (taskEl.classList.contains('running')) {
