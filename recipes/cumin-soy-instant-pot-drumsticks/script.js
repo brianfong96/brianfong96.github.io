@@ -1,15 +1,27 @@
 function toggleStep(stepEl) {
-  const isExpanded = stepEl.classList.contains('active');
+  const currentActive = document.querySelector('.step.active');
+
+  if (currentActive === stepEl) {
+    stepEl.classList.toggle('done');
+    stepEl.classList.remove('active');
+    stepEl.setAttribute('aria-expanded', 'false');
+    updateProgress(stepEl);
+    return;
+  }
+
+  if (currentActive) {
+    currentActive.classList.add('done');
+  }
+
   document.querySelectorAll('.step').forEach(section => {
     section.classList.remove('active');
     section.setAttribute('aria-expanded', 'false');
   });
-  if (!isExpanded) {
-    stepEl.classList.add('active');
-    stepEl.setAttribute('aria-expanded', 'true');
-    stepEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    updateProgress(stepEl);
-  }
+
+  stepEl.classList.add('active');
+  stepEl.setAttribute('aria-expanded', 'true');
+  stepEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  updateProgress(stepEl);
 }
 
 function setPreset(count) {
