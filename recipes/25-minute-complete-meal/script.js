@@ -38,7 +38,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-function toggleTask(taskEl) {
+function toggleTask(taskEl, event) {
+  if (event) {
+    event.stopPropagation();
+  }
   if (taskEl.classList.contains('running')) {
     clearInterval(taskEl._timer);
     taskEl.classList.remove('running');
