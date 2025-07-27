@@ -18,10 +18,14 @@ async function bufferFromString(str) {
         email: 'john@example.com',
         username: 'jdoe',
         account: 'test',
-        length: '',
+        length: '16',
         exclude: '',
         extra: 'pass',
         include: '',
+        includeLower: true,
+        includeUpper: true,
+        includeNumbers: true,
+        includeSymbols: true,
         newSeedGen: false
     };
 

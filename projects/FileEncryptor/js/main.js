@@ -58,26 +58,37 @@ function newGenerateSeed(seed, fields) {
 }
 
 function generatePassword(fields) {
-    var length = 32; // fixed length
+    var length = parseInt(fields.length, 10) || 16;
     var lower = 'qwertyuiopasdfghjklzxcvbnm';
     var upper = lower.toUpperCase();
     var numbers = '1234567890';
     var symbols = "!@#$%^&*()-=_+[]:;',./?`~";
-    var includeSymbols = true;
-    var includeLower = true;
-    var includeUpper = true;
-    var includeNumber = true;
-    var include = '';
-    var exclude = '';
+    var include = fields.include || '';
+    var includeLower = fields.includeLower;
+    var includeUpper = fields.includeUpper;
+    var includeNumber = fields.includeNumbers;
+    var includeSymbols = fields.includeSymbols;
+    var exclude = fields.exclude || '';
     var allchar = [];
     var seed = 1;
+
     if (includeLower) { allchar.push(lower); seed *= 2; }
     if (includeUpper) { allchar.push(upper); seed *= 3; }
     if (includeNumber) { allchar.push(numbers); seed *= 4; }
+
     if (include.length > 0) {
-        if (includeSymbols) { allchar.push(symbols + include); seed *= 5; }
-        else { allchar.push(include); seed *= 6; }
-    } else if (includeSymbols) { allchar.push(symbols); seed *= 7; }
+        if (includeSymbols) {
+            allchar.push(symbols + include);
+            seed *= 5;
+        } else {
+            allchar.push(include);
+            seed *= 6;
+        }
+    } else if (includeSymbols) {
+        allchar.push(symbols);
+        seed *= 7;
+    }
+
     for (var i = 0; i < exclude.length; i++) {
         for (var j = 0; j < allchar.length; j++) {
             var pos = allchar[j].indexOf(exclude[i]);
@@ -90,15 +101,19 @@ function generatePassword(fields) {
             }
         }
     }
+
     Math.seed = generateSeed(seed, fields);
     if (fields.newSeedGen) {
         Math.seed = newGenerateSeed(seed, fields);
     }
+
     var pw = '';
     for (var i = 0; i < length; i++) {
         allchar = randomSortAll(allchar);
         var setNum = randomInt(0, allchar.length);
-        if (i < allchar.length && i < length) setNum = i;
+        if (i < allchar.length && i < length) {
+            setNum = i;
+        }
         var charPos = randomInt(0, allchar[setNum].length);
         pw += allchar[setNum][charPos];
     }
@@ -113,11 +128,15 @@ function getFields() {
         email: document.getElementById('email').value,
         username: document.getElementById('username').value,
         account: document.getElementById('account').value,
-        length: '',
-        exclude: '',
+        length: document.getElementById('length').value,
+        exclude: document.getElementById('exclude').value,
         extra: document.getElementById('extra').value,
-        include: '',
-        newSeedGen: false
+        include: document.getElementById('include').value,
+        includeLower: document.getElementById('includeLower').checked,
+        includeUpper: document.getElementById('includeUpper').checked,
+        includeNumbers: document.getElementById('includeNumbers').checked,
+        includeSymbols: document.getElementById('includeSymbols').checked,
+        newSeedGen: document.getElementById('newSeedGenYes').checked
     };
 }
 

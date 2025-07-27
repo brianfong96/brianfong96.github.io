@@ -50,10 +50,35 @@
                 <input type="text" id="username" name="username" size="10"><br>
                 Account:<br>
                 <input type="text" id="account" name="account" size="10"><br>
-            </div>
-            <div class="sub-entry">
+                Password Length:<br>
+                <input type="number" id="length" name="length" min="4" max="1024" step="1" value="16"><br>
+                Characters to exclude:<br>
+                <input type="text" id="exclude" name="exclude" size="10"><br>
+                Characters to include:<br>
+                <input type="text" id="include" name="include" size="10"><br>
                 Extra Passphrase:<br>
                 <input type="password" id="extra" name="extra" size="10"><br>
+            </div>
+            <div class="sub-entry">
+                Include Lowercase Letters?<br>
+                <input type="radio" id="includeLower" name="lowercase" value="yes" checked> Yes<br>
+                <input type="radio" name="lowercase" value="no"> No<br>
+
+                Include Uppercase Letters?<br>
+                <input type="radio" id="includeUpper" name="uppercase" value="yes" checked> Yes<br>
+                <input type="radio" name="uppercase" value="no"> No<br>
+
+                Include Numbers?<br>
+                <input type="radio" id="includeNumbers" name="numbers" value="yes" checked> Yes<br>
+                <input type="radio" name="numbers" value="no"> No<br>
+
+                Include these symbols? <br>'!@#$%^&*()-=_+[]:;',./?`~'<br>
+                <input type="radio" id="includeSymbols" name="symbols" value="yes" checked> Yes<br>
+                <input type="radio" name="symbols" value="no"> No<br>
+
+                Use new generate seed?<br>
+                <input type="radio" id="newSeedGenYes" name="newSeedGen" value="yes"> Yes<br>
+                <input type="radio" id="newSeedGenNo" name="newSeedGen" value="no" checked> No<br>
                 <br>
                 <input type="file" id="fileInput"><br>
                 <button type="button" id="encryptBtn">Encrypt</button>
