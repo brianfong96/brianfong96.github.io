@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File Encryptor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css" />
+    <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+    <button id="sidebar-toggle" aria-label="Toggle navigation">&#9776;</button>
+    <nav class="sidebar" id="sidebar">
+        <a class="logo" href="../../index.html">Brian Fong</a>
+        <ul class="nav-links">
+            <li><a href="../../index.html">Home</a></li>
+            <li><a href="../../about.html">About</a></li>
+            <li><a href="../../projects.html">Projects</a></li>
+            <li><a href="../../blog.html">Blog</a></li>
+            <li><a href="../../recipes.html">Recipes</a></li>
+            <li><a href="../../music.html">Music</a></li>
+        </ul>
+    </nav>
+    <div class="content">
+        <header class="hero small">
+            <div class="hero-content">
+                <h1>File Encryptor</h1>
+                <a href="../../projects.html" class="back-button">Back to Projects</a>
+            </div>
+        </header>
+        <main class="section">
+        <details class="description">
+            <summary>Description</summary>
+            <p>This tool uses the R.P.R.P.G. password algorithm to derive an encryption key. Provide the same fields to decrypt files that were previously encrypted.</p>
+            <ul>
+                <li>All encryption and decryption happens locally in your browser.</li>
+                <li>No data is uploaded or stored.</li>
+            </ul>
+        </details>
+        <form id="userinput" autocomplete="off">
+            <div class="sub-entry">
+                First name:<br>
+                <input type="text" id="firstname" name="firstname" size="10"><br>
+                Last name:<br>
+                <input type="text" id="lastname" name="lastname" size="10"><br>
+                Birthday:<br>
+                <input type="date" id="bday" name="bday"><br>
+                Email:<br>
+                <input type="text" id="email" name="email" size="10"><br>
+                Username:<br>
+                <input type="text" id="username" name="username" size="10"><br>
+                Account:<br>
+                <input type="text" id="account" name="account" size="10"><br>
+            </div>
+            <div class="sub-entry">
+                Extra Passphrase:<br>
+                <input type="password" id="extra" name="extra" size="10"><br>
+                <br>
+                <input type="file" id="fileInput"><br>
+                <button type="button" id="encryptBtn">Encrypt</button>
+                <button type="button" id="decryptBtn">Decrypt</button>
+            </div>
+        </form>
+        <div class="sub-entry-wide">
+            <form action="https://github.com/brianfong96/brianfong96.github.io/tree/master/projects/FileEncryptor" method="get" target="_blank">
+                <button type="submit">Go to Repo</button>
+            </form>
+        </div>
+        </main>
+        <footer class="footer">
+            <p>&copy; <span id="year"></span> Brian Fong. All Rights Reserved.</p>
+        </footer>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="../../assets/js/data.js"></script>
+    <script src="../../assets/js/main.js"></script>
+</body>
+</html>
