@@ -11,7 +11,13 @@ const siteData = {
             url: 'projects/BibleFamilyTree/index.html',
             description: 'Interactive visualization of biblical family relationships.',
             section: 'Projects'
-        }
+        },
+        {
+            title: 'File Encryptor',
+            url: 'projects/FileEncryptor/index.html',
+            description: 'Encrypt and decrypt files using a reproducible password.',
+            section: 'Projects'
+        },
     ],
     recipes: [
         {

@@ -1,0 +1,8 @@
+{
+  "name": "brianfong96.github.io",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "node projects/FileEncryptor/test/encryption.test.js"
+  },
+  "devDependencies": {}
+}
