@@ -345,6 +345,7 @@ const heading = document.getElementById("heading");
 const prompt = document.getElementById("prompt");
 const optionsWrap = document.querySelector(".options");
 const lyricNote = document.getElementById("lyric-note");
+const hintToggle = document.getElementById("hint-toggle");
 const statusEl = document.getElementById("status");
 const progressFill = document.querySelector(".progress-fill");
 const currentCount = document.getElementById("current");
@@ -352,6 +353,8 @@ const celebration = document.getElementById("celebration");
 const confettiContainer = document.querySelector(".confetti");
 
 let currentIndex = 0;
+const HINT_SHOW_LABEL = "Need a hint?";
+const HINT_HIDE_LABEL = "Hide hint";
 
 function buildConfetti() {
   const colors = [
@@ -395,6 +398,10 @@ function renderQuestion() {
   questionNumber.textContent = currentIndex + 1;
   prompt.textContent = questions[currentIndex].prompt;
   lyricNote.textContent = questions[currentIndex].lyric;
+  lyricNote.hidden = true;
+  lyricNote.classList.remove("revealed");
+  hintToggle.textContent = HINT_SHOW_LABEL;
+  hintToggle.setAttribute("aria-expanded", "false");
   statusEl.textContent = "";
   optionsWrap.innerHTML = "";
 
@@ -411,6 +418,22 @@ function renderQuestion() {
     button.addEventListener("click", () => handleChoice(index, button));
     optionsWrap.appendChild(button);
   });
+}
+
+function toggleHint() {
+  const willReveal = lyricNote.hidden;
+
+  if (willReveal) {
+    lyricNote.hidden = false;
+    lyricNote.classList.add("revealed");
+    hintToggle.textContent = HINT_HIDE_LABEL;
+    hintToggle.setAttribute("aria-expanded", "true");
+  } else {
+    lyricNote.hidden = true;
+    lyricNote.classList.remove("revealed");
+    hintToggle.textContent = HINT_SHOW_LABEL;
+    hintToggle.setAttribute("aria-expanded", "false");
+  }
 }
 
 function handleChoice(selection, button) {
@@ -466,3 +489,4 @@ function triggerCelebration() {
 buildConfetti();
 renderQuestion();
 updateProgress();
+hintToggle.addEventListener("click", toggleHint);
