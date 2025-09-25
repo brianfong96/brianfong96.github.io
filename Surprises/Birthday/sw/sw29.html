@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Secret Swiftie Birthday Level</title>
+    <link rel="stylesheet" href="sw29.css" />
+  </head>
+  <body>
+    <main>
+      <div class="confetti" aria-hidden="true"></div>
+      <header>
+        <h1>Level 29: Swiftie Birthday Mission</h1>
+        <p>
+          Twenty nine eras, twenty nine clues. Tap into your deep Swiftian lore,
+          decode every easter egg, and prove you're the mastermind. Answer each
+          question, watch it sparkle, and keep going until every secret has been
+          unraveled.
+        </p>
+      </header>
+
+      <section id="progress" aria-live="polite">
+        <div class="progress-track"><div class="progress-fill"></div></div>
+        <strong><span id="current">0</span>/29</strong>
+      </section>
+
+      <section id="question-card" class="entering">
+        <h2>
+          <span class="question-number">1</span>
+          <span id="heading">Ready for it?</span>
+        </h2>
+        <p id="prompt"></p>
+        <div class="options" role="group" aria-labelledby="heading"></div>
+        <p id="lyric-note"></p>
+        <p id="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <footer>
+        Every answer unlocks another friendship bracelet. Finish all 29 to see
+        what's been waiting for you all year.
+      </footer>
+
+      <aside id="celebration" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="content">
+          <h3>It's A Love Story!</h3>
+          <p>
+            You just danced through twenty nine Swiftie checkpoints and kept your
+            crown. Ready for the real birthday surprise?
+          </p>
+          <a
+            id="gift-link"
+            href="https://drive.google.com/file/d/1hy1V6bFzrPU2O2zlHqPfanJyHtotgz0A/view?usp=sharing"
+            target="_blank"
+            rel="noopener"
+          >
+            Claim the Secret Track 🎁
+          </a>
+        </div>
+      </aside>
+    </main>
+
+    <script src="sw29.js" defer></script>
+  </body>
+</html>
