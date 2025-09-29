@@ -225,6 +225,7 @@ class DeckController {
   constructor(deck) {
     this.deck = deck;
     this.sections = Array.isArray(deck.sections) ? deck.sections : [];
+    this.filteredSections = [];
     this.cards = [];
     this.currentIndex = 0;
 
@@ -233,6 +234,7 @@ class DeckController {
     this.questionEl = document.getElementById('cardQuestion');
     this.answerEl = document.getElementById('cardAnswer');
     this.cardCountEl = document.getElementById('cardCount');
+    this.sectionSelector = document.getElementById('sectionSelector');
     this.selector = document.getElementById('cardSelector');
     this.prevBtn = document.getElementById('prevCard');
     this.nextBtn = document.getElementById('nextCard');
@@ -262,28 +264,23 @@ class DeckController {
   }
 
   init() {
-    this.buildCardCatalog();
+    this.populateSectionSelector();
     this.bindEvents();
-    if (this.cards.length > 0) {
-      this.showCard(0);
-      this.resetNarrationControl('Card ready. Tap “Read Aloud” to hear the question.');
-    } else {
-      this.disableControls();
-      this.setReadStatus('No cards available for this deck.');
-    }
+    const initialSection = this.sectionSelector ? this.sectionSelector.value : 'all';
+    this.applySectionFilter(initialSection);
 
     if (!this.speechSupported) {
       this.setReadStatus('Browser speech unavailable. Using online narrator when possible.');
     }
   }
 
-  buildCardCatalog() {
+  buildCardCatalog(sections) {
     this.cards = [];
     this.selector.innerHTML = '';
 
     let index = 0;
 
-    this.sections.forEach((section) => {
+    sections.forEach((section) => {
       if (!Array.isArray(section.cards) || section.cards.length === 0) {
         return;
       }
@@ -302,15 +299,130 @@ class DeckController {
 
       this.selector.append(optgroup);
     });
+
+    return this.cards.length;
+  }
+
+  populateSectionSelector() {
+    if (!this.sectionSelector) {
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    const allOption = document.createElement('option');
+    allOption.value = 'all';
+    allOption.textContent = 'All topics';
+    fragment.append(allOption);
+
+    const sortedSections = [...this.sections].sort((a, b) => {
+      const aLabel = (a.label || a.id || '').toLocaleLowerCase();
+      const bLabel = (b.label || b.id || '').toLocaleLowerCase();
+      return aLabel.localeCompare(bLabel);
+    });
+
+    sortedSections.forEach((section) => {
+      const option = document.createElement('option');
+      option.value = section.id;
+      option.textContent = section.label || section.id;
+      fragment.append(option);
+    });
+
+    this.sectionSelector.replaceChildren(fragment);
+    this.sectionSelector.value = 'all';
+  }
+
+  applySectionFilter(sectionId) {
+    if (!this.selector) {
+      return;
+    }
+
+    this.stopNarration(undefined, { suppressStatus: true });
+    this.cardElement.classList.remove('is-flipped');
+    this.filteredSections =
+      !sectionId || sectionId === 'all'
+        ? this.sections
+        : this.sections.filter((section) => section.id === sectionId);
+
+    const totalCards = this.buildCardCatalog(this.filteredSections);
+    this.currentIndex = 0;
+
+    if (totalCards > 0) {
+      this.enableControls();
+      this.selector.disabled = false;
+      this.showCard(0);
+    } else {
+      this.cards = [];
+      this.disableControls();
+      this.selector.disabled = true;
+      this.showEmptyState(
+        sectionId === 'all'
+          ? 'No cards available for this deck.'
+          : 'No cards available in this topic yet.'
+      );
+      this.setReadStatus('Select a different topic to see cards.');
+    }
+  }
+
+  enableControls() {
+    this.prevBtn.disabled = false;
+    this.nextBtn.disabled = false;
+    this.randomBtn.disabled = false;
+    this.flipBtn.disabled = false;
+    this.explanationBtn.disabled = false;
+    this.readBtn.disabled = false;
+    this.stopBtn.disabled = true;
+    if (this.selector) {
+      this.selector.disabled = false;
+    }
+    this.updateNavAvailability();
+  }
+
+  updateNavAvailability() {
+    const singleCard = this.cards.length <= 1;
+    if (this.prevBtn) {
+      this.prevBtn.disabled = singleCard;
+    }
+    if (this.nextBtn) {
+      this.nextBtn.disabled = singleCard;
+    }
+    if (this.randomBtn) {
+      this.randomBtn.disabled = this.cards.length <= 1;
+    }
+  }
+
+  showEmptyState(message) {
+    if (this.cardWrapper) {
+      this.cardWrapper.classList.remove('transitioning');
+    }
+
+    const empty = document.createElement('div');
+    empty.className = 'card-empty';
+    empty.textContent = message;
+
+    this.questionEl.replaceChildren(empty);
+    this.answerEl.replaceChildren();
+    this.cardCountEl.textContent = '';
+    this.explanationPanel.hidden = true;
+    this.explanationBtn.textContent = 'Explanation';
+    this.sourcesEl.replaceChildren();
   }
 
   bindEvents() {
-    this.selector.addEventListener('change', (event) => {
-      const value = Number(event.target.value);
-      if (!Number.isNaN(value)) {
-        this.showCard(value);
-      }
-    });
+    if (this.sectionSelector) {
+      this.sectionSelector.addEventListener('change', (event) => {
+        this.applySectionFilter(event.target.value);
+      });
+    }
+
+    if (this.selector) {
+      this.selector.addEventListener('change', (event) => {
+        const value = Number(event.target.value);
+        if (!Number.isNaN(value)) {
+          this.showCard(value);
+        }
+      });
+    }
 
     this.prevBtn.addEventListener('click', () => this.showCard(this.currentIndex - 1));
     this.nextBtn.addEventListener('click', () => this.showCard(this.currentIndex + 1));
@@ -375,7 +487,11 @@ class DeckController {
     const card = this.cards[this.currentIndex];
     this.cardPresenter.render(card);
     this.cardCountEl.textContent = `Card ${this.currentIndex + 1} of ${this.cards.length}`;
-    this.selector.value = String(this.currentIndex);
+    if (this.selector) {
+      this.selector.value = String(this.currentIndex);
+    }
+
+    this.updateNavAvailability();
 
     this.setReadStatus('Card ready. Tap “Read Aloud” to hear the question.');
   }
@@ -609,6 +725,9 @@ class DeckController {
     this.explanationBtn.disabled = true;
     this.readBtn.disabled = true;
     this.stopBtn.disabled = true;
+    if (this.selector) {
+      this.selector.disabled = true;
+    }
   }
 
   setReadStatus(message) {
