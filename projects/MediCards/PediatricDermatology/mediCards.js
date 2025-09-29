@@ -22,8 +22,13 @@
   const flipBtn = document.getElementById('flipCard');
   const explanationBtn = document.getElementById('toggleExplanation');
   const readBtn = document.getElementById('readAloud');
+  const readStatus = document.getElementById('readStatus');
 
   const speechSupported = 'speechSynthesis' in window;
+  const audioPlayer = new Audio();
+  const ttsEndpoint = 'https://api.streamelements.com/kappa/v2/speech';
+  let currentAudioUrl = null;
+  let activeUtterance = null;
 
   function populateSelector() {
     selector.innerHTML = '';
@@ -118,22 +123,116 @@
     }
   }
 
-  function speakCard() {
-    if (!speechSupported) {
-      readBtn.disabled = true;
-      readBtn.textContent = 'Speech not supported';
+  function resetNarrationControl(message) {
+    readBtn.disabled = false;
+    readBtn.dataset.state = 'ready';
+    readBtn.textContent = 'Read Aloud';
+    if (message) {
+      setReadStatus(message);
+    }
+  }
+
+  function stopNarration(statusMessage = 'Narration stopped.') {
+    audioPlayer.pause();
+    audioPlayer.currentTime = 0;
+    if (currentAudioUrl) {
+      URL.revokeObjectURL(currentAudioUrl);
+      currentAudioUrl = null;
+    }
+    if (activeUtterance) {
+      window.speechSynthesis.cancel();
+      activeUtterance = null;
+    }
+    resetNarrationControl(statusMessage);
+  }
+
+  function setReadStatus(message) {
+    if (!readStatus) return;
+    readStatus.textContent = message;
+  }
+
+  audioPlayer.addEventListener('ended', () => {
+    stopNarration('Playback complete.');
+  });
+
+  audioPlayer.addEventListener('error', () => {
+    stopNarration('Unable to play the generated audio.');
+  });
+
+  async function speakCard() {
+    if (readBtn.dataset.state === 'playing' || readBtn.dataset.state === 'loading') {
+      stopNarration();
       return;
     }
 
-    window.speechSynthesis.cancel();
     const card = deck.cards[currentIndex];
-    const utterance = new SpeechSynthesisUtterance();
-    utterance.text = `${card.title}. Question: ${stripHtml(card.question)}. Answer: ${stripHtml(
+    const narrationText = `${card.title}. Question: ${stripHtml(card.question)}. Answer: ${stripHtml(
       card.answer
-    )}`;
-    utterance.lang = 'en-US';
-    utterance.rate = 1;
-    window.speechSynthesis.speak(utterance);
+    )}.`;
+
+    if (activeUtterance) {
+      window.speechSynthesis.cancel();
+      activeUtterance = null;
+    }
+    audioPlayer.pause();
+    audioPlayer.currentTime = 0;
+    if (currentAudioUrl) {
+      URL.revokeObjectURL(currentAudioUrl);
+      currentAudioUrl = null;
+    }
+
+    readBtn.disabled = true;
+    readBtn.dataset.state = 'loading';
+    readBtn.textContent = 'Generating audio...';
+    setReadStatus('Requesting cloud text-to-speech audio...');
+
+    try {
+      const response = await fetch(ttsEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ voice: 'Brian', text: narrationText })
+      });
+
+      if (!response.ok) {
+        throw new Error(`TTS request failed with status ${response.status}`);
+      }
+
+      const audioBlob = await response.blob();
+      currentAudioUrl = URL.createObjectURL(audioBlob);
+      audioPlayer.src = currentAudioUrl;
+      readBtn.dataset.state = 'playing';
+      readBtn.textContent = 'Playing narration...';
+      readBtn.disabled = false;
+      setReadStatus('Playing generated narration. Tap again to stop.');
+      await audioPlayer.play();
+    } catch (error) {
+      console.error('Cloud TTS failed; falling back to browser speech if available.', error);
+      if (currentAudioUrl) {
+        URL.revokeObjectURL(currentAudioUrl);
+        currentAudioUrl = null;
+      }
+
+      if (speechSupported) {
+        setReadStatus('Online TTS unavailable. Using browser speech.');
+        activeUtterance = new SpeechSynthesisUtterance(narrationText);
+        activeUtterance.lang = 'en-US';
+        activeUtterance.rate = 1;
+        activeUtterance.onend = () => {
+          activeUtterance = null;
+          resetNarrationControl('Playback complete.');
+        };
+        activeUtterance.onerror = () => {
+          activeUtterance = null;
+          resetNarrationControl('Unable to narrate this card.');
+        };
+        readBtn.dataset.state = 'playing';
+        readBtn.textContent = 'Speaking...';
+        readBtn.disabled = false;
+        window.speechSynthesis.speak(activeUtterance);
+      } else {
+        resetNarrationControl('Audio narration is unavailable right now.');
+      }
+    }
   }
 
   function stripHtml(html) {
@@ -144,11 +243,8 @@
 
   populateSelector();
   goToCard(0);
-
-  if (!speechSupported) {
-    readBtn.disabled = true;
-    readBtn.textContent = 'Speech not supported';
-  }
+  resetNarrationControl();
+  setReadStatus('Tap “Read Aloud” to hear this card.');
 
   selector.addEventListener('change', (event) => {
     goToCard(Number(event.target.value));
@@ -159,8 +255,10 @@
   flipBtn.addEventListener('click', flipCard);
   cardElement.addEventListener('click', flipCard);
   explanationBtn.addEventListener('click', toggleExplanation);
-  if (speechSupported) {
-    readBtn.addEventListener('click', speakCard);
+  readBtn.addEventListener('click', speakCard);
+
+  if (!speechSupported) {
+    setReadStatus('Browser speech unavailable. Using online narrator when possible.');
   }
 
   document.addEventListener('keydown', (event) => {

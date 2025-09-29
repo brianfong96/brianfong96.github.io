@@ -11,6 +11,7 @@
 </head>
 <body>
   <header class="page-header">
+    <a class="home-link" href="../index.html">&larr; MediCards Home</a>
     <h1>MediCards</h1>
     <p class="page-subtitle">Pediatric Dermatology Flash Cards</p>
   </header>
@@ -31,8 +32,9 @@
         <button id="toggleExplanation" type="button">Explanation</button>
       </div>
       <div class="control-group">
-        <button id="readAloud" type="button" aria-live="polite">Read Aloud</button>
+        <button id="readAloud" type="button" data-state="ready">Read Aloud</button>
       </div>
+      <p id="readStatus" class="assistive-text" role="status" aria-live="polite"></p>
     </section>
 
     <section class="card-stage" aria-live="polite">

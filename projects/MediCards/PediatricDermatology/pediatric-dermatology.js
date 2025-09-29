@@ -2,14 +2,114 @@ window.mediCardsDeck = {
   deckName: 'Pediatric Dermatology',
   cards: [
     {
-      title: 'Atopic Dermatitis (Eczema)',
-      shortLabel: 'Atopic dermatitis',
+      title: 'Basic Lesion Types',
+      shortLabel: 'Lesion types',
       question:
-        '<strong>Presentation:</strong> Pruritic, xerotic patches that begin on infant cheeks/extensors and later favor flexures.<br><br>What is the skin-directed, stepwise treatment plan for a flare?',
+        '<strong>Primer:</strong> Know your morphology vocabulary before tackling management pearls.<br><br>Match the term to what you expect to see on exam.',
       answer:
-        '<ul><li>Daily lukewarm baths with gentle cleansers, followed by liberal emollients; consider wet wraps.</li><li>Topical anti-inflammatories by site/age: low-to-mid potency steroids, or calcineurin inhibitors for delicate areas.</li><li>Escalate to ruxolitinib 1.5% cream (≥2 years, non-immunocompromised) or other systemic therapy if refractory.</li><li>Add dilute bleach baths and targeted antimicrobials only when secondary infection is present.</li></ul>',
+        '<ul><li><strong>Erythema</strong> &rarr; redness from inflammation.</li><li><strong>Papules</strong> &rarr; small, raised solid bumps.</li><li><strong>Vesicles</strong> &rarr; tiny fluid-filled blisters, classic in acute eczema.</li><li><strong>Plaques</strong> &rarr; raised, flat-topped collections of papules.</li><li><strong>Lichenification</strong> &rarr; thickened skin with accentuated markings.</li><li><strong>Excoriations</strong> &rarr; linear erosions from scratching.</li><li><strong>Crusting</strong> &rarr; dried serum, blood, or pus on the surface.</li><li><strong>Scaling</strong> &rarr; dry, flaky keratin as lesions evolve.</li><li><strong>Erosions</strong> &rarr; shallow loss of epidermis after vesicles rupture.</li><li><strong>Fissures</strong> &rarr; painful linear cracks in thickened skin.</li></ul>',
       explanation:
-        '<p>Atopic dermatitis in children is usually clinical. Therapy begins with barrier repair and short lukewarm bathing, layering emollients immediately afterward. Match steroid potency to body site and age, reserving calcineurin inhibitors for the face, folds, and maintenance. Recent FDA action allows ruxolitinib cream down to age 2 in non-immunocompromised patients. Bacterial swabs and antibiotics are reserved for evident infection, while bleach baths help prevent recurrence. Escalate care for uncontrolled disease that impairs sleep, growth, or psychosocial wellbeing.</p>',
+        '<p>Derm vocabulary anchors your flash-card review. Being precise about lesion type keeps the differential tight and guides topical therapy choices. Many pediatric eczematous disorders cycle through erythema, vesicles, crusting, and lichenification depending on chronicity, so describing each element aloud reinforces what to monitor.</p>',
+      sources: [
+        {
+          label: 'DermNet – Primary skin lesions',
+          url: 'https://dermnetnz.org/topics/primary-skin-lesions?utm_source=chatgpt.com'
+        }
+      ]
+    },
+    {
+      title: 'Morphology & Distribution Clues',
+      shortLabel: 'Morphology clues',
+      question:
+        '<strong>Pattern recognition:</strong> Which distribution hallmarks help distinguish eczema phenotypes?',
+      answer:
+        '<ul><li>Eczema is usually <strong>ill-defined</strong>; psoriasis is often well-demarcated.</li><li><strong>Flexural</strong> involvement dominates in older children (antecubital, popliteal fossae, neck, wrists).</li><li><strong>Extensor</strong> surfaces light up in infants.</li><li>Expect a <strong>symmetric</strong> distribution.</li><li>Track chronicity: acute (erythema, vesicles, oozing), subacute (crusting, scaling), chronic (lichenification, fissures).</li></ul>',
+      explanation:
+        '<p>Scanning distribution before zooming in on individual lesions accelerates bedside diagnosis. Flexural vs extensor predilection shifts with age in atopic dermatitis, while symmetry and chronicity cues narrow differentials and prevent missing mimickers such as psoriasis.</p>',
+      sources: [
+        {
+          label: 'American Academy of Dermatology – Childhood eczema overview',
+          url: 'https://www.aad.org/public/diseases/eczema/childhood/atopic-dermatitis?utm_source=chatgpt.com'
+        }
+      ]
+    },
+    {
+      title: 'Smart Safety Net',
+      shortLabel: 'Safety net',
+      question:
+        '<strong>Escalate when:</strong> Which red flags demand urgent reassessment or referral?',
+      answer:
+        '<ul><li>Fever, toxic appearance, or rapidly spreading cellulitis.</li><li>Neonates with pustules &mdash; benign rashes (erythema toxicum neonatorum, transient neonatal pustular melanosis) can mimic serious infections (HSV, sepsis, impetigo, congenital candidiasis).</li><li>Periorbital swelling or visual changes, especially with infantile hemangioma or impetigo complications.</li><li>Extensive eczematous eruptions unresponsive to appropriate potency steroids.</li><li>Immunocompromised child, diagnostic uncertainty, or treatment failure.</li></ul>',
+      explanation:
+        '<p>Red-flag screening keeps vulnerable infants safe. Rapid cellulitis progression, systemic illness, or ocular involvement can herald invasive bacterial disease or high-risk infantile hemangiomas that need propranolol. Neonatal pustuloses may be benign but warrant careful exam to exclude HSV or sepsis. Resistant eczema or immunocompromise should prompt dermatology or infectious disease input.</p>',
+      sources: [
+        {
+          label: 'CDC – Clinical guidance for group A strep skin infections',
+          url: 'https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/impetigo.html?utm_source=chatgpt.com'
+        },
+        {
+          label: 'AAP – Infantile hemangioma guideline',
+          url: 'https://publications.aap.org/pediatrics/article/143/1/e20183475/37268/Clinical-Practice-Guideline-for-the-Management-of?utm_source=chatgpt.com'
+        },
+        {
+          label: 'AAAAI – Atopic dermatitis practice parameter',
+          url: 'https://www.aaaai.org/Aaaai/media/Media-Library-PDFs/Allergist%20Resources/Statements%20and%20Practice%20Parameters/JTF-Atopic-Dermatitis-Guideline-2023-07-31-2026.pdf?utm_source=chatgpt.com'
+        }
+      ]
+    },
+    {
+      title: 'Quick “Which Test?” Table',
+      shortLabel: 'Which test?',
+      question:
+        '<strong>Scenario:</strong> You are triaging rashes in clinic.<br><br>Which rapid bedside tests line up with each diagnosis?',
+      answer:
+        '<ul><li><strong>KOH prep</strong> for suspected dermatophyte (tinea).</li><li><strong>Bacterial culture</strong> for impetigo that is recurrent, part of an outbreak, or not responding.</li><li><strong>Skin scraping / dermoscopy</strong> for scabies confirmation when needed.</li><li><strong>No routine labs</strong> for AD, acne, pityriasis rosea, molluscum, or viral warts unless atypical or immunocompromised.</li></ul>',
+      explanation:
+        '<p>Focused office testing avoids unnecessary labs while expediting treatment. KOH scraping highlights branching hyphae in dermatophyte infections, cultures refine impetigo therapy, and dermoscopy plus scrapings boost confidence before undertaking burdensome scabies eradication. Many chronic inflammatory dermatoses remain clinical diagnoses unless red flags arise.</p>',
+      sources: [
+        {
+          label: 'AAFP – Diagnosis and management of tinea infections',
+          url: 'https://www.aafp.org/pubs/afp/issues/2014/1115/p702.html?utm_source=chatgpt.com'
+        },
+        {
+          label: 'CDC – Clinical guidance for impetigo',
+          url: 'https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/impetigo.html?utm_source=chatgpt.com'
+        },
+        {
+          label: 'CDC – Clinical care of scabies',
+          url: 'https://www.cdc.gov/scabies/hcp/clinical-care/index.html?utm_source=chatgpt.com'
+        }
+      ]
+    },
+    {
+      title: 'Atopic Dermatitis (Eczema) Fundamentals',
+      shortLabel: 'AD fundamentals',
+      question:
+        '<strong>Clue:</strong> Itchy eczematous patches in flexures &rarr; think atopic dermatitis (AD).<br><br>Which presentation and testing pearls keep you on track?',
+      answer:
+        '<ul><li>Pruritic, xerotic patches that begin on infant cheeks/extensors before shifting to flexural areas in older kids.</li><li>Look for xerosis, lichenification, and secondary infection.</li><li>Diagnosis is usually clinical; swab crusted or oozing lesions only if superinfection suspected.</li></ul>',
+      explanation:
+        '<p>Age-dependent distribution is a high-yield board clue: infants light up extensor cheeks while school-aged kids favor flexures. Document chronic itch and eczematous morphology, watch for excoriations, and reserve bacterial cultures for impetiginized skin. Early identification of treatment failure or growth concerns should prompt referral.</p>',
+      sources: [
+        {
+          label: 'American Academy of Pediatrics – Treatment of Atopic Dermatitis',
+          url: 'https://www.aap.org/en/patient-care/atopic-dermatitis/treatment-of-atopic-dermatitis/?utm_source=chatgpt.com'
+        },
+        {
+          label: 'AAAAI 2023 Atopic Dermatitis Guideline',
+          url: 'https://www.aaaai.org/Aaaai/media/Media-Library-PDFs/Allergist%20Resources/Statements%20and%20Practice%20Parameters/JTF-Atopic-Dermatitis-Guideline-2023-07-31-2026.pdf?utm_source=chatgpt.com'
+        }
+      ]
+    },
+    {
+      title: 'Atopic Dermatitis – Stepwise Therapy',
+      shortLabel: 'AD therapy',
+      question:
+        '<strong>Management:</strong> Build the stepwise plan for an atopic dermatitis flare.',
+      answer:
+        '<ul><li><strong>Skin care:</strong> Daily liberal emollients after short, lukewarm baths with gentle cleansers; wet wraps (or “wet wipes”) during flares.</li><li><strong>Topical anti-inflammatories:</strong> Low–mid potency steroids by site/age; steroid-sparing topical calcineurin inhibitors (pimecrolimus, tacrolimus).</li><li><strong>Infection control:</strong> Dilute bleach baths for recurrent infections; oral/topical antibiotics only with clear infection.</li><li><strong>Adjuncts:</strong> Avoid routine antihistamines for itch except brief sedating agents for sleep.</li><li><strong>Escalate:</strong> Consider ruxolitinib 1.5% cream (ages 2–11 label expansion) or systemic therapy when severe, refractory, or impacting sleep, growth, or psychosocial health.</li></ul>',
+      explanation:
+        '<p>Barrier repair anchors therapy, so moisturizers and wet wraps bookend every escalation. Potency matching prevents steroid atrophy, while calcineurin inhibitors protect delicate sites. Bleach baths cut bacterial colonization, and new JAK inhibitors such as ruxolitinib expand options for moderate disease. Escalate early when quality of life suffers.</p>',
       sources: [
         {
           label: 'American Academy of Pediatrics – Treatment of Atopic Dermatitis',
@@ -20,7 +120,7 @@ window.mediCardsDeck = {
           url: 'https://www.aaaai.org/Aaaai/media/Media-Library-PDFs/Allergist%20Resources/Statements%20and%20Practice%20Parameters/JTF-Atopic-Dermatitis-Guideline-2023-07-31-2026.pdf?utm_source=chatgpt.com'
         },
         {
-          label: 'FDA expands Opzelura approval to ages 2–11',
+          label: 'Managed Healthcare Executive – Opzelura label expansion',
           url: 'https://www.managedhealthcareexecutive.com/view/fda-expands-approval-of-opzelura-cream-to-children-ages-2-to-11-with-atopic-dermatitis?utm_source=chatgpt.com'
         }
       ]
@@ -61,7 +161,7 @@ window.mediCardsDeck = {
       title: 'Tinea Infections',
       shortLabel: 'Tinea patterns',
       question:
-        '<strong>Presentation:</strong> Annular plaques with leading scale (corporis/pedis) or patchy alopecia with scale and kerion (capitis).<br><br>Which diagnostics and treatments are most reliable for kids?',
+        '<strong>Clue:</strong> Round scaly patches or alopecia with “black dots” point to tinea corporis/capitis.<br><br>Which diagnostics and treatments are most reliable for kids?',
       answer:
         '<ul><li>Confirm with KOH scraping; send fungal culture for scalp disease or atypical cases.</li><li>Treat corporis/pedis with topical allylamine or azole; avoid steroid combinations.</li><li>For tinea capitis, prescribe systemic therapy (griseofulvin 20–25 mg/kg/day microsize for 6–8 weeks or weight-based terbinafine) plus antifungal shampoo to limit shedding.</li></ul>',
       explanation:
@@ -145,11 +245,11 @@ window.mediCardsDeck = {
       title: 'Infantile Hemangioma',
       shortLabel: 'Infantile hemangioma',
       question:
-        '<strong>Presentation:</strong> Rapidly growing vascular plaque/nodule in the first months of life.<br><br>Which lesions warrant early referral and what is the frontline therapy?',
+        '<strong>Rapid clue:</strong> Rapidly growing red-purple plaque in an infant suggests infantile hemangioma (IH).<br><br>How do you risk-stratify, investigate, and treat?',
       answer:
-        '<ul><li>Refer urgently if the lesion threatens function (eye, airway), is ulcerated, large facial/segmental, or high risk for disfigurement.</li><li>Oral propranolol (2–3 mg/kg/day divided) is first-line for high-risk infantile hemangiomas per AAP guideline.</li><li>Topical timolol can be considered for small superficial lesions.</li></ul>',
+        '<ul><li><strong>Key clues:</strong> Growth peaks by 3–5 months. High-risk sites include periocular region, airway, beard area, ulcerated, segmental, or multiple lesions.</li><li><strong>Tests:</strong> Diagnosis is clinical; order US/MRI only for diagnostic uncertainty, deep lesions, or syndromic concern. Screen for PHACE (Posterior fossa malformations, Hemangiomas, Arterial anomalies, Cardiac defects/coarctation, Eye abnormalities) and LUMBAR (Lower body hemangioma, Urogenital anomalies, Myelopathy, Bony deformities, Anorectal malformations, Renal anomalies) when indicated.</li><li><strong>Treatment:</strong> Early risk-stratify. Beta-blockers are first-line &mdash; oral propranolol 2–3 mg/kg/day divided for function- or life-threatening or disfiguring IH; topical timolol for small superficial lesions; provide wound care for ulcers and refer early (by 1 month) for high-risk sites.</li></ul>',
       explanation:
-        '<p>Infantile hemangiomas proliferate rapidly between 1 and 3 months; early risk stratification prevents functional compromise and scarring. Systemic propranolol, started ideally before 5 months of age, accelerates involution and minimizes complications. Imaging is reserved for segmental patterns, airway involvement, or when diagnosis is uncertain.</p>',
+        '<p>Fast growth during the proliferative phase demands prompt evaluation so that propranolol can be started before complications arise. Imaging and multidisciplinary workup target infants with segmental or syndromic patterns (PHACE, LUMBAR). Topical timolol suits small superficial plaques, while ulcerated lesions need wound care and pain control alongside systemic therapy.</p>',
       sources: [
         {
           label: 'AAP Guideline – Management of Infantile Hemangiomas',
@@ -193,39 +293,15 @@ window.mediCardsDeck = {
       title: 'Urticaria (Acute)',
       shortLabel: 'Acute urticaria',
       question:
-        '<strong>Presentation:</strong> Transient, itchy wheals with or without angioedema; always assess for anaphylaxis.<br><br>How do you control symptoms and counsel families?',
+        '<strong>Presentation:</strong> Transient, pruritic wheals that wax and wane within hours; may include angioedema or anaphylaxis.<br><br>What is the management mantra for acute hives?',
       answer:
-        '<ul><li>Start second-generation oral H1 antihistamines (cetirizine, loratadine, fexofenadine) and titrate to control.</li><li>Reserve short corticosteroid bursts for severe, refractory cases.</li><li>Administer intramuscular epinephrine immediately if anaphylaxis signs are present.</li></ul>',
+        '<ul><li>Start second-generation H1 antihistamines (cetirizine, loratadine, fexofenadine) and uptitrate for control.</li><li>Reserve short steroid bursts only for severe, refractory cases.</li><li>Deliver intramuscular epinephrine immediately if anaphylaxis: “Blue to the sky, orange to the thigh.”</li></ul>',
       explanation:
-        '<p>Acute urticaria often follows infections, foods, or medications and resolves within days to weeks. Non-sedating antihistamines are preferred for daytime use and can be dosed up to fourfold in older children under supervision. Educate caregivers about triggers, anaphylaxis warning signs, and the generally self-limited course.</p>',
+        '<p>Acute urticaria is usually infection or allergy triggered, presenting as fleeting wheals that migrate within 24 hours. Prioritize nonsedating antihistamines, escalating the dose under supervision when needed. Teach families to recognize angioedema or respiratory compromise and to deploy epinephrine without delay while seeking emergency care.</p>',
       sources: [
         {
           label: 'AAP Pediatrics in Review – Urticaria, Angioedema, and Anaphylaxis',
           url: 'https://publications.aap.org/pediatricsinreview/article/41/6/283/35410/Urticaria-Angioedema-and-Anaphylaxis?utm_source=chatgpt.com'
-        }
-      ]
-    },
-    {
-      title: 'Fast Diagnostic Clues',
-      shortLabel: 'Rapid tests',
-      question:
-        '<strong>Scenario:</strong> You are triaging rashes in clinic.<br><br>Which quick tests help separate look-alike diagnoses?',
-      answer:
-        '<ul><li>KOH prep distinguishes dermatophyte infections from eczema or psoriasis.</li><li>Bacterial culture supports management of widespread or refractory impetigo.</li><li>Mineral oil scraping or dermoscopy can document scabies mites, eggs, or scybala.</li></ul>',
-      explanation:
-        '<p>Judicious bedside testing streamlines management without over-ordering labs. A KOH scraping highlights branching hyphae of tinea, while cultures refine antibiotic choice for impetigo. Although scabies remains a clinical diagnosis, identifying mites or ova helps families commit to thorough decontamination and simultaneous treatment of contacts.</p>',
-      sources: [
-        {
-          label: 'AAFP – Diagnosis and Management of Tinea Infections',
-          url: 'https://www.aafp.org/pubs/afp/issues/2014/1115/p702.html?utm_source=chatgpt.com'
-        },
-        {
-          label: 'CDC – Clinical Guidance for Impetigo',
-          url: 'https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/impetigo.html?utm_source=chatgpt.com'
-        },
-        {
-          label: 'CDC – Clinical Care of Scabies',
-          url: 'https://www.cdc.gov/scabies/hcp/clinical-care/index.html?utm_source=chatgpt.com'
         }
       ]
     }
