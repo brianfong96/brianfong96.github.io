@@ -1,5 +1,50 @@
 import { loadDeckData } from './pediatric-dermatology.js';
 
+function setStatusMessage(message) {
+  const statusEl = document.getElementById('readStatus');
+  if (statusEl) {
+    statusEl.textContent = message;
+  }
+}
+
+function disableInterface(disabled) {
+  const interactiveElements = document.querySelectorAll('.controls button, .controls select');
+  interactiveElements.forEach((element) => {
+    element.disabled = disabled;
+  });
+}
+
+function showDeckLoadError(message) {
+  disableInterface(true);
+  setStatusMessage(message);
+
+  const selector = document.getElementById('cardSelector');
+  if (selector) {
+    selector.innerHTML = '';
+  }
+
+  const cardQuestion = document.getElementById('cardQuestion');
+  const cardAnswer = document.getElementById('cardAnswer');
+  const cardCount = document.getElementById('cardCount');
+  const explanationPanel = document.getElementById('explanationPanel');
+
+  if (cardQuestion) {
+    cardQuestion.innerHTML = `<div class="card-error">${message}</div>`;
+  }
+
+  if (cardAnswer) {
+    cardAnswer.innerHTML = '';
+  }
+
+  if (cardCount) {
+    cardCount.textContent = '';
+  }
+
+  if (explanationPanel) {
+    explanationPanel.hidden = true;
+  }
+}
+
 class CardPresenter {
   constructor({ questionEl, answerEl, explanationEl, sourcesEl }) {
     this.questionEl = questionEl;
@@ -575,11 +620,14 @@ class DeckController {
 }
 
 (async function initialiseDeck() {
+  setStatusMessage('Loading pediatric dermatology cards...');
+
   try {
     const deck = await loadDeckData();
     const controller = new DeckController(deck);
     controller.init();
   } catch (error) {
     console.error('Unable to load deck data.', error);
+    showDeckLoadError('We could not load the pediatric dermatology cards. Please refresh the page or try again later.');
   }
 })();

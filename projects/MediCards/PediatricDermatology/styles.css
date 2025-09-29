@@ -205,6 +205,15 @@ button.nav-button {
   scrollbar-width: thin;
 }
 
+.card-error {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text);
+  text-align: center;
+  margin: auto;
+  max-width: 26ch;
+}
+
 .card-content p {
   margin: 0 0 0.85rem;
 }

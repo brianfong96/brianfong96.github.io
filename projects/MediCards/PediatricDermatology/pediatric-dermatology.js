@@ -16,24 +16,35 @@ function sortCards(cards) {
   });
 }
 
-export async function loadDeckData() {
-  const sections = [];
-
-  for (const section of deckSections) {
-    const module = await import(section.module);
+async function loadSection(section) {
+  try {
+    const moduleUrl = new URL(section.module, import.meta.url);
+    const module = await import(moduleUrl.href);
     const definition = module.default;
 
     if (!definition || !Array.isArray(definition.cards)) {
       console.warn(`Deck section "${section.id}" did not export a valid cards array.`);
-      continue;
+      return null;
     }
 
     const sortedCards = sortCards(definition.cards).map((card) => normalizeCard(card, section.id));
-    sections.push({
+    return {
       id: section.id,
       label: section.label || definition.label,
       cards: sortedCards
-    });
+    };
+  } catch (error) {
+    console.error(`Unable to load deck section "${section.id}" from ${section.module}`, error);
+    return null;
+  }
+}
+
+export async function loadDeckData() {
+  const resolvedSections = await Promise.all(deckSections.map((section) => loadSection(section)));
+  const sections = resolvedSections.filter(Boolean);
+
+  if (!sections.length) {
+    throw new Error('No pediatric dermatology sections could be loaded.');
   }
 
   const flattenedCards = sections.flatMap((section) => section.cards);
