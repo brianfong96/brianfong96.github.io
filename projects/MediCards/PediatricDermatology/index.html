@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediCards | Pediatric Dermatology</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="page-header">
+    <a class="home-link" href="../index.html">&larr; MediCards Home</a>
+    <h1>MediCards</h1>
+    <p class="page-subtitle">Pediatric Dermatology Flash Cards</p>
+  </header>
+
+  <main class="layout">
+    <section class="controls" aria-label="Deck controls">
+      <div class="control-section">
+        <h2 class="control-title">Browse topics</h2>
+        <label for="sectionSelector" class="control-label">Topic group</label>
+        <select id="sectionSelector" aria-label="Select a topic group"></select>
+      </div>
+
+      <div class="control-section">
+        <h2 class="control-title">Find a card</h2>
+        <label for="cardSelector" class="control-label">Jump to card</label>
+        <select id="cardSelector" aria-label="Select a card"></select>
+      </div>
+
+      <div class="control-section">
+        <h2 class="control-title">Navigate</h2>
+        <div class="control-row">
+          <button id="prevCard" class="nav-button" type="button">&#9664; Previous</button>
+          <button id="nextCard" class="nav-button" type="button">Next &#9654;</button>
+        </div>
+      </div>
+
+      <div class="control-section">
+        <h2 class="control-title">Card actions</h2>
+        <div class="control-row">
+          <button id="randomCard" type="button">Surprise Me</button>
+          <button id="flipCard" type="button">Flip</button>
+          <button id="toggleExplanation" type="button">Explanation</button>
+        </div>
+      </div>
+
+      <div class="control-section">
+        <h2 class="control-title">Audio support</h2>
+        <div class="control-row">
+          <button id="readAloud" type="button" data-state="ready">Read Aloud</button>
+          <button id="stopAudio" type="button" class="secondary" disabled>Stop</button>
+        </div>
+        <p id="readStatus" class="assistive-text" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section class="card-stage" aria-live="polite">
+      <div class="card-wrapper">
+        <div class="card" id="flashCard">
+          <div class="card-inner" id="cardInner">
+            <article class="card-face card-front" id="cardQuestion" aria-label="Question"></article>
+            <article class="card-face card-back" id="cardAnswer" aria-label="Answer"></article>
+          </div>
+        </div>
+        <p class="card-count" id="cardCount"></p>
+      </div>
+    </section>
+
+    <aside class="explanation-panel" id="explanationPanel" hidden>
+      <h2>Deeper Dive</h2>
+      <div id="explanationText" class="explanation-body"></div>
+      <div id="sources"></div>
+    </aside>
+  </main>
+
+  <footer class="page-footer">
+    <p>Built for rapid clinical refreshers &mdash; switch decks by loading a different specialization.</p>
+  </footer>
+
+  <script type="module" src="mediCards.js"></script>
+</body>
+</html>

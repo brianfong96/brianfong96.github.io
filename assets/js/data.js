@@ -1,6 +1,12 @@
 const siteData = {
     projects: [
         {
+            title: 'MediCards',
+            url: 'projects/MediCards/index.html',
+            description: 'Clinical flashcards with animated flips, explanations, and text-to-speech support.',
+            section: 'Projects'
+        },
+        {
             title: 'R.P.R.P.G.',
             url: 'projects/RPRPG/index.html',
             description: 'Generate reproducible random passwords using memorable answers.',

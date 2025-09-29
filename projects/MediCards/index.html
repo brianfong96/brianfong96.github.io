@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediCards | Clinical Flashcards</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="hero">
+      <p class="eyebrow">Projects &middot; MediCards</p>
+      <h1>Build bedside confidence, one flip at a time.</h1>
+      <p class="lead">
+        Pick a specialization to launch an interactive flashcard deck with rich explanations,
+        source links, and text-to-speech accessibility powered by a free cloud narrator.
+      </p>
+      <a class="primary-action" href="../.. /projects.html">Back to Projects</a>
+    </header>
+
+    <main>
+      <section class="deck-grid" aria-label="Available MediCards decks">
+        <article class="deck-card">
+          <h2>Pediatric Dermatology</h2>
+          <p>
+            Cover common clinic rashes with lesion vocabulary, smart safety-net criteria, quick
+            diagnostic tests, and management pearls. Includes linked guidelines and audible readouts.
+          </p>
+          <div class="card-footer">
+            <span class="pill">Updated</span>
+            <a class="secondary-action" href="PediatricDermatology/index.html">Open deck</a>
+          </div>
+        </article>
+        <article class="deck-card placeholder" aria-disabled="true">
+          <h2>More specialties coming soon</h2>
+          <p>
+            Build future decks by adding a new folder under <code>projects/MediCards/&lt;Specialization&gt;</code>
+            with its own HTML, CSS, and JavaScript bundle.
+          </p>
+        </article>
+      </section>
+
+      <section class="usage" aria-label="How MediCards works">
+        <div class="usage-panel">
+          <h2>How to add a new deck</h2>
+          <ol>
+            <li>Create a folder for your specialization under <code>projects/MediCards/</code>.</li>
+            <li>Add an <code>index.html</code> that loads a specialization-specific data script and the shared deck logic.</li>
+            <li>Populate a <code>&lt;Specialization&gt;.js</code> file that sets <code>window.mediCardsDeck</code> with cards, explanations, and sources.</li>
+          </ol>
+        </div>
+        <div class="usage-panel">
+          <h2>Accessibility first</h2>
+          <p>
+            Deck pages include keyboard navigation, high-contrast theming, and a cloud text-to-speech
+            button that can read the current question and answer aloud. If the online narrator is
+            unreachable, the browser’s built-in speech synthesis steps in when available.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> MediCards &bull; Built for rapid clinical refreshers.</p>
+    </footer>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
