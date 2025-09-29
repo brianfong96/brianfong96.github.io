@@ -22,6 +22,7 @@
   const flipBtn = document.getElementById('flipCard');
   const explanationBtn = document.getElementById('toggleExplanation');
   const readBtn = document.getElementById('readAloud');
+  const stopBtn = document.getElementById('stopAudio');
   const readStatus = document.getElementById('readStatus');
 
   const speechSupported = 'speechSynthesis' in window;
@@ -48,13 +49,45 @@
 
     answerEl.innerHTML = `
       <h2>Answer</h2>
-      <div class="card-content">${card.answer}</div>
+      <div class="card-content">${card.answer}${buildAnswerSupplement(card)}</div>
     `;
 
     explanationText.innerHTML = card.explanation;
     renderSources(card.sources || []);
     cardCountEl.textContent = `Card ${currentIndex + 1} of ${deck.cards.length}`;
     selector.value = String(currentIndex);
+  }
+
+  function buildAnswerSupplement(card) {
+    const extras = [];
+
+    if (card.answerSummary) {
+      extras.push(
+        `<div class="answer-summary"><strong>Why it matters:</strong> ${card.answerSummary}</div>`
+      );
+    }
+
+    const imageLink = buildImageSearchLink(card);
+    if (imageLink) {
+      extras.push(imageLink);
+    }
+
+    return extras.join('');
+  }
+
+  function buildImageSearchLink(card) {
+    if (card.imageSearchUrl) {
+      const label = card.imageSearchLabel || 'View Google image search results';
+      return `<p class="image-search"><a href="${card.imageSearchUrl}" target="_blank" rel="noopener noreferrer">${label}</a></p>`;
+    }
+
+    if (!card.imageSearchQuery) {
+      return '';
+    }
+
+    const encoded = encodeURIComponent(card.imageSearchQuery);
+    const label = card.imageSearchLabel || `See Google Images for ${card.imageSearchQuery}`;
+    return `<p class="image-search"><a href="https://www.google.com/search?tbm=isch&q=${encoded}" target="_blank" rel="noopener noreferrer">${label}</a></p>`;
   }
 
   function renderSources(sources) {
@@ -81,6 +114,7 @@
   function goToCard(index) {
     const normalizedIndex = (index + deck.cards.length) % deck.cards.length;
     currentIndex = normalizedIndex;
+    stopNarration(undefined, { suppressStatus: true });
     cardWrapper.classList.remove('transitioning');
     void cardWrapper.offsetWidth; // trigger reflow for animation restart
     cardWrapper.classList.add('transitioning');
@@ -88,6 +122,7 @@
     explanationPanel.hidden = true;
     explanationBtn.textContent = 'Explanation';
     applyCardContent(deck.cards[currentIndex]);
+    setReadStatus('Card ready. Tap “Read Aloud” to hear the question.');
   }
 
   function nextCard() {
@@ -110,7 +145,13 @@
   }
 
   function flipCard() {
+    stopNarration(undefined, { suppressStatus: true });
     cardElement.classList.toggle('is-flipped');
+    const isAnswerShowing = cardElement.classList.contains('is-flipped');
+    const message = isAnswerShowing
+      ? 'Answer showing. Tap “Read Aloud” to hear it.'
+      : 'Question showing. Tap “Read Aloud” to hear it.';
+    setReadStatus(message);
   }
 
   function toggleExplanation() {
@@ -127,12 +168,15 @@
     readBtn.disabled = false;
     readBtn.dataset.state = 'ready';
     readBtn.textContent = 'Read Aloud';
+    stopBtn.disabled = true;
     if (message) {
       setReadStatus(message);
     }
   }
 
-  function stopNarration(statusMessage = 'Narration stopped.') {
+  function stopNarration(statusMessage, options = {}) {
+    const { suppressStatus = false } = options;
+    narrationRequestToken += 1;
     audioPlayer.pause();
     audioPlayer.currentTime = 0;
     if (currentAudioUrl) {
@@ -143,7 +187,11 @@
       window.speechSynthesis.cancel();
       activeUtterance = null;
     }
-    resetNarrationControl(statusMessage);
+    if (suppressStatus) {
+      resetNarrationControl();
+    } else {
+      resetNarrationControl(statusMessage || 'Narration stopped.');
+    }
   }
 
   function setReadStatus(message) {
@@ -159,16 +207,43 @@
     stopNarration('Unable to play the generated audio.');
   });
 
+  let narrationRequestToken = 0;
+
   async function speakCard() {
     if (readBtn.dataset.state === 'playing' || readBtn.dataset.state === 'loading') {
-      stopNarration();
       return;
     }
 
+    stopNarration(undefined, { suppressStatus: true });
+
     const card = deck.cards[currentIndex];
-    const narrationText = `${card.title}. Question: ${stripHtml(card.question)}. Answer: ${stripHtml(
-      card.answer
-    )}.`;
+    const isAnswerShowing = cardElement.classList.contains('is-flipped');
+    const narrationToken = ++narrationRequestToken;
+
+    const questionText = stripHtml(card.question);
+    const answerText = stripHtml(card.answer);
+    const answerSummary = card.answerSummary ? stripHtml(card.answerSummary) : '';
+    const narrationSegments = [card.title];
+
+    if (isAnswerShowing) {
+      if (answerText) {
+        narrationSegments.push(answerText);
+      }
+      if (answerSummary) {
+        narrationSegments.push(answerSummary);
+      }
+    } else {
+      if (questionText) {
+        narrationSegments.push(questionText);
+      }
+    }
+
+    const narrationText = narrationSegments.join('. ').replace(/\s+/g, ' ').trim();
+
+    if (!narrationText) {
+      setReadStatus('Nothing to narrate for this card.');
+      return;
+    }
 
     if (activeUtterance) {
       window.speechSynthesis.cancel();
@@ -184,7 +259,10 @@
     readBtn.disabled = true;
     readBtn.dataset.state = 'loading';
     readBtn.textContent = 'Generating audio...';
-    setReadStatus('Requesting cloud text-to-speech audio...');
+    stopBtn.disabled = false;
+    setReadStatus(
+      `Requesting ${isAnswerShowing ? 'answer' : 'question'} narration from the cloud service...`
+    );
 
     try {
       const response = await fetch(ttsEndpoint, {
@@ -198,12 +276,18 @@
       }
 
       const audioBlob = await response.blob();
+
+      if (narrationToken !== narrationRequestToken) {
+        return;
+      }
+
       currentAudioUrl = URL.createObjectURL(audioBlob);
       audioPlayer.src = currentAudioUrl;
       readBtn.dataset.state = 'playing';
-      readBtn.textContent = 'Playing narration...';
-      readBtn.disabled = false;
-      setReadStatus('Playing generated narration. Tap again to stop.');
+      readBtn.textContent = isAnswerShowing ? 'Playing answer...' : 'Playing question...';
+      setReadStatus(
+        `Playing the ${isAnswerShowing ? 'answer' : 'question'}. Use Stop to end playback early.`
+      );
       await audioPlayer.play();
     } catch (error) {
       console.error('Cloud TTS failed; falling back to browser speech if available.', error);
@@ -213,7 +297,11 @@
       }
 
       if (speechSupported) {
-        setReadStatus('Online TTS unavailable. Using browser speech.');
+        if (narrationToken !== narrationRequestToken) {
+          return;
+        }
+
+        setReadStatus('Online TTS unavailable. Using browser speech synthesis.');
         activeUtterance = new SpeechSynthesisUtterance(narrationText);
         activeUtterance.lang = 'en-US';
         activeUtterance.rate = 1;
@@ -226,8 +314,8 @@
           resetNarrationControl('Unable to narrate this card.');
         };
         readBtn.dataset.state = 'playing';
-        readBtn.textContent = 'Speaking...';
-        readBtn.disabled = false;
+        readBtn.textContent = isAnswerShowing ? 'Speaking answer...' : 'Speaking question...';
+        stopBtn.disabled = false;
         window.speechSynthesis.speak(activeUtterance);
       } else {
         resetNarrationControl('Audio narration is unavailable right now.');
@@ -244,7 +332,6 @@
   populateSelector();
   goToCard(0);
   resetNarrationControl();
-  setReadStatus('Tap “Read Aloud” to hear this card.');
 
   selector.addEventListener('change', (event) => {
     goToCard(Number(event.target.value));
@@ -256,6 +343,7 @@
   cardElement.addEventListener('click', flipCard);
   explanationBtn.addEventListener('click', toggleExplanation);
   readBtn.addEventListener('click', speakCard);
+  stopBtn.addEventListener('click', () => stopNarration());
 
   if (!speechSupported) {
     setReadStatus('Browser speech unavailable. Using online narrator when possible.');
