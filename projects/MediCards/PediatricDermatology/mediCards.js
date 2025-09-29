@@ -39,6 +39,70 @@ function disableInterface(disabled) {
   });
 }
 
+function setupControlsToggle() {
+  const toggle = document.querySelector('[data-controls-toggle]');
+  const controls = document.getElementById('deckControls');
+
+  if (!toggle || !controls) {
+    return;
+  }
+
+  toggle.classList.add('is-visible');
+
+  const mobileQuery = window.matchMedia('(max-width: 959px)');
+  const openLabel = toggle.dataset.labelOpen || 'Hide deck controls';
+  const closedLabel = toggle.dataset.labelClosed || 'Show deck controls';
+
+  let isMobile = mobileQuery.matches;
+  let isExpandedOnMobile = false;
+
+  const update = (expanded) => {
+    toggle.setAttribute('aria-expanded', String(expanded));
+    toggle.textContent = expanded ? openLabel : closedLabel;
+
+    if (isMobile) {
+      controls.hidden = !expanded;
+    } else {
+      controls.hidden = false;
+    }
+  };
+
+  const handleViewportChange = () => {
+    isMobile = mobileQuery.matches;
+    if (isMobile) {
+      update(isExpandedOnMobile);
+    } else {
+      update(true);
+    }
+  };
+
+  toggle.addEventListener('click', () => {
+    const expanded = toggle.getAttribute('aria-expanded') === 'true';
+    const nextState = !expanded;
+
+    if (isMobile) {
+      isExpandedOnMobile = nextState;
+    }
+
+    update(nextState);
+
+    if (nextState && isMobile) {
+      const firstInteractive = controls.querySelector('select, button');
+      if (firstInteractive) {
+        firstInteractive.focus();
+      }
+    }
+  });
+
+  if (typeof mobileQuery.addEventListener === 'function') {
+    mobileQuery.addEventListener('change', handleViewportChange);
+  } else if (typeof mobileQuery.addListener === 'function') {
+    mobileQuery.addListener(handleViewportChange);
+  }
+
+  handleViewportChange();
+}
+
 function showDeckLoadError(message) {
   disableInterface(true);
   setStatusMessage(message);
@@ -764,6 +828,7 @@ class DeckController {
 }
 
 (async function initialiseDeck() {
+  setupControlsToggle();
   setStatusMessage('Loading pediatric dermatology cards...');
 
   try {

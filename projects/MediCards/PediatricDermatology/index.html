@@ -17,7 +17,18 @@
   </header>
 
   <main class="layout">
-    <section class="controls" aria-label="Deck controls">
+    <button
+      class="controls-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="deckControls"
+      data-controls-toggle
+      data-label-open="Hide deck controls"
+      data-label-closed="Show deck controls"
+    >
+      Show deck controls
+    </button>
+    <section class="controls" id="deckControls" aria-label="Deck controls">
       <div class="control-section">
         <h2 class="control-title">Browse topics</h2>
         <label for="sectionSelector" class="control-label">Topic group</label>
