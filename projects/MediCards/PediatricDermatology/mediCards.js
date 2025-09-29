@@ -1,5 +1,30 @@
 import { loadDeckData } from './pediatric-dermatology.js';
 
+function replaceElementChildren(element, ...nodes) {
+  if (!element) {
+    return;
+  }
+
+  while (element.firstChild) {
+    element.removeChild(element.firstChild);
+  }
+
+  const queue = [];
+  nodes.forEach((node) => {
+    if (Array.isArray(node)) {
+      queue.push(...node);
+    } else {
+      queue.push(node);
+    }
+  });
+
+  queue
+    .filter((node) => node !== null && node !== undefined)
+    .forEach((node) => {
+      element.append(node);
+    });
+}
+
 function setStatusMessage(message) {
   const statusEl = document.getElementById('readStatus');
   if (statusEl) {
@@ -75,7 +100,7 @@ class CardPresenter {
       });
     }
 
-    this.questionEl.replaceChildren(heading, content);
+    replaceElementChildren(this.questionEl, heading, content);
   }
 
   renderAnswer(card) {
@@ -112,22 +137,22 @@ class CardPresenter {
       content.append(imageLink);
     }
 
-    this.answerEl.replaceChildren(heading, content);
+    replaceElementChildren(this.answerEl, heading, content);
   }
 
   renderExplanation(card) {
     const explanation = Array.isArray(card.explanation) ? card.explanation : [];
     if (!explanation.length) {
-      this.explanationEl.replaceChildren();
+      replaceElementChildren(this.explanationEl);
       return;
     }
 
     const fragments = explanation.map((paragraph) => this.createParagraph(paragraph));
-    this.explanationEl.replaceChildren(...fragments);
+    replaceElementChildren(this.explanationEl, fragments);
   }
 
   renderSources(sources) {
-    this.sourcesEl.replaceChildren();
+    replaceElementChildren(this.sourcesEl);
 
     if (!sources.length) {
       this.sourcesEl.hidden = true;
@@ -328,7 +353,7 @@ class DeckController {
       fragment.append(option);
     });
 
-    this.sectionSelector.replaceChildren(fragment);
+    replaceElementChildren(this.sectionSelector, fragment);
     this.sectionSelector.value = 'all';
   }
 
@@ -400,12 +425,12 @@ class DeckController {
     empty.className = 'card-empty';
     empty.textContent = message;
 
-    this.questionEl.replaceChildren(empty);
-    this.answerEl.replaceChildren();
+    replaceElementChildren(this.questionEl, empty);
+    replaceElementChildren(this.answerEl);
     this.cardCountEl.textContent = '';
     this.explanationPanel.hidden = true;
     this.explanationBtn.textContent = 'Explanation';
-    this.sourcesEl.replaceChildren();
+    replaceElementChildren(this.sourcesEl);
   }
 
   bindEvents() {
