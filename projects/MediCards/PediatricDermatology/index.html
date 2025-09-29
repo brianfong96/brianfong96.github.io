@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediCards | Pediatric Dermatology</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="page-header">
+    <h1>MediCards</h1>
+    <p class="page-subtitle">Pediatric Dermatology Flash Cards</p>
+  </header>
+
+  <main class="layout">
+    <section class="controls" aria-label="Deck controls">
+      <div class="control-group">
+        <label for="cardSelector">Jump to card</label>
+        <select id="cardSelector" aria-label="Select a card"></select>
+      </div>
+      <div class="control-group">
+        <button id="prevCard" class="nav-button" type="button">&#9664; Previous</button>
+        <button id="nextCard" class="nav-button" type="button">Next &#9654;</button>
+      </div>
+      <div class="control-group">
+        <button id="randomCard" type="button">Surprise Me</button>
+        <button id="flipCard" type="button">Flip</button>
+        <button id="toggleExplanation" type="button">Explanation</button>
+      </div>
+      <div class="control-group">
+        <button id="readAloud" type="button" aria-live="polite">Read Aloud</button>
+      </div>
+    </section>
+
+    <section class="card-stage" aria-live="polite">
+      <div class="card-wrapper">
+        <div class="card" id="flashCard">
+          <div class="card-inner" id="cardInner">
+            <article class="card-face card-front" id="cardQuestion" aria-label="Question"></article>
+            <article class="card-face card-back" id="cardAnswer" aria-label="Answer"></article>
+          </div>
+        </div>
+        <p class="card-count" id="cardCount"></p>
+      </div>
+    </section>
+
+    <aside class="explanation-panel" id="explanationPanel" hidden>
+      <h2>Deeper Dive</h2>
+      <p id="explanationText"></p>
+      <div id="sources"></div>
+    </aside>
+  </main>
+
+  <footer class="page-footer">
+    <p>Built for rapid clinical refreshers &mdash; switch decks by loading a different specialization.</p>
+  </footer>
+
+  <script src="pediatric-dermatology.js" defer></script>
+  <script src="mediCards.js" defer></script>
+</body>
+</html>
