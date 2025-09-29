@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title>Erosion illustration</title>
+  <desc>Abstract depiction of a shallow epidermal loss.</desc>
+  <defs>
+    <linearGradient id="erosionBase" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fca5a5" />
+      <stop offset="100%" stop-color="#f87171" />
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="#0f172a" />
+  <ellipse cx="320" cy="250" rx="230" ry="150" fill="#fecdd3" opacity="0.55" />
+  <ellipse cx="320" cy="240" rx="190" ry="120" fill="url(#erosionBase)" opacity="0.9" />
+  <ellipse cx="320" cy="240" rx="150" ry="95" fill="#fee2e2" opacity="0.75" />
+  <ellipse cx="320" cy="240" rx="110" ry="70" fill="#fff7ed" opacity="0.55" />
+</svg>

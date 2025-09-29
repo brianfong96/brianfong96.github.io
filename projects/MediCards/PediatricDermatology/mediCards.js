@@ -42,13 +42,18 @@
   }
 
   function applyCardContent(card) {
+    const questionFigure = buildCardFigure(card.questionImage || card.image, card.questionImageAlt || card.imageAlt);
+    const answerFigure = buildCardFigure(card.answerImage, card.answerImageAlt);
+
     questionEl.innerHTML = `
       <h2>${card.title}</h2>
+      ${questionFigure}
       <div class="card-content">${card.question}</div>
     `;
 
     answerEl.innerHTML = `
       <h2>Answer</h2>
+      ${answerFigure}
       <div class="card-content">${card.answer}${buildAnswerSupplement(card)}</div>
     `;
 
@@ -56,6 +61,19 @@
     renderSources(card.sources || []);
     cardCountEl.textContent = `Card ${currentIndex + 1} of ${deck.cards.length}`;
     selector.value = String(currentIndex);
+  }
+
+  function buildCardFigure(src, altText) {
+    if (!src) {
+      return '';
+    }
+
+    const safeAlt = altText ? altText.replace(/"/g, '&quot;') : '';
+    return `
+      <figure class="card-figure">
+        <img src="${src}" alt="${safeAlt}" loading="lazy" />
+      </figure>
+    `;
   }
 
   function buildAnswerSupplement(card) {

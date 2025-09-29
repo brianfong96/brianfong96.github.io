@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title>Quick tests illustration</title>
+  <desc>Stylized lab tools indicating point-of-care testing.</desc>
+  <defs>
+    <linearGradient id="tubeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0ea5e9" />
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="#0f172a" />
+  <g transform="translate(150,90)">
+    <rect x="40" y="30" width="120" height="260" rx="40" fill="#1d4ed8" opacity="0.85" />
+    <rect x="70" y="60" width="60" height="200" rx="24" fill="#93c5fd" />
+    <rect x="200" y="0" width="90" height="320" rx="40" fill="url(#tubeGradient)" />
+    <rect x="205" y="30" width="80" height="230" rx="30" fill="#e0f2fe" opacity="0.85" />
+    <rect x="340" y="70" width="80" height="220" rx="20" fill="#facc15" opacity="0.85" />
+    <circle cx="380" cy="220" r="32" fill="#f97316" opacity="0.8" />
+    <rect x="340" y="60" width="80" height="40" rx="12" fill="#fcd34d" />
+  </g>
+</svg>

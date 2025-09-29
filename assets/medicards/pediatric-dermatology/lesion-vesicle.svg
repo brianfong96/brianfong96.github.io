@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title>Vesicle illustration</title>
+  <desc>Abstract depiction of translucent vesicles on erythematous base.</desc>
+  <defs>
+    <linearGradient id="vesicleBase" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#bae6fd" />
+      <stop offset="100%" stop-color="#7dd3fc" />
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="#0f172a" />
+  <ellipse cx="320" cy="250" rx="240" ry="150" fill="#fb7185" opacity="0.45" />
+  <ellipse cx="320" cy="240" rx="200" ry="130" fill="#f43f5e" opacity="0.35" />
+  <g fill="url(#vesicleBase)" opacity="0.9" stroke="#0ea5e9" stroke-width="4">
+    <circle cx="250" cy="220" r="55" />
+    <circle cx="340" cy="210" r="48" />
+    <circle cx="300" cy="280" r="42" />
+    <circle cx="370" cy="280" r="32" />
+  </g>
+  <g fill="#f8fafc" opacity="0.45">
+    <ellipse cx="240" cy="200" rx="24" ry="16" />
+    <ellipse cx="324" cy="198" rx="22" ry="14" />
+    <ellipse cx="360" cy="270" rx="18" ry="12" />
+  </g>
+</svg>

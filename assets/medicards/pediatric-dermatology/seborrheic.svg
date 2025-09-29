@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title>Seborrheic dermatitis illustration</title>
+  <desc>Stylized cradle cap care with comb and oil.</desc>
+  <rect width="640" height="480" fill="#0f172a" />
+  <g transform="translate(140,120)">
+    <ellipse cx="180" cy="100" rx="160" ry="100" fill="#fde68a" opacity="0.8" />
+    <path d="M60 120 Q180 40 300 120 L300 180 Q180 240 60 160 Z" fill="#fef3c7" opacity="0.9" />
+    <rect x="320" y="40" width="80" height="240" rx="30" fill="#38bdf8" />
+    <rect x="330" y="60" width="60" height="120" rx="20" fill="#e0f2fe" />
+    <rect x="20" y="200" width="220" height="40" rx="18" fill="#f59e0b" />
+    <rect x="40" y="210" width="160" height="20" rx="10" fill="#fbbf24" />
+  </g>
+</svg>

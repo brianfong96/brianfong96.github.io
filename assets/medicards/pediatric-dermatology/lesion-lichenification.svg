@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title>Lichenification illustration</title>
+  <desc>Abstract depiction of thickened skin with accentuated lines.</desc>
+  <defs>
+    <pattern id="crossHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="12" height="12" fill="#fde68a" opacity="0.65" />
+      <line x1="0" y1="0" x2="0" y2="12" stroke="#f59e0b" stroke-width="2" />
+    </pattern>
+  </defs>
+  <rect width="640" height="480" fill="#0f172a" />
+  <rect x="120" y="110" width="400" height="260" rx="90" fill="#92400e" opacity="0.55" />
+  <rect x="150" y="140" width="340" height="200" rx="75" fill="url(#crossHatch)" stroke="#b45309" stroke-width="8" opacity="0.9" />
+  <rect x="180" y="170" width="280" height="140" rx="60" fill="#f97316" opacity="0.35" />
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title>Scabies illustration</title>
+  <desc>Stylized tracks depicting scabies burrows.</desc>
+  <rect width="640" height="480" fill="#0f172a" />
+  <g transform="translate(120,120)">
+    <rect x="0" y="0" width="400" height="240" rx="100" fill="#fcd34d" opacity="0.35" />
+    <g fill="none" stroke="#0ea5e9" stroke-width="12" stroke-linecap="round">
+      <path d="M60 120 Q120 60 180 120 T300 160 Q360 200 340 220" />
+      <path d="M100 80 Q160 120 220 80 T320 60" opacity="0.7" />
+    </g>
+    <g fill="#f97316">
+      <circle cx="300" cy="160" r="16" />
+      <circle cx="220" cy="80" r="14" />
+    </g>
+  </g>
+</svg>

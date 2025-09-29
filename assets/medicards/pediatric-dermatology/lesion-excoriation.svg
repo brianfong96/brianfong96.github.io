@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title>Excoriation illustration</title>
+  <desc>Abstract depiction of linear scratch marks across the skin.</desc>
+  <defs>
+    <linearGradient id="excoriationBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fecdd3" />
+      <stop offset="100%" stop-color="#fb7185" />
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="#0f172a" />
+  <rect x="110" y="90" width="420" height="300" rx="110" fill="url(#excoriationBg)" opacity="0.8" />
+  <g stroke="#7f1d1d" stroke-width="10" stroke-linecap="round" opacity="0.75">
+    <path d="M170 160 L460 260" />
+    <path d="M180 220 L470 320" />
+    <path d="M160 200 L430 120" />
+  </g>
+  <g stroke="#fee2e2" stroke-width="6" stroke-linecap="round" opacity="0.6">
+    <path d="M200 180 L470 280" />
+    <path d="M210 240 L440 340" />
+  </g>
+</svg>

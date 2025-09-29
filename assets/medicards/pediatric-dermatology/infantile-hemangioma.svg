@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title>Infantile hemangioma illustration</title>
+  <desc>Stylized infant profile with facial hemangioma.</desc>
+  <rect width="640" height="480" fill="#0f172a" />
+  <g transform="translate(160,120)">
+    <circle cx="160" cy="120" r="110" fill="#fde68a" />
+    <path d="M140 80 Q200 40 240 100 T220 160 Q200 200 140 180 Z" fill="#ef4444" opacity="0.85" />
+    <path d="M40 200 Q160 260 280 200" stroke="#fbbf24" stroke-width="20" stroke-linecap="round" fill="none" />
+    <circle cx="120" cy="110" r="12" fill="#1e293b" />
+    <rect x="260" y="150" width="80" height="110" rx="40" fill="#bae6fd" />
+  </g>
+</svg>

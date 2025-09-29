@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title>Impetigo illustration</title>
+  <desc>Stylized honey-colored crust over skin.</desc>
+  <rect width="640" height="480" fill="#0f172a" />
+  <g transform="translate(120,120)">
+    <ellipse cx="200" cy="140" rx="200" ry="120" fill="#f87171" opacity="0.45" />
+    <path d="M40 160 Q200 40 360 160 T340 240 Q200 300 60 240 Z" fill="#facc15" opacity="0.9" />
+    <path d="M80 170 Q200 90 320 170 T300 230 Q200 270 100 220 Z" fill="#fbbf24" opacity="0.75" />
+    <path d="M120 190 Q200 130 280 190 T260 220 Q200 240 140 210 Z" fill="#fde68a" opacity="0.7" />
+  </g>
+</svg>

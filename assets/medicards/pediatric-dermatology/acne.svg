@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title>Acne care illustration</title>
+  <desc>Stylized skincare bottles and bubbles representing acne therapy.</desc>
+  <rect width="640" height="480" fill="#0f172a" />
+  <g transform="translate(140,120)">
+    <rect x="0" y="100" width="120" height="220" rx="28" fill="#38bdf8" />
+    <rect x="20" y="130" width="80" height="140" rx="20" fill="#e0f2fe" />
+    <rect x="160" y="0" width="130" height="320" rx="40" fill="#f472b6" />
+    <rect x="180" y="40" width="90" height="220" rx="28" fill="#fde68a" />
+    <rect x="330" y="60" width="140" height="260" rx="36" fill="#f97316" />
+    <rect x="350" y="90" width="100" height="180" rx="28" fill="#fff7ed" />
+    <g fill="#bae6fd" opacity="0.75">
+      <circle cx="70" cy="90" r="20" />
+      <circle cx="250" cy="20" r="18" />
+      <circle cx="360" cy="40" r="16" />
+    </g>
+  </g>
+</svg>

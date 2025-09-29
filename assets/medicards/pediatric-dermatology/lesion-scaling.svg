@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title>Scaling illustration</title>
+  <desc>Abstract depiction of peeling scale layers.</desc>
+  <defs>
+    <linearGradient id="scaleBg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fef3c7" />
+      <stop offset="100%" stop-color="#fde68a" />
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="#0f172a" />
+  <rect x="120" y="110" width="400" height="260" rx="90" fill="#7c3aed" opacity="0.35" />
+  <g fill="url(#scaleBg)" stroke="#c4b5fd" stroke-width="4" opacity="0.9">
+    <path d="M180 180 Q320 110 460 200 L460 260 Q320 320 180 250 Z" />
+    <path d="M200 210 Q320 150 440 230 L440 280 Q320 330 200 260 Z" transform="translate(0,40)" opacity="0.85" />
+    <path d="M220 240 Q320 190 420 250 L420 300 Q320 340 220 280 Z" transform="translate(0,70)" opacity="0.75" />
+  </g>
+</svg>

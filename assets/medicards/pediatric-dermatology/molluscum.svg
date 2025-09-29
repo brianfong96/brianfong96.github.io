@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title>Molluscum illustration</title>
+  <desc>Stylized umbilicated papules.</desc>
+  <rect width="640" height="480" fill="#0f172a" />
+  <g transform="translate(140,140)">
+    <rect x="0" y="0" width="360" height="200" rx="80" fill="#c4b5fd" opacity="0.65" />
+    <g fill="#f472b6" stroke="#fce7f3" stroke-width="6">
+      <circle cx="120" cy="100" r="46" />
+      <circle cx="200" cy="80" r="40" />
+      <circle cx="260" cy="130" r="42" />
+    </g>
+    <g fill="#fce7f3" opacity="0.7">
+      <circle cx="120" cy="100" r="18" />
+      <circle cx="200" cy="80" r="16" />
+      <circle cx="260" cy="130" r="18" />
+    </g>
+  </g>
+</svg>

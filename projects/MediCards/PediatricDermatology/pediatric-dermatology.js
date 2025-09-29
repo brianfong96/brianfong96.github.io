@@ -2,18 +2,20 @@ window.mediCardsDeck = {
   deckName: 'Pediatric Dermatology',
   cards: [
     {
-      title: 'Basic Lesion Types',
-      shortLabel: 'Lesion types',
+      title: 'Lesion Type: Erythema',
+      shortLabel: 'Erythema',
+      image: '../../assets/medicards/pediatric-dermatology/lesion-erythema.svg',
+      imageAlt: 'Stylized illustration of a warm red patch representing erythema.',
       question:
-        '<strong>Primer:</strong> Know your morphology vocabulary before tackling management pearls.<br><br>Match the term to what you expect to see on exam.',
+        '<strong>Spot it:</strong> When you see a diffuse red patch on inflamed skin, what are you looking at and why does it matter?',
       answer:
-        '<ul><li><strong>Erythema</strong> &rarr; redness from inflammation.</li><li><strong>Papules</strong> &rarr; small, raised solid bumps.</li><li><strong>Vesicles</strong> &rarr; tiny fluid-filled blisters, classic in acute eczema.</li><li><strong>Plaques</strong> &rarr; raised, flat-topped collections of papules.</li><li><strong>Lichenification</strong> &rarr; thickened skin with accentuated markings.</li><li><strong>Excoriations</strong> &rarr; linear erosions from scratching.</li><li><strong>Crusting</strong> &rarr; dried serum, blood, or pus on the surface.</li><li><strong>Scaling</strong> &rarr; dry, flaky keratin as lesions evolve.</li><li><strong>Erosions</strong> &rarr; shallow loss of epidermis after vesicles rupture.</li><li><strong>Fissures</strong> &rarr; painful linear cracks in thickened skin.</li></ul>',
+        '<ul><li><strong>Definition:</strong> Blanchable redness from dilated superficial vessels signaling inflammation or irritation.</li><li><strong>Clinical pearl:</strong> Track temperature, tenderness, and borders to distinguish cellulitis from eczema flare.</li></ul>',
       answerSummary:
-        'Mastering lesion vocabulary keeps differentials focused and links morphology to appropriate therapy choices.',
-      imageSearchQuery: 'pediatric skin lesion types',
-      imageSearchLabel: 'Explore Google Images for lesion types',
+        'Erythema reflects superficial vasodilation from inflammation, so borders, warmth, and tenderness guide your differential.',
+      imageSearchQuery: 'pediatric erythema skin lesion',
+      imageSearchLabel: 'Search Google Images for erythema examples',
       explanation:
-        '<p>Derm vocabulary anchors your flash-card review. Being precise about lesion type keeps the differential tight and guides topical therapy choices. Many pediatric eczematous disorders cycle through erythema, vesicles, crusting, and lichenification depending on chronicity, so describing each element aloud reinforces what to monitor.</p>',
+        '<p>Erythema is a primary lesion that reflects inflammatory vasodilation. In pediatrics it often accompanies eczema flares, drug eruptions, or cellulitis. Documenting borders and associated edema helps determine whether infection or dermatitis is more likely.</p>',
       sources: [
         {
           label: 'DermNet – Primary skin lesions',
@@ -22,18 +24,218 @@ window.mediCardsDeck = {
       ]
     },
     {
-      title: 'Morphology & Distribution Clues',
-      shortLabel: 'Morphology clues',
+      title: 'Lesion Type: Papule',
+      shortLabel: 'Papule',
+      image: '../../assets/medicards/pediatric-dermatology/lesion-papule.svg',
+      imageAlt: 'Stylized raised papule icon in pink hues.',
       question:
-        '<strong>Pattern recognition:</strong> Which distribution hallmarks help distinguish eczema phenotypes?',
+        '<strong>Define it:</strong> What is a papule and how does it guide your pediatric dermatology workup?',
       answer:
-        '<ul><li>Eczema is usually <strong>ill-defined</strong>; psoriasis is often well-demarcated.</li><li><strong>Flexural</strong> involvement dominates in older children (antecubital, popliteal fossae, neck, wrists).</li><li><strong>Extensor</strong> surfaces light up in infants.</li><li>Expect a <strong>symmetric</strong> distribution.</li><li>Track chronicity: acute (erythema, vesicles, oozing), subacute (crusting, scaling), chronic (lichenification, fissures).</li></ul>',
+        '<ul><li><strong>Definition:</strong> Solid, raised lesion &lt;1 cm, color varies from skin-toned to erythematous.</li><li><strong>Clinical pearl:</strong> Consider inflammatory papules (acne, dermatitis) versus infectious papules (molluscum, warts) based on umbilication, scale, and distribution.</li></ul>',
       answerSummary:
-        'Age-based distribution and border quality quickly separate eczema from mimickers like psoriasis or contact dermatitis.',
-      imageSearchQuery: 'atopic dermatitis flexural distribution children',
-      imageSearchLabel: 'See Google Images for eczema distribution clues',
+        'Papules are small solid bumps; surface changes such as umbilication or scale refine the differential.',
+      imageSearchQuery: 'pediatric papule skin lesion example',
+      imageSearchLabel: 'Search Google Images for papules',
       explanation:
-        '<p>Scanning distribution before zooming in on individual lesions accelerates bedside diagnosis. Flexural vs extensor predilection shifts with age in atopic dermatitis, while symmetry and chronicity cues narrow differentials and prevent missing mimickers such as psoriasis.</p>',
+        '<p>Papules represent dermal cellular infiltration or edema. In children, papular eruptions can signal eczema, viral exanthems, or arthropod reactions. Combine palpation (firm vs. soft) with surface findings to narrow possibilities.</p>',
+      sources: [
+        {
+          label: 'DermNet – Primary skin lesions',
+          url: 'https://dermnetnz.org/topics/primary-skin-lesions?utm_source=chatgpt.com'
+        }
+      ]
+    },
+    {
+      title: 'Lesion Type: Vesicle',
+      shortLabel: 'Vesicle',
+      image: '../../assets/medicards/pediatric-dermatology/lesion-vesicle.svg',
+      imageAlt: 'Illustration of a translucent fluid-filled vesicle.',
+      question:
+        '<strong>Fluid clue:</strong> Which lesion is a tiny fluid-filled blister and where do you expect to see it in pediatrics?',
+      answer:
+        '<ul><li><strong>Definition:</strong> Small (&lt;1 cm) clear fluid-filled blister.</li><li><strong>Clinical pearl:</strong> Common in acute eczema, varicella, and hand-foot-mouth disease—inspect for surrounding erythema or oral lesions.</li></ul>',
+      answerSummary:
+        'Vesicles signal acute inflammation or viral infection, so distribution and mucosal findings steer management.',
+      imageSearchQuery: 'pediatric vesicle blister skin',
+      imageSearchLabel: 'Search Google Images for vesicles',
+      explanation:
+        '<p>Vesicles form when fluid collects between epidermal layers. Their presence shifts suspicion toward acute eczema flares, viral exanthems, or bullous impetigo. Always assess for pain, honey crust, or systemic symptoms to rule out infection.</p>',
+      sources: [
+        {
+          label: 'DermNet – Vesicles',
+          url: 'https://dermnetnz.org/topics/blistering-diseases?utm_source=chatgpt.com'
+        }
+      ]
+    },
+    {
+      title: 'Lesion Type: Plaque',
+      shortLabel: 'Plaque',
+      image: '../../assets/medicards/pediatric-dermatology/lesion-plaque.svg',
+      imageAlt: 'Illustrated broad, flat-topped plaque.',
+      question:
+        '<strong>Shape check:</strong> What defines a plaque and which pediatric rashes form them?',
+      answer:
+        '<ul><li><strong>Definition:</strong> Raised, flat-topped lesion &gt;1 cm formed by coalescing papules.</li><li><strong>Clinical pearl:</strong> Look for plaques in psoriasis, nummular eczema, or tinea corporis (with active border).</li></ul>',
+      answerSummary:
+        'Plaques reflect confluent papules—texture, border, and scale separate eczema from psoriasis or tinea.',
+      imageSearchQuery: 'pediatric plaque skin lesion',
+      imageSearchLabel: 'Search Google Images for skin plaques',
+      explanation:
+        '<p>Plaques often signal chronic inflammatory dermatoses. In pediatrics, note whether borders are sharply demarcated (psoriasis) or annular with trailing scale (tinea). Chronic scratching can convert papules into lichenified plaques.</p>',
+      sources: [
+        {
+          label: 'DermNet – Primary skin lesions',
+          url: 'https://dermnetnz.org/topics/primary-skin-lesions?utm_source=chatgpt.com'
+        }
+      ]
+    },
+    {
+      title: 'Lesion Type: Lichenification',
+      shortLabel: 'Lichenification',
+      image: '../../assets/medicards/pediatric-dermatology/lesion-lichenification.svg',
+      imageAlt: 'Illustration of thickened skin with accentuated lines.',
+      question:
+        '<strong>Chronic clue:</strong> What is lichenification and what does it tell you about disease timing?',
+      answer:
+        '<ul><li><strong>Definition:</strong> Thickened skin with exaggerated lines from chronic rubbing or scratching.</li><li><strong>Clinical pearl:</strong> Signals long-standing atopic dermatitis or lichen simplex—ask about itch control and sleep disruption.</li></ul>',
+      answerSummary:
+        'Lichenification equals chronic itch; address triggers and potent topical anti-inflammatories.',
+      imageSearchQuery: 'lichenification chronic eczema child',
+      imageSearchLabel: 'Search Google Images for lichenification',
+      explanation:
+        '<p>When chronic inflammation drives pruritus, the epidermis thickens and accentuates skin markings. Recognizing lichenification prompts escalation to medium-potency steroids, wet wraps, or systemic therapy if quality of life is impaired.</p>',
+      sources: [
+        {
+          label: 'DermNet – Lichenification',
+          url: 'https://dermnetnz.org/topics/lichen-simplex?utm_source=chatgpt.com'
+        }
+      ]
+    },
+    {
+      title: 'Lesion Type: Excoriation',
+      shortLabel: 'Excoriation',
+      image: '../../assets/medicards/pediatric-dermatology/lesion-excoriation.svg',
+      imageAlt: 'Illustrated scratch marks across skin.',
+      question:
+        '<strong>Scratch marks:</strong> How do you describe excoriations and what complications do you watch for?',
+      answer:
+        '<ul><li><strong>Definition:</strong> Linear erosions from scratching that may crust or bleed.</li><li><strong>Clinical pearl:</strong> Excoriations invite secondary infection—screen for impetigo, scabies, or poorly controlled itch.</li></ul>',
+      answerSummary:
+        'Excoriations are self-inflicted breaks that raise infection risk; treat the itch and monitor for impetigo.',
+      imageSearchQuery: 'excoriation scratching child skin',
+      imageSearchLabel: 'Search Google Images for excoriations',
+      explanation:
+        '<p>Scratching disrupts the epidermal barrier, letting bacteria colonize and causing stinging. Address pruritus with topical anti-inflammatories and consider bleach baths when excoriations are widespread.</p>',
+      sources: [
+        {
+          label: 'DermNet – Excoriations',
+          url: 'https://dermnetnz.org/topics/excoriation-skin-picking-disorder?utm_source=chatgpt.com'
+        }
+      ]
+    },
+    {
+      title: 'Lesion Type: Crusting',
+      shortLabel: 'Crusting',
+      image: '../../assets/medicards/pediatric-dermatology/lesion-crusting.svg',
+      imageAlt: 'Illustration of golden crust on skin.',
+      question:
+        '<strong>Surface change:</strong> What does crusting indicate and how is it formed?',
+      answer:
+        '<ul><li><strong>Definition:</strong> Dried serum, blood, or pus on the skin surface.</li><li><strong>Clinical pearl:</strong> Honey-colored crusting suggests impetigo; serous crust can follow vesicle rupture in eczema.</li></ul>',
+      answerSummary:
+        'Crusts are dried exudate—color and distribution point to infection versus resolving dermatitis.',
+      imageSearchQuery: 'honey crust impetigo child',
+      imageSearchLabel: 'Search Google Images for skin crusting',
+      explanation:
+        '<p>Crusting forms when exudate dries over inflamed skin. Golden crusts prompt impetigo coverage, whereas thin serous crust in eczema signals acute weeping that still needs anti-inflammatory therapy.</p>',
+      sources: [
+        {
+          label: 'DermNet – Impetigo overview',
+          url: 'https://dermnetnz.org/topics/impetigo?utm_source=chatgpt.com'
+        }
+      ]
+    },
+    {
+      title: 'Lesion Type: Scaling',
+      shortLabel: 'Scaling',
+      image: '../../assets/medicards/pediatric-dermatology/lesion-scaling.svg',
+      imageAlt: 'Illustration of fine desquamating scale.',
+      question:
+        '<strong>Texture tell:</strong> What is scaling and why does it help separate eczema from fungal disease?',
+      answer:
+        '<ul><li><strong>Definition:</strong> Flakes of stratum corneum shed from the surface.</li><li><strong>Clinical pearl:</strong> Diffuse fine scale fits eczema/seborrhea; leading-edge scale favors tinea corporis.</li></ul>',
+      answerSummary:
+        'Scale character directs your differential—diffuse versus annular edge matters.',
+      imageSearchQuery: 'pediatric skin scaling example',
+      imageSearchLabel: 'Search Google Images for scaling lesions',
+      explanation:
+        '<p>Scaling reflects abnormal keratinization or inflammation. Annular scaling with central clearing suggests tinea, while greasy scalp scale in infants suggests seborrheic dermatitis.</p>',
+      sources: [
+        {
+          label: 'DermNet – Scaling skin conditions',
+          url: 'https://dermnetnz.org/topics/scaly-skin?utm_source=chatgpt.com'
+        }
+      ]
+    },
+    {
+      title: 'Lesion Type: Erosion',
+      shortLabel: 'Erosion',
+      image: '../../assets/medicards/pediatric-dermatology/lesion-erosion.svg',
+      imageAlt: 'Illustration of a shallow epidermal loss.',
+      question:
+        '<strong>Depth check:</strong> How do you describe an erosion and what follow-up care is needed?',
+      answer:
+        '<ul><li><strong>Definition:</strong> Superficial loss of epidermis, often after a vesicle or bulla ruptures.</li><li><strong>Clinical pearl:</strong> Keep areas moist with petrolatum and monitor for secondary infection, especially in diaper dermatitis or HFMD.</li></ul>',
+      answerSummary:
+        'Erosions are shallow defects—protect the barrier and watch for infection or pain.',
+      imageSearchQuery: 'skin erosion pediatric lesion',
+      imageSearchLabel: 'Search Google Images for skin erosions',
+      explanation:
+        '<p>Erosions occur when vesicles unroof or scratching removes the superficial epidermis. Moist wound care speeds re-epithelialization and reduces scarring.</p>',
+      sources: [
+        {
+          label: 'DermNet – Erosion definition',
+          url: 'https://dermnetnz.org/topics/erosion?utm_source=chatgpt.com'
+        }
+      ]
+    },
+    {
+      title: 'Lesion Type: Fissure',
+      shortLabel: 'Fissure',
+      image: '../../assets/medicards/pediatric-dermatology/lesion-fissure.svg',
+      imageAlt: 'Illustration of a painful skin fissure.',
+      question:
+        '<strong>Painful split:</strong> What is a fissure and how does it influence eczema management?',
+      answer:
+        '<ul><li><strong>Definition:</strong> Linear crack extending into the dermis, often painful.</li><li><strong>Clinical pearl:</strong> Signals chronic thickening—step up potency briefly and use occlusive emollients to heal.</li></ul>',
+      answerSummary:
+        'Fissures mean the barrier is severely compromised, demanding potent anti-inflammatories plus occlusion.',
+      imageSearchQuery: 'skin fissure eczema child',
+      imageSearchLabel: 'Search Google Images for skin fissures',
+      explanation:
+        '<p>Persistent inflammation causes skin to split, especially at flexures and hands. Address inflammation aggressively, use petrolatum under cotton gloves at night, and counsel on trigger avoidance.</p>',
+      sources: [
+        {
+          label: 'DermNet – Fissures',
+          url: 'https://dermnetnz.org/topics/fissures?utm_source=chatgpt.com'
+        }
+      ]
+    },
+    {
+      title: 'Pattern Finder: Eczema Distribution',
+      shortLabel: 'Pattern clues',
+      image: '../../assets/medicards/pediatric-dermatology/pattern-eczema.svg',
+      imageAlt: 'Diagram showing flexural versus extensor eczema distribution.',
+      question:
+        '<strong>Pattern recognition:</strong> Which distribution clues steer you toward atopic dermatitis?',
+      answer:
+        '<ul><li>Infants: cheeks and extensor surfaces dominate.</li><li>Children/adolescents: flexural surfaces (antecubital, popliteal, neck, wrists).</li><li>Expect ill-defined, symmetric patches that cycle from erythema/vesicles to crusting and lichenification.</li></ul>',
+      answerSummary:
+        'Age-based distribution and border quality distinguish eczema from psoriasis or contact dermatitis.',
+      imageSearchQuery: 'atopic dermatitis distribution flexural',
+      imageSearchLabel: 'Search Google Images for eczema distribution',
+      explanation:
+        '<p>Atopic dermatitis migrates with age—extensors early, flexures later. Ill-defined margins and symmetry strengthen the diagnosis, while well-demarcated or unilateral plaques should prompt alternate considerations.</p>',
       sources: [
         {
           label: 'American Academy of Dermatology – Childhood eczema overview',
@@ -44,16 +246,18 @@ window.mediCardsDeck = {
     {
       title: 'Smart Safety Net',
       shortLabel: 'Safety net',
+      image: '../../assets/medicards/pediatric-dermatology/safety-net.svg',
+      imageAlt: 'Alert icon illustrating clinical escalation.',
       question:
         '<strong>Escalate when:</strong> Which red flags demand urgent reassessment or referral?',
       answer:
-        '<ul><li>Fever, toxic appearance, or rapidly spreading cellulitis.</li><li>Neonates with pustules &mdash; benign rashes (erythema toxicum neonatorum, transient neonatal pustular melanosis) can mimic serious infections (HSV, sepsis, impetigo, congenital candidiasis).</li><li>Periorbital swelling or visual changes, especially with infantile hemangioma or impetigo complications.</li><li>Extensive eczematous eruptions unresponsive to appropriate potency steroids.</li><li>Immunocompromised child, diagnostic uncertainty, or treatment failure.</li></ul>',
+        '<ul><li>Fever, toxic appearance, or rapidly spreading cellulitis.</li><li>Neonates with pustules (rule out HSV, sepsis, congenital candidiasis).</li><li>Periorbital swelling or visual changes (impetigo complications, periocular IH).</li><li>Extensive eczema unresponsive to appropriate potency steroids.</li><li>Immunocompromised child, diagnostic uncertainty, or treatment failure.</li></ul>',
       answerSummary:
-        'Escalate when systemic illness, ocular risk, or refractory disease could signal invasive infection or high-risk hemangioma.',
-      imageSearchQuery: 'pediatric dermatology red flag cellulitis hemangioma',
+        'Systemic illness, ocular involvement, or refractory disease signals the need for urgent escalation.',
+      imageSearchQuery: 'pediatric dermatology emergency signs',
       imageSearchLabel: 'Search Google Images for dermatology red flags',
       explanation:
-        '<p>Red-flag screening keeps vulnerable infants safe. Rapid cellulitis progression, systemic illness, or ocular involvement can herald invasive bacterial disease or high-risk infantile hemangiomas that need propranolol. Neonatal pustuloses may be benign but warrant careful exam to exclude HSV or sepsis. Resistant eczema or immunocompromise should prompt dermatology or infectious disease input.</p>',
+        '<p>Red-flag screening prevents missed invasive infections and vision-threatening hemangiomas. Neonates with pustules deserve rapid workup for HSV or bacterial sepsis, and any periocular swelling mandates ophthalmology evaluation.</p>',
       sources: [
         {
           label: 'CDC – Clinical guidance for group A strep skin infections',
@@ -72,16 +276,18 @@ window.mediCardsDeck = {
     {
       title: 'Quick “Which Test?” Table',
       shortLabel: 'Which test?',
+      image: '../../assets/medicards/pediatric-dermatology/quick-tests.svg',
+      imageAlt: 'Illustration of lab tools for dermatology testing.',
       question:
-        '<strong>Scenario:</strong> You are triaging rashes in clinic.<br><br>Which rapid bedside tests line up with each diagnosis?',
+        '<strong>Scenario:</strong> Clinic triage requires targeted testing—what rapid tests align with each diagnosis?',
       answer:
-        '<ul><li><strong>KOH prep</strong> for suspected dermatophyte (tinea).</li><li><strong>Bacterial culture</strong> for impetigo that is recurrent, part of an outbreak, or not responding.</li><li><strong>Skin scraping / dermoscopy</strong> for scabies confirmation when needed.</li><li><strong>No routine labs</strong> for AD, acne, pityriasis rosea, molluscum, or viral warts unless atypical or immunocompromised.</li></ul>',
+        '<ul><li><strong>KOH prep</strong> for suspected tinea corporis/capitis.</li><li><strong>Bacterial culture</strong> for impetigo that is recurrent, outbreak-associated, or not responding.</li><li><strong>Skin scraping or dermoscopy</strong> to confirm scabies when needed.</li><li><strong>No routine labs</strong> for AD, acne, pityriasis rosea, molluscum, or viral warts unless atypical/immunocompromised.</li></ul>',
       answerSummary:
-        'Match quick office tests to the likely pathogen so you confirm fungal, bacterial, or parasitic causes without over-ordering labs.',
-      imageSearchQuery: 'KOH prep pediatric tinea scabies dermoscopy',
-      imageSearchLabel: 'View Google Images for bedside dermatology tests',
+        'Match quick office tests to your differential and avoid unnecessary labs for classic inflammatory dermatoses.',
+      imageSearchQuery: 'dermatology koh prep scabies scraping',
+      imageSearchLabel: 'Search Google Images for bedside dermatology tests',
       explanation:
-        '<p>Focused office testing avoids unnecessary labs while expediting treatment. KOH scraping highlights branching hyphae in dermatophyte infections, cultures refine impetigo therapy, and dermoscopy plus scrapings boost confidence before undertaking burdensome scabies eradication. Many chronic inflammatory dermatoses remain clinical diagnoses unless red flags arise.</p>',
+        '<p>Focused bedside diagnostics expedite therapy. KOH preps reveal branching hyphae, cultures tailor antibacterial therapy, and scrapings confirm mite infestations before undertaking extensive household treatment.</p>',
       sources: [
         {
           label: 'AAFP – Diagnosis and management of tinea infections',
@@ -98,18 +304,20 @@ window.mediCardsDeck = {
       ]
     },
     {
-      title: 'Atopic Dermatitis (Eczema) Fundamentals',
-      shortLabel: 'AD fundamentals',
+      title: 'Atopic Dermatitis: Presentation',
+      shortLabel: 'AD presentation',
+      image: '../../assets/medicards/pediatric-dermatology/ad-presentation.svg',
+      imageAlt: 'Illustration of child with flexural eczema.',
       question:
-        '<strong>Clue:</strong> Itchy eczematous patches in flexures &rarr; think atopic dermatitis (AD).<br><br>Which presentation and testing pearls keep you on track?',
+        '<strong>Clue:</strong> Itchy eczematous patches in flexures signal which diagnosis, and what exam findings back it up?',
       answer:
-        '<ul><li>Pruritic, xerotic patches that begin on infant cheeks/extensors before shifting to flexural areas in older kids.</li><li>Look for xerosis, lichenification, and secondary infection.</li><li>Diagnosis is usually clinical; swab crusted or oozing lesions only if superinfection suspected.</li></ul>',
+        '<ul><li><strong>Presentation:</strong> Pruritic, xerotic patches beginning on infant cheeks/extensors then shifting to flexures.</li><li><strong>Look for:</strong> Xerosis, lichenification, excoriations, and signs of superinfection.</li><li><strong>Testing:</strong> Usually clinical; swab only if crusted or oozing lesions suggest impetigo.</li></ul>',
       answerSummary:
-        'Recognizing age-specific distribution and infection clues keeps you from over-testing while targeting barrier repair.',
-      imageSearchQuery: 'atopic dermatitis infant cheeks flexural rash',
-      imageSearchLabel: 'Open Google Images for atopic dermatitis basics',
+        'Age-specific distribution and barrier breakdown clinch an atopic dermatitis diagnosis without routine labs.',
+      imageSearchQuery: 'atopic dermatitis flexural rash child',
+      imageSearchLabel: 'Search Google Images for atopic dermatitis presentation',
       explanation:
-        '<p>Age-dependent distribution is a high-yield board clue: infants light up extensor cheeks while school-aged kids favor flexures. Document chronic itch and eczematous morphology, watch for excoriations, and reserve bacterial cultures for impetiginized skin. Early identification of treatment failure or growth concerns should prompt referral.</p>',
+        '<p>Documenting itch plus chronic relapsing lesions fulfills AD diagnostic criteria. Reserve bacterial cultures for impetiginized areas and monitor growth and sleep to identify severe disease early.</p>',
       sources: [
         {
           label: 'American Academy of Pediatrics – Treatment of Atopic Dermatitis',
@@ -122,18 +330,20 @@ window.mediCardsDeck = {
       ]
     },
     {
-      title: 'Atopic Dermatitis – Stepwise Therapy',
+      title: 'Atopic Dermatitis: Stepwise Therapy',
       shortLabel: 'AD therapy',
+      image: '../../assets/medicards/pediatric-dermatology/ad-therapy.svg',
+      imageAlt: 'Illustration of moisturizers and topical medications.',
       question:
-        '<strong>Management:</strong> Build the stepwise plan for an atopic dermatitis flare.',
+        '<strong>Management:</strong> Build the stepwise plan for calming an atopic dermatitis flare.',
       answer:
-        '<ul><li><strong>Skin care:</strong> Daily liberal emollients after short, lukewarm baths with gentle cleansers; wet wraps (or “wet wipes”) during flares.</li><li><strong>Topical anti-inflammatories:</strong> Low–mid potency steroids by site/age; steroid-sparing topical calcineurin inhibitors (pimecrolimus, tacrolimus).</li><li><strong>Infection control:</strong> Dilute bleach baths for recurrent infections; oral/topical antibiotics only with clear infection.</li><li><strong>Adjuncts:</strong> Avoid routine antihistamines for itch except brief sedating agents for sleep.</li><li><strong>Escalate:</strong> Consider ruxolitinib 1.5% cream (ages 2–11 label expansion) or systemic therapy when severe, refractory, or impacting sleep, growth, or psychosocial health.</li></ul>',
+        '<ul><li><strong>Skin care:</strong> Daily liberal emollients after short lukewarm baths; wet wraps during flares.</li><li><strong>Topical anti-inflammatories:</strong> Low–mid potency steroids by site/age; add calcineurin inhibitors for delicate areas.</li><li><strong>Infection control:</strong> Dilute bleach baths for recurrent infections; reserve systemic/topical antibiotics for clear infection.</li><li><strong>Escalate:</strong> Consider ruxolitinib 1.5% cream (ages ≥2) or systemic therapy when severe or refractory.</li></ul>',
       answerSummary:
-        'Layer moisturizers, topicals, infection control, and timely escalation to keep eczema controlled and prevent steroid overuse.',
+        'Layer barrier repair, anti-inflammatory therapy, and infection prevention; escalate quickly if quality of life suffers.',
       imageSearchQuery: 'atopic dermatitis wet wrap therapy children',
-      imageSearchLabel: 'See Google Images for atopic dermatitis treatments',
+      imageSearchLabel: 'Search Google Images for atopic dermatitis treatments',
       explanation:
-        '<p>Barrier repair anchors therapy, so moisturizers and wet wraps bookend every escalation. Potency matching prevents steroid atrophy, while calcineurin inhibitors protect delicate sites. Bleach baths cut bacterial colonization, and new JAK inhibitors such as ruxolitinib expand options for moderate disease. Escalate early when quality of life suffers.</p>',
+        '<p>Barrier restoration anchors therapy, while topical steroids tailored to body site control inflammation. Calcineurin inhibitors and new JAK creams provide steroid-sparing options, and early referral prevents prolonged sleep disruption or growth issues.</p>',
       sources: [
         {
           label: 'American Academy of Pediatrics – Treatment of Atopic Dermatitis',
@@ -152,79 +362,87 @@ window.mediCardsDeck = {
     {
       title: 'Diaper Dermatitis',
       shortLabel: 'Diaper rash',
+      image: '../../assets/medicards/pediatric-dermatology/diaper-dermatitis.svg',
+      imageAlt: 'Illustration of diaper area care supplies.',
       question:
-        '<strong>Presentation:</strong> Beefy erythema across convex diaper surfaces; satellite papules or pustules imply Candida.<br><br>Which bedside treatments are first-line, and when do you add medications?',
+        '<strong>Presentation:</strong> Beefy erythema across convex diaper surfaces with satellite pustules—what is it and how do you treat it?',
       answer:
-        '<ul><li>Frequent diaper changes, open-air time, and thick zinc oxide or petrolatum barrier with every change.</li><li>Apply topical azole (miconazole or clotrimazole) if Candida is suspected.</li><li>Use a short course of low-potency steroid (hydrocortisone 1%–2.5%) for significant inflammation, avoiding stronger agents under occlusion.</li></ul>',
+        '<ul><li><strong>Likely diagnosis:</strong> Irritant diaper dermatitis with Candida if satellites present.</li><li><strong>Testing:</strong> KOH prep if the diagnosis is uncertain.</li><li><strong>Treatment:</strong> Thick barrier paste every change, open-air time, topical azole for Candida, and brief low-potency steroid for marked inflammation.</li></ul>',
       answerSummary:
-        'Moisture control plus targeted antifungal or low-dose steroid therapy quickly soothes diaper dermatitis without risking atrophy.',
-      imageSearchQuery: 'diaper dermatitis candidal satellite lesions',
-      imageSearchLabel: 'Search Google Images for diaper dermatitis patterns',
+        'Moisture control plus antifungal or low-dose steroid therapy soothes diaper dermatitis while protecting thin skin.',
+      imageSearchQuery: 'diaper dermatitis candida satellite lesions',
+      imageSearchLabel: 'Search Google Images for diaper dermatitis',
       explanation:
-        '<p>Classic irritant diaper dermatitis spares the inguinal folds, whereas Candida involvement brings maceration and satellite lesions. Management centers on moisture control and barrier protection. A topical azole targets yeast when KOH or clinical cues point to Candida. Brief, low-potency topical steroids can calm inflammation but higher potencies risk atrophy under occlusion.</p>',
+        '<p>Barrier dysfunction drives irritant diaper dermatitis. Candida superinfection introduces satellite pustules and fold involvement, prompting topical azole therapy alongside aggressive barrier protection.</p>',
       sources: [
         {
-          label: 'American Academy of Pediatrics – Diaper Rash',
+          label: 'AAP Pediatric Care – Diaper Rash',
           url: 'https://publications.aap.org/pediatriccare/article/doi/10.1542/aap.ppcqr.396155/1621/Diaper-Rash?utm_source=chatgpt.com'
         }
       ]
     },
     {
       title: 'Impetigo',
-      shortLabel: 'Impetigo basics',
+      shortLabel: 'Impetigo',
+      image: '../../assets/medicards/pediatric-dermatology/impetigo.svg',
+      imageAlt: 'Illustration of honey-colored crust on skin.',
       question:
-        '<strong>Presentation:</strong> Honey-colored crusts (nonbullous) or flaccid bullae.<br><br>How do you choose between topical and systemic therapy?',
+        '<strong>Clue:</strong> Honey-colored crusts on the face after eczema scratching—what is the diagnosis and first-line therapy?',
       answer:
-        '<ul><li>For limited lesions, prescribe topical mupirocin or retapamulin for 5 days.</li><li>Use oral therapy (e.g., cephalexin) when lesions are numerous, there is an outbreak, or systemic features exist; tailor to local MRSA prevalence.</li><li>Consider culture for outbreaks, treatment failure, or diagnostic uncertainty.</li></ul>',
+        '<ul><li><strong>Diagnosis:</strong> Impetigo (nonbullous vs. bullous) from Staph aureus or Strep pyogenes.</li><li><strong>Testing:</strong> Culture for outbreaks, treatment failure, or MRSA risk.</li><li><strong>Treatment:</strong> Topical mupirocin/retapamulin for limited lesions; oral cephalexin (or MRSA-active agent) for widespread disease.</li><li><strong>Watch for:</strong> Rare post-streptococcal glomerulonephritis.</li></ul>',
       answerSummary:
-        'Reserve oral antibiotics for widespread disease while counseling about rare post-strep complications and hygiene.',
-      imageSearchQuery: 'impetigo honey colored crust child',
-      imageSearchLabel: 'View Google Images for impetigo presentations',
+        'Crusted lesions need targeted anti-staphylococcal therapy, with cultures guiding community MRSA coverage.',
+      imageSearchQuery: 'pediatric impetigo honey crust',
+      imageSearchLabel: 'Search Google Images for impetigo',
       explanation:
-        '<p>Impetigo is usually clinical, driven by <em>S. aureus</em> or group A strep. Localized disease responds well to topical agents, reducing systemic exposure. Multiple lesions, school outbreaks, or failure of topicals warrant an oral β-lactam, with MRSA-active choices when risk is high. While rare, families should be counseled about post-streptococcal glomerulonephritis as a delayed complication.</p>',
+        '<p>Topical therapy suffices for localized impetigo, while widespread disease requires oral antibiotics covering GAS and MSSA. Document lesion count and household contacts to manage outbreaks.</p>',
       sources: [
         {
-          label: 'CDC – Clinical Guidance for Impetigo',
+          label: 'CDC – Clinical guidance for impetigo',
           url: 'https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/impetigo.html?utm_source=chatgpt.com'
         }
       ]
     },
     {
       title: 'Tinea Infections',
-      shortLabel: 'Tinea patterns',
+      shortLabel: 'Tinea',
+      image: '../../assets/medicards/pediatric-dermatology/tinea.svg',
+      imageAlt: 'Illustration of annular rash with active border.',
       question:
-        '<strong>Clue:</strong> Round scaly patches or alopecia with “black dots” point to tinea corporis/capitis.<br><br>Which diagnostics and treatments are most reliable for kids?',
+        '<strong>Case:</strong> Round scaly patches with alopecia and “black dots” in the scalp—what test and treatment are needed?',
       answer:
-        '<ul><li>Confirm with KOH scraping; send fungal culture for scalp disease or atypical cases.</li><li>Treat corporis/pedis with topical allylamine or azole; avoid steroid combinations.</li><li>For tinea capitis, prescribe systemic therapy (griseofulvin 20–25 mg/kg/day microsize for 6–8 weeks or weight-based terbinafine) plus antifungal shampoo to limit shedding.</li></ul>',
+        '<ul><li><strong>Diagnosis:</strong> Tinea capitis (or corporis/pedis when annular with active border).</li><li><strong>Testing:</strong> KOH prep; fungal culture to identify organism.</li><li><strong>Treatment:</strong> Oral griseofulvin or terbinafine for capitis; add selenium sulfide/ketoconazole shampoo. Use topical allylamine/azole for corporis/pedis.</li></ul>',
       answerSummary:
-        'Differentiate dermatophytes from eczema with microscopy and reserve systemic therapy for scalp disease to clear follicles.',
+        'Confirm dermatophytes with KOH and treat scalp disease systemically—topicals alone fail.',
       imageSearchQuery: 'tinea capitis black dot child',
-      imageSearchLabel: 'See Google Images for tinea findings',
+      imageSearchLabel: 'Search Google Images for tinea infections',
       explanation:
-        '<p>Dermatophyte infections mimic eczema, so bedside microscopy is valuable. Topicals suffice for corporis/pedis but not capitis, where follicles harbor fungus. Griseofulvin remains effective, especially for <em>Microsporum</em>, while terbinafine is favored for <em>Trichophyton</em>. Adjunctive selenium sulfide or ketoconazole shampoo reduces spore transmission during the first two treatment weeks.</p>',
+        '<p>Tinea capitis requires systemic therapy for follicular penetration. Choosing terbinafine vs. griseofulvin depends on suspected organism, while antifungal shampoos limit transmission.</p>',
       sources: [
         {
-          label: 'American Academy of Family Physicians – Common Tinea Infections',
+          label: 'AAFP – Common tinea infections in children',
           url: 'https://www.aafp.org/pubs/afp/issues/2008/0515/p1415.html?utm_source=chatgpt.com'
         }
       ]
     },
     {
       title: 'Scabies',
-      shortLabel: 'Scabies essentials',
+      shortLabel: 'Scabies',
+      image: '../../assets/medicards/pediatric-dermatology/scabies.svg',
+      imageAlt: 'Illustration of scabies mite tracks.',
       question:
-        '<strong>Presentation:</strong> Intense nocturnal pruritus with papules and burrows on wrists, finger webs, waistline, or scalp in infants.<br><br>Describe the recommended treatment course and household precautions.',
+        '<strong>Clue:</strong> Intense nocturnal itch with burrows in finger webs—how do you confirm and treat?',
       answer:
-        '<ul><li>Apply permethrin 5% cream to the entire body (include scalp/face in infants), leave on 8–14 hours, and repeat in 7 days; FDA-approved for ages ≥2 months.</li><li>Treat close contacts simultaneously and decontaminate linens and clothing (hot wash/dry or seal for 3 days).</li><li>Consider mineral oil scraping or dermoscopy for confirmation when the diagnosis is uncertain.</li></ul>',
+        '<ul><li><strong>Diagnosis:</strong> Scabies—clinical plus mineral oil scraping or dermoscopy when uncertain.</li><li><strong>Treatment:</strong> Permethrin 5% cream neck-down (include scalp in infants) repeated in 7 days; treat close contacts and decontaminate linens.</li><li><strong>Escalate:</strong> Oral ivermectin for outbreaks or refractory cases (check age/weight guidance).</li></ul>',
       answerSummary:
-        'Complete coverage and simultaneous contact treatment break the scabies cycle and prevent frustrating reinfestation.',
-      imageSearchQuery: 'scabies burrows child wrists',
-      imageSearchLabel: 'Open Google Images for pediatric scabies',
+        'Treat the patient and contacts with permethrin, repeat in a week, and manage the environment to prevent reinfestation.',
+      imageSearchQuery: 'scabies burrow pediatric',
+      imageSearchLabel: 'Search Google Images for scabies',
       explanation:
-        '<p>Clinical history of family-wide itch is often enough to begin therapy. Proper application includes finger/toe webs, under nails, and post-bath when skin is cool. Reinfection is common without simultaneous contact treatment and environmental precautions. Post-scabetic pruritus can persist for weeks—reassure families and manage with emollients or mild steroids.</p>',
+        '<p>Scabies mites tunnel in thin skin, creating pruritic papules and burrows. Confirming mites can bolster adherence, but treatment should start promptly to relieve symptoms and curb spread.</p>',
       sources: [
         {
-          label: 'CDC – Clinical Care of Scabies',
+          label: 'CDC – Clinical care of scabies',
           url: 'https://www.cdc.gov/scabies/hcp/clinical-care/index.html?utm_source=chatgpt.com'
         }
       ]
@@ -232,23 +450,25 @@ window.mediCardsDeck = {
     {
       title: 'Molluscum Contagiosum',
       shortLabel: 'Molluscum',
+      image: '../../assets/medicards/pediatric-dermatology/molluscum.svg',
+      imageAlt: 'Illustration of umbilicated papules.',
       question:
-        '<strong>Presentation:</strong> Umbilicated, skin-colored papules often clustered in atopic children.<br><br>When is active treatment indicated, and what are the options?',
+        '<strong>Pearl:</strong> Umbilicated pearly papules on flexural skin—what is the typical course and when do you treat?',
       answer:
-        '<ul><li>Watchful waiting is reasonable because lesions spontaneously resolve over months to years.</li><li>Treat when lesions are numerous, spreading, symptomatic, genital, or causing distress.</li><li>Clinic options include cantharidin (FDA-approved ≥2 years), curettage, cryotherapy, or other office-directed modalities.</li></ul>',
+        '<ul><li><strong>Diagnosis:</strong> Molluscum contagiosum, common in atopic kids.</li><li><strong>Course:</strong> Self-resolves over months to years.</li><li><strong>Treatment:</strong> Reassurance or procedures (curettage, cryotherapy, cantharidin) when numerous, spreading, symptomatic, or psychosocially distressing. Ycanth is FDA-approved for ages ≥2.</li></ul>',
       answerSummary:
-        'Balance reassurance with targeted procedures when lesions bother the child or complicate eczema care.',
-      imageSearchQuery: 'molluscum contagiosum child umbilicated papules',
-      imageSearchLabel: 'See Google Images for molluscum lesions',
+        'Most molluscum clears without intervention; treat when lesions bother the child or complicate eczema.',
+      imageSearchQuery: 'molluscum contagiosum child lesions',
+      imageSearchLabel: 'Search Google Images for molluscum',
       explanation:
-        '<p>Molluscum is benign yet bothersome, especially in children with atopic dermatitis who auto-inoculate through scratching. Shared decision-making helps decide between observation and procedures. When treating, protect surrounding skin, manage secondary eczema, and counsel on avoiding picking or sharing towels to prevent spread.</p>',
+        '<p>Lesions autoinoculate along lines of trauma, so eczema control is key. When therapy is requested, discuss realistic timelines and potential irritation from destructive modalities.</p>',
       sources: [
         {
-          label: 'Texas Children’s – Molluscum Contagiosum Guidelines',
+          label: 'Texas Children’s – Molluscum contagiosum referral guide',
           url: 'https://www.texaschildrens.org/sites/default/files/uploads/molluscum%20contagiosum_0.pdf?utm_source=chatgpt.com'
         },
         {
-          label: 'FDA – Ycanth (Cantharidin) Label',
+          label: 'FDA – Ycanth label',
           url: 'https://www.accessdata.fda.gov/drugsatfda_docs/label/2023/212905s000lbl.pdf?utm_source=chatgpt.com'
         }
       ]
@@ -256,119 +476,131 @@ window.mediCardsDeck = {
     {
       title: 'Hand-Foot-Mouth Disease',
       shortLabel: 'HFMD',
+      image: '../../assets/medicards/pediatric-dermatology/hfmd.svg',
+      imageAlt: 'Illustration of hand, foot, and mouth lesions.',
       question:
-        '<strong>Presentation:</strong> Low-grade fever, painful oral ulcers, and vesicles on hands, feet, and buttocks.<br><br>What supportive care guidance should families receive?',
+        '<strong>Clue:</strong> Low fever plus oral ulcers and palm/sole vesicles—what is the diagnosis and mainstay of care?',
       answer:
-        '<ul><li>Encourage hydration and offer pain control (acetaminophen/ibuprofen as age-appropriate).</li><li>Reassure that most children may return to daycare/school once afebrile, feeling well, and drooling is controlled.</li><li>Viral testing is rarely needed; focus on symptomatic management.</li></ul>',
+        '<ul><li><strong>Diagnosis:</strong> Hand-foot-mouth disease (usually coxsackievirus).</li><li><strong>Testing:</strong> Clinical; viral testing rarely needed.</li><li><strong>Treatment:</strong> Supportive care (hydration, pain control). Most children can attend daycare when afebrile and well-appearing.</li></ul>',
       answerSummary:
-        'Comfort-focused care prevents dehydration while you reassure families about the illness timeline and contagion.',
-      imageSearchQuery: 'hand foot mouth disease rash child',
-      imageSearchLabel: 'Explore Google Images for HFMD findings',
+        'HFMD is a clinical diagnosis—focus on comfort and hydration while counseling on contagion.',
+      imageSearchQuery: 'hand foot mouth disease child rash',
+      imageSearchLabel: 'Search Google Images for HFMD',
       explanation:
-        '<p>HFMD is a self-limited enteroviral illness. The main risks are dehydration from painful stomatitis and discomfort-related sleep disruption. Educate caregivers about typical illness duration (7–10 days), hand hygiene, and red flags such as persistent fever, neurologic symptoms, or inability to maintain oral intake.</p>',
+        '<p>HFMD vesicles rupture into painful erosions, so analgesia and cold fluids improve intake. Families should watch for dehydration and recognize that viral shedding continues for weeks.</p>',
       sources: [
         {
-          label: 'CDC – Hand, Foot, and Mouth Disease Overview',
+          label: 'CDC – About hand, foot, and mouth disease',
           url: 'https://www.cdc.gov/hand-foot-mouth/about/index.html?utm_source=chatgpt.com'
         }
       ]
     },
     {
       title: 'Seborrheic Dermatitis (Cradle Cap)',
-      shortLabel: 'Cradle cap',
+      shortLabel: 'Seborrheic',
+      image: '../../assets/medicards/pediatric-dermatology/seborrheic.svg',
+      imageAlt: 'Illustration of cradle cap care.',
       question:
-        '<strong>Presentation:</strong> Greasy scale or crust on the infant scalp with minimal itch and a well-appearing baby.<br><br>Which home treatments do you recommend, and when do you escalate?',
+        '<strong>Presentation:</strong> Greasy yellow scale on an otherwise content infant’s scalp—what is the diagnosis and how do you counsel parents?',
       answer:
-        '<ul><li>Advise gentle daily shampooing, softening scales with mineral oil or petrolatum, then brushing to lift debris.</li><li>If persistent or extensive, add ketoconazole 2% cream or shampoo.</li><li>Reassure families that the condition is benign and self-limited.</li></ul>',
+        '<ul><li><strong>Diagnosis:</strong> Infantile seborrheic dermatitis (cradle cap).</li><li><strong>Treatment:</strong> Gentle daily shampoo, soften scale with mineral oil/petrolatum and brush off; consider ketoconazole 2% cream/shampoo if extensive or persistent.</li><li><strong>Prognosis:</strong> Typically resolves by 6–12 months.</li></ul>',
       answerSummary:
-        'Consistent scalp care loosens scale while topical azoles handle stubborn Malassezia overgrowth.',
-      imageSearchQuery: 'infant cradle cap seborrheic dermatitis scalp',
-      imageSearchLabel: 'View Google Images for cradle cap',
+        'Cradle cap is benign—focus on gentle keratolysis and reassure about spontaneous resolution.',
+      imageSearchQuery: 'infant cradle cap seborrheic dermatitis',
+      imageSearchLabel: 'Search Google Images for cradle cap',
       explanation:
-        '<p>Cradle cap reflects sebaceous activity and Malassezia colonization in infants. Moisturizing the scalp before combing loosens adherent scale. Antifungal therapy is rarely necessary but effective for widespread or refractory disease. Lack of inflammation or systemic symptoms helps distinguish it from eczema or psoriasis.</p>',
+        '<p>Seborrheic dermatitis stems from Malassezia overgrowth in sebaceous areas. Emphasize gentle removal rather than aggressive scrubbing to avoid scalp irritation.</p>',
       sources: [
         {
-          label: 'HealthyChildren.org – What is Cradle Cap?',
+          label: 'HealthyChildren.org – What is cradle cap?',
           url: 'https://www.healthychildren.org/English/ages-stages/baby/bathing-skin-care/Pages/Cradle-Cap.aspx?utm_source=chatgpt.com'
         }
       ]
     },
     {
       title: 'Infantile Hemangioma',
-      shortLabel: 'Infantile hemangioma',
+      shortLabel: 'IH',
+      image: '../../assets/medicards/pediatric-dermatology/infantile-hemangioma.svg',
+      imageAlt: 'Illustration of infant with facial hemangioma.',
       question:
-        '<strong>Rapid clue:</strong> Rapidly growing red-purple plaque in an infant suggests infantile hemangioma (IH).<br><br>How do you risk-stratify, investigate, and treat?',
+        '<strong>Clue:</strong> Rapidly growing red-purple plaque in an infant—what should you remember about timing, risk, and treatment?',
       answer:
-        '<ul><li><strong>Key clues:</strong> Growth peaks by 3–5 months. High-risk sites include periocular region, airway, beard area, ulcerated, segmental, or multiple lesions.</li><li><strong>Tests:</strong> Diagnosis is clinical; order US/MRI only for diagnostic uncertainty, deep lesions, or syndromic concern. Screen for PHACE (Posterior fossa malformations, Hemangiomas, Arterial anomalies, Cardiac defects/coarctation, Eye abnormalities) and LUMBAR (Lower body hemangioma, Urogenital anomalies, Myelopathy, Bony deformities, Anorectal malformations, Renal anomalies) when indicated.</li><li><strong>Treatment:</strong> Early risk-stratify. Beta-blockers are first-line &mdash; oral propranolol 2–3 mg/kg/day divided for function- or life-threatening or disfiguring IH; topical timolol for small superficial lesions; provide wound care for ulcers and refer early (by 1 month) for high-risk sites.</li></ul>',
+        '<ul><li><strong>Growth:</strong> Peaks by 3–5 months; most proliferation complete by 5 months.</li><li><strong>High-risk sites:</strong> Periocular, airway, beard area, ulcerated, segmental, or multiple lesions.</li><li><strong>Workup:</strong> Clinical; imaging for deep/uncertain lesions or syndromic concern (screen PHACE/LUMBAR when indicated).</li><li><strong>Treatment:</strong> Early risk stratification; oral propranolol first-line for function- or life-threatening IH; topical timolol for small superficial lesions; meticulous ulcer care.</li></ul>',
       answerSummary:
-        'Fast recognition plus timely propranolol or referral prevents vision loss, airway compromise, and disfiguring growth.',
-      imageSearchQuery: 'infantile hemangioma segmental face',
+        'Refer high-risk hemangiomas early—propranolol within the first month prevents functional loss and disfigurement.',
+      imageSearchQuery: 'infantile hemangioma infant face',
       imageSearchLabel: 'Search Google Images for infantile hemangioma',
       explanation:
-        '<p>Fast growth during the proliferative phase demands prompt evaluation so that propranolol can be started before complications arise. Imaging and multidisciplinary workup target infants with segmental or syndromic patterns (PHACE, LUMBAR). Topical timolol suits small superficial plaques, while ulcerated lesions need wound care and pain control alongside systemic therapy.</p>',
+        '<p>Because rapid growth occurs in the first months, prompt recognition and referral enable timely propranolol therapy. Segmental facial lesions warrant evaluation for PHACE syndrome, while lumbosacral lesions can signal LUMBAR association.</p>',
       sources: [
         {
-          label: 'AAP Guideline – Management of Infantile Hemangiomas',
+          label: 'AAP – Infantile hemangioma guideline',
           url: 'https://publications.aap.org/pediatrics/article/143/1/e20183475/37268/Clinical-Practice-Guideline-for-the-Management-of?utm_source=chatgpt.com'
         }
       ]
     },
     {
       title: 'Acne (Preadolescent & Adolescent)',
-      shortLabel: 'Acne plan',
+      shortLabel: 'Acne',
+      image: '../../assets/medicards/pediatric-dermatology/acne.svg',
+      imageAlt: 'Illustration of acne care products.',
       question:
-        '<strong>Presentation:</strong> Comedones with inflammatory papules/pustules; evaluate for endocrine clues in prepubertal patients.<br><br>Outline the evidence-based treatment ladder.',
+        '<strong>Clue:</strong> Comedones with inflammatory papules in a teen—what is the guideline-based treatment ladder?',
       answer:
-        '<ul><li>Mild disease: topical benzoyl peroxide ± topical retinoid; add topical antibiotic only in combination with benzoyl peroxide.</li><li>Moderate to severe: continue topicals and add oral doxycycline or minocycline for limited courses.</li><li>Severe, scarring, or refractory cases: consider oral isotretinoin and dermatology referral.</li></ul>',
+        '<ul><li><strong>Mild:</strong> Benzoyl peroxide ± topical retinoid; add topical antibiotic only with benzoyl peroxide.</li><li><strong>Moderate–severe:</strong> Add oral doxycycline/minocycline for limited duration, always with topical benzoyl peroxide.</li><li><strong>Severe/refractory:</strong> Consider oral isotretinoin; refer dermatology.</li><li><strong>Special situations:</strong> Consider combined OCPs or spironolactone in appropriate females.</li></ul>',
       answerSummary:
-        'Pair benzoyl peroxide with retinoids and limit systemic antibiotics to preserve efficacy and prevent scarring.',
-      imageSearchQuery: 'adolescent acne inflammatory papules',
-      imageSearchLabel: 'Open Google Images for pediatric acne',
+        'Pair retinoids with benzoyl peroxide, limit antibiotic monotherapy, and escalate to isotretinoin for scarring disease.',
+      imageSearchQuery: 'teen acne treatment benzoyl peroxide',
+      imageSearchLabel: 'Search Google Images for acne treatments',
       explanation:
-        '<p>Combination topical therapy targets follicular keratinization and inflammation. Oral antibiotics reduce inflammatory lesions but should be paired with benzoyl peroxide to deter resistance and limited to about 3 months. Hormonal modulation (combined oral contraceptives or spironolactone) supports female patients when age-appropriate. Early isotretinoin prevents scarring in nodulocystic acne.</p>',
+        '<p>Combination therapy improves efficacy and limits resistance. Educate about adherence, gentle cleansers, and non-comedogenic moisturizers to support long-term control.</p>',
       sources: [
         {
-          label: 'JAAD – Guidelines for Acne Management',
+          label: 'JAAD – Guidelines of care for acne vulgaris',
           url: 'https://www.jaad.org/article/S0190-9622%2823%2903389-3/fulltext?utm_source=chatgpt.com'
         }
       ]
     },
     {
       title: 'Psoriasis (Pediatric)',
-      shortLabel: 'Pediatric psoriasis',
+      shortLabel: 'Psoriasis',
+      image: '../../assets/medicards/pediatric-dermatology/psoriasis.svg',
+      imageAlt: 'Illustration of well-demarcated plaques on extensor surfaces.',
       question:
-        '<strong>Presentation:</strong> Well-demarcated erythematous plaques with silvery scale on scalp, trunk, and extensor surfaces.<br><br>What are the cornerstones of management for children?',
+        '<strong>Pattern:</strong> Well-demarcated erythematous plaques with silvery scale on extensor surfaces—what is the diagnosis and management overview?',
       answer:
-        '<ul><li>Topical corticosteroids paired with vitamin D analogs; use calcineurin inhibitors for face/genitals.</li><li>Monitor for psoriatic arthritis symptoms and avoid prolonged high-potency steroid use.</li><li>Escalate to phototherapy or systemic agents for moderate-to-severe or refractory disease in collaboration with dermatology.</li></ul>',
+        '<ul><li><strong>Diagnosis:</strong> Plaque psoriasis; consider psoriatic arthritis screening.</li><li><strong>Treatment:</strong> Topical corticosteroids (potency by site/age) plus vitamin D analogs; calcineurin inhibitors for face/genitals.</li><li><strong>Escalation:</strong> Phototherapy or systemic/biologic therapy for moderate-severe or refractory disease—coordinate with dermatology.</li></ul>',
       answerSummary:
-        'Combine steroid-sparing topicals with close monitoring and escalate early to preserve skin and joint health.',
-      imageSearchQuery: 'pediatric psoriasis plaques extensor surfaces',
-      imageSearchLabel: 'See Google Images for pediatric psoriasis',
+        'Psoriasis features sharply bordered plaques—combine topical steroids with adjuncts and escalate early for joint symptoms.',
+      imageSearchQuery: 'pediatric psoriasis plaque',
+      imageSearchLabel: 'Search Google Images for pediatric psoriasis',
       explanation:
-        '<p>Pediatric psoriasis impacts quality of life and carries joint involvement risk. Combination topical regimens balance efficacy with steroid-sparing benefits. Persistent or widespread disease may require narrowband UVB, methotrexate, biologics, or other systemic therapy guided by specialists.</p>',
+        '<p>Pediatric psoriasis can impair quality of life and carries arthritis risk. Encourage moisturizers, manage triggers, and partner with dermatology for systemic therapy when body surface area or impact is high.</p>',
       sources: [
         {
-          label: 'JAAD/NPF – Pediatric Psoriasis Guidelines',
+          label: 'JAAD – Pediatric psoriasis guideline',
           url: 'https://www.jaad.org/article/S0190-9622%2819%2932655-6/fulltext?utm_source=chatgpt.com'
         }
       ]
     },
     {
       title: 'Urticaria (Acute)',
-      shortLabel: 'Acute urticaria',
+      shortLabel: 'Urticaria',
+      image: '../../assets/medicards/pediatric-dermatology/urticaria.svg',
+      imageAlt: 'Illustration of raised wheals on skin.',
       question:
-        '<strong>Presentation:</strong> Transient, pruritic wheals that wax and wane within hours; may include angioedema or anaphylaxis.<br><br>What is the management mantra for acute hives?',
+        '<strong>Clue:</strong> Transient pruritic wheals ± angioedema—what evaluation and treatment steps are recommended?',
       answer:
-        '<ul><li>Start second-generation H1 antihistamines (cetirizine, loratadine, fexofenadine) and uptitrate for control.</li><li>Reserve short steroid bursts only for severe, refractory cases.</li><li>Deliver intramuscular epinephrine immediately if anaphylaxis: “Blue to the sky, orange to the thigh.”</li></ul>',
+        '<ul><li><strong>Evaluation:</strong> Usually none beyond history/exam; screen for anaphylaxis symptoms.</li><li><strong>Treatment:</strong> Second-generation H1 antihistamines (cetirizine, loratadine, fexofenadine) with up-titration for control.</li><li><strong>Escalation:</strong> Reserve short steroid burst for severe cases; administer IM epinephrine for anaphylaxis.</li></ul>',
       answerSummary:
-        'Daily second-generation antihistamines calm hives while families stay prepared to treat anaphylaxis without delay.',
-      imageSearchQuery: 'acute urticaria child hives',
-      imageSearchLabel: 'Open Google Images for acute urticaria',
+        'Treat acute urticaria with non-sedating antihistamines and be ready to manage anaphylaxis.',
+      imageSearchQuery: 'acute urticaria wheals child',
+      imageSearchLabel: 'Search Google Images for urticaria',
       explanation:
-        '<p>Acute urticaria is usually infection or allergy triggered, presenting as fleeting wheals that migrate within 24 hours. Prioritize nonsedating antihistamines, escalating the dose under supervision when needed. Teach families to recognize angioedema or respiratory compromise and to deploy epinephrine without delay while seeking emergency care.</p>',
+        '<p>Acute hives are usually self-limited and do not need laboratory workup. Educate families on avoiding known triggers, dosing antihistamines correctly, and using epinephrine for systemic reactions.</p>',
       sources: [
         {
-          label: 'AAP Pediatrics in Review – Urticaria, Angioedema, and Anaphylaxis',
+          label: 'AAP – Urticaria, angioedema, and anaphylaxis review',
           url: 'https://publications.aap.org/pediatricsinreview/article/41/6/283/35410/Urticaria-Angioedema-and-Anaphylaxis?utm_source=chatgpt.com'
         }
       ]
