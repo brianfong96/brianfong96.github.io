@@ -18,28 +18,43 @@
 
   <main class="layout">
     <section class="controls" aria-label="Deck controls">
-      <div class="control-group">
-        <label for="sectionSelector">Topic group</label>
+      <div class="control-section">
+        <h2 class="control-title">Browse topics</h2>
+        <label for="sectionSelector" class="control-label">Topic group</label>
         <select id="sectionSelector" aria-label="Select a topic group"></select>
       </div>
-      <div class="control-group">
-        <label for="cardSelector">Jump to card</label>
+
+      <div class="control-section">
+        <h2 class="control-title">Find a card</h2>
+        <label for="cardSelector" class="control-label">Jump to card</label>
         <select id="cardSelector" aria-label="Select a card"></select>
       </div>
-      <div class="control-group">
-        <button id="prevCard" class="nav-button" type="button">&#9664; Previous</button>
-        <button id="nextCard" class="nav-button" type="button">Next &#9654;</button>
+
+      <div class="control-section">
+        <h2 class="control-title">Navigate</h2>
+        <div class="control-row">
+          <button id="prevCard" class="nav-button" type="button">&#9664; Previous</button>
+          <button id="nextCard" class="nav-button" type="button">Next &#9654;</button>
+        </div>
       </div>
-      <div class="control-group">
-        <button id="randomCard" type="button">Surprise Me</button>
-        <button id="flipCard" type="button">Flip</button>
-        <button id="toggleExplanation" type="button">Explanation</button>
+
+      <div class="control-section">
+        <h2 class="control-title">Card actions</h2>
+        <div class="control-row">
+          <button id="randomCard" type="button">Surprise Me</button>
+          <button id="flipCard" type="button">Flip</button>
+          <button id="toggleExplanation" type="button">Explanation</button>
+        </div>
       </div>
-      <div class="control-group">
-        <button id="readAloud" type="button" data-state="ready">Read Aloud</button>
-        <button id="stopAudio" type="button" class="secondary" disabled>Stop</button>
+
+      <div class="control-section">
+        <h2 class="control-title">Audio support</h2>
+        <div class="control-row">
+          <button id="readAloud" type="button" data-state="ready">Read Aloud</button>
+          <button id="stopAudio" type="button" class="secondary" disabled>Stop</button>
+        </div>
+        <p id="readStatus" class="assistive-text" role="status" aria-live="polite"></p>
       </div>
-      <p id="readStatus" class="assistive-text" role="status" aria-live="polite"></p>
     </section>
 
     <section class="card-stage" aria-live="polite">

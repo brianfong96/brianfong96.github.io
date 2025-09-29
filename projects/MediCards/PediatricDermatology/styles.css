@@ -75,26 +75,47 @@ body {
   border-radius: 20px;
   padding: 1.5rem;
   display: grid;
-  gap: 1rem;
+  gap: 1.25rem;
   backdrop-filter: blur(18px);
 }
 
-.assistive-text {
-  margin: -0.25rem 0 0;
-  font-size: 0.9rem;
-  color: var(--muted);
-  min-height: 1.25rem;
+.control-section {
+  display: grid;
+  gap: 0.65rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
 }
 
-.control-group {
+.control-section:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.control-title {
+  margin: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.75);
+}
+
+.control-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.control-row {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
   align-items: center;
 }
 
-label {
-  font-weight: 600;
+.assistive-text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+  min-height: 1.25rem;
 }
 
 select,
@@ -130,6 +151,11 @@ select:hover {
 button.nav-button {
   background: linear-gradient(145deg, rgba(56, 189, 248, 0.15), rgba(14, 165, 233, 0.3));
   border-color: rgba(56, 189, 248, 0.35);
+}
+
+.controls select {
+  width: 100%;
+  max-width: 100%;
 }
 
 .card-stage {
@@ -403,19 +429,13 @@ button.nav-button {
     padding: 1.25rem;
   }
 
-  button,
-  select {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .control-group {
+  .control-row {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .assistive-text {
-    margin-top: -0.5rem;
-    min-height: 1.5rem;
+  .controls button,
+  .controls select {
+    width: 100%;
   }
 }
