@@ -199,6 +199,43 @@ button.nav-button {
 .card-content {
   font-size: 1.05rem;
   line-height: 1.6;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  scrollbar-width: thin;
+}
+
+.card-content p {
+  margin: 0 0 0.85rem;
+}
+
+.card-content p:last-child {
+  margin-bottom: 0;
+}
+
+.card-content ul.card-points {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.card-content ul.card-points li {
+  line-height: 1.55;
+}
+
+.card-content ul.card-points li strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.card-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.card-content::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 999px;
 }
 
 .card-figure {
@@ -264,6 +301,15 @@ button.nav-button {
 
 #sources {
   margin-top: 1rem;
+}
+
+.explanation-body p {
+  margin: 0 0 0.85rem;
+  line-height: 1.6;
+}
+
+.explanation-body p:last-child {
+  margin-bottom: 0;
 }
 
 #sources h3 {
