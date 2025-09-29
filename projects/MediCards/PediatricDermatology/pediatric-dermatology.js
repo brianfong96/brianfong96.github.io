@@ -4,8 +4,6 @@ window.mediCardsDeck = {
     {
       title: 'Lesion Type: Erythema',
       shortLabel: 'Erythema',
-      image: '../../assets/medicards/pediatric-dermatology/lesion-erythema.svg',
-      imageAlt: 'Stylized illustration of a warm red patch representing erythema.',
       question:
         '<strong>Spot it:</strong> When you see a diffuse red patch on inflamed skin, what are you looking at and why does it matter?',
       answer:
@@ -26,8 +24,6 @@ window.mediCardsDeck = {
     {
       title: 'Lesion Type: Papule',
       shortLabel: 'Papule',
-      image: '../../assets/medicards/pediatric-dermatology/lesion-papule.svg',
-      imageAlt: 'Stylized raised papule icon in pink hues.',
       question:
         '<strong>Define it:</strong> What is a papule and how does it guide your pediatric dermatology workup?',
       answer:
@@ -48,8 +44,6 @@ window.mediCardsDeck = {
     {
       title: 'Lesion Type: Vesicle',
       shortLabel: 'Vesicle',
-      image: '../../assets/medicards/pediatric-dermatology/lesion-vesicle.svg',
-      imageAlt: 'Illustration of a translucent fluid-filled vesicle.',
       question:
         '<strong>Fluid clue:</strong> Which lesion is a tiny fluid-filled blister and where do you expect to see it in pediatrics?',
       answer:
@@ -70,8 +64,6 @@ window.mediCardsDeck = {
     {
       title: 'Lesion Type: Plaque',
       shortLabel: 'Plaque',
-      image: '../../assets/medicards/pediatric-dermatology/lesion-plaque.svg',
-      imageAlt: 'Illustrated broad, flat-topped plaque.',
       question:
         '<strong>Shape check:</strong> What defines a plaque and which pediatric rashes form them?',
       answer:
@@ -92,8 +84,6 @@ window.mediCardsDeck = {
     {
       title: 'Lesion Type: Lichenification',
       shortLabel: 'Lichenification',
-      image: '../../assets/medicards/pediatric-dermatology/lesion-lichenification.svg',
-      imageAlt: 'Illustration of thickened skin with accentuated lines.',
       question:
         '<strong>Chronic clue:</strong> What is lichenification and what does it tell you about disease timing?',
       answer:
@@ -114,8 +104,6 @@ window.mediCardsDeck = {
     {
       title: 'Lesion Type: Excoriation',
       shortLabel: 'Excoriation',
-      image: '../../assets/medicards/pediatric-dermatology/lesion-excoriation.svg',
-      imageAlt: 'Illustrated scratch marks across skin.',
       question:
         '<strong>Scratch marks:</strong> How do you describe excoriations and what complications do you watch for?',
       answer:
@@ -136,8 +124,6 @@ window.mediCardsDeck = {
     {
       title: 'Lesion Type: Crusting',
       shortLabel: 'Crusting',
-      image: '../../assets/medicards/pediatric-dermatology/lesion-crusting.svg',
-      imageAlt: 'Illustration of golden crust on skin.',
       question:
         '<strong>Surface change:</strong> What does crusting indicate and how is it formed?',
       answer:
@@ -158,8 +144,6 @@ window.mediCardsDeck = {
     {
       title: 'Lesion Type: Scaling',
       shortLabel: 'Scaling',
-      image: '../../assets/medicards/pediatric-dermatology/lesion-scaling.svg',
-      imageAlt: 'Illustration of fine desquamating scale.',
       question:
         '<strong>Texture tell:</strong> What is scaling and why does it help separate eczema from fungal disease?',
       answer:
@@ -180,8 +164,6 @@ window.mediCardsDeck = {
     {
       title: 'Lesion Type: Erosion',
       shortLabel: 'Erosion',
-      image: '../../assets/medicards/pediatric-dermatology/lesion-erosion.svg',
-      imageAlt: 'Illustration of a shallow epidermal loss.',
       question:
         '<strong>Depth check:</strong> How do you describe an erosion and what follow-up care is needed?',
       answer:
@@ -202,8 +184,6 @@ window.mediCardsDeck = {
     {
       title: 'Lesion Type: Fissure',
       shortLabel: 'Fissure',
-      image: '../../assets/medicards/pediatric-dermatology/lesion-fissure.svg',
-      imageAlt: 'Illustration of a painful skin fissure.',
       question:
         '<strong>Painful split:</strong> What is a fissure and how does it influence eczema management?',
       answer:
@@ -224,8 +204,6 @@ window.mediCardsDeck = {
     {
       title: 'Pattern Finder: Eczema Distribution',
       shortLabel: 'Pattern clues',
-      image: '../../assets/medicards/pediatric-dermatology/pattern-eczema.svg',
-      imageAlt: 'Diagram showing flexural versus extensor eczema distribution.',
       question:
         '<strong>Pattern recognition:</strong> Which distribution clues steer you toward atopic dermatitis?',
       answer:
@@ -246,8 +224,6 @@ window.mediCardsDeck = {
     {
       title: 'Smart Safety Net',
       shortLabel: 'Safety net',
-      image: '../../assets/medicards/pediatric-dermatology/safety-net.svg',
-      imageAlt: 'Alert icon illustrating clinical escalation.',
       question:
         '<strong>Escalate when:</strong> Which red flags demand urgent reassessment or referral?',
       answer:
@@ -276,8 +252,6 @@ window.mediCardsDeck = {
     {
       title: 'Quick “Which Test?” Table',
       shortLabel: 'Which test?',
-      image: '../../assets/medicards/pediatric-dermatology/quick-tests.svg',
-      imageAlt: 'Illustration of lab tools for dermatology testing.',
       question:
         '<strong>Scenario:</strong> Clinic triage requires targeted testing—what rapid tests align with each diagnosis?',
       answer:
@@ -306,8 +280,6 @@ window.mediCardsDeck = {
     {
       title: 'Atopic Dermatitis: Presentation',
       shortLabel: 'AD presentation',
-      image: '../../assets/medicards/pediatric-dermatology/ad-presentation.svg',
-      imageAlt: 'Illustration of child with flexural eczema.',
       question:
         '<strong>Clue:</strong> Itchy eczematous patches in flexures signal which diagnosis, and what exam findings back it up?',
       answer:
@@ -332,8 +304,6 @@ window.mediCardsDeck = {
     {
       title: 'Atopic Dermatitis: Stepwise Therapy',
       shortLabel: 'AD therapy',
-      image: '../../assets/medicards/pediatric-dermatology/ad-therapy.svg',
-      imageAlt: 'Illustration of moisturizers and topical medications.',
       question:
         '<strong>Management:</strong> Build the stepwise plan for calming an atopic dermatitis flare.',
       answer:
@@ -362,8 +332,6 @@ window.mediCardsDeck = {
     {
       title: 'Diaper Dermatitis',
       shortLabel: 'Diaper rash',
-      image: '../../assets/medicards/pediatric-dermatology/diaper-dermatitis.svg',
-      imageAlt: 'Illustration of diaper area care supplies.',
       question:
         '<strong>Presentation:</strong> Beefy erythema across convex diaper surfaces with satellite pustules—what is it and how do you treat it?',
       answer:
@@ -384,8 +352,6 @@ window.mediCardsDeck = {
     {
       title: 'Impetigo',
       shortLabel: 'Impetigo',
-      image: '../../assets/medicards/pediatric-dermatology/impetigo.svg',
-      imageAlt: 'Illustration of honey-colored crust on skin.',
       question:
         '<strong>Clue:</strong> Honey-colored crusts on the face after eczema scratching—what is the diagnosis and first-line therapy?',
       answer:
@@ -406,8 +372,6 @@ window.mediCardsDeck = {
     {
       title: 'Tinea Infections',
       shortLabel: 'Tinea',
-      image: '../../assets/medicards/pediatric-dermatology/tinea.svg',
-      imageAlt: 'Illustration of annular rash with active border.',
       question:
         '<strong>Case:</strong> Round scaly patches with alopecia and “black dots” in the scalp—what test and treatment are needed?',
       answer:
@@ -428,8 +392,6 @@ window.mediCardsDeck = {
     {
       title: 'Scabies',
       shortLabel: 'Scabies',
-      image: '../../assets/medicards/pediatric-dermatology/scabies.svg',
-      imageAlt: 'Illustration of scabies mite tracks.',
       question:
         '<strong>Clue:</strong> Intense nocturnal itch with burrows in finger webs—how do you confirm and treat?',
       answer:
@@ -450,8 +412,6 @@ window.mediCardsDeck = {
     {
       title: 'Molluscum Contagiosum',
       shortLabel: 'Molluscum',
-      image: '../../assets/medicards/pediatric-dermatology/molluscum.svg',
-      imageAlt: 'Illustration of umbilicated papules.',
       question:
         '<strong>Pearl:</strong> Umbilicated pearly papules on flexural skin—what is the typical course and when do you treat?',
       answer:
@@ -476,8 +436,6 @@ window.mediCardsDeck = {
     {
       title: 'Hand-Foot-Mouth Disease',
       shortLabel: 'HFMD',
-      image: '../../assets/medicards/pediatric-dermatology/hfmd.svg',
-      imageAlt: 'Illustration of hand, foot, and mouth lesions.',
       question:
         '<strong>Clue:</strong> Low fever plus oral ulcers and palm/sole vesicles—what is the diagnosis and mainstay of care?',
       answer:
@@ -498,8 +456,6 @@ window.mediCardsDeck = {
     {
       title: 'Seborrheic Dermatitis (Cradle Cap)',
       shortLabel: 'Seborrheic',
-      image: '../../assets/medicards/pediatric-dermatology/seborrheic.svg',
-      imageAlt: 'Illustration of cradle cap care.',
       question:
         '<strong>Presentation:</strong> Greasy yellow scale on an otherwise content infant’s scalp—what is the diagnosis and how do you counsel parents?',
       answer:
@@ -520,8 +476,6 @@ window.mediCardsDeck = {
     {
       title: 'Infantile Hemangioma',
       shortLabel: 'IH',
-      image: '../../assets/medicards/pediatric-dermatology/infantile-hemangioma.svg',
-      imageAlt: 'Illustration of infant with facial hemangioma.',
       question:
         '<strong>Clue:</strong> Rapidly growing red-purple plaque in an infant—what should you remember about timing, risk, and treatment?',
       answer:
@@ -542,8 +496,6 @@ window.mediCardsDeck = {
     {
       title: 'Acne (Preadolescent & Adolescent)',
       shortLabel: 'Acne',
-      image: '../../assets/medicards/pediatric-dermatology/acne.svg',
-      imageAlt: 'Illustration of acne care products.',
       question:
         '<strong>Clue:</strong> Comedones with inflammatory papules in a teen—what is the guideline-based treatment ladder?',
       answer:
@@ -564,8 +516,6 @@ window.mediCardsDeck = {
     {
       title: 'Psoriasis (Pediatric)',
       shortLabel: 'Psoriasis',
-      image: '../../assets/medicards/pediatric-dermatology/psoriasis.svg',
-      imageAlt: 'Illustration of well-demarcated plaques on extensor surfaces.',
       question:
         '<strong>Pattern:</strong> Well-demarcated erythematous plaques with silvery scale on extensor surfaces—what is the diagnosis and management overview?',
       answer:
@@ -586,8 +536,6 @@ window.mediCardsDeck = {
     {
       title: 'Urticaria (Acute)',
       shortLabel: 'Urticaria',
-      image: '../../assets/medicards/pediatric-dermatology/urticaria.svg',
-      imageAlt: 'Illustration of raised wheals on skin.',
       question:
         '<strong>Clue:</strong> Transient pruritic wheals ± angioedema—what evaluation and treatment steps are recommended?',
       answer:
