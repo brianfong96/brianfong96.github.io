@@ -170,7 +170,7 @@ class ParagraphSelectionHighlighter {
       return;
     }
 
-    this.applySelection(paragraph, event.clientX, event.clientY);
+    this.applySelection(paragraph);
   }
 
   handleFocusIn(event) {
@@ -179,8 +179,7 @@ class ParagraphSelectionHighlighter {
       return;
     }
 
-    const rect = paragraph.getBoundingClientRect();
-    this.applySelection(paragraph, rect.left + rect.width / 2, rect.top + rect.height / 2);
+    this.applySelection(paragraph);
   }
 
   handleDocumentPointerDown(event) {
@@ -197,16 +196,21 @@ class ParagraphSelectionHighlighter {
     }
   }
 
-  applySelection(paragraph, clientX, clientY) {
+  applySelection(paragraph) {
     const rect = paragraph.getBoundingClientRect();
-    const x = Number.isFinite(clientX) ? clientX - rect.left : rect.width / 2;
-    const y = Number.isFinite(clientY) ? clientY - rect.top : rect.height / 2;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const radius = Math.sqrt(centerX * centerX + centerY * centerY) + 12;
 
-    paragraph.style.setProperty('--selection-origin-x', `${Math.max(0, x)}px`);
-    paragraph.style.setProperty('--selection-origin-y', `${Math.max(0, y)}px`);
+    paragraph.style.setProperty('--selection-center-x', `${centerX}px`);
+    paragraph.style.setProperty('--selection-center-y', `${centerY}px`);
+    paragraph.style.setProperty('--selection-radius', `${radius}px`);
 
     if (this.activeParagraph && this.activeParagraph !== paragraph) {
       this.activeParagraph.classList.remove('is-selected');
+      this.activeParagraph.style.removeProperty('--selection-center-x');
+      this.activeParagraph.style.removeProperty('--selection-center-y');
+      this.activeParagraph.style.removeProperty('--selection-radius');
     }
 
     if (this.activeParagraph === paragraph) {
@@ -221,6 +225,9 @@ class ParagraphSelectionHighlighter {
   clearActive() {
     if (this.activeParagraph) {
       this.activeParagraph.classList.remove('is-selected');
+      this.activeParagraph.style.removeProperty('--selection-center-x');
+      this.activeParagraph.style.removeProperty('--selection-center-y');
+      this.activeParagraph.style.removeProperty('--selection-radius');
       this.activeParagraph = null;
     }
   }
@@ -439,7 +446,7 @@ class DeckController {
     });
 
     this.selectionHighlighter = new ParagraphSelectionHighlighter();
-    this.selectionHighlighter.observe(this.questionEl, this.answerEl, this.explanationBody);
+    this.selectionHighlighter.observe(this.answerEl);
 
     this.speechSupported = 'speechSynthesis' in window;
     this.audioPlayer = new Audio();
