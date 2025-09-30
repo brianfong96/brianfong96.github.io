@@ -136,6 +136,96 @@ function showDeckLoadError(message) {
   }
 }
 
+class ParagraphSelectionHighlighter {
+  constructor() {
+    this.activeParagraph = null;
+    this.observedContainers = new Set();
+    this.handlePointerDown = this.handlePointerDown.bind(this);
+    this.handleFocusIn = this.handleFocusIn.bind(this);
+    this.handleDocumentPointerDown = this.handleDocumentPointerDown.bind(this);
+    this.documentListening = false;
+  }
+
+  observe(...containers) {
+    containers
+      .filter((container) => container instanceof HTMLElement)
+      .forEach((container) => {
+        if (this.observedContainers.has(container)) {
+          return;
+        }
+        this.observedContainers.add(container);
+        container.addEventListener('pointerdown', this.handlePointerDown);
+        container.addEventListener('focusin', this.handleFocusIn);
+      });
+
+    if (!this.documentListening) {
+      document.addEventListener('pointerdown', this.handleDocumentPointerDown, { capture: true });
+      this.documentListening = true;
+    }
+  }
+
+  handlePointerDown(event) {
+    const paragraph = event.target.closest('.card-paragraph');
+    if (!paragraph) {
+      return;
+    }
+
+    this.applySelection(paragraph, event.clientX, event.clientY);
+  }
+
+  handleFocusIn(event) {
+    const paragraph = event.target.closest('.card-paragraph');
+    if (!paragraph) {
+      return;
+    }
+
+    const rect = paragraph.getBoundingClientRect();
+    this.applySelection(paragraph, rect.left + rect.width / 2, rect.top + rect.height / 2);
+  }
+
+  handleDocumentPointerDown(event) {
+    if (!this.activeParagraph) {
+      return;
+    }
+
+    const isInsideObserved = Array.from(this.observedContainers).some((container) =>
+      container.contains(event.target)
+    );
+
+    if (!isInsideObserved) {
+      this.clearActive();
+    }
+  }
+
+  applySelection(paragraph, clientX, clientY) {
+    const rect = paragraph.getBoundingClientRect();
+    const x = Number.isFinite(clientX) ? clientX - rect.left : rect.width / 2;
+    const y = Number.isFinite(clientY) ? clientY - rect.top : rect.height / 2;
+
+    paragraph.style.setProperty('--selection-origin-x', `${Math.max(0, x)}px`);
+    paragraph.style.setProperty('--selection-origin-y', `${Math.max(0, y)}px`);
+
+    if (this.activeParagraph && this.activeParagraph !== paragraph) {
+      this.activeParagraph.classList.remove('is-selected');
+    }
+
+    if (this.activeParagraph === paragraph) {
+      paragraph.classList.remove('is-selected');
+      void paragraph.offsetWidth;
+    }
+
+    paragraph.classList.add('is-selected');
+    this.activeParagraph = paragraph;
+  }
+
+  clearActive() {
+    if (this.activeParagraph) {
+      this.activeParagraph.classList.remove('is-selected');
+      this.activeParagraph = null;
+    }
+  }
+}
+
 class CardPresenter {
   constructor({ questionEl, answerEl, explanationEl, sourcesEl }) {
     this.questionEl = questionEl;
@@ -348,6 +438,9 @@ class DeckController {
       sourcesEl: this.sourcesEl
     });
 
+    this.selectionHighlighter = new ParagraphSelectionHighlighter();
+    this.selectionHighlighter.observe(this.questionEl, this.answerEl, this.explanationBody);
+
     this.speechSupported = 'speechSynthesis' in window;
     this.audioPlayer = new Audio();
     this.ttsEndpoint = 'https://api.streamelements.com/kappa/v2/speech';
@@ -489,6 +582,8 @@ class DeckController {
       this.cardWrapper.classList.remove('transitioning');
     }
 
+    this.selectionHighlighter.clearActive();
+
     const empty = document.createElement('div');
     empty.className = 'card-empty';
     empty.textContent = message;
@@ -577,6 +672,7 @@ class DeckController {
     this.explanationBtn.textContent = 'Explanation';
 
     const card = this.cards[this.currentIndex];
+    this.selectionHighlighter.clearActive();
     this.cardPresenter.render(card);
     this.cardCountEl.textContent = `Card ${this.currentIndex + 1} of ${this.cards.length}`;
     if (this.selector) {
