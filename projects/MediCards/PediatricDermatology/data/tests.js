@@ -1,39 +1,40 @@
 const cards = [
   {
-    id: 'tests-quick-table',
-    title: 'Quick “Which Test?” Table',
-    shortLabel: 'Test selector',
+    id: 'testing-cliff-notes',
+    title: 'Testing Cliff Notes',
+    shortLabel: 'Testing cheatsheet',
     prompt: {
-      lead: 'Scenario',
-      text: 'Clinic triage requires targeted testing—what rapid tests align with each diagnosis?'
+      lead: 'Order wisely',
+      text: 'Which diagnostic tests actually change management in pediatric allergy and derm cases?'
     },
     answerPoints: [
-      { text: 'KOH prep for suspected tinea corporis or capitis.' },
-      { text: 'Bacterial culture for impetigo that is recurrent, associated with outbreaks, or not responding.' },
-      { text: 'Skin scraping or dermoscopy to confirm scabies when needed.' },
-      { text: 'No routine labs for classic AD, acne, pityriasis rosea, molluscum, or viral warts unless atypical or immunocompromised.' }
+      { label: 'Skin-prick tests / serum IgE', text: 'Order only when history suggests IgE-mediated allergy and results will change avoidance, immunotherapy, or desensitization plans; remember positive tests indicate sensitization, not clinical allergy.' },
+      { label: 'Oral food challenge', text: 'Gold standard for confirming or ruling out food allergy and assessing tolerance (e.g., baked milk/egg ladders); perform in supervised settings.' },
+      { label: 'Spirometry & FeNO', text: 'Use spirometry ≥5–6 years old to document reversible airflow obstruction; add FeNO when available to gauge type 2 inflammation and adherence.' },
+      { label: 'Patch testing', text: 'Evaluate persistent or unclear dermatitis for allergic contact triggers.' },
+      { label: 'Tryptase', text: 'Draw 1–3 hours after suspected anaphylaxis when diagnosis is uncertain or to evaluate for mast cell disorders.' }
     ],
     answerSummary:
-      'Match quick office tests to your differential and avoid unnecessary labs for classic inflammatory dermatoses.',
+      'Tie testing to history—reserve IgE studies, spirometry, patch testing, and tryptase for scenarios where results guide therapy, and use oral food challenges to confirm tolerance.',
     imageSearch: {
-      query: 'dermatology koh prep scabies scraping',
-      label: 'Search Google Images for bedside dermatology tests'
+      query: 'pediatric allergy testing skin prick spirometry patch test',
+      label: 'Search Google Images for pediatric allergy testing'
     },
     explanation: [
-      'Focused bedside diagnostics expedite therapy. KOH preps reveal branching hyphae, cultures tailor antibacterial therapy, and scrapings confirm mite infestations before undertaking extensive household treatment.'
+      'Avoid broad “screening” panels that detect sensitization without context. Document pre-test probability, counsel families on limitations, and plan follow-up to interpret results together.'
     ],
     sources: [
       {
-        label: 'AAFP – Diagnosis and management of tinea infections',
-        url: 'https://www.aafp.org/pubs/afp/issues/2014/1115/p702.html?utm_source=chatgpt.com'
+        label: 'AAAAI/ACAAI Food Allergy Diagnostic Guideline',
+        url: 'https://www.aaaai.org/practice-resources/statements-and-practice-parameters/food-allergy?utm_source=chatgpt.com'
       },
       {
-        label: 'CDC – Clinical guidance for impetigo',
-        url: 'https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/impetigo.html?utm_source=chatgpt.com'
+        label: 'GINA 2023 – Lung Function Testing',
+        url: 'https://ginasthma.org/wp-content/uploads/2023/07/GINA-2023-Pocket-Guide-WMS.pdf?utm_source=chatgpt.com'
       },
       {
-        label: 'CDC – Clinical care of scabies',
-        url: 'https://www.cdc.gov/scabies/hcp/clinical-care/index.html?utm_source=chatgpt.com'
+        label: 'American Contact Dermatitis Society – Patch Testing',
+        url: 'https://www.contactderm.org/resources/pediatric?utm_source=chatgpt.com'
       }
     ]
   }
@@ -41,6 +42,6 @@ const cards = [
 
 export default {
   id: 'tests',
-  label: 'Diagnostic quick picks',
+  label: 'Testing Playbook',
   cards
 };

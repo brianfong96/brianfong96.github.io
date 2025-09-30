@@ -1,347 +1,382 @@
 const cards = [
   {
-    id: 'lesion-erythema',
-    title: 'Lesion Type: Erythema',
-    shortLabel: 'Erythema',
+    id: 'allergy-rhinitis',
+    title: 'Allergic Rhinitis (± Conjunctivitis)',
+    shortLabel: 'Allergic rhinitis',
     prompt: {
-      lead: 'Spot it',
-      text: 'When you see a diffuse red patch on inflamed skin, what are you looking at and why does it matter?'
+      lead: 'Clinic scenario',
+      text: 'Child with seasonal sneezing, itching, and congestion—how do you confirm allergic rhinitis and control symptoms?'
     },
     answerPoints: [
       {
-        label: 'Definition',
-        text: 'Blanchable redness from dilated superficial vessels signaling inflammation or irritation.'
+        label: 'History',
+        text: 'Paroxysmal sneezing, nasal itching, clear rhinorrhea, and congestion with seasonal or perennial triggers; ask about sleep impact and associated atopy or conjunctival itching.'
       },
       {
-        label: 'Clinical pearl',
-        text: 'Track temperature, tenderness, and borders to distinguish cellulitis from eczema flare.'
+        label: 'Exam',
+        text: 'Allergic shiners, Dennie–Morgan lines, transverse nasal crease, pale or boggy turbinates, and watery, itchy eyes without purulence.'
+      },
+      {
+        label: 'Testing',
+        text: 'Diagnosis is clinical; order targeted skin-prick testing (SPT) or serum IgE only if the result will change management (e.g., candidacy for immunotherapy).'
+      },
+      {
+        label: 'Management',
+        text: 'Allergen avoidance and saline irrigation → daily intranasal corticosteroid; add second-generation oral or intranasal antihistamine for breakthrough symptoms. Consider short oral steroids for severe obstruction and refer for allergen immunotherapy when control remains poor.'
       }
     ],
     answerSummary:
-      'Erythema reflects superficial vasodilation from inflammation, so borders, warmth, and tenderness guide your differential.',
+      'Seasonal itch, sneeze, and congestion point to allergic rhinitis—treat with avoidance, saline, and daily intranasal steroids, layering on antihistamines or immunotherapy when needed.',
     imageSearch: {
-      query: 'pediatric erythema skin lesion',
-      label: 'Search Google Images for erythema examples'
+      query: 'pediatric allergic rhinitis nasal crease turbinates',
+      label: 'Search Google Images for allergic rhinitis findings'
     },
     explanation: [
-      'Erythema is a primary lesion that reflects inflammatory vasodilation. In pediatrics it often accompanies eczema flares, drug eruptions, or cellulitis. Documenting borders and associated edema helps determine whether infection or dermatitis is more likely.'
+      'Intranasal corticosteroids are the most effective monotherapy for allergic rhinitis, reducing mucosal inflammation and congestion. Assess trigger burden, reinforce adherence to spray technique, and monitor comorbid asthma or eczema for coordinated care.'
     ],
     sources: [
       {
-        label: 'DermNet – Primary skin lesions',
-        url: 'https://dermnetnz.org/topics/primary-skin-lesions?utm_source=chatgpt.com'
+        label: 'AAAAI/ACAAI Rhinitis Practice Parameter (2020)',
+        url: 'https://www.jacionline.org/article/S0091-6749(20)31364-8/fulltext?utm_source=chatgpt.com'
+      },
+      {
+        label: 'ARIA Care Pathways',
+        url: 'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10046619/?utm_source=chatgpt.com'
       }
     ]
   },
   {
-    id: 'lesion-papule',
-    title: 'Lesion Type: Papule',
-    shortLabel: 'Papule',
+    id: 'allergy-food-ige',
+    title: 'IgE-Mediated Food Allergy',
+    shortLabel: 'Food allergy (IgE)',
     prompt: {
-      lead: 'Define it',
-      text: 'What is a papule and how does it guide your pediatric dermatology workup?'
+      lead: 'Rapid reaction',
+      text: 'Minutes after peanut ingestion a child develops hives and vomiting—outline the diagnostic approach and long-term plan.'
     },
     answerPoints: [
       {
-        label: 'Definition',
-        text: 'Solid, raised lesion under 1 cm; color ranges from skin-toned to erythematous.'
+        label: 'History',
+        text: 'Immediate (minutes to ≤2 hours) reproducible symptoms—urticaria, angioedema, wheeze, emesis, hypotension—after exposure to a specific food; review serving size, co-factors, and prior tolerance.'
       },
       {
-        label: 'Clinical pearl',
-        text: 'Assess umbilication, scale, and distribution to separate inflammatory papules from infectious causes.'
+        label: 'Exam',
+        text: 'Normal between reactions; during an acute episode look for cutaneous, respiratory, gastrointestinal, or cardiovascular signs of anaphylaxis.'
+      },
+      {
+        label: 'Testing',
+        text: 'Order targeted SPT or serum specific IgE guided by history; component testing (e.g., Ara h 2 for peanut) clarifies risk. Oral food challenge remains the gold standard when history and testing conflict.'
+      },
+      {
+        label: 'Management',
+        text: 'Institute strict avoidance, provide an emergency action plan, and prescribe appropriate-dose epinephrine autoinjectors (0.1/0.15/0.3 mg by weight). Consider oral immunotherapy with an allergy specialist and re-evaluate regularly for tolerance (e.g., baked milk/egg ladders). Ensure nutrition support.'
       }
     ],
     answerSummary:
-      'Papules are small solid bumps—surface changes such as umbilication or scale refine the differential.',
+      'Confirm IgE food allergy with history-driven testing, equip families with epinephrine and avoidance strategies, and revisit tolerance under specialist supervision.',
     imageSearch: {
-      query: 'pediatric papule skin lesion example',
-      label: 'Search Google Images for papules'
+      query: 'child food allergy hives emergency action plan',
+      label: 'Search Google Images for pediatric food allergy management'
     },
     explanation: [
-      'Papules represent dermal cellular infiltration or edema. In children, papular eruptions can signal eczema, viral exanthems, or arthropod reactions. Combine palpation with surface findings to narrow possibilities.'
+      'Sensitization without clinical reactivity is common, so anchor testing to a compelling history. Education on label reading, cross-contact prevention, and when to use epinephrine reduces morbidity while families await potential tolerance.'
     ],
     sources: [
       {
-        label: 'DermNet – Primary skin lesions',
-        url: 'https://dermnetnz.org/topics/primary-skin-lesions?utm_source=chatgpt.com'
+        label: 'NIAID Guidelines for Food Allergy',
+        url: 'https://www.niaid.nih.gov/diseases-conditions/guidelines-clinicians-and-patients-food-allergy?utm_source=chatgpt.com'
+      },
+      {
+        label: 'AAAAI Food Allergy Practice Parameter',
+        url: 'https://www.aaaai.org/practice-resources/statements-and-practice-parameters/food-allergy?utm_source=chatgpt.com'
       }
     ]
   },
   {
-    id: 'lesion-vesicle',
-    title: 'Lesion Type: Vesicle',
-    shortLabel: 'Vesicle',
+    id: 'anaphylaxis-acute',
+    title: 'Anaphylaxis: Emergency Management',
+    shortLabel: 'Anaphylaxis',
     prompt: {
-      lead: 'Fluid clue',
-      text: 'Which lesion is a tiny fluid-filled blister and where do you expect to see it in pediatrics?'
+      lead: 'Emergency',
+      text: 'A child with peanut exposure develops hives, wheeze, and hypotension—detail the acute management steps.'
     },
     answerPoints: [
       {
-        label: 'Definition',
-        text: 'Small (under 1 cm) clear fluid-filled blister.'
+        label: 'Recognition',
+        text: 'Rapid-onset illness involving skin or mucosa plus respiratory compromise, hypotension, or severe gastrointestinal symptoms; anticipate biphasic reactions.'
       },
       {
-        label: 'Clinical pearl',
-        text: 'Common in acute eczema, varicella, and hand-foot-mouth disease—inspect for surrounding erythema or oral lesions.'
+        label: 'Immediate action',
+        text: 'Administer intramuscular epinephrine 0.01 mg/kg (1 mg/mL) to the anterolateral thigh, max 0.3 mg for children; repeat every 5–15 minutes as needed.'
+      },
+      {
+        label: 'Supportive care',
+        text: 'Position supine with legs elevated, give high-flow oxygen, establish IV access for isotonic fluids, and add adjunctive therapies only after epinephrine (SABA for bronchospasm, H1/H2 antihistamines, corticosteroids).'
+      },
+      {
+        label: 'Observation & discharge',
+        text: 'Monitor at least 4–6 hours (longer if severe or high risk), then discharge with two epinephrine autoinjectors, a written action plan, and allergy referral.'
       }
     ],
     answerSummary:
-      'Vesicles signal acute inflammation or viral infection, so distribution and mucosal findings steer management.',
+      'Treat anaphylaxis with prompt IM epinephrine, supportive positioning and fluids, then observe before discharge with action plans and autoinjectors.',
     imageSearch: {
-      query: 'pediatric vesicle blister skin',
-      label: 'Search Google Images for vesicles'
+      query: 'anaphylaxis emergency pediatric epinephrine thigh injection',
+      label: 'Search Google Images for pediatric anaphylaxis treatment'
     },
     explanation: [
-      'Vesicles form when fluid collects between epidermal layers. Their presence shifts suspicion toward acute eczema flares, viral exanthems, or bullous impetigo. Always assess for pain, honey crust, or systemic symptoms to rule out infection.'
+      'Delays in epinephrine drive morbidity. Education on thigh injection technique, supine positioning, and recognizing biphasic reactions empowers families and first responders.'
     ],
     sources: [
       {
-        label: 'DermNet – Vesicles',
-        url: 'https://dermnetnz.org/topics/blistering-diseases?utm_source=chatgpt.com'
+        label: 'World Allergy Organization Anaphylaxis Guidance 2020',
+        url: 'https://www.worldallergy.org/resources/anaphylaxis?utm_source=chatgpt.com'
+      },
+      {
+        label: 'AAAAI – Anaphylaxis Emergency Department Guidelines',
+        url: 'https://www.aaaai.org/tools-for-the-public/conditions-library/allergies/anaphylaxis?utm_source=chatgpt.com'
       }
     ]
   },
   {
-    id: 'lesion-plaque',
-    title: 'Lesion Type: Plaque',
-    shortLabel: 'Plaque',
+    id: 'urticaria-angioedema',
+    title: 'Urticaria & Angioedema (Non-Anaphylactic)',
+    shortLabel: 'Urticaria (chronic)',
     prompt: {
-      lead: 'Shape check',
-      text: 'What defines a plaque and which pediatric rashes form them?'
+      lead: 'Clinic puzzle',
+      text: 'Child with itchy wheals recurring for weeks—how do you evaluate and manage non-anaphylactic urticaria?'
     },
     answerPoints: [
       {
-        label: 'Definition',
-        text: 'Raised, flat-topped lesion over 1 cm created by coalescing papules.'
+        label: 'History & triggers',
+        text: 'Pruritic wheals lasting <24 hours per spot and migrating, often post-infectious; chronic if >6 weeks. Screen for physical triggers, medications, or autoimmune disease; ensure no systemic compromise.'
       },
       {
-        label: 'Clinical pearl',
-        text: 'Look for plaques in psoriasis, nummular eczema, or tinea corporis with an active border.'
+        label: 'Exam',
+        text: 'Transient wheals or angioedema without respiratory distress or hypotension. Document absence of mucosal involvement suggestive of severe cutaneous adverse reactions.'
+      },
+      {
+        label: 'Testing',
+        text: 'Routine labs are unnecessary; pursue targeted workup (CBC, ESR/CRP, TSH) only if history suggests systemic disease or chronicity with red flags.'
+      },
+      {
+        label: 'Management',
+        text: 'Daily second-generation antihistamine at standard dose, uptitrating to fourfold dosing if needed. Short oral corticosteroid burst for severe flares. Avoid triggers and reserve epinephrine autoinjectors for patients with anaphylaxis risk.'
       }
     ],
     answerSummary:
-      'Plaques reflect confluent papules—texture, border, and scale separate eczema from psoriasis or tinea.',
+      'Chronic urticaria hinges on high-dose second-generation antihistamines and minimal lab work unless the story points elsewhere.',
     imageSearch: {
-      query: 'pediatric plaque skin lesion',
-      label: 'Search Google Images for skin plaques'
+      query: 'pediatric chronic urticaria wheals antihistamine',
+      label: 'Search Google Images for pediatric urticaria'
     },
     explanation: [
-      'Plaques often signal chronic inflammatory dermatoses. Sharply demarcated borders point to psoriasis, while annular plaques with trailing scale suggest tinea. Chronic scratching can convert papules into lichenified plaques.'
+      'Most pediatric chronic urticaria is idiopathic or post-viral. Educate families that lesions are fleeting and seldom dangerous, and escalate to omalizumab or cyclosporine only in refractory specialist-managed cases.'
     ],
     sources: [
       {
-        label: 'DermNet – Primary skin lesions',
-        url: 'https://dermnetnz.org/topics/primary-skin-lesions?utm_source=chatgpt.com'
+        label: 'EAACI Biologicals Guideline for Urticaria 2021',
+        url: 'https://onlinelibrary.wiley.com/doi/10.1111/all.14859?utm_source=chatgpt.com'
       }
     ]
   },
   {
-    id: 'lesion-lichenification',
-    title: 'Lesion Type: Lichenification',
-    shortLabel: 'Lichenification',
+    id: 'allergic-asthma',
+    title: 'Asthma – Allergic Phenotype',
+    shortLabel: 'Asthma (allergic)',
     prompt: {
-      lead: 'Chronic clue',
-      text: 'What is lichenification and what does it reveal about disease timing?'
+      lead: 'Wheezy child',
+      text: 'Recurrent cough and wheeze triggered by allergens—how do you confirm allergic asthma and step therapy?'
     },
     answerPoints: [
       {
-        label: 'Definition',
-        text: 'Thickened skin with exaggerated lines from chronic rubbing or scratching.'
+        label: 'History',
+        text: 'Recurrent wheeze, cough, dyspnea, and nocturnal symptoms linked to viral infections, allergen exposure, exercise, or smoke; assess atopy and medication use.'
       },
       {
-        label: 'Clinical pearl',
-        text: 'Signals long-standing atopic dermatitis or lichen simplex—ask about itch control and sleep disruption.'
+        label: 'Exam & testing',
+        text: 'Often normal between flares; wheeze during exacerbation. Use spirometry with bronchodilator response ≥5–6 years and FeNO where available to characterize type 2 inflammation; allergy testing if results guide avoidance or biologics.'
+      },
+      {
+        label: 'Management',
+        text: 'Reliever: SABA or low-dose ICS–formoterol per age. Controller: start daily inhaled corticosteroid, stepping up to ICS–LABA or MART if poor control. Treat comorbid rhinitis, reinforce trigger reduction, spacer technique, asthma action plan, and yearly influenza vaccination.'
       }
     ],
     answerSummary:
-      'Lichenification equals chronic itch; address triggers and potent topical anti-inflammatories.',
+      'Document variable airflow limitation with spirometry, control allergens, and escalate from daily ICS to combination therapy while reinforcing inhaler technique.',
     imageSearch: {
-      query: 'lichenification chronic eczema child',
-      label: 'Search Google Images for lichenification'
+      query: 'pediatric asthma inhaler spacer education',
+      label: 'Search Google Images for pediatric asthma management'
     },
     explanation: [
-      'Chronic inflammation drives pruritus, thickening the epidermis and accentuating skin markings. Recognizing lichenification prompts escalation to medium-potency steroids, wet wraps, or systemic therapy if quality of life is impaired.'
+      'Allergic asthma shares pathways with rhinitis, so combined management improves outcomes. Frequent reliever use or exacerbations signal the need to step up therapy or assess adherence.'
     ],
     sources: [
       {
-        label: 'DermNet – Lichenification',
-        url: 'https://dermnetnz.org/topics/lichen-simplex?utm_source=chatgpt.com'
+        label: 'GINA 2023 Pocket Guide',
+        url: 'https://ginasthma.org/wp-content/uploads/2023/07/GINA-2023-Pocket-Guide-WMS.pdf?utm_source=chatgpt.com'
       }
     ]
   },
   {
-    id: 'lesion-excoriation',
-    title: 'Lesion Type: Excoriation',
-    shortLabel: 'Excoriation',
+    id: 'allergic-conjunctivitis',
+    title: 'Allergic Conjunctivitis',
+    shortLabel: 'Allergic conjunctivitis',
     prompt: {
-      lead: 'Scratch marks',
-      text: 'How do you describe excoriations and what complications raise concern?'
+      lead: 'Eye itch',
+      text: 'Bilateral itchy, watery eyes without purulence—outline diagnosis and treatment.'
     },
     answerPoints: [
       {
-        label: 'Definition',
-        text: 'Linear erosions from scratching that may crust or bleed.'
+        label: 'History & exam',
+        text: 'Intense itching, tearing, mild lid edema, and conjunctival injection, often with concomitant rhinitis; vision remains normal and no purulent discharge.'
       },
       {
-        label: 'Clinical pearl',
-        text: 'Excoriations invite secondary infection—screen for impetigo, scabies, or poorly controlled itch.'
+        label: 'Testing',
+        text: 'Clinical diagnosis; allergy testing only when results will influence immunotherapy decisions.'
+      },
+      {
+        label: 'Management',
+        text: 'Allergen avoidance, cool compresses, lubricating drops, and topical antihistamine/mast-cell stabilizer drops. Reserve short topical ophthalmic steroids to an eye specialist for severe flares.'
       }
     ],
     answerSummary:
-      'Excoriations are self-inflicted breaks that raise infection risk; treat the itch and monitor for impetigo.',
+      'Allergic conjunctivitis presents with bilateral itchy, watery eyes—treat with avoidance, lubricants, and topical antihistamine/mast-cell stabilizers.',
     imageSearch: {
-      query: 'excoriation scratching child skin',
-      label: 'Search Google Images for excoriations'
+      query: 'allergic conjunctivitis child itchy watery eyes',
+      label: 'Search Google Images for allergic conjunctivitis'
     },
     explanation: [
-      'Scratching disrupts the epidermal barrier, letting bacteria colonize and causing stinging. Address pruritus with topical anti-inflammatories and consider bleach baths when excoriations are widespread.'
+      'Avoid chronic vasoconstrictor drops. Address accompanying rhinitis and consider oral antihistamines for systemic relief.'
     ],
     sources: [
       {
-        label: 'DermNet – Excoriations',
-        url: 'https://dermnetnz.org/topics/excoriation-skin-picking-disorder?utm_source=chatgpt.com'
+        label: 'American Academy of Ophthalmology – Allergic Conjunctivitis PPP',
+        url: 'https://www.aao.org/preferred-practice-pattern/allergic-conjunctivitis-ppp-2018?utm_source=chatgpt.com'
       }
     ]
   },
   {
-    id: 'lesion-crusting',
-    title: 'Lesion Type: Crusting',
-    shortLabel: 'Crusting',
+    id: 'allergic-contact-dermatitis',
+    title: 'Allergic Contact Dermatitis',
+    shortLabel: 'Contact dermatitis',
     prompt: {
-      lead: 'Surface change',
-      text: 'What does crusting indicate and how is it formed?'
+      lead: 'Delayed rash',
+      text: 'Child develops a pruritic, well-demarcated rash 48 hours after wearing new earrings—what is the workup and management?'
     },
     answerPoints: [
       {
-        label: 'Definition',
-        text: 'Dried serum, blood, or pus on the skin surface.'
+        label: 'Clues',
+        text: 'Delayed (48–72 hour) pruritic erythema, papules, or vesicles at exposure sites (nickel, fragrances, neomycin); chronic cases show lichenification.'
       },
       {
-        label: 'Clinical pearl',
-        text: 'Honey-colored crusting suggests impetigo; thin serous crust follows vesicle rupture in eczema.'
+        label: 'Testing',
+        text: 'Consider patch testing when the allergen is unclear or dermatitis persists despite avoidance.'
+      },
+      {
+        label: 'Treatment',
+        text: 'Strict avoidance, mid-potency topical steroids for limited areas, emollients to restore barrier, and topical calcineurin inhibitors for sensitive sites (face, flexures).'
       }
     ],
     answerSummary:
-      'Crusts are dried exudate—color and distribution point to infection versus resolving dermatitis.',
+      'Diagnose delayed contact dermatitis by exposure pattern, confirm with patch testing when needed, and manage with avoidance plus topical anti-inflammatories.',
     imageSearch: {
-      query: 'honey crust impetigo child',
-      label: 'Search Google Images for skin crusting'
+      query: 'pediatric allergic contact dermatitis nickel rash',
+      label: 'Search Google Images for allergic contact dermatitis'
     },
     explanation: [
-      'Crusting forms when exudate dries over inflamed skin. Golden crusts prompt impetigo coverage, whereas serous crust in eczema signals acute weeping that still needs anti-inflammatory therapy.'
+      'Education on hidden allergens (clothing fasteners, topical antibiotics) prevents recurrences. Widespread dermatitis may require a short oral steroid taper under supervision.'
     ],
     sources: [
       {
-        label: 'DermNet – Impetigo overview',
-        url: 'https://dermnetnz.org/topics/impetigo?utm_source=chatgpt.com'
+        label: 'American Contact Dermatitis Society – Pediatric Contact Dermatitis',
+        url: 'https://www.contactderm.org/resources/pediatric?utm_source=chatgpt.com'
       }
     ]
   },
   {
-    id: 'lesion-scaling',
-    title: 'Lesion Type: Scaling',
-    shortLabel: 'Scaling',
+    id: 'insect-sting-allergy',
+    title: 'Insect Sting Allergy (Hymenoptera)',
+    shortLabel: 'Sting allergy',
     prompt: {
-      lead: 'Texture tell',
-      text: 'What is scaling and why does it help separate eczema from fungal disease?'
+      lead: 'Sting reaction',
+      text: 'Child with large local swelling after a bee sting versus systemic hives—how do you differentiate and treat?'
     },
     answerPoints: [
       {
-        label: 'Definition',
-        text: 'Flakes of stratum corneum shed from the surface.'
+        label: 'History',
+        text: 'Large local reactions cause swelling >10 cm that peaks at 24–48 hours; systemic reactions manifest as urticaria, respiratory compromise, or hypotension within minutes.'
       },
       {
-        label: 'Clinical pearl',
-        text: 'Diffuse fine scale fits eczema or seborrhea; leading-edge scale favors tinea corporis.'
+        label: 'Testing',
+        text: 'Order venom SPT or serum IgE only after systemic reactions or to guide immunotherapy; not indicated for isolated large local reactions.'
+      },
+      {
+        label: 'Management',
+        text: 'Local: cold compresses, oral antihistamines, short oral corticosteroid if severe. Systemic: prescribe epinephrine autoinjector, provide avoidance education, and refer for venom immunotherapy (>90% efficacy in preventing future anaphylaxis).'
       }
     ],
-    answerSummary: 'Scale character directs your differential—diffuse versus annular edge matters.',
+    answerSummary:
+      'Differentiate benign large local swellings from systemic anaphylaxis—reserve venom testing and immunotherapy for systemic reactions while supplying epinephrine.',
     imageSearch: {
-      query: 'pediatric skin scaling example',
-      label: 'Search Google Images for scaling lesions'
+      query: 'hymenoptera sting allergy child swelling management',
+      label: 'Search Google Images for insect sting allergy management'
     },
     explanation: [
-      'Scaling reflects abnormal keratinization or inflammation. Annular scaling with central clearing suggests tinea, while greasy scalp scale in infants suggests seborrheic dermatitis.'
+      'Large local reactions seldom progress to anaphylaxis, so reassure families while reviewing signs of systemic involvement and the importance of prompt epinephrine use when indicated.'
     ],
     sources: [
       {
-        label: 'DermNet – Scaling skin conditions',
-        url: 'https://dermnetnz.org/topics/scaly-skin?utm_source=chatgpt.com'
+        label: 'AAAAI Practice Parameter: Stinging Insect Hypersensitivity (2017)',
+        url: 'https://www.aaaai.org/Aaaai/media/MediaLibrary/PDF%20Documents/Practice%20and%20Parameters/Stinging-Insect-Allergy-2016.pdf?utm_source=chatgpt.com'
       }
     ]
   },
   {
-    id: 'lesion-erosion',
-    title: 'Lesion Type: Erosion',
-    shortLabel: 'Erosion',
+    id: 'drug-allergy-immediate',
+    title: 'Drug Allergy – Immediate Reactions',
+    shortLabel: 'Drug allergy (immediate)',
     prompt: {
-      lead: 'Surface loss',
-      text: 'How do you recognize an erosion and what usually precedes it?'
+      lead: 'Medication reaction',
+      text: 'A child labeled “penicillin allergic” developed hives within an hour of amoxicillin—what is the evidence-based approach?'
     },
     answerPoints: [
       {
-        label: 'Definition',
-        text: 'Shallow loss of epidermis that typically heals without scarring.'
+        label: 'History',
+        text: 'Clarify timing (minutes to <6 hours), symptoms (urticaria, angioedema, respiratory compromise), treatment received, and tolerance to related antibiotics; note that most reported penicillin allergies are not IgE mediated.'
       },
       {
-        label: 'Clinical pearl',
-        text: 'Often follows vesicle or bulla rupture—watch for secondary infection in moist areas.'
+        label: 'Risk stratification',
+        text: 'Low-risk histories (isolated delayed rash, vague symptoms) are candidates for direct oral amoxicillin challenge; higher-risk presentations need penicillin skin testing followed by graded challenge.'
+      },
+      {
+        label: 'Management',
+        text: 'Avoid the culprit drug until evaluation. Document outcomes clearly to remove inaccurate allergy labels and expand antibiotic options.'
       }
     ],
     answerSummary:
-      'Erosions expose superficial dermis after blister rupture, so protect the barrier and monitor for infection.',
+      'Use history-based risk assessment, targeted testing, and supervised challenges to delabel inaccurate penicillin allergies and preserve first-line antibiotics.',
     imageSearch: {
-      query: 'skin erosion after blister pediatric',
-      label: 'Search Google Images for skin erosions'
+      query: 'pediatric penicillin allergy evaluation oral challenge',
+      label: 'Search Google Images for penicillin allergy testing'
     },
     explanation: [
-      'Erosions result from partial epidermal loss and are common in eczema flares, impetigo, and hand-foot-mouth disease. Keeping the area clean and moist accelerates re-epithelialization.'
+      'True IgE-mediated penicillin allergy wanes over time; delabeling reduces broad-spectrum antibiotic use, resistance, and costs.'
     ],
     sources: [
       {
-        label: 'DermNet – Erosions and ulcers',
-        url: 'https://dermnetnz.org/topics/erosions-and-ulcers?utm_source=chatgpt.com'
-      }
-    ]
-  },
-  {
-    id: 'lesion-fissure',
-    title: 'Lesion Type: Fissure',
-    shortLabel: 'Fissure',
-    prompt: {
-      lead: 'Painful clue',
-      text: 'What is a fissure and how does it influence management?'
-    },
-    answerPoints: [
-      {
-        label: 'Definition',
-        text: 'Linear crack in thickened skin that can extend into the dermis.'
+        label: 'AAAAI Penicillin Allergy Position Statement 2023',
+        url: 'https://www.aaaai.org/Aaaai/media/Media-Library-PDFs/Allergist%20Resources/Statements%20and%20Practice%20Parameters/Penicillin-Allergy-Position-Statement.pdf?utm_source=chatgpt.com'
       },
       {
-        label: 'Clinical pearl',
-        text: 'Common in chronic lichenified eczema—aggressive moisturization and potent topical steroids reduce recurrence.'
-      }
-    ],
-    answerSummary:
-      'Fissures indicate chronic inflammation with barrier breakdown—restore moisture and control inflammation to heal them.',
-    imageSearch: {
-      query: 'skin fissure eczema child',
-      label: 'Search Google Images for skin fissures'
-    },
-    explanation: [
-      'Fissures form when thickened, dry skin splits under tension. Pain limits adherence to topical regimens, so incorporate occlusive therapy, wet wraps, and systemic options when needed.'
-    ],
-    sources: [
-      {
-        label: 'DermNet – Fissures',
-        url: 'https://dermnetnz.org/topics/fissures?utm_source=chatgpt.com'
+        label: 'CDC – IS IT REALLY A PENICILLIN ALLERGY?',
+        url: 'https://www.cdc.gov/antibiotic-use/community/pdfs/penicillin-factsheet.pdf?utm_source=chatgpt.com'
       }
     ]
   }
 ];
 
 export default {
-  id: 'lesion-vocabulary',
-  label: 'Lesion vocabulary',
+  id: 'allergy-airway',
+  label: 'Allergy & Airway Essentials',
   cards
 };
