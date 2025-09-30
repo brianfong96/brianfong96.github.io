@@ -203,7 +203,7 @@ button.nav-button {
 }
 
 .card-wrapper {
-  width: min(680px, 92vw);
+  width: min(940px, 100%);
   display: grid;
   gap: 1rem;
   justify-items: stretch;
@@ -220,7 +220,9 @@ button.nav-button {
 
 .card {
   width: 100%;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 4 / 3;
+  min-height: 420px;
+  max-height: min(75vh, 760px);
   position: relative;
   border-radius: 26px;
   overflow: hidden;
@@ -285,7 +287,7 @@ button.nav-button {
   line-height: 1.6;
   flex: 1;
   display: grid;
-  gap: 1rem;
+  gap: 1.1rem;
   align-content: start;
   overflow-y: auto;
   padding-right: 0.5rem;
@@ -301,29 +303,62 @@ button.nav-button {
   max-width: 26ch;
 }
 
-.card-paragraph {
+.paragraph-section {
   position: relative;
-  margin: 0;
-  padding: 0.85rem 1rem;
-  border-radius: 18px;
-  background: rgba(15, 23, 42, 0.55);
-  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.18);
-  line-height: 1.6;
-  color: var(--text);
-  transition: background 220ms ease;
+  padding: clamp(0.85rem, 1.6vw, 1.25rem) clamp(1rem, 2vw, 1.5rem);
+  border-radius: 22px;
+  background: rgba(15, 23, 42, 0.58);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow:
+    inset 0 0 0 1px rgba(148, 163, 184, 0.12),
+    0 20px 40px rgba(2, 6, 23, 0.35);
+  transition: background 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
   overflow: hidden;
 }
 
-.card-paragraph:hover,
-.card-paragraph:focus-within {
-  background: rgba(15, 23, 42, 0.72);
+.paragraph-section:hover,
+.paragraph-section:focus-within {
+  background: rgba(15, 23, 42, 0.78);
+  border-color: rgba(148, 163, 184, 0.35);
+  box-shadow:
+    inset 0 0 0 1px rgba(148, 163, 184, 0.2),
+    0 26px 48px rgba(2, 6, 23, 0.45);
+}
+
+.paragraph-section::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(248, 113, 113, 0.9);
+  box-shadow: 0 0 16px rgba(248, 113, 113, 0.75);
+  top: 12%;
+  left: 12%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: paragraph-orbit 1.6s linear infinite;
+  animation-play-state: paused;
+  pointer-events: none;
+}
+
+.paragraph-section:hover::after,
+.paragraph-section:focus-within::after {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+.card-paragraph {
+  margin: 0;
+  line-height: 1.6;
+  color: var(--text);
 }
 
 .card-paragraph strong {
   color: var(--accent);
 }
 
-.card-answer .card-paragraph {
+.card-answer .paragraph-section {
   --selection-center-x: 50%;
   --selection-center-y: 50%;
   --selection-radius: 0px;
@@ -332,7 +367,7 @@ button.nav-button {
   overflow: visible;
 }
 
-.card-answer .card-paragraph::after {
+.card-answer .paragraph-section::before {
   content: '';
   position: absolute;
   top: var(--selection-center-y);
@@ -347,14 +382,14 @@ button.nav-button {
   pointer-events: none;
 }
 
-.card-answer .card-paragraph.is-selected {
+.card-answer .paragraph-section.is-selected {
   box-shadow:
-    inset 0 0 0 1px rgba(148, 163, 184, 0.18),
+    inset 0 0 0 1px rgba(148, 163, 184, 0.22),
     inset 0 0 0 2px var(--selection-ring-color),
     0 0 24px var(--selection-ring-shadow);
 }
 
-.card-answer .card-paragraph.is-selected::after {
+.card-answer .paragraph-section.is-selected::before {
   transform: translate(-50%, -50%) scale(1);
   opacity: 0.95;
 }
@@ -420,8 +455,8 @@ button.nav-button {
 }
 
 .answer-summary {
-  margin-top: 1rem;
-  padding: 0.75rem 1rem;
+  margin: 0;
+  padding: 0;
   background: rgba(14, 165, 233, 0.1);
   border-radius: 14px;
   font-size: 0.95rem;
@@ -528,6 +563,29 @@ button.nav-button {
   }
 }
 
+@keyframes paragraph-orbit {
+  0% {
+    top: 12%;
+    left: 12%;
+  }
+  25% {
+    top: 12%;
+    left: 88%;
+  }
+  50% {
+    top: 88%;
+    left: 88%;
+  }
+  75% {
+    top: 88%;
+    left: 12%;
+  }
+  100% {
+    top: 12%;
+    left: 12%;
+  }
+}
+
 @keyframes slide-up {
   0% {
     transform: translateY(24px);
@@ -593,7 +651,8 @@ button.nav-button {
   }
 
   .card {
-    aspect-ratio: 3 / 2.6;
+    aspect-ratio: 3 / 2.4;
+    min-height: 360px;
   }
 
   .control-row {
@@ -608,11 +667,11 @@ button.nav-button {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .card-paragraph::before {
-    animation: none;
+  .card-answer .paragraph-section::before {
+    transition: none;
   }
 
-  .card-paragraph.is-selected::after {
+  .paragraph-section::after {
     animation: none;
     opacity: 0;
   }

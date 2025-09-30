@@ -138,7 +138,7 @@ function showDeckLoadError(message) {
 
 class ParagraphSelectionHighlighter {
   constructor() {
-    this.activeParagraph = null;
+    this.activeSection = null;
     this.observedContainers = new Set();
     this.handlePointerDown = this.handlePointerDown.bind(this);
     this.handleFocusIn = this.handleFocusIn.bind(this);
@@ -164,26 +164,40 @@ class ParagraphSelectionHighlighter {
     }
   }
 
-  handlePointerDown(event) {
-    const paragraph = event.target.closest('.card-paragraph');
+  resolveSection(target) {
+    const paragraphSection = target.closest('.paragraph-section');
+    if (paragraphSection) {
+      return paragraphSection;
+    }
+
+    const paragraph = target.closest('.card-paragraph');
     if (!paragraph) {
+      return null;
+    }
+
+    return paragraph.closest('.paragraph-section');
+  }
+
+  handlePointerDown(event) {
+    const section = this.resolveSection(event.target);
+    if (!section) {
       return;
     }
 
-    this.applySelection(paragraph);
+    this.applySelection(section);
   }
 
   handleFocusIn(event) {
-    const paragraph = event.target.closest('.card-paragraph');
-    if (!paragraph) {
+    const section = this.resolveSection(event.target);
+    if (!section) {
       return;
     }
 
-    this.applySelection(paragraph);
+    this.applySelection(section);
   }
 
   handleDocumentPointerDown(event) {
-    if (!this.activeParagraph) {
+    if (!this.activeSection) {
       return;
     }
 
@@ -196,39 +210,39 @@ class ParagraphSelectionHighlighter {
     }
   }
 
-  applySelection(paragraph) {
-    const rect = paragraph.getBoundingClientRect();
+  applySelection(section) {
+    const rect = section.getBoundingClientRect();
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     const radius = Math.sqrt(centerX * centerX + centerY * centerY) + 12;
 
-    paragraph.style.setProperty('--selection-center-x', `${centerX}px`);
-    paragraph.style.setProperty('--selection-center-y', `${centerY}px`);
-    paragraph.style.setProperty('--selection-radius', `${radius}px`);
+    section.style.setProperty('--selection-center-x', `${centerX}px`);
+    section.style.setProperty('--selection-center-y', `${centerY}px`);
+    section.style.setProperty('--selection-radius', `${radius}px`);
 
-    if (this.activeParagraph && this.activeParagraph !== paragraph) {
-      this.activeParagraph.classList.remove('is-selected');
-      this.activeParagraph.style.removeProperty('--selection-center-x');
-      this.activeParagraph.style.removeProperty('--selection-center-y');
-      this.activeParagraph.style.removeProperty('--selection-radius');
+    if (this.activeSection && this.activeSection !== section) {
+      this.activeSection.classList.remove('is-selected');
+      this.activeSection.style.removeProperty('--selection-center-x');
+      this.activeSection.style.removeProperty('--selection-center-y');
+      this.activeSection.style.removeProperty('--selection-radius');
     }
 
-    if (this.activeParagraph === paragraph) {
-      paragraph.classList.remove('is-selected');
-      void paragraph.offsetWidth;
+    if (this.activeSection === section) {
+      section.classList.remove('is-selected');
+      void section.offsetWidth;
     }
 
-    paragraph.classList.add('is-selected');
-    this.activeParagraph = paragraph;
+    section.classList.add('is-selected');
+    this.activeSection = section;
   }
 
   clearActive() {
-    if (this.activeParagraph) {
-      this.activeParagraph.classList.remove('is-selected');
-      this.activeParagraph.style.removeProperty('--selection-center-x');
-      this.activeParagraph.style.removeProperty('--selection-center-y');
-      this.activeParagraph.style.removeProperty('--selection-radius');
-      this.activeParagraph = null;
+    if (this.activeSection) {
+      this.activeSection.classList.remove('is-selected');
+      this.activeSection.style.removeProperty('--selection-center-x');
+      this.activeSection.style.removeProperty('--selection-center-y');
+      this.activeSection.style.removeProperty('--selection-radius');
+      this.activeSection = null;
     }
   }
 }
@@ -283,7 +297,7 @@ class CardPresenter {
         item.append(document.createTextNode(point.text));
         list.append(item);
       });
-      content.append(list);
+      content.append(this.wrapParagraph(list, 'list'));
     }
 
     if (card.answerSummary) {
@@ -292,7 +306,7 @@ class CardPresenter {
       const label = document.createElement('strong');
       label.textContent = 'Why it matters: ';
       summary.append(label, document.createTextNode(card.answerSummary));
-      content.append(summary);
+      content.append(this.wrapParagraph(summary, 'summary'));
     }
 
     const imageLink = this.buildImageSearch(card.imageSearch);
@@ -374,14 +388,14 @@ class CardPresenter {
       });
     }
 
-    return paragraph;
+    return this.wrapParagraph(paragraph, 'prompt');
   }
 
   createParagraph(text) {
     const paragraph = document.createElement('p');
     paragraph.className = 'card-paragraph';
     paragraph.textContent = text;
-    return paragraph;
+    return this.wrapParagraph(paragraph);
   }
 
   buildImageSearch(imageSearch) {
@@ -407,7 +421,17 @@ class CardPresenter {
     const wrapper = document.createElement('p');
     wrapper.className = 'image-search card-paragraph';
     wrapper.append(link);
-    return wrapper;
+    return this.wrapParagraph(wrapper, 'link');
+  }
+
+  wrapParagraph(element, variant) {
+    const section = document.createElement('section');
+    section.classList.add('paragraph-section');
+    if (variant) {
+      section.classList.add(`paragraph-section--${variant}`);
+    }
+    section.append(element);
+    return section;
   }
 }
 
