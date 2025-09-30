@@ -44,7 +44,7 @@ export async function loadDeckData() {
   const sections = resolvedSections.filter(Boolean);
 
   if (!sections.length) {
-    throw new Error('No pediatric dermatology sections could be loaded.');
+    throw new Error('No pediatric allergy & dermatology sections could be loaded.');
   }
 
   const flattenedCards = sections.flatMap((section) => section.cards);
