@@ -214,7 +214,7 @@ class ParagraphSelectionHighlighter {
     const rect = section.getBoundingClientRect();
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    const radius = Math.sqrt(centerX * centerX + centerY * centerY) + 12;
+    const radius = Math.sqrt(centerX * centerX + centerY * centerY) + 24;
 
     section.style.setProperty('--selection-center-x', `${centerX}px`);
     section.style.setProperty('--selection-center-y', `${centerY}px`);

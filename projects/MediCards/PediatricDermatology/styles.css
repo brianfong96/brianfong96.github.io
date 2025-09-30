@@ -313,7 +313,7 @@ button.nav-button {
     inset 0 0 0 1px rgba(148, 163, 184, 0.12),
     0 20px 40px rgba(2, 6, 23, 0.35);
   transition: background 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .paragraph-section:hover,
@@ -333,7 +333,7 @@ button.nav-button {
   border-radius: 999px;
   background: rgba(248, 113, 113, 0.9);
   box-shadow: 0 0 16px rgba(248, 113, 113, 0.75);
-  top: 12%;
+  top: -10%;
   left: 12%;
   transform: translate(-50%, -50%);
   opacity: 0;
@@ -565,23 +565,23 @@ button.nav-button {
 
 @keyframes paragraph-orbit {
   0% {
-    top: 12%;
+    top: -10%;
     left: 12%;
   }
   25% {
-    top: 12%;
-    left: 88%;
+    top: -10%;
+    left: 112%;
   }
   50% {
-    top: 88%;
-    left: 88%;
+    top: 112%;
+    left: 112%;
   }
   75% {
-    top: 88%;
-    left: 12%;
+    top: 112%;
+    left: -12%;
   }
   100% {
-    top: 12%;
+    top: -10%;
     left: 12%;
   }
 }
