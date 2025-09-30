@@ -203,11 +203,19 @@ button.nav-button {
 }
 
 .card-wrapper {
-  perspective: 1800px;
-  width: min(600px, 88vw);
+  width: min(680px, 92vw);
   display: grid;
   gap: 1rem;
-  justify-items: center;
+  justify-items: stretch;
+}
+
+.card-shell {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  perspective: 1800px;
 }
 
 .card {
@@ -276,6 +284,9 @@ button.nav-button {
   font-size: 1.05rem;
   line-height: 1.6;
   flex: 1;
+  display: grid;
+  gap: 1rem;
+  align-content: start;
   overflow-y: auto;
   padding-right: 0.5rem;
   scrollbar-width: thin;
@@ -290,12 +301,47 @@ button.nav-button {
   max-width: 26ch;
 }
 
-.card-content p {
-  margin: 0 0 0.85rem;
+.card-paragraph {
+  position: relative;
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.18);
+  line-height: 1.6;
+  color: var(--text);
+  transition: background 220ms ease;
 }
 
-.card-content p:last-child {
-  margin-bottom: 0;
+.card-paragraph:hover,
+.card-paragraph:focus-within {
+  background: rgba(15, 23, 42, 0.72);
+}
+
+.card-paragraph strong {
+  color: var(--accent);
+}
+
+.card-paragraph::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from 0deg,
+    rgba(56, 189, 248, 0.65),
+    rgba(56, 189, 248, 0.05) 45%,
+    rgba(52, 211, 153, 0.65),
+    rgba(56, 189, 248, 0.65)
+  );
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  animation: orbit-outline 7s linear infinite;
+  opacity: 0.75;
+  pointer-events: none;
 }
 
 .card-content ul.card-points {
@@ -321,6 +367,25 @@ button.nav-button {
 .card-content::-webkit-scrollbar-thumb {
   background: rgba(148, 163, 184, 0.35);
   border-radius: 999px;
+}
+
+.card-flip-button {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  padding: 1.1rem 1.35rem;
+  min-height: 3.25rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  background: linear-gradient(160deg, rgba(56, 189, 248, 0.18), rgba(14, 165, 233, 0.35));
+  border-color: rgba(56, 189, 248, 0.35);
+  box-shadow: 0 18px 30px rgba(8, 25, 53, 0.35);
+}
+
+.card-flip-button__label {
+  pointer-events: none;
 }
 
 .card-figure {
@@ -349,7 +414,7 @@ button.nav-button {
 }
 
 .image-search {
-  margin-top: 0.85rem;
+  margin: 0;
   font-size: 0.95rem;
 }
 
@@ -368,6 +433,15 @@ button.nav-button {
   margin: 0;
   font-weight: 600;
   color: var(--muted);
+}
+
+.card-wrapper .card-count {
+  justify-self: center;
+  text-align: center;
+}
+
+.card-shell .card {
+  width: 100%;
 }
 
 .explanation-panel {
@@ -389,13 +463,14 @@ button.nav-button {
   margin-top: 1rem;
 }
 
-.explanation-body p {
-  margin: 0 0 0.85rem;
-  line-height: 1.6;
+.explanation-body {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
 }
 
-.explanation-body p:last-child {
-  margin-bottom: 0;
+.explanation-body p {
+  margin: 0;
 }
 
 #sources h3 {
@@ -449,6 +524,12 @@ button.nav-button {
   }
 }
 
+@keyframes orbit-outline {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (max-width: 959px) {
   .layout {
     gap: 1.25rem;
@@ -460,6 +541,18 @@ button.nav-button {
 
   .controls {
     padding: 1.25rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .card-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .card-flip-button {
+    justify-self: center;
+    width: min(240px, 82%);
+    align-self: center;
   }
 }
 
@@ -502,5 +595,11 @@ button.nav-button {
   .controls button,
   .controls select {
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-paragraph::before {
+    animation: none;
   }
 }

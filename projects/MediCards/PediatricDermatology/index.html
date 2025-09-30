@@ -53,7 +53,6 @@
         <h2 class="control-title">Card actions</h2>
         <div class="control-row">
           <button id="randomCard" type="button">Surprise Me</button>
-          <button id="flipCard" type="button">Flip</button>
           <button id="toggleExplanation" type="button">Explanation</button>
         </div>
       </div>
@@ -70,11 +69,16 @@
 
     <section class="card-stage" aria-live="polite">
       <div class="card-wrapper">
-        <div class="card" id="flashCard">
-          <div class="card-inner" id="cardInner">
-            <article class="card-face card-front" id="cardQuestion" aria-label="Question"></article>
-            <article class="card-face card-back" id="cardAnswer" aria-label="Answer"></article>
+        <div class="card-shell">
+          <div class="card" id="flashCard">
+            <div class="card-inner" id="cardInner">
+              <article class="card-face card-front" id="cardQuestion" aria-label="Question"></article>
+              <article class="card-face card-back" id="cardAnswer" aria-label="Answer"></article>
+            </div>
           </div>
+          <button id="flipCard" class="card-flip-button" type="button" aria-label="Flip card">
+            <span class="card-flip-button__label">Flip</span>
+          </button>
         </div>
         <p class="card-count" id="cardCount"></p>
       </div>

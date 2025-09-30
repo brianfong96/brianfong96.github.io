@@ -33,7 +33,9 @@ function setStatusMessage(message) {
 }
 
 function disableInterface(disabled) {
-  const interactiveElements = document.querySelectorAll('.controls button, .controls select');
+  const interactiveElements = document.querySelectorAll(
+    '.controls button, .controls select, .card-flip-button'
+  );
   interactiveElements.forEach((element) => {
     element.disabled = disabled;
   });
@@ -260,6 +262,7 @@ class CardPresenter {
     }
 
     const paragraph = document.createElement('p');
+    paragraph.classList.add('card-paragraph', 'card-prompt');
     if (prompt.lead) {
       const lead = document.createElement('strong');
       lead.textContent = `${prompt.lead}: `;
@@ -279,6 +282,7 @@ class CardPresenter {
 
   createParagraph(text) {
     const paragraph = document.createElement('p');
+    paragraph.className = 'card-paragraph';
     paragraph.textContent = text;
     return paragraph;
   }
@@ -304,7 +308,7 @@ class CardPresenter {
     link.textContent = imageSearch.label || 'View Google Image search results';
 
     const wrapper = document.createElement('p');
-    wrapper.className = 'image-search';
+    wrapper.className = 'image-search card-paragraph';
     wrapper.append(link);
     return wrapper;
   }
@@ -517,7 +521,6 @@ class DeckController {
     this.nextBtn.addEventListener('click', () => this.showCard(this.currentIndex + 1));
     this.randomBtn.addEventListener('click', () => this.randomCard());
     this.flipBtn.addEventListener('click', () => this.flipCard());
-    this.cardElement.addEventListener('click', () => this.flipCard());
     this.explanationBtn.addEventListener('click', () => this.toggleExplanation());
     this.readBtn.addEventListener('click', () => this.speakCurrentCard());
     this.stopBtn.addEventListener('click', () => this.stopNarration());
