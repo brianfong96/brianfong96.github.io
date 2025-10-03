@@ -17,6 +17,12 @@ const siteData = {
             url: 'projects/BibleFamilyTree/index.html',
             description: 'Interactive visualization of biblical family relationships.',
             section: 'Projects'
+        },
+        {
+            title: 'FinKnowledge Testing',
+            url: 'projects/FinKnowledge/index.html',
+            description: 'Timed multiple-choice drills on technical indicators, valuation ratios, and options scenarios.',
+            section: 'Projects'
         }
     ],
     recipes: [
