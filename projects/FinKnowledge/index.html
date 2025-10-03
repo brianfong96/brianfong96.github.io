@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinKnowledge Testing</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="hero">
+      <p class="eyebrow">Projects &middot; FinKnowledge Testing</p>
+      <h1>Sharpen your trading intuition with rapid-fire questions.</h1>
+      <p class="lead">
+        Launch a timed multiple-choice drill that pulls randomized prompts from a
+        curated financial-markets question bank. Track your accuracy, uncover the
+        rationale behind each answer, and get both plain-language and technical
+        explanations to reinforce the concept.
+      </p>
+      <a class="primary-action" href="../../projects.html">Back to Projects</a>
+    </header>
+
+    <main>
+      <section class="quiz" aria-label="FinKnowledge assessment">
+        <div class="quiz-status">
+          <div class="status-tile">
+            <span class="status-label">Time Elapsed</span>
+            <span class="status-value" id="timer">00:00</span>
+          </div>
+          <div class="status-tile">
+            <span class="status-label">Score</span>
+            <span class="status-value" id="score">0 / 0</span>
+          </div>
+          <div class="status-tile">
+            <span class="status-label">Question</span>
+            <span class="status-value" id="progress">0 / 0</span>
+          </div>
+        </div>
+
+        <div class="quiz-card" id="intro-card">
+          <h2>Ready to test your market muscle?</h2>
+          <p>
+            Each run shuffles ten questions spanning technical indicators,
+            valuation ratios, option greeks, and situational reads. You will see
+            instant feedback with an ELI5 takeaway followed by deeper technical
+            context.
+          </p>
+          <button class="primary-action" id="start-btn">Start quiz</button>
+        </div>
+
+        <article class="quiz-card hidden" id="question-card">
+          <header class="question-header">
+            <h2 id="question-text">Question will appear here</h2>
+          </header>
+          <div class="options" id="options"></div>
+          <footer class="feedback hidden" id="feedback">
+            <p class="eli5" id="feedback-eli5"></p>
+            <p class="technical" id="feedback-technical"></p>
+          </footer>
+          <div class="card-actions">
+            <button class="secondary-action" id="next-btn" disabled>Next question</button>
+          </div>
+        </article>
+
+        <article class="quiz-card hidden" id="summary-card">
+          <h2>Session summary</h2>
+          <p id="summary-text"></p>
+          <button class="primary-action" id="restart-btn">Retake quiz</button>
+        </article>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> FinKnowledge Testing &bull; Built for market mastery.</p>
+    </footer>
+
+    <script src="questions.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
