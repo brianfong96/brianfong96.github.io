@@ -12,16 +12,55 @@ const feedbackTechnical = document.getElementById('feedback-technical');
 const timerDisplay = document.getElementById('timer');
 const scoreDisplay = document.getElementById('score');
 const progressDisplay = document.getElementById('progress');
+const questionCountInput = document.getElementById('question-count');
 const summaryText = document.getElementById('summary-text');
 const yearSpan = document.getElementById('year');
 
 yearSpan.textContent = new Date().getFullYear();
+
+const MIN_QUESTION_COUNT = 5;
+const MAX_QUESTION_COUNT = questionBank.length;
+const DEFAULT_QUESTION_COUNT = Math.min(10, MAX_QUESTION_COUNT);
+
+if (questionCountInput) {
+  questionCountInput.min = MIN_QUESTION_COUNT;
+  questionCountInput.max = MAX_QUESTION_COUNT;
+  if (!questionCountInput.value) {
+    questionCountInput.value = DEFAULT_QUESTION_COUNT;
+  }
+}
 
 let shuffledQuestions = [];
 let currentIndex = 0;
 let score = 0;
 let timerInterval = null;
 let startTime = null;
+
+const initialQuestionTotal = questionCountInput
+  ? Number.parseInt(questionCountInput.value, 10) || DEFAULT_QUESTION_COUNT
+  : MAX_QUESTION_COUNT;
+scoreDisplay.textContent = `0 / ${initialQuestionTotal}`;
+progressDisplay.textContent = `0 / ${initialQuestionTotal}`;
+
+function clampQuestionCount(rawValue) {
+  const parsed = Number.parseInt(rawValue, 10);
+  if (Number.isNaN(parsed)) {
+    return DEFAULT_QUESTION_COUNT;
+  }
+  return Math.max(
+    MIN_QUESTION_COUNT,
+    Math.min(parsed, MAX_QUESTION_COUNT)
+  );
+}
+
+function sampleQuestions(count) {
+  const workingSet = [...questionBank];
+  for (let i = workingSet.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [workingSet[i], workingSet[j]] = [workingSet[j], workingSet[i]];
+  }
+  return workingSet.slice(0, count);
+}
 
 function formatTime(elapsedMs) {
   const totalSeconds = Math.floor(elapsedMs / 1000);
@@ -46,23 +85,16 @@ function stopTimer() {
   }
 }
 
-function shuffleQuestions() {
-  shuffledQuestions = [...questionBank];
-  for (let i = shuffledQuestions.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffledQuestions[i], shuffledQuestions[j]] = [
-      shuffledQuestions[j],
-      shuffledQuestions[i]
-    ];
-  }
-}
-
-function resetQuiz() {
+function resetQuiz(desiredCount = DEFAULT_QUESTION_COUNT) {
+  const questionTotal = clampQuestionCount(desiredCount);
+  shuffledQuestions = sampleQuestions(questionTotal);
   score = 0;
   currentIndex = 0;
-  shuffleQuestions();
-  scoreDisplay.textContent = `0 / ${shuffledQuestions.length}`;
-  progressDisplay.textContent = `0 / ${shuffledQuestions.length}`;
+  if (questionCountInput) {
+    questionCountInput.value = questionTotal;
+  }
+  scoreDisplay.textContent = `0 / ${questionTotal}`;
+  progressDisplay.textContent = `0 / ${questionTotal}`;
   feedback.classList.add('hidden');
   nextBtn.disabled = true;
   summaryCard.classList.add('hidden');
@@ -123,7 +155,10 @@ function showSummary() {
 }
 
 startBtn.addEventListener('click', () => {
-  resetQuiz();
+  const desiredCount = questionCountInput
+    ? questionCountInput.value
+    : DEFAULT_QUESTION_COUNT;
+  resetQuiz(desiredCount);
 });
 
 nextBtn.addEventListener('click', () => {
@@ -138,5 +173,8 @@ nextBtn.addEventListener('click', () => {
 
 restartBtn.addEventListener('click', () => {
   stopTimer();
-  resetQuiz();
+  const desiredCount = questionCountInput
+    ? questionCountInput.value
+    : shuffledQuestions.length || DEFAULT_QUESTION_COUNT;
+  resetQuiz(desiredCount);
 });

@@ -1,12 +1,12 @@
 # FinKnowledge Testing
 
-FinKnowledge Testing is an interactive quiz that drills core market literacy concepts such as Bollinger Bands, RSI, valuation ratios, and options. The in-browser experience shuffles questions from a curated bank, tracks score and elapsed time, and provides dual-layer explanations—an "explain like I'm five" (ELI5) primer followed by a technical breakdown—to reinforce each concept.
+FinKnowledge Testing is an interactive quiz that drills core market literacy concepts such as Bollinger Bands, RSI, valuation ratios, and options. The in-browser experience shuffles questions from a 20-question bank, lets you choose how many prompts to tackle per run, tracks score and elapsed time, and provides dual-layer explanations—an "explain like I'm five" (ELI5) primer followed by a technical breakdown—to reinforce each concept.
 
 > **Tip:** The hero copy at the top of [`index.html`](./index.html) mirrors the opening summary below so visitors get the same overview when browsing the deployed site or the GitHub README preview. Keep both in sync when you revise messaging.
 
 ## Summary (mirrors the hero panel)
 
-Sharpen your trading intuition with rapid-fire questions. Launch a timed multiple-choice drill that pulls randomized prompts from a curated financial-markets question bank. Track your accuracy, uncover the rationale behind each answer, and get both plain-language and technical explanations to reinforce the concept.
+Sharpen your trading intuition with rapid-fire questions. Launch a timed multiple-choice drill that lets you pick how deep to go in each session. Track your accuracy, uncover the rationale behind each answer, and get both plain-language and technical explanations to reinforce the concept.
 
 ## At-a-glance
 
