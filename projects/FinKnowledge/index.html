@@ -17,10 +17,10 @@
       <p class="eyebrow">Projects &middot; FinKnowledge Testing</p>
       <h1>Sharpen your trading intuition with rapid-fire questions.</h1>
       <p class="lead">
-        Launch a timed multiple-choice drill that pulls randomized prompts from a
-        curated financial-markets question bank. Track your accuracy, uncover the
-        rationale behind each answer, and get both plain-language and technical
-        explanations to reinforce the concept.
+        Launch a timed multiple-choice drill that lets you pick how deep to go in
+        each session. Track your accuracy, uncover the rationale behind each
+        answer, and get both plain-language and technical explanations to
+        reinforce the concept.
       </p>
       <a class="primary-action" href="../../projects.html">Back to Projects</a>
     </header>
@@ -45,12 +45,29 @@
         <div class="quiz-card" id="intro-card">
           <h2>Ready to test your market muscle?</h2>
           <p>
-            Each run shuffles ten questions spanning technical indicators,
-            valuation ratios, option greeks, and situational reads. You will see
-            instant feedback with an ELI5 takeaway followed by deeper technical
-            context.
+            Each run pulls a randomized set of questions spanning technical
+            indicators, valuation ratios, option greeks, and situational reads.
+            Choose how many prompts you want to tackle and receive instant
+            feedback with an ELI5 takeaway followed by deeper technical context.
           </p>
-          <button class="primary-action" id="start-btn">Start quiz</button>
+          <form class="quiz-settings" aria-label="Quiz configuration">
+            <label for="question-count">
+              Number of questions
+              <span class="hint">Pick between 5 and 20 per session.</span>
+            </label>
+            <input
+              type="number"
+              id="question-count"
+              name="question-count"
+              min="5"
+              max="20"
+              value="10"
+              inputmode="numeric"
+            />
+          </form>
+          <button class="primary-action" type="button" id="start-btn">
+            Start quiz
+          </button>
         </div>
 
         <article class="quiz-card hidden" id="question-card">
