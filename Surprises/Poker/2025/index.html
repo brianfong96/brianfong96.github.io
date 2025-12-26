@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokemon Pack Poker Tourney 2025</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/25.svg">
+  </head>
+  <body class="theme-pokemon">
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="logo">
+          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/25.svg" alt="Pikachu" class="logo-icon" style="height: 2rem; width: auto;">
+          <span class="logo-text">PokePoker 2025</span>
+        </div>
+        <nav class="tab-nav">
+          <button class="tab-link active" data-tab="overview">Home</button>
+          <button class="tab-link" data-tab="prize">Prize</button>
+          <button class="tab-link" data-tab="rules">Tourney Rules</button>
+          <button class="tab-link" data-tab="guide">Poker Guide</button>
+          <button class="tab-link" data-tab="trial-play">Trial Play</button>
+        </nav>
+      </div>
+    </header>
+
+    <div class="floating-decor" data-decor="both"></div>
+    <div class="page-shell">
+      <div class="main-card">
+        <div class="tab-content">
+          <div id="overview" class="tab-pane active"></div>
+          <div id="prize" class="tab-pane"></div>
+          <div id="rules" class="tab-pane"></div>
+          <div id="guide" class="tab-pane"></div>
+          <div id="trial-play" class="tab-pane"></div>
+        </div>
+      </div>
+    </div>
+    
+    <button id="back-to-top" aria-label="Back to Top">↑</button>
+    <script src="app.js" defer></script>
+  </body>
+</html>

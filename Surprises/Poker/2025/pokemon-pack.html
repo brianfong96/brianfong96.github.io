@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokemon Pack Poker Tourney 2025 | Pack Format</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="theme-pokemon">
+    <div class="floating-decor" data-decor="both"></div>
+    <div class="page-shell">
+      <nav class="top-nav">
+        <div class="brand">
+          <span class="dot" aria-hidden="true"></span>
+          <span>PP Poker Tourney 25</span>
+        </div>
+        <div class="nav-links">
+          <a class="nav-link" href="./index.html">Overview</a>
+          <a class="nav-link active" href="./pokemon-pack.html">Pack Format</a>
+        </div>
+      </nav>
+
+      <section class="hero">
+        <div>
+          <div class="eyebrow">Free entry - Pack powered</div>
+          <h1>Pokemon Pack Poker Tourney 2025</h1>
+          <p>
+            A zero-cost buy-in tournament (9:00-11:00) that plays until one winner. Chips come from
+            Pokemon packs - trade sealed for a buy-in or open them to chase bonus entries.
+          </p>
+          <div class="pill">
+            <span class="dot" aria-hidden="true"></span>
+            Prize: 4 Prismatic Evolution packs to the champion.
+          </div>
+          <div class="cta-row">
+            <a class="btn primary" href="#pack-system">See the pack system</a>
+            <a class="btn ghost" href="./index.html">Back to overview</a>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/149.svg" alt="Dragonite" style="width: 100px; height: 100px; margin: 0 auto;"/>
+          <h3 style="text-align: center; margin-top: 1rem;">Buy-in Value</h3>
+          <p style="text-align: center;">1 buy-in = 10 big blinds. Unlimited buy-ins allowed.</p>
+        </div>
+      </section>
+
+      <section class="section" id="pack-system">
+        <h2>Pack Buy-in System</h2>
+        <p>
+          Packs, not money, drive entry and re-entry. Your first pack is free; trade sealed for one
+          buy-in or open for the chance at bonus buy-ins.
+        </p>
+        <div class="grid">
+          <div class="card">
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" alt="Pokeball" style="width: 50px; height: 50px; margin: 0 auto;"/>
+            <h3 style="text-align: center; margin-top: 1rem;">First pack on the house</h3>
+            <p style="text-align: center;">Everyone starts equal. Keep it sealed for a guaranteed buy-in.</p>
+          </div>
+          <div class="card">
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/great-ball.png" alt="Greatball" style="width: 50px; height: 50px; margin: 0 auto;"/>
+            <h3 style="text-align: center; margin-top: 1rem;">Trade sealed</h3>
+            <p style="text-align: center;">Sealed pack = 1 buy-in worth 10 big blinds.</p>
+          </div>
+          <div class="card">
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/ultra-ball.png" alt="Ultraball" style="width: 50px; height: 50px; margin: 0 auto;"/>
+            <h3 style="text-align: center; margin-top: 1rem;">Open for more</h3>
+            <p style="text-align: center;">Hit rare stars to multiply your buy-ins instantly.</p>
+          </div>
+          <div class="card">
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png" alt="Masterball" style="width: 50px; height: 50px; margin: 0 auto;"/>
+            <h3 style="text-align: center; margin-top: 1rem;">Earn more packs</h3>
+            <p style="text-align: center;">Packs can be earned from taking shots or asking for another.</p>
+          </div>
+        </div>
+
+        <table class="table" id="rarity-table" aria-label="Rarity ladder to buy-ins">
+          <thead>
+            <tr>
+              <th>Pack pull</th>
+              <th>Buy-ins</th>
+              <th>Big blinds (10 per buy-in)</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="note">
+          If no special star appears when you open a pack, trade another pack to get back in.
+        </div>
+      </section>
+
+      <section class="section" id="simulator">
+        <h2>Open-a-pack simulator</h2>
+        <p>Try the system: trade sealed for one buy-in or open for bonus stacks.</p>
+        <div class="pack-sim">
+          <div class="sim-card">
+            <div class="card-container" id="sim-card-container">
+              <div class="card-inner">
+                <div class="card-front sim-display" role="status" aria-live="polite">
+                  <strong id="sim-result">First pack is free.</strong>
+                  <span id="sim-detail" class="sim-note"
+                    >Pick sealed-for-one buy-in or open for bonus buy-ins.</span
+                  >
+                </div>
+                <div class="card-back sim-display" role="status" aria-live="polite">
+                  <strong id="sim-result-back"></strong>
+                  <span id="sim-detail-back" class="sim-note"></span>
+                </div>
+              </div>
+            </div>
+            <div class="sim-actions">
+              <button class="btn primary" type="button" id="open-pack">Open a pack</button>
+              <button class="btn ghost" type="button" id="trade-pack">Trade sealed (1 buy-in)</button>
+            </div>
+            <div class="sim-note">
+              If multiple players remain at 11:00, big blind increases and buy-ins pause until 11:30.
+            </div>
+          </div>
+          <div class="sim-card">
+            <h3>How Stars Convert</h3>
+            <div class="grid" style="gap: 0.5rem;">
+              <div class="card" style="background: var(--gold-light);">
+                <h4 style="margin: 0;">Gold Star</h4>
+                <p style="margin: 0;">= 3 Buy-ins (30 BB)</p>
+              </div>
+              <div class="card" style="background: var(--violet-light);">
+                <h4 style="margin: 0;">Double Gold Star</h4>
+                <p style="margin: 0;">= 4 Buy-ins (40 BB)</p>
+              </div>
+              <div class="card" style="background: var(--red-light);">
+                <h4 style="margin: 0;">Triple Gold Star</h4>
+                <p style="margin: 0;">= 5 Buy-ins (50 BB)</p>
+              </div>
+              <div class="card" style="background: var(--mint-light);">
+                <h4 style="margin: 0;">Double Black Star</h4>
+                <p style="margin: 0;">= 2 Buy-ins (20 BB)</p>
+              </div>
+            </div>
+             <div class="sim-note" style="margin-top: 0.5rem;">
+              No star hit? Trade another pack to get back in the game.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="timing">
+        <h2>Timing and elimination</h2>
+        <p>The night runs 9:00-11:00, plays until one winner, and tightens at 11:00 if needed.</p>
+        <div class="timeline" id="pack-timeline"></div>
+        <div class="note">
+          Even if you have the most chips, if you are not playing the last hand up until 11:00, you
+          forfeit your chance of winning.
+        </div>
+      </section>
+
+      <footer>
+        Want the high-level summary? Head back to <a href="./index.html">Overview</a>.
+      </footer>
+    </div>
+
+    <script src="common.js" defer></script>
+    <script src="pokemon-pack.js" defer></script>
+  </body>
+</html>
