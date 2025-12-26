@@ -316,6 +316,15 @@ const tabData = {
 
 const tabLinks = document.querySelectorAll(".tab-link");
 const tabPanes = document.querySelectorAll(".tab-pane");
+const hamburgerBtn = document.getElementById("hamburger-btn");
+const tabNav = document.getElementById("tab-nav");
+
+if (hamburgerBtn) {
+  hamburgerBtn.addEventListener("click", () => {
+    hamburgerBtn.classList.toggle("open");
+    tabNav.classList.toggle("open");
+  });
+}
 
 const dealRandomHand = () => {
   const suits = ['s', 'h', 'd', 'c'];
@@ -338,6 +347,12 @@ const switchTab = (tab) => {
   tabPanes.forEach((pane) => {
     pane.classList.toggle("active", pane.id === tab);
   });
+
+  // Close mobile menu on selection
+  if (hamburgerBtn && tabNav) {
+    hamburgerBtn.classList.remove("open");
+    tabNav.classList.remove("open");
+  }
 
   const tabContent = tabData[tab].content;
   document.getElementById(tab).innerHTML = tabContent;
@@ -421,6 +436,119 @@ function initPokerGame() {
     });
   }
 }
+
+const HandEvaluator = {
+  ranks: {
+    "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10,
+    "J": 11, "Q": 12, "K": 13, "A": 14
+  },
+
+  evaluate: (holeCards, communityCards) => {
+    const allCards = [...holeCards, ...communityCards];
+    const cards = allCards.map(c => ({
+      v: HandEvaluator.ranks[c.value],
+      s: c.suit
+    })).sort((a, b) => b.v - a.v);
+
+    const flushSuit = HandEvaluator.getFlushSuit(cards);
+    const flushCards = flushSuit ? cards.filter(c => c.s === flushSuit) : [];
+    
+    const straightHigh = HandEvaluator.getStraightHigh(cards);
+    const straightFlushHigh = flushSuit ? HandEvaluator.getStraightHigh(flushCards) : 0;
+
+    if (straightFlushHigh) return { rank: 8, value: straightFlushHigh, name: "Straight Flush" };
+
+    const counts = {};
+    cards.forEach(c => counts[c.v] = (counts[c.v] || 0) + 1);
+    
+    const quads = [];
+    const trips = [];
+    const pairs = [];
+    const singles = [];
+
+    Object.keys(counts).forEach(v => {
+      const val = parseInt(v);
+      const count = counts[v];
+      if (count === 4) quads.push(val);
+      else if (count === 3) trips.push(val);
+      else if (count === 2) pairs.push(val);
+      else singles.push(val);
+    });
+
+    quads.sort((a, b) => b - a);
+    trips.sort((a, b) => b - a);
+    pairs.sort((a, b) => b - a);
+    singles.sort((a, b) => b - a);
+
+    if (quads.length > 0) {
+      const kicker = [...trips, ...pairs, ...singles].sort((a, b) => b - a)[0];
+      return { rank: 7, value: [quads[0], kicker], name: "Four of a Kind" };
+    }
+
+    if (trips.length > 0 && (trips.length > 1 || pairs.length > 0)) {
+      const t = trips[0];
+      const p = trips.length > 1 ? trips[1] : pairs[0];
+      return { rank: 6, value: [t, p], name: "Full House" };
+    }
+
+    if (flushSuit) {
+      return { rank: 5, value: flushCards.slice(0, 5).map(c => c.v), name: "Flush" };
+    }
+
+    if (straightHigh) {
+      return { rank: 4, value: straightHigh, name: "Straight" };
+    }
+
+    if (trips.length > 0) {
+      const kickers = [...pairs, ...singles].sort((a, b) => b - a).slice(0, 2);
+      return { rank: 3, value: [trips[0], ...kickers], name: "Three of a Kind" };
+    }
+
+    if (pairs.length >= 2) {
+      const p1 = pairs[0];
+      const p2 = pairs[1];
+      const kicker = [...pairs.slice(2), ...singles, ...trips].sort((a, b) => b - a)[0];
+      return { rank: 2, value: [p1, p2, kicker], name: "Two Pair" };
+    }
+
+    if (pairs.length === 1) {
+      const kickers = [...singles, ...trips].sort((a, b) => b - a).slice(0, 3);
+      return { rank: 1, value: [pairs[0], ...kickers], name: "One Pair" };
+    }
+
+    return { rank: 0, value: cards.slice(0, 5).map(c => c.v), name: "High Card" };
+  },
+
+  getFlushSuit: (cards) => {
+    const counts = {};
+    cards.forEach(c => counts[c.s] = (counts[c.s] || 0) + 1);
+    return Object.keys(counts).find(s => counts[s] >= 5);
+  },
+
+  getStraightHigh: (cards) => {
+    const uniqueVals = [...new Set(cards.map(c => c.v))].sort((a, b) => b - a);
+    if (uniqueVals.includes(14)) uniqueVals.push(1);
+
+    for (let i = 0; i < uniqueVals.length - 4; i++) {
+      if (uniqueVals[i] - uniqueVals[i+4] === 4) {
+        return uniqueVals[i];
+      }
+    }
+    return 0;
+  },
+
+  compare: (h1, h2) => {
+    if (h1.rank !== h2.rank) return h1.rank - h2.rank;
+    
+    const v1 = Array.isArray(h1.value) ? h1.value : [h1.value];
+    const v2 = Array.isArray(h2.value) ? h2.value : [h2.value];
+    
+    for (let i = 0; i < v1.length; i++) {
+      if (v1[i] !== v2[i]) return v1[i] - v2[i];
+    }
+    return 0;
+  }
+};
 
 class PokerGame {
   constructor() {
@@ -751,19 +879,43 @@ class PokerGame {
     this.phase = 'showdown';
     this.render();
     
-    // Determine winner (Simplified: Random for now as full evaluator is huge)
-    // In a real app, we'd use a library or a 7-card evaluator.
-    // For this demo, we'll just pick a random active player to win the pot.
     const active = this.players.filter(p => !p.folded);
-    const winner = active[Math.floor(Math.random() * active.length)];
     
-    winner.stack += this.pot;
-    this.log(`${winner.name} wins the pot of ${this.pot}!`);
+    // Evaluate hands
+    active.forEach(p => {
+      p.eval = HandEvaluator.evaluate(p.hand, this.communityCards);
+    });
+    
+    // Find winner(s)
+    let winners = [active[0]];
+    for (let i = 1; i < active.length; i++) {
+      const p = active[i];
+      const result = HandEvaluator.compare(p.eval, winners[0].eval);
+      if (result > 0) {
+        winners = [p];
+      } else if (result === 0) {
+        winners.push(p);
+      }
+    }
+    
+    const winAmount = Math.floor(this.pot / winners.length);
+    winners.forEach(w => w.stack += winAmount);
+    
+    const winnerNames = winners.map(w => w.name).join(' & ');
+    const handName = winners[0].eval.name;
+    this.log(`${winnerNames} wins with ${handName}!`);
     
     setTimeout(() => {
       this.dealerIdx = (this.dealerIdx + 1) % 4;
-      document.getElementById('start-game-btn').style.display = 'inline-block';
-      document.getElementById('start-game-btn').textContent = "Next Hand";
+      const startBtn = document.getElementById('start-game-btn');
+      if (startBtn) {
+        startBtn.style.display = 'inline-block';
+        startBtn.textContent = "Next Hand";
+        startBtn.onclick = () => {
+           this.startRound();
+           startBtn.style.display = 'none';
+        };
+      }
     }, 3000);
   }
 
