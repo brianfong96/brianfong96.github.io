@@ -257,11 +257,58 @@ const tabData = {
     title: "Trial Play",
     content: `
       <h2>Trial Play</h2>
-      <p>Practice your poker face! Click to deal a random hand.</p>
-      <div class="card" style="text-align: center;">
-        <div id="trial-hand" style="font-size: 3rem; margin: 1rem 0;">${CARDS.back} ${CARDS.back} ${CARDS.back} ${CARDS.back} ${CARDS.back}</div>
-        <button id="deal-btn" class="btn-primary">Deal Hand</button>
-        <div id="hand-result" style="margin-top: 1rem; font-weight: bold;"></div>
+      <p>Practice against 3 bots! You start with 200 chips. Blinds 10/20.</p>
+      
+      <div id="poker-table">
+        <div class="pot-display">Pot: <span id="pot-amount">0</span></div>
+        <div id="chip-pile"></div>
+        <div class="community-area" id="community-cards"></div>
+        <div class="game-log" id="game-log">Waiting to start...</div>
+        
+        <!-- Seats -->
+        <div class="seat" data-player="0" id="seat-0">
+          <div class="avatar"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/25.svg" alt="You"></div>
+          <div class="player-info">You: <span class="stack">200</span></div>
+          <div class="hand-container" id="hand-0"></div>
+          <div class="dealer-button" style="display:none;">D</div>
+        </div>
+        
+        <div class="seat" data-player="1" id="seat-1">
+          <div class="avatar"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/1.svg" alt="Bot 1"></div>
+          <div class="player-info">Bot 1: <span class="stack">200</span></div>
+          <div class="hand-container" id="hand-1"></div>
+          <div class="dealer-button" style="display:none;">D</div>
+        </div>
+        
+        <div class="seat" data-player="2" id="seat-2">
+          <div class="avatar"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/4.svg" alt="Bot 2"></div>
+          <div class="player-info">Bot 2: <span class="stack">200</span></div>
+          <div class="hand-container" id="hand-2"></div>
+          <div class="dealer-button" style="display:none;">D</div>
+        </div>
+        
+        <div class="seat" data-player="3" id="seat-3">
+          <div class="avatar"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/7.svg" alt="Bot 3"></div>
+          <div class="player-info">Bot 3: <span class="stack">200</span></div>
+          <div class="hand-container" id="hand-3"></div>
+          <div class="dealer-button" style="display:none;">D</div>
+        </div>
+      </div>
+
+      <div class="game-controls" id="game-controls">
+        <div class="action-row">
+          <button class="btn ghost" id="btn-fold">Fold</button>
+          <button class="btn ghost" id="btn-check">Check</button>
+          <button class="btn primary" id="btn-bet">Bet</button>
+        </div>
+        <div class="slider-container">
+          <input type="range" id="bet-slider" min="20" max="200" step="10" value="20">
+          <span id="bet-val">20</span>
+        </div>
+      </div>
+      
+      <div style="text-align: center; margin-top: 1rem;">
+        <button id="start-game-btn" class="btn primary">Start New Game</button>
       </div>
     `,
   },
@@ -296,9 +343,8 @@ const switchTab = (tab) => {
   document.getElementById(tab).innerHTML = tabContent;
 
   if (tab === 'trial-play') {
-    const dealBtn = document.getElementById('deal-btn');
-    if (dealBtn) {
-      dealBtn.addEventListener('click', dealRandomHand);
+    if (typeof initPokerGame === 'function') {
+      initPokerGame();
     }
   }
 };
@@ -326,3 +372,474 @@ window.addEventListener('scroll', () => {
 backToTopBtn.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
+
+/* --- Poker Game Logic --- */
+
+let game = null;
+
+function initPokerGame() {
+  const startBtn = document.getElementById('start-game-btn');
+  
+  // If game exists and is running, restore UI
+  if (game && game.players[0].stack > 0) {
+    if (startBtn) startBtn.style.display = 'none';
+    game.restoreUI();
+  } else if (startBtn) {
+    startBtn.addEventListener('click', () => {
+      game = new PokerGame();
+      game.startRound();
+      startBtn.style.display = 'none';
+    });
+  }
+
+  // Controls
+  const btnFold = document.getElementById('btn-fold');
+  const btnCheck = document.getElementById('btn-check');
+  const btnBet = document.getElementById('btn-bet');
+  
+  if (btnFold) btnFold.addEventListener('click', () => game.humanAction('fold'));
+  if (btnCheck) btnCheck.addEventListener('click', () => game.humanAction('check'));
+  if (btnBet) btnBet.addEventListener('click', () => {
+    const amount = parseInt(document.getElementById('bet-slider').value);
+    game.humanAction('bet', amount);
+  });
+  
+  const slider = document.getElementById('bet-slider');
+  const valDisplay = document.getElementById('bet-val');
+  if (slider) {
+    slider.addEventListener('input', (e) => {
+      valDisplay.textContent = e.target.value;
+      const btnBet = document.getElementById('btn-bet');
+      if (game && btnBet) {
+         const toCall = game.currentBet - game.players[0].bet;
+         if (toCall > 0) {
+             btnBet.textContent = "Raise " + e.target.value;
+         } else {
+             btnBet.textContent = "Bet " + e.target.value;
+         }
+      }
+    });
+  }
+}
+
+class PokerGame {
+  constructor() {
+    this.players = [
+      { id: 0, name: 'You', stack: 200, hand: [], active: true, bet: 0, folded: false },
+      { id: 1, name: 'Bot 1', stack: 200, hand: [], active: true, bet: 0, folded: false },
+      { id: 2, name: 'Bot 2', stack: 200, hand: [], active: true, bet: 0, folded: false },
+      { id: 3, name: 'Bot 3', stack: 200, hand: [], active: true, bet: 0, folded: false }
+    ];
+    this.dealerIdx = 0;
+    this.sb = 10;
+    this.bb = 20;
+    this.deck = [];
+    this.communityCards = [];
+    this.pot = 0;
+    this.currentBet = 0;
+    this.turnIdx = 0;
+    this.phase = 'preflop'; // preflop, flop, turn, river, showdown
+  }
+
+  restoreUI() {
+    this.render();
+    if (this.turnIdx === 0 && this.phase !== 'showdown') {
+      this.enableControls();
+    } else {
+      this.disableControls();
+    }
+    // If round ended, show next hand button
+    if (this.phase === 'showdown') {
+       const startBtn = document.getElementById('start-game-btn');
+       if (startBtn) {
+         startBtn.style.display = 'inline-block';
+         startBtn.textContent = "Next Hand";
+         // Re-attach listener for next hand since button was recreated
+         startBtn.onclick = () => {
+            this.startRound();
+            startBtn.style.display = 'none';
+         };
+       }
+    }
+  }
+
+  createDeck() {
+    const suits = ['s', 'h', 'd', 'c'];
+    const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+    this.deck = [];
+    for (let s of suits) {
+      for (let v of values) {
+        this.deck.push({ suit: s, value: v, id: s + v });
+      }
+    }
+    // Shuffle
+    for (let i = this.deck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
+    }
+  }
+
+  startRound() {
+    // Check for bankruptcy
+    if (this.players[0].stack <= 0) {
+      this.log("Game Over! You ran out of chips.");
+      const startBtn = document.getElementById('start-game-btn');
+      if (startBtn) {
+        startBtn.style.display = 'inline-block';
+        startBtn.textContent = "Restart Game";
+        startBtn.onclick = () => {
+           game = new PokerGame();
+           game.startRound();
+           startBtn.style.display = 'none';
+        };
+      }
+      return;
+    }
+
+    // Check for win
+    const activeBots = this.players.slice(1).filter(p => p.stack > 0);
+    if (activeBots.length === 0) {
+      this.log("You Win! All bots are bankrupt.");
+      return;
+    }
+
+    this.createDeck();
+    this.communityCards = [];
+    this.pot = 0;
+    this.currentBet = this.bb;
+    this.phase = 'preflop';
+    
+    // Clear chip pile
+    const pile = document.getElementById('chip-pile');
+    if (pile) pile.innerHTML = '';
+
+    this.players.forEach(p => {
+      p.hand = [this.deck.pop(), this.deck.pop()];
+      p.active = p.stack > 0;
+      p.folded = !p.active;
+      p.bet = 0;
+      p.actedThisRound = false;
+    });
+
+    // Blinds
+    const sbIdx = (this.dealerIdx + 1) % 4;
+    const bbIdx = (this.dealerIdx + 2) % 4;
+    
+    this.placeBet(sbIdx, this.sb);
+    this.placeBet(bbIdx, this.bb);
+    
+    this.turnIdx = (this.dealerIdx + 3) % 4; // UTG
+    
+    this.log("New Round Started. Blinds 10/20.");
+    this.render();
+    this.nextTurn();
+  }
+
+  placeBet(playerIdx, amount) {
+    const p = this.players[playerIdx];
+    const actualBet = Math.min(p.stack, amount);
+    
+    if (actualBet > 0) {
+      this.animateBet(playerIdx, actualBet);
+    }
+
+    p.stack -= actualBet;
+    p.bet += actualBet;
+    this.pot += actualBet;
+    if (p.bet > this.currentBet) this.currentBet = p.bet;
+  }
+
+  animateBet(playerIdx, amount) {
+    const seat = document.getElementById(`seat-${playerIdx}`);
+    if (!seat) return;
+    
+    const chip = document.createElement('div');
+    chip.className = 'flying-chip';
+    document.body.appendChild(chip);
+    
+    const startRect = seat.getBoundingClientRect();
+    const potRect = document.getElementById('poker-table').getBoundingClientRect(); // Center of table roughly
+    
+    // Center of seat
+    const startX = startRect.left + startRect.width / 2 - 12;
+    const startY = startRect.top + startRect.height / 2 - 12;
+    
+    // Center of table with random jitter for pile effect
+    const jitterX = (Math.random() - 0.5) * 60;
+    const jitterY = (Math.random() - 0.5) * 60;
+    const endX = potRect.left + potRect.width / 2 - 12 + jitterX;
+    const endY = potRect.top + potRect.height / 2 - 12 + jitterY;
+    
+    chip.style.left = `${startX}px`;
+    chip.style.top = `${startY}px`;
+    
+    // Trigger reflow
+    chip.offsetHeight;
+    
+    chip.style.transform = `translate(${endX - startX}px, ${endY - startY}px)`;
+    
+    setTimeout(() => {
+      chip.remove();
+      
+      // Add static chip to pile
+      const pile = document.getElementById('chip-pile');
+      if (pile) {
+        const staticChip = document.createElement('div');
+        staticChip.className = 'static-chip';
+        // Position relative to pile center (50, 50)
+        staticChip.style.left = `${50 + jitterX}px`;
+        staticChip.style.top = `${50 + jitterY}px`;
+        pile.appendChild(staticChip);
+      }
+
+      const potDisplay = document.querySelector('.pot-display');
+      if (potDisplay) {
+        potDisplay.classList.remove('animate');
+        void potDisplay.offsetWidth; // trigger reflow
+        potDisplay.classList.add('animate');
+      }
+    }, 600);
+  }
+
+  nextTurn() {
+    // Check if round betting is done
+    if (this.isBettingRoundComplete()) {
+      this.nextPhase();
+      return;
+    }
+
+    // Skip folded players
+    let loopCount = 0;
+    while (this.players[this.turnIdx].folded || this.players[this.turnIdx].stack === 0) {
+      this.turnIdx = (this.turnIdx + 1) % 4;
+      loopCount++;
+      if (loopCount > 4) { this.nextPhase(); return; } // Should not happen
+    }
+
+    this.render();
+
+    if (this.turnIdx === 0) {
+      // Human turn
+      this.enableControls();
+    } else {
+      // Bot turn
+      this.disableControls();
+      setTimeout(() => this.botAction(), 1000);
+    }
+  }
+
+  isBettingRoundComplete() {
+    // Everyone active must have matched the current bet or be all-in
+    // And everyone must have had a chance to act (simple check: if everyone checked/called)
+    // Simplified: If all active players have bet == currentBet (or are all-in)
+    const activePlayers = this.players.filter(p => !p.folded && p.stack > 0);
+    if (activePlayers.length === 0) return true;
+    
+    // If only one player left, end round
+    const notFolded = this.players.filter(p => !p.folded);
+    if (notFolded.length === 1) return true;
+
+    return activePlayers.every(p => p.bet === this.currentBet) && this.players.every(p => p.actedThisRound || p.folded || p.stack === 0);
+  }
+
+  botAction() {
+    const p = this.players[this.turnIdx];
+    const toCall = this.currentBet - p.bet;
+    const roll = Math.random();
+
+    // Simple Logic: 80% Call/Check, 10% Fold, 10% Raise
+    let action = 'call';
+    if (toCall > 0) {
+      if (roll < 0.1) action = 'fold';
+      else if (roll > 0.9) action = 'raise';
+    } else {
+      if (roll > 0.9) action = 'raise';
+      else action = 'check';
+    }
+
+    if (action === 'fold') {
+      p.folded = true;
+      this.log(`${p.name} folds.`);
+    } else if (action === 'raise') {
+      const raiseAmt = toCall + 20; // Min raise
+      this.placeBet(this.turnIdx, raiseAmt);
+      this.log(`${p.name} raises to ${p.bet}.`);
+      // Reset acted flags for others
+      this.players.forEach(pl => pl.actedThisRound = false);
+    } else {
+      // Call/Check
+      this.placeBet(this.turnIdx, toCall);
+      this.log(`${p.name} ${toCall > 0 ? 'calls' : 'checks'}.`);
+    }
+    
+    p.actedThisRound = true;
+    this.turnIdx = (this.turnIdx + 1) % 4;
+    this.nextTurn();
+  }
+
+  humanAction(action, amount) {
+    const p = this.players[0];
+    const toCall = this.currentBet - p.bet;
+
+    if (action === 'fold') {
+      p.folded = true;
+      this.log("You fold.");
+    } else if (action === 'check') {
+      if (toCall > 0) {
+        // Treat as call if they click check but need to call
+        this.placeBet(0, toCall);
+        this.log("You call.");
+      } else {
+        this.log("You check.");
+      }
+    } else if (action === 'bet') {
+      // Logic for bet/raise
+      let betAmt = amount;
+      if (betAmt < toCall) betAmt = toCall; // Minimum call
+      if (betAmt > p.stack) betAmt = p.stack;
+      
+      this.placeBet(0, betAmt);
+      if (betAmt > toCall) {
+        this.log(`You raise to ${p.bet}.`);
+        this.players.forEach(pl => pl.actedThisRound = false);
+      } else {
+        this.log("You call.");
+      }
+    }
+
+    p.actedThisRound = true;
+    this.disableControls();
+    this.turnIdx = (this.turnIdx + 1) % 4;
+    this.nextTurn();
+  }
+
+  nextPhase() {
+    // Reset bets for next street
+    this.players.forEach(p => { p.bet = 0; p.actedThisRound = false; });
+    this.currentBet = 0;
+    this.turnIdx = (this.dealerIdx + 1) % 4; // SB starts post-flop
+
+    const activeCount = this.players.filter(p => !p.folded).length;
+    if (activeCount === 1) {
+      this.endRound();
+      return;
+    }
+
+    if (this.phase === 'preflop') {
+      this.phase = 'flop';
+      this.communityCards.push(this.deck.pop(), this.deck.pop(), this.deck.pop());
+      this.log("Flop dealt.");
+    } else if (this.phase === 'flop') {
+      this.phase = 'turn';
+      this.communityCards.push(this.deck.pop());
+      this.log("Turn dealt.");
+    } else if (this.phase === 'turn') {
+      this.phase = 'river';
+      this.communityCards.push(this.deck.pop());
+      this.log("River dealt.");
+    } else if (this.phase === 'river') {
+      this.phase = 'showdown';
+      this.endRound();
+      return;
+    }
+    
+    this.render();
+    this.nextTurn();
+  }
+
+  endRound() {
+    this.phase = 'showdown';
+    this.render();
+    
+    // Determine winner (Simplified: Random for now as full evaluator is huge)
+    // In a real app, we'd use a library or a 7-card evaluator.
+    // For this demo, we'll just pick a random active player to win the pot.
+    const active = this.players.filter(p => !p.folded);
+    const winner = active[Math.floor(Math.random() * active.length)];
+    
+    winner.stack += this.pot;
+    this.log(`${winner.name} wins the pot of ${this.pot}!`);
+    
+    setTimeout(() => {
+      this.dealerIdx = (this.dealerIdx + 1) % 4;
+      document.getElementById('start-game-btn').style.display = 'inline-block';
+      document.getElementById('start-game-btn').textContent = "Next Hand";
+    }, 3000);
+  }
+
+  render() {
+    document.getElementById('pot-amount').textContent = this.pot;
+    
+    // Community Cards
+    const commContainer = document.getElementById('community-cards');
+    commContainer.innerHTML = this.communityCards.map(c => this.renderCard(c)).join('');
+
+    // Players
+    this.players.forEach(p => {
+      const seat = document.getElementById(`seat-${p.id}`);
+      const handContainer = document.getElementById(`hand-${p.id}`);
+      const stackSpan = seat.querySelector('.stack');
+      const dealerBtn = seat.querySelector('.dealer-button');
+      
+      stackSpan.textContent = p.stack;
+      dealerBtn.style.display = this.dealerIdx === p.id ? 'flex' : 'none';
+      
+      if (p.id === this.turnIdx && this.phase !== 'showdown') seat.classList.add('active');
+      else seat.classList.remove('active');
+
+      if (p.folded) seat.style.opacity = '0.5';
+      else seat.style.opacity = '1';
+
+      // Render Hand
+      if (p.id === 0 || this.phase === 'showdown') {
+        // Show cards
+        handContainer.innerHTML = p.hand.map(c => this.renderCard(c)).join('');
+      } else {
+        // Show backs
+        handContainer.innerHTML = `<div class="poker-card back"></div><div class="poker-card back"></div>`;
+      }
+    });
+    
+    // Update Slider
+    const slider = document.getElementById('bet-slider');
+    const toCall = this.currentBet - this.players[0].bet;
+    const minBet = toCall > 0 ? toCall : 20;
+    slider.min = minBet;
+    slider.max = this.players[0].stack;
+    slider.value = minBet;
+    document.getElementById('bet-val').textContent = minBet;
+    
+    // Update Buttons
+    const btnCheck = document.getElementById('btn-check');
+    const btnBet = document.getElementById('btn-bet');
+    if (toCall > 0) {
+      btnCheck.textContent = "Call " + toCall;
+      btnBet.textContent = "Raise " + slider.value;
+    } else {
+      btnCheck.textContent = "Check";
+      btnBet.textContent = "Bet " + slider.value;
+    }
+  }
+
+  renderCard(card) {
+    // Use CARDS object if possible, or construct HTML
+    // CARDS keys are sA, h10, etc.
+    const key = card.suit + card.value;
+    const entity = CARDS[key] || '?';
+    const color = (card.suit === 'h' || card.suit === 'd') ? 'red' : 'black';
+    return `<div class="poker-card" style="color: ${color}">${entity}</div>`;
+  }
+
+  log(msg) {
+    document.getElementById('game-log').textContent = msg;
+  }
+
+  enableControls() {
+    document.getElementById('game-controls').classList.add('active');
+  }
+
+  disableControls() {
+    document.getElementById('game-controls').classList.remove('active');
+  }
+}
+

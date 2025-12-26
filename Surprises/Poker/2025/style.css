@@ -1110,3 +1110,278 @@ body {
     margin-top: 120px;
   }
 }
+
+/* Poker Table & Game UI */
+#poker-table {
+  background: #35654d;
+  border: 8px solid #4a3b2a;
+  border-radius: 100px;
+  height: 400px;
+  position: relative;
+  margin: 2rem auto;
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 800px;
+}
+
+.community-area {
+  display: flex;
+  gap: 0.5rem;
+  height: 90px;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.1);
+  padding: 1rem;
+  border-radius: 50px;
+  min-width: 250px;
+}
+
+.pot-display {
+  position: absolute;
+  top: 28%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.8rem;
+  z-index: 10;
+}
+
+.seat {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+/* Positioning Seats (4 Players) */
+.seat[data-player="0"] { bottom: -40px; left: 50%; transform: translateX(-50%); } /* User */
+.seat[data-player="1"] { left: -40px; top: 50%; transform: translateY(-50%); }
+.seat[data-player="2"] { top: -40px; left: 50%; transform: translateX(-50%); }
+.seat[data-player="3"] { right: -40px; top: 50%; transform: translateY(-50%); }
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  background: #ddd;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.seat.active .avatar {
+  border-color: var(--gold);
+  box-shadow: 0 0 15px var(--gold);
+}
+
+.player-info {
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  margin-top: 4px;
+  text-align: center;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.dealer-button {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: white;
+  color: black;
+  border-radius: 50%;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  z-index: 5;
+}
+
+/* Dealer Button Positions relative to seats */
+.seat[data-player="0"] .dealer-button { top: -10px; right: -10px; }
+.seat[data-player="1"] .dealer-button { top: -10px; right: -10px; }
+.seat[data-player="2"] .dealer-button { bottom: -10px; right: -10px; }
+.seat[data-player="3"] .dealer-button { bottom: -10px; left: -10px; }
+
+/* Cards */
+.poker-card {
+  width: 60px;
+  height: 84px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4.5rem;
+  line-height: 1;
+  position: relative;
+  transition: transform 0.5s ease, opacity 0.3s ease;
+  border: 1px solid #ccc;
+  overflow: hidden;
+}
+
+.poker-card.back {
+  background: #e3350d; /* Pokeball Red */
+  overflow: hidden;
+  border: 1px solid #a00;
+}
+
+.poker-card.back::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: #333;
+  transform: translateY(-50%);
+}
+
+.poker-card.back::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border: 4px solid #333;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+/* Chip Pile */
+#chip-pile {
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.static-chip {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle at 30% 30%, #ffd700, #b8860b);
+  border: 2px dashed #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Flying Chip Animation */
+.flying-chip {
+  position: fixed;
+  width: 24px;
+  height: 24px;
+  background: radial-gradient(circle at 30% 30%, #ffd700, #b8860b);
+  border: 2px dashed #fff;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  z-index: 9999;
+  pointer-events: none;
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.6s ease;
+}
+
+@keyframes chip-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.pot-display.animate {
+  animation: chip-pop 0.3s ease;
+}
+
+/* Hand Container */
+.hand-container {
+  display: flex;
+  gap: 2px;
+  position: absolute;
+  z-index: 1;
+}
+
+.seat[data-player="0"] .hand-container { top: -40px; }
+.seat[data-player="1"] .hand-container { right: -50px; }
+.seat[data-player="2"] .hand-container { bottom: -40px; }
+.seat[data-player="3"] .hand-container { left: -50px; }
+
+/* Controls */
+.game-controls {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 200;
+  width: 320px;
+  display: none; /* Hidden by default */
+}
+
+.game-controls.active {
+  display: flex;
+}
+
+.action-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.slider-container input {
+  flex: 1;
+}
+
+.game-log {
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.5);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  pointer-events: none;
+  text-align: center;
+  width: 80%;
+}
