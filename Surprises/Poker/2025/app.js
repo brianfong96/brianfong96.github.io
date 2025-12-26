@@ -253,10 +253,10 @@ const tabData = {
       </div> <!-- End guide-layout -->
     `,
   },
-  "trial-play": {
-    title: "Trial Play",
+  "tutorial": {
+    title: "Tutorial",
     content: `
-      <h2>Trial Play</h2>
+      <h2>Tutorial</h2>
       <p>Practice against 3 bots! You start with 200 chips. Blinds 10/20.</p>
       
       <div id="poker-table">
@@ -296,15 +296,15 @@ const tabData = {
       </div>
 
       <div class="game-controls" id="game-controls">
-        <div class="action-row">
+          <div class="action-row">
           <button class="btn ghost" id="btn-fold">Fold</button>
           <button class="btn ghost" id="btn-check">Check</button>
           <button class="btn primary" id="btn-bet">Bet</button>
-        </div>
-        <div class="slider-container">
+          </div>
+          <div class="slider-container">
           <input type="range" id="bet-slider" min="20" max="200" step="10" value="20">
           <span id="bet-val">20</span>
-        </div>
+          </div>
       </div>
       
       <div style="text-align: center; margin-top: 1rem;">
@@ -342,7 +342,7 @@ const switchTab = (tab) => {
   const tabContent = tabData[tab].content;
   document.getElementById(tab).innerHTML = tabContent;
 
-  if (tab === 'trial-play') {
+  if (tab === 'tutorial') {
     if (typeof initPokerGame === 'function') {
       initPokerGame();
     }
