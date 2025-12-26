@@ -447,7 +447,8 @@ const HandEvaluator = {
     const allCards = [...holeCards, ...communityCards];
     const cards = allCards.map(c => ({
       v: HandEvaluator.ranks[c.value],
-      s: c.suit
+      s: c.suit,
+      original: c
     })).sort((a, b) => b.v - a.v);
 
     const flushSuit = HandEvaluator.getFlushSuit(cards);
@@ -456,7 +457,11 @@ const HandEvaluator = {
     const straightHigh = HandEvaluator.getStraightHigh(cards);
     const straightFlushHigh = flushSuit ? HandEvaluator.getStraightHigh(flushCards) : 0;
 
-    if (straightFlushHigh) return { rank: 8, value: straightFlushHigh, name: "Straight Flush" };
+    if (straightFlushHigh) {
+        // Reconstruct straight flush cards
+        const winning = HandEvaluator.getStraightCards(flushCards, straightFlushHigh);
+        return { rank: 8, value: straightFlushHigh, name: "Straight Flush", winningCards: winning.map(c => c.original) };
+    }
 
     const counts = {};
     cards.forEach(c => counts[c.v] = (counts[c.v] || 0) + 1);
@@ -482,41 +487,64 @@ const HandEvaluator = {
 
     if (quads.length > 0) {
       const kicker = [...trips, ...pairs, ...singles].sort((a, b) => b - a)[0];
-      return { rank: 7, value: [quads[0], kicker], name: "Four of a Kind" };
+      const winning = cards.filter(c => c.v === quads[0]).slice(0, 4);
+      const kickerCard = cards.find(c => c.v === kicker && c.v !== quads[0]);
+      if (kickerCard) winning.push(kickerCard);
+      return { rank: 7, value: [quads[0], kicker], name: "Four of a Kind", winningCards: winning.map(c => c.original) };
     }
 
     if (trips.length > 0 && (trips.length > 1 || pairs.length > 0)) {
       const t = trips[0];
       const p = trips.length > 1 ? trips[1] : pairs[0];
-      return { rank: 6, value: [t, p], name: "Full House" };
+      const winningTrips = cards.filter(c => c.v === t).slice(0, 3);
+      const winningPair = cards.filter(c => c.v === p).slice(0, 2);
+      return { rank: 6, value: [t, p], name: "Full House", winningCards: [...winningTrips, ...winningPair].map(c => c.original) };
     }
 
     if (flushSuit) {
-      return { rank: 5, value: flushCards.slice(0, 5).map(c => c.v), name: "Flush" };
+      return { rank: 5, value: flushCards.slice(0, 5).map(c => c.v), name: "Flush", winningCards: flushCards.slice(0, 5).map(c => c.original) };
     }
 
     if (straightHigh) {
-      return { rank: 4, value: straightHigh, name: "Straight" };
+      const winning = HandEvaluator.getStraightCards(cards, straightHigh);
+      return { rank: 4, value: straightHigh, name: "Straight", winningCards: winning.map(c => c.original) };
     }
 
     if (trips.length > 0) {
       const kickers = [...pairs, ...singles].sort((a, b) => b - a).slice(0, 2);
-      return { rank: 3, value: [trips[0], ...kickers], name: "Three of a Kind" };
+      const winningTrips = cards.filter(c => c.v === trips[0]).slice(0, 3);
+      const winningKickers = [];
+      kickers.forEach(k => {
+          const card = cards.find(c => c.v === k && !winningTrips.includes(c) && !winningKickers.includes(c));
+          if (card) winningKickers.push(card);
+      });
+      return { rank: 3, value: [trips[0], ...kickers], name: "Three of a Kind", winningCards: [...winningTrips, ...winningKickers].map(c => c.original) };
     }
 
     if (pairs.length >= 2) {
       const p1 = pairs[0];
       const p2 = pairs[1];
       const kicker = [...pairs.slice(2), ...singles, ...trips].sort((a, b) => b - a)[0];
-      return { rank: 2, value: [p1, p2, kicker], name: "Two Pair" };
+      const winningP1 = cards.filter(c => c.v === p1).slice(0, 2);
+      const winningP2 = cards.filter(c => c.v === p2).slice(0, 2);
+      const winningKicker = cards.find(c => c.v === kicker && !winningP1.includes(c) && !winningP2.includes(c));
+      const winning = [...winningP1, ...winningP2];
+      if (winningKicker) winning.push(winningKicker);
+      return { rank: 2, value: [p1, p2, kicker], name: "Two Pair", winningCards: winning.map(c => c.original) };
     }
 
     if (pairs.length === 1) {
       const kickers = [...singles, ...trips].sort((a, b) => b - a).slice(0, 3);
-      return { rank: 1, value: [pairs[0], ...kickers], name: "One Pair" };
+      const winningPair = cards.filter(c => c.v === pairs[0]).slice(0, 2);
+      const winningKickers = [];
+      kickers.forEach(k => {
+          const card = cards.find(c => c.v === k && !winningPair.includes(c) && !winningKickers.includes(c));
+          if (card) winningKickers.push(card);
+      });
+      return { rank: 1, value: [pairs[0], ...kickers], name: "One Pair", winningCards: [...winningPair, ...winningKickers].map(c => c.original) };
     }
 
-    return { rank: 0, value: cards.slice(0, 5).map(c => c.v), name: "High Card" };
+    return { rank: 0, value: cards.slice(0, 5).map(c => c.v), name: "High Card", winningCards: cards.slice(0, 5).map(c => c.original) };
   },
 
   getFlushSuit: (cards) => {
@@ -535,6 +563,25 @@ const HandEvaluator = {
       }
     }
     return 0;
+  },
+  
+  getStraightCards: (cards, highVal) => {
+      // Helper to find the 5 cards forming the straight
+      const straightVals = [];
+      for (let i = 0; i < 5; i++) {
+          straightVals.push(highVal - i);
+      }
+      // Handle Ace low (5-4-3-2-A) where A is 14 but treated as 1
+      if (highVal === 5 && straightVals.includes(1)) {
+          straightVals[4] = 14; 
+      }
+      
+      const winning = [];
+      straightVals.forEach(v => {
+          const card = cards.find(c => c.v === v);
+          if (card) winning.push(card);
+      });
+      return winning;
   },
 
   compare: (h1, h2) => {
@@ -905,6 +952,16 @@ class PokerGame {
     const handName = winners[0].eval.name;
     this.log(`${winnerNames} wins with ${handName}!`);
     
+    // Highlight winning cards
+    if (winners.length === 1) {
+        const winningCards = winners[0].eval.winningCards;
+        winningCards.forEach(c => {
+            const selector = `.poker-card[data-card="${c.suit}${c.value}"]`;
+            const els = document.querySelectorAll(selector);
+            els.forEach(el => el.classList.add('winning-card'));
+        });
+    }
+
     setTimeout(() => {
       this.dealerIdx = (this.dealerIdx + 1) % 4;
       const startBtn = document.getElementById('start-game-btn');
@@ -979,7 +1036,7 @@ class PokerGame {
     const key = card.suit + card.value;
     const entity = CARDS[key] || '?';
     const color = (card.suit === 'h' || card.suit === 'd') ? 'red' : 'black';
-    return `<div class="poker-card" style="color: ${color}">${entity}</div>`;
+    return `<div class="poker-card" style="color: ${color}" data-card="${card.suit}${card.value}">${entity}</div>`;
   }
 
   log(msg) {

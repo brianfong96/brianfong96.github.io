@@ -1242,6 +1242,14 @@ body {
   transition: transform 0.5s ease, opacity 0.3s ease;
   border: 1px solid #ccc;
   overflow: hidden;
+  padding: 0;
+}
+
+.poker-card.winning-card {
+  border: 3px solid var(--red);
+  box-shadow: 0 0 15px var(--red);
+  z-index: 10;
+  transform: scale(1.1);
 }
 
 .poker-card.back {
