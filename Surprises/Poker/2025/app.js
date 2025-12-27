@@ -86,7 +86,7 @@ const tabData = {
             </li>
             <li>
               <span class="badge" aria-hidden="true"></span>
-              <span>1 buy-in = 10 big blinds. Unlimited re-entries.</span>
+              <span>1 buy-in = 10 to 110 big blinds. Unlimited re-entries. (<a href="#" onclick="switchTab('guide'); setTimeout(() => document.getElementById('chips').scrollIntoView({behavior: 'smooth'}), 100); return false;" style="color: var(--blue); text-decoration: underline;">See Chip Values</a>)</span>
             </li>
             <li>
               <span class="badge" aria-hidden="true"></span>
