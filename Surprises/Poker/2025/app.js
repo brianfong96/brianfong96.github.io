@@ -31,10 +31,10 @@ const tabData = {
         <div>
           <div class="eyebrow">Free buy-in finale</div>
           <h1>FIRST EVER 2025 YEAR END POKEMON PACK POKER TOURNEY! ♠️</h1>
-          <p>I'm hosting my first tournament to wrap up 2025. No cash involved, just POKEMON PACKS.</p>
+          <p>I'm hosting my first tournament to wrap up 2025. No cash involved, just POKEMON PACKS and good vibes.</p>
           <ul style="list-style: none; padding: 0; margin: 1rem 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Buy-in:</strong> Buy in with pokemon packs, NOT CASH! First pack is ON THE HOUSE.</li>
-            <li style="margin-bottom: 0.5rem;"><strong>Unlimited Re-buys:</strong> Take a shot (for you or a friend), get a pack!</li>
+            <li style="margin-bottom: 0.5rem;"><strong>Buy-in:</strong> Free entry! No cash involved. First buy-in is ON THE HOUSE.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>Unlimited Re-buys:</strong> Free re-buys! Share a 2025 memory or photo/video of yourself to get back in.</li>
             <li style="margin-bottom: 0.5rem;"><strong>Vibe:</strong> No pressure to play. Keep it, trade it, or rip it for yourself. Special cards can earn more buy ins!</li>
           </ul>
         </div>
@@ -86,11 +86,11 @@ const tabData = {
             </li>
             <li>
               <span class="badge" aria-hidden="true"></span>
-              <span>1 buy-in = 10 big blinds. Unlimited re-entries via packs.</span>
+              <span>1 buy-in = 10 big blinds. Unlimited re-entries.</span>
             </li>
             <li>
               <span class="badge" aria-hidden="true"></span>
-              <span><strong>Shot for a Pack:</strong> You can buy in more by taking a shot for a pack! If you don't drink, a friend can drink on your behalf.</span>
+              <span><strong>Re-buy Entry:</strong> To re-buy, upload a video sharing a 2025 memory OR a photo/video of yourself (solo) from 2025 to the Google Photos album. The album is private to players only and will be shown during the countdown.</span>
             </li>
             <li>
               <span class="badge" aria-hidden="true"></span>
@@ -360,6 +360,9 @@ const switchTab = (tab) => {
   if (tab === 'tutorial') {
     if (typeof initPokerGame === 'function') {
       initPokerGame();
+    }
+    if (typeof resizePokerTable === 'function') {
+      setTimeout(resizePokerTable, 100);
     }
   }
 };
@@ -1051,4 +1054,33 @@ class PokerGame {
     document.getElementById('game-controls').classList.remove('active');
   }
 }
+
+function resizePokerTable() {
+  const table = document.getElementById('poker-table');
+  if (!table) return;
+  
+  // Reset to allow CSS to take over first
+  table.style.transform = '';
+  table.style.marginTop = '';
+  table.style.marginBottom = '';
+  
+  if (window.innerWidth <= 768) {
+    const screenWidth = window.innerWidth;
+    
+    // If screen is very small, scale down
+    if (screenWidth < 380) {
+       const scale = (screenWidth - 20) / 360; // Target 360px width (table + seats)
+       // Table width is calc(100% - 80px). On 320px screen, table is 240px.
+       // Seats are at -40px. So total width is 240 + 80 = 320px.
+       // It should fit exactly.
+       // But let's add a safety scale if it's really tight.
+       if (scale < 1) {
+         table.style.transformOrigin = 'center center';
+         table.style.transform = `scale(${scale})`;
+       }
+    }
+  }
+}
+
+window.addEventListener('resize', resizePokerTable);
 

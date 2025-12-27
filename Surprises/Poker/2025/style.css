@@ -1498,35 +1498,92 @@ body {
   }
 
   #poker-table {
-    height: 350px;
+    height: 320px;
     border-width: 4px;
     border-radius: 30px;
-    margin: 1rem auto;
-    width: 100%;
-    max-width: 100%;
+    margin: 5rem auto 2rem; /* Increased top margin for top player hand */
+    width: calc(100% - 80px); /* Ensure space for side seats */
+    max-width: 400px;
     transform: none; /* Remove scale, use width */
   }
 
   .seat {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
   }
 
   .avatar {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
+    border-width: 2px;
   }
 
   .poker-card {
-    width: 30px;
-    height: 42px;
-    font-size: 1.8rem;
+    width: 28px;
+    height: 40px;
+    font-size: 1.5rem;
+    border-radius: 4px;
   }
   
+  /* Bring seats closer */
+  .seat[data-player="0"] { bottom: -40px; left: 50%; transform: translateX(-50%); }
+  .seat[data-player="1"] { left: -40px; top: 50%; transform: translateY(-50%); }
+  .seat[data-player="2"] { top: -40px; left: 50%; transform: translateX(-50%); }
+  .seat[data-player="3"] { right: -40px; top: 50%; transform: translateY(-50%); }
+
+  /* Adjust hand containers to be outside/compact to avoid table overlap */
+  /* Player 0 (User) - Keep inside but adjust */
   .seat[data-player="0"] .hand-container { top: -50px; }
-  .seat[data-player="1"] .hand-container { right: -60px; }
-  .seat[data-player="2"] .hand-container { bottom: -50px; }
-  .seat[data-player="3"] .hand-container { left: -60px; }
+  
+  /* Player 1 (Left) - Move below avatar */
+  .seat[data-player="1"] .hand-container { 
+    right: auto; 
+    left: 50%; 
+    top: 100%; 
+    transform: translateX(-50%); 
+    margin-top: 5px;
+  }
+  
+  /* Player 2 (Top) - Move above avatar */
+  .seat[data-player="2"] .hand-container { 
+    bottom: 100%; 
+    top: auto;
+    left: 50%; 
+    transform: translateX(-50%); 
+    margin-bottom: 5px;
+  }
+  
+  /* Player 3 (Right) - Move below avatar */
+  .seat[data-player="3"] .hand-container { 
+    left: auto; 
+    right: 50%; /* Center relative to seat */
+    top: 100%; 
+    transform: translateX(50%); 
+    margin-top: 5px;
+  }
+
+  .community-area {
+    height: 60px;
+    padding: 0.25rem;
+    gap: 0.25rem;
+    min-width: auto;
+    width: auto;
+    max-width: 95%;
+  }
+  
+  .pot-display {
+    top: 25%;
+  }
+  
+  #chip-pile {
+    top: 35%;
+  }
+  
+  .game-log {
+    top: 70%;
+    width: 90%;
+    font-size: 0.7rem;
+  }
 
   .game-controls {
     flex-direction: column;
