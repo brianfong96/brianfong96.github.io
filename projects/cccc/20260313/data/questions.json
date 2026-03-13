@@ -273,72 +273,72 @@
     "id": "pic-1",
     "category": "Picture is a Thousand Words",
     "questionText": "What Bible story does this image depict?",
-    "imageUrl": "/Fellowship%20Pictures/Gemini_Generated_Image_3vmji43vmji43vmj.png",
+    "imageUrl": "/Fellowship%20Pictures/pic-1.png",
     "answerText": "(Review this image and update the answer)",
-    "insightText": "Review this image at http://localhost:8080/Fellowship%20Pictures/Gemini_Generated_Image_3vmji43vmji43vmj.png",
+    "insightText": "(Review pic-1.png and update the insight)",
     "proofUrl": null
   },
   {
     "id": "pic-2",
     "category": "Picture is a Thousand Words",
     "questionText": "What Bible story does this image depict?",
-    "imageUrl": "/Fellowship%20Pictures/Gemini_Generated_Image_62mvim62mvim62mv.png",
+    "imageUrl": "/Fellowship%20Pictures/pic-2.png",
     "answerText": "(Review this image and update the answer)",
-    "insightText": "Review this image at http://localhost:8080/Fellowship%20Pictures/Gemini_Generated_Image_62mvim62mvim62mv.png",
+    "insightText": "(Review pic-2.png and update the insight)",
     "proofUrl": null
   },
   {
     "id": "pic-3",
     "category": "Picture is a Thousand Words",
     "questionText": "What Bible story does this image depict?",
-    "imageUrl": "/Fellowship%20Pictures/Gemini_Generated_Image_8jgkd88jgkd88jgk.png",
+    "imageUrl": "/Fellowship%20Pictures/pic-3.png",
     "answerText": "(Review this image and update the answer)",
-    "insightText": "Review this image at http://localhost:8080/Fellowship%20Pictures/Gemini_Generated_Image_8jgkd88jgkd88jgk.png",
+    "insightText": "(Review pic-3.png and update the insight)",
     "proofUrl": null
   },
   {
     "id": "pic-4",
     "category": "Picture is a Thousand Words",
     "questionText": "What Bible story does this image depict?",
-    "imageUrl": "/Fellowship%20Pictures/Gemini_Generated_Image_gipaihgipaihgipa.png",
+    "imageUrl": "/Fellowship%20Pictures/pic-4.png",
     "answerText": "(Review this image and update the answer)",
-    "insightText": "Review this image at http://localhost:8080/Fellowship%20Pictures/Gemini_Generated_Image_gipaihgipaihgipa.png",
+    "insightText": "(Review pic-4.png and update the insight)",
     "proofUrl": null
   },
   {
     "id": "pic-5",
     "category": "Picture is a Thousand Words",
     "questionText": "What Bible story does this image depict?",
-    "imageUrl": "/Fellowship%20Pictures/Gemini_Generated_Image_k76wack76wack76w.png",
+    "imageUrl": "/Fellowship%20Pictures/pic-5.png",
     "answerText": "(Review this image and update the answer)",
-    "insightText": "Review this image at http://localhost:8080/Fellowship%20Pictures/Gemini_Generated_Image_k76wack76wack76w.png",
+    "insightText": "(Review pic-5.png and update the insight)",
     "proofUrl": null
   },
   {
     "id": "pic-6",
     "category": "Picture is a Thousand Words",
     "questionText": "What Bible story does this image depict?",
-    "imageUrl": "/Fellowship%20Pictures/Gemini_Generated_Image_nyqlcfnyqlcfnyql.png",
+    "imageUrl": "/Fellowship%20Pictures/pic-6.png",
     "answerText": "(Review this image and update the answer)",
-    "insightText": "Review this image at http://localhost:8080/Fellowship%20Pictures/Gemini_Generated_Image_nyqlcfnyqlcfnyql.png",
+    "insightText": "(Review pic-6.png and update the insight)",
     "proofUrl": null
   },
   {
     "id": "pic-7",
     "category": "Picture is a Thousand Words",
     "questionText": "What Bible story does this image depict?",
-    "imageUrl": "/Fellowship%20Pictures/Gemini_Generated_Image_y9xyj3y9xyj3y9xy.png",
+    "imageUrl": "/Fellowship%20Pictures/pic-7.png",
     "answerText": "(Review this image and update the answer)",
-    "insightText": "Review this image at http://localhost:8080/Fellowship%20Pictures/Gemini_Generated_Image_y9xyj3y9xyj3y9xy.png",
+    "insightText": "(Review pic-7.png and update the insight)",
     "proofUrl": null
   },
   {
     "id": "pic-8",
     "category": "Picture is a Thousand Words",
     "questionText": "What Bible story does this image depict?",
-    "imageUrl": "/Fellowship%20Pictures/Gemini_Generated_Image_z1wg6dz1wg6dz1wg.png",
+    "imageUrl": "/Fellowship%20Pictures/pic-8.png",
     "answerText": "(Review this image and update the answer)",
-    "insightText": "Review this image at http://localhost:8080/Fellowship%20Pictures/Gemini_Generated_Image_z1wg6dz1wg6dz1wg.png",
+    "insightText": "(Review pic-8.png and update the insight)",
     "proofUrl": null
   }
 ]
