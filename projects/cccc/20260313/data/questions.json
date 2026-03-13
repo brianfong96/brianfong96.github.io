@@ -1,275 +1,272 @@
 [
   {
     "id": "1",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"Money is the root of all evil.\"",
     "imageUrl": null,
-    "answerText": "Not Biblical.",
+    "answerText": "Not From the Bible.",
     "insightText": "The actual verse is 1 Timothy 6:10 (NIV): \"For the love of money is a root of all kinds of evil.\" The misquote drops \"the love of\" and changes \"a root of all kinds of evil\" to \"the root of all evil.\"",
     "proofUrl": "https://www.biblegateway.com/passage/?search=1+Timothy+6%3A10&version=NIV"
   },
   {
     "id": "2",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"God helps those who help themselves.\"",
     "imageUrl": null,
-    "answerText": "Not Biblical.",
+    "answerText": "Not From the Bible.",
     "insightText": "This was first written by English politician Algernon Sidney in *Discourses Concerning Government* (1698) and later popularized by Benjamin Franklin in *Poor Richard's Almanack* (1736). The Bible emphasizes God helping the helpless (Psalm 72:12-13).",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Psalm+72%3A12-13&version=NIV"
   },
   {
     "id": "3",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"Speak up for those who cannot speak for themselves.\"",
     "imageUrl": null,
-    "answerText": "Biblical.",
+    "answerText": "From the Bible — Proverbs 31:8",
     "insightText": "Proverbs 31:8 (NIV): \"Speak up for those who cannot speak for themselves, for the rights of all who are destitute.\" A direct mandate for advocacy and compassion.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Proverbs+31%3A8&version=NIV"
   },
   {
     "id": "4",
-    "category": "Biblical or Not",
-    "questionText": "\"Hate the sin, love the sinner.\"",
+    "category": "Where is it From?",
+    "questionText": "\"Hate the sin, not the sinner.\"",
     "imageUrl": null,
-    "answerText": "Not Biblical.",
-    "insightText": "This comes from St. Augustine's Letter 211 (c. 424 AD): \"Cum dilectione hominum et odio vitiorum\" \u2014 \"With love for mankind and hatred of sins.\" It was later adapted by Mahatma Gandhi in his 1929 autobiography.",
-    "proofUrl": "https://www.biblegateway.com/quicksearch/?quicksearch=%22hate+the+sin+love+the+sinner%22&version=NIV"
+    "answerText": "Not From the Bible.",
+    "insightText": "This comes from St. Augustine's Letter 211 (c. 424 AD): \"Cum dilectione hominum et odio vitiorum\" — \"With love for mankind and hatred of sins.\" It was later adapted by Mahatma Gandhi in his 1929 autobiography.",
+    "proofUrl": "https://www.augustinus.it/latino/lettere/lettera_217_testo.htm"
   },
   {
     "id": "5",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"If your enemy is hungry, feed him.\"",
     "imageUrl": null,
-    "answerText": "Biblical.",
+    "answerText": "From the Bible — Romans 12:20; Proverbs 25:21",
     "insightText": "Romans 12:20 (NIV): \"On the contrary: 'If your enemy is hungry, feed him; if he is thirsty, give him something to drink. In doing this, you will heap burning coals on his head.'\" Also found in Proverbs 25:21.",
     "proofUrl": [
-      { "label": "Romans 12:20", "url": "https://www.biblegateway.com/passage/?search=Romans+12%3A20&version=NIV" },
-      { "label": "Proverbs 25:21", "url": "https://www.biblegateway.com/passage/?search=Proverbs+25%3A21&version=NIV" }
+      {
+        "label": "Romans 12:20",
+        "url": "https://www.biblegateway.com/passage/?search=Romans+12%3A20&version=NIV"
+      },
+      {
+        "label": "Proverbs 25:21",
+        "url": "https://www.biblegateway.com/passage/?search=Proverbs+25%3A21&version=NIV"
+      }
     ]
   },
   {
-    "id": "6",
-    "category": "Biblical or Not",
-    "questionText": "\"Cleanliness is next to godliness.\"",
-    "imageUrl": null,
-    "answerText": "Not Biblical.",
-    "insightText": "This phrase was popularized by John Wesley in his sermon \"On Dress\" (Sermon 88, 1791). The concept has roots in ancient Hebrew and Babylonian writings, but this exact phrase is not in the Bible.",
-    "proofUrl": "https://www.biblegateway.com/quicksearch/?quicksearch=cleanliness&version=NIV"
-  },
-  {
     "id": "7",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"Religion that God accepts as pure is this: to look after orphans and widows in their distress.\"",
     "imageUrl": null,
-    "answerText": "Biblical.",
+    "answerText": "From the Bible — James 1:27",
     "insightText": "James 1:27 (NIV): \"Religion that God our Father accepts as pure and faultless is this: to look after orphans and widows in their distress and to keep oneself from being polluted by the world.\"",
     "proofUrl": "https://www.biblegateway.com/passage/?search=James+1%3A27&version=NIV"
   },
   {
     "id": "8",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"This too shall pass.\"",
     "imageUrl": null,
-    "answerText": "Not Biblical.",
+    "answerText": "Not From the Bible.",
     "insightText": "This is an ancient Persian proverb, often attributed to Persian Sufi poets such as Attar of Nishapur. It was later popularized in the West by Abraham Lincoln in an 1859 address. It does not appear anywhere in the Bible.",
     "proofUrl": "https://www.biblegateway.com/quicksearch/?quicksearch=%22this+too+shall+pass%22&version=NIV"
   },
   {
     "id": "9",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"God will not give you more than you can handle.\"",
     "imageUrl": null,
-    "answerText": "Not Biblical.",
+    "answerText": "Not From the Bible.",
     "insightText": "This is a misquote of 1 Corinthians 10:13 (NIV): \"No temptation has overtaken you except what is common to mankind. And God is faithful; he will not let you be tempted beyond what you can bear.\" The verse is about *temptation*, not suffering. The Bible is full of people who suffered beyond their own capacity (2 Corinthians 1:8).",
     "proofUrl": "https://www.biblegateway.com/passage/?search=1+Corinthians+10%3A13&version=NIV"
   },
   {
     "id": "10",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"Carry each other's burdens.\"",
     "imageUrl": null,
-    "answerText": "Biblical.",
+    "answerText": "From the Bible — Galatians 6:2",
     "insightText": "Galatians 6:2 (NIV): \"Carry each other's burdens, and in this way you will fulfill the law of Christ.\"",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Galatians+6%3A2&version=NIV"
   },
   {
     "id": "11",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"Charity begins at home.\"",
     "imageUrl": null,
-    "answerText": "Not Biblical.",
+    "answerText": "Not From the Bible.",
     "insightText": "This phrase comes from Sir Thomas Browne's *Religio Medici* (1642): \"Charity begins at home, is the voice of the world.\" It does not appear in the Bible, though 1 Timothy 5:8 urges providing for one's household.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=1+Timothy+5%3A8&version=NIV"
   },
   {
     "id": "12",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"He who shuts his ear to the cry of the poor will also cry himself and not be answered.\"",
     "imageUrl": null,
-    "answerText": "Biblical.",
+    "answerText": "From the Bible — Proverbs 21:13",
     "insightText": "Proverbs 21:13 (NIV): \"Whoever shuts their ears to the cry of the poor will also cry out and not be answered.\" A harsh warning about ignoring those in need.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Proverbs+21%3A13&version=NIV"
   },
   {
     "id": "13",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"To thine own self be true.\"",
     "imageUrl": null,
-    "answerText": "Not Biblical.",
+    "answerText": "Not From the Bible.",
     "insightText": "This is a line spoken by Polonius in William Shakespeare's *Hamlet* (Act 1, Scene 3, c. 1600): \"This above all: to thine own self be true.\"",
     "proofUrl": "https://www.biblegateway.com/quicksearch/?quicksearch=%22to+thine+own+self%22&version=KJV"
   },
   {
     "id": "14",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"A bruised reed he will not break.\"",
     "imageUrl": null,
-    "answerText": "Biblical.",
+    "answerText": "From the Bible — Isaiah 42:3",
     "insightText": "Isaiah 42:3 (NIV): \"A bruised reed he will not break, and a smoldering wick he will not snuff out. In faithfulness he will bring forth justice.\" Also quoted by Jesus in Matthew 12:20.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Isaiah+42%3A3&version=NIV"
   },
   {
     "id": "15",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"The lion shall lay down with the lamb.\"",
     "imageUrl": null,
-    "answerText": "Not Biblical.",
+    "answerText": "Not From the Bible.",
     "insightText": "This is a common misquote. Isaiah 11:6 (NIV) actually says: \"The wolf will live with the lamb, the leopard will lie down with the goat, the calf and the lion and the yearling together; and a little child will lead them.\" It's the *wolf*, not the lion, with the lamb.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Isaiah+11%3A6&version=NIV"
   },
   {
     "id": "16",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"Do unto others as you would have them do unto you.\"",
     "imageUrl": null,
-    "answerText": "Biblical.",
+    "answerText": "From the Bible — Luke 6:31; Matthew 7:12",
     "insightText": "Luke 6:31 (NIV): \"Do to others as you would have them do to you.\" Known as the Golden Rule. Also found in Matthew 7:12.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Luke+6%3A31&version=NIV"
   },
   {
     "id": "17",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"Spare the rod, spoil the child.\"",
     "imageUrl": null,
-    "answerText": "Not Biblical.",
+    "answerText": "Not From the Bible.",
     "insightText": "This exact phrasing is from Samuel Butler's satirical poem *Hudibras* (1664): \"Love is a boy by poets styl'd; Then spare the rod and spoil the child.\" It is loosely based on Proverbs 13:24 (NIV): \"Whoever spares the rod hates their children, but the one who loves their children is careful to discipline them.\"",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Proverbs+13%3A24&version=NIV"
   },
   {
     "id": "18",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"Let him who is without sin cast the first stone.\"",
     "imageUrl": null,
-    "answerText": "Biblical.",
+    "answerText": "From the Bible — John 8:7",
     "insightText": "John 8:7 (NIV): \"When they kept on questioning him, he straightened up and said to them, 'Let any one of you who is without sin be the first to throw a stone at her.'\"",
     "proofUrl": "https://www.biblegateway.com/passage/?search=John+8%3A7&version=NIV"
   },
   {
     "id": "19",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"Pride goes before a fall.\"",
     "imageUrl": null,
-    "answerText": "Biblical.",
+    "answerText": "From the Bible — Proverbs 16:18",
     "insightText": "Proverbs 16:18 (NIV): \"Pride goes before destruction, a haughty spirit before a fall.\" The common saying is a shortened version of this verse.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Proverbs+16%3A18&version=NIV"
   },
   {
     "id": "20",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"Neither a borrower nor a lender be.\"",
     "imageUrl": null,
-    "answerText": "Not Biblical.",
+    "answerText": "Not From the Bible.",
     "insightText": "This is spoken by Polonius in William Shakespeare's *Hamlet* (Act 1, Scene 3, c. 1600): \"Neither a borrower nor a lender be, for loan oft loses both itself and friend.\" The Bible actually discusses lending in Deuteronomy 15:8 and Psalm 37:26.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Psalm+37%3A26&version=NIV"
   },
   {
     "id": "21",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"Blessed are the merciful, for they will be shown mercy.\"",
     "imageUrl": null,
-    "answerText": "Biblical.",
+    "answerText": "From the Bible — Matthew 5:7",
     "insightText": "Matthew 5:7 (NIV): \"Blessed are the merciful, for they will be shown mercy.\" Part of Jesus' Sermon on the Mount (the Beatitudes).",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Matthew+5%3A7&version=NIV"
   },
   {
     "id": "22",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"God works in mysterious ways.\"",
     "imageUrl": null,
-    "answerText": "Not Biblical.",
+    "answerText": "Not From the Bible.",
     "insightText": "This comes from William Cowper's hymn *Light Shining out of Darkness* (1773), commonly known as \"God Moves in a Mysterious Way.\" The opening line: \"God moves in a mysterious way, His wonders to perform.\" It is not a Bible verse.",
     "proofUrl": "https://www.biblegateway.com/quicksearch/?quicksearch=%22mysterious+ways%22&version=NIV"
   },
   {
     "id": "23",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"A gentle answer turns away wrath.\"",
     "imageUrl": null,
-    "answerText": "Biblical.",
+    "answerText": "From the Bible — Proverbs 15:1",
     "insightText": "Proverbs 15:1 (NIV): \"A gentle answer turns away wrath, but a harsh word stirs up anger.\"",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Proverbs+15%3A1&version=NIV"
   },
   {
     "id": "24",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"Be kind, for everyone you meet is fighting a hard battle.\"",
     "imageUrl": null,
-    "answerText": "Not Biblical.",
+    "answerText": "Not From the Bible.",
     "insightText": "This quote is widely attributed to Ian Maclaren (pen name of Rev. John Watson), a Scottish author and minister, from around 1897. It is often misattributed to Plato. It does not appear in the Bible.",
     "proofUrl": "https://www.biblegateway.com/quicksearch/?quicksearch=%22fighting+a+hard+battle%22&version=NIV"
   },
   {
     "id": "25",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"As iron sharpens iron, so one person sharpens another.\"",
     "imageUrl": null,
-    "answerText": "Biblical.",
+    "answerText": "From the Bible — Proverbs 27:17",
     "insightText": "Proverbs 27:17 (NIV): \"As iron sharpens iron, so one person sharpens another.\"",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Proverbs+27%3A17&version=NIV"
   },
   {
     "id": "26",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"Weeping may stay for the night, but rejoicing comes in the morning.\"",
     "imageUrl": null,
-    "answerText": "Biblical.",
+    "answerText": "From the Bible — Psalm 30:5",
     "insightText": "Psalm 30:5 (NIV): \"For his anger lasts only a moment, but his favor lasts a lifetime; weeping may stay for the night, but rejoicing comes in the morning.\"",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Psalm+30%3A5&version=NIV"
   },
   {
     "id": "27",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"The eye is the lamp of the body.\"",
     "imageUrl": null,
-    "answerText": "Biblical.",
+    "answerText": "From the Bible — Matthew 6:22",
     "insightText": "Matthew 6:22 (NIV): \"The eye is the lamp of the body. If your eyes are healthy, your whole body will be full of light.\"",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Matthew+6%3A22&version=NIV"
   },
   {
     "id": "28",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"A fool and his money are soon parted.\"",
     "imageUrl": null,
-    "answerText": "Not Biblical.",
+    "answerText": "Not From the Bible.",
     "insightText": "This proverb is attributed to Thomas Tusser's *Five Hundred Points of Good Husbandry* (1573). While the Bible has much to say about foolishness and wealth (Proverbs 21:20), this exact phrase is not in Scripture.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Proverbs+21%3A20&version=NIV"
   },
   {
     "id": "29",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"The truth will set you free.\"",
     "imageUrl": null,
-    "answerText": "Biblical.",
+    "answerText": "From the Bible — John 8:32",
     "insightText": "John 8:32 (NIV): \"Then you will know the truth, and the truth will set you free.\" Jesus said this to the Jews who believed in him.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=John+8%3A32&version=NIV"
   },
   {
     "id": "30",
-    "category": "Biblical or Not",
+    "category": "Where is it From?",
     "questionText": "\"Love your neighbor and hate your enemy.\"",
     "imageUrl": null,
-    "answerText": "Not Biblical.",
-    "insightText": "Jesus quotes this cultural saying in Matthew 5:43-44 (NIV) to correct it: \"You have heard that it was said, 'Love your neighbor and hate your enemy.' But I tell you, love your enemies and pray for those who persecute you.\" The \"hate your enemy\" part was a popular addition \u2014 it is not found in the Old Testament.",
+    "answerText": "Not From the Bible.",
+    "insightText": "Jesus quotes this cultural saying in Matthew 5:43-44 (NIV) to correct it: \"You have heard that it was said, 'Love your neighbor and hate your enemy.' But I tell you, love your enemies and pray for those who persecute you.\" The \"hate your enemy\" part was a popular addition — it is not found in the Old Testament.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Matthew+5%3A43-44&version=NIV"
   },
   {
@@ -298,8 +295,14 @@
     "answerText": "Jesus Forgives and Heals a Paralyzed Man",
     "insightText": "Mark 2:1-12, Luke 5:18-25 — Friends lower a paralyzed man through the roof to Jesus, who first forgives his sins and then heals him.",
     "proofUrl": [
-      { "label": "Mark 2:1-12", "url": "https://www.biblegateway.com/passage/?search=Mark+2%3A1-12&version=NIV" },
-      { "label": "Luke 5:18-25", "url": "https://www.biblegateway.com/passage/?search=Luke+5%3A18-25&version=NIV" }
+      {
+        "label": "Mark 2:1-12",
+        "url": "https://www.biblegateway.com/passage/?search=Mark+2%3A1-12&version=NIV"
+      },
+      {
+        "label": "Luke 5:18-25",
+        "url": "https://www.biblegateway.com/passage/?search=Luke+5%3A18-25&version=NIV"
+      }
     ]
   },
   {
@@ -319,10 +322,22 @@
     "answerText": "Jesus Anointed at Bethany / A Sinful Woman Forgiven",
     "insightText": "Matthew 26:6-13; Mark 14:3-9; Luke 7:36-50; John 12:1-8 — A woman anoints Jesus with costly perfume, and He defends her act of devotion and declares her sins forgiven.",
     "proofUrl": [
-      { "label": "Matthew 26:6-13", "url": "https://www.biblegateway.com/passage/?search=Matthew+26%3A6-13&version=NIV" },
-      { "label": "Mark 14:3-9", "url": "https://www.biblegateway.com/passage/?search=Mark+14%3A3-9&version=NIV" },
-      { "label": "Luke 7:36-50", "url": "https://www.biblegateway.com/passage/?search=Luke+7%3A36-50&version=NIV" },
-      { "label": "John 12:1-8", "url": "https://www.biblegateway.com/passage/?search=John+12%3A1-8&version=NIV" }
+      {
+        "label": "Matthew 26:6-13",
+        "url": "https://www.biblegateway.com/passage/?search=Matthew+26%3A6-13&version=NIV"
+      },
+      {
+        "label": "Mark 14:3-9",
+        "url": "https://www.biblegateway.com/passage/?search=Mark+14%3A3-9&version=NIV"
+      },
+      {
+        "label": "Luke 7:36-50",
+        "url": "https://www.biblegateway.com/passage/?search=Luke+7%3A36-50&version=NIV"
+      },
+      {
+        "label": "John 12:1-8",
+        "url": "https://www.biblegateway.com/passage/?search=John+12%3A1-8&version=NIV"
+      }
     ]
   },
   {
@@ -342,8 +357,14 @@
     "answerText": "The Parable of the Lost Sheep",
     "insightText": "Luke 15:1-7, Matthew 18:10-14 — A shepherd leaves his ninety-nine sheep to search for the one that is lost, illustrating God's relentless love for every individual.",
     "proofUrl": [
-      { "label": "Luke 15:1-7", "url": "https://www.biblegateway.com/passage/?search=Luke+15%3A1-7&version=NIV" },
-      { "label": "Matthew 18:10-14", "url": "https://www.biblegateway.com/passage/?search=Matthew+18%3A10-14&version=NIV" }
+      {
+        "label": "Luke 15:1-7",
+        "url": "https://www.biblegateway.com/passage/?search=Luke+15%3A1-7&version=NIV"
+      },
+      {
+        "label": "Matthew 18:10-14",
+        "url": "https://www.biblegateway.com/passage/?search=Matthew+18%3A10-14&version=NIV"
+      }
     ]
   },
   {
@@ -354,9 +375,18 @@
     "answerText": "Jesus Heals a Man with Leprosy",
     "insightText": "Matthew 8:1-4, Mark 1:40-45, Luke 5:12-16 — Jesus reaches out and touches a man with leprosy, healing him and showing compassion to the outcast.",
     "proofUrl": [
-      { "label": "Matthew 8:1-4", "url": "https://www.biblegateway.com/passage/?search=Matthew+8%3A1-4&version=NIV" },
-      { "label": "Mark 1:40-45", "url": "https://www.biblegateway.com/passage/?search=Mark+1%3A40-45&version=NIV" },
-      { "label": "Luke 5:12-16", "url": "https://www.biblegateway.com/passage/?search=Luke+5%3A12-16&version=NIV" }
+      {
+        "label": "Matthew 8:1-4",
+        "url": "https://www.biblegateway.com/passage/?search=Matthew+8%3A1-4&version=NIV"
+      },
+      {
+        "label": "Mark 1:40-45",
+        "url": "https://www.biblegateway.com/passage/?search=Mark+1%3A40-45&version=NIV"
+      },
+      {
+        "label": "Luke 5:12-16",
+        "url": "https://www.biblegateway.com/passage/?search=Luke+5%3A12-16&version=NIV"
+      }
     ]
   }
 ]
