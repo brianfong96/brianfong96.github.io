@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fellowship Trivia — Review</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+
+    /* Password gate */
+    #gate { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    #gate form { background: #1e293b; padding: 2.5rem; border-radius: 1rem; border: 1px solid #334155; text-align: center; max-width: 360px; width: 90%; }
+    #gate h2 { margin-bottom: 1rem; font-size: 1.4rem; color: #f59e0b; }
+    #gate input { width: 100%; padding: .75rem 1rem; border-radius: .5rem; border: 1px solid #475569; background: #0f172a; color: #e2e8f0; font-size: 1rem; text-align: center; margin-bottom: 1rem; }
+    #gate button { background: #f59e0b; color: #0f172a; border: none; padding: .75rem 2rem; border-radius: .5rem; font-weight: 700; font-size: 1rem; cursor: pointer; }
+    #gate button:hover { background: #d97706; }
+    #gate .error { color: #ef4444; margin-top: .5rem; font-size: .9rem; display: none; }
+
+    /* Review content */
+    #content { display: none; max-width: 900px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+    h1 { text-align: center; color: #f59e0b; margin-bottom: .5rem; font-size: 1.8rem; }
+    .subtitle { text-align: center; color: #94a3b8; margin-bottom: 2rem; font-size: .95rem; }
+    h2.section { color: #f59e0b; font-size: 1.3rem; margin: 2rem 0 1rem; padding-bottom: .5rem; border-bottom: 1px solid #334155; }
+
+    .card { background: #1e293b; border: 1px solid #334155; border-radius: .75rem; padding: 1.25rem; margin-bottom: 1rem; }
+    .card .q-num { color: #64748b; font-size: .8rem; font-weight: 600; margin-bottom: .25rem; }
+    .card .question { font-size: 1.1rem; font-weight: 600; color: #f8fafc; margin-bottom: .5rem; }
+    .card .answer { font-weight: 700; margin-bottom: .4rem; }
+    .card .answer.from-bible { color: #22c55e; }
+    .card .answer.not-bible { color: #ef4444; }
+    .card .answer.image-answer { color: #60a5fa; }
+    .card .insight { color: #94a3b8; font-size: .92rem; line-height: 1.5; margin-bottom: .5rem; }
+    .card .proof { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .card .proof a { color: #f59e0b; text-decoration: none; font-size: .88rem; }
+    .card .proof a:hover { text-decoration: underline; }
+    .card .image-preview { max-height: 180px; border-radius: .5rem; margin-bottom: .5rem; }
+  </style>
+</head>
+<body>
+  <div id="gate">
+    <form id="pw-form">
+      <h2>✝️ Review Mode</h2>
+      <p style="color:#94a3b8; margin-bottom:1rem; font-size:.9rem;">Enter password to view all questions & answers</p>
+      <input type="password" id="pw-input" placeholder="Password" autocomplete="off" />
+      <button type="submit">Enter</button>
+      <p class="error" id="pw-error">Incorrect password.</p>
+    </form>
+  </div>
+
+  <div id="content">
+    <h1>✝️ Fellowship Trivia — Answer Key</h1>
+    <p class="subtitle">All questions and answers for review</p>
+    <div id="review-body"></div>
+  </div>
+
+  <script>
+    const PASS_HASH = '16d6eb9c4bf648aeb7e584e7b93b11e02da84596fe25bd0fdc438bd5f2e554e7';
+
+    async function sha256(msg) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    document.getElementById('pw-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const val = document.getElementById('pw-input').value;
+      const hash = await sha256(val);
+      if (hash === PASS_HASH) {
+        document.getElementById('gate').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+        loadReview();
+      } else {
+        document.getElementById('pw-error').style.display = 'block';
+      }
+    });
+
+    async function loadReview() {
+      const base = '/projects/cccc/20260313/data/';
+      const [textQs, imageQs] = await Promise.all([
+        fetch(base + 'text-questions.json').then(r => r.json()),
+        fetch(base + 'image-questions.json').then(r => r.json())
+      ]);
+
+      const body = document.getElementById('review-body');
+      let html = '';
+
+      // Text questions
+      html += '<h2 class="section">Part 1: Where is it From? (1 pt each)</h2>';
+      textQs.forEach((q, i) => {
+        const isFromBible = q.answerText.startsWith('From the Bible');
+        html += `
+          <div class="card">
+            <div class="q-num">#${i + 1}</div>
+            <div class="question">${esc(q.questionText)}</div>
+            <div class="answer ${isFromBible ? 'from-bible' : 'not-bible'}">${esc(q.answerText)}</div>
+            <div class="insight">💡 ${esc(q.insightText)}</div>
+            <div class="proof">${renderProof(q.proofUrl)}</div>
+          </div>`;
+      });
+
+      // Image questions
+      html += '<h2 class="section">Part 2: The Compassion of Christ (2 pts each)</h2>';
+      imageQs.forEach((q, i) => {
+        html += `
+          <div class="card">
+            <div class="q-num">Picture #${i + 1}</div>
+            <img class="image-preview" src="${'/projects/cccc/20260313/' + q.imageUrl.replace(/^\//, '')}" alt="Picture question" />
+            <div class="question">${esc(q.questionText)}</div>
+            <div class="answer image-answer">${esc(q.answerText)}</div>
+            <div class="insight">💡 ${esc(q.insightText)}</div>
+            <div class="proof">${renderProof(q.proofUrl)}</div>
+          </div>`;
+      });
+
+      body.innerHTML = html;
+    }
+
+    function renderProof(proofUrl) {
+      if (!proofUrl) return '';
+      if (Array.isArray(proofUrl)) {
+        return proofUrl.map(p => `<a href="${esc(p.url)}" target="_blank" rel="noopener">📖 ${esc(p.label)}</a>`).join('');
+      }
+      return `<a href="${esc(proofUrl)}" target="_blank" rel="noopener">📖 See Proof</a>`;
+    }
+
+    function esc(s) {
+      if (!s) return '';
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+  </script>
+</body>
+</html>
