@@ -327,26 +327,33 @@
     "category": "The Compassion of Christ",
     "questionText": "What Bible story does this image depict?",
     "imageUrl": "/Fellowship%20Pictures/pic-6.png",
-    "answerText": "(Review this image and update the answer)",
-    "insightText": "(Review pic-6.png and update the insight)",
-    "proofUrl": null
+    "answerText": "The Good Samaritan Parable",
+    "insightText": "Luke 10:25-37 — A Samaritan stops to help a beaten man on the road, showing that loving your neighbor means showing mercy to anyone in need.",
+    "proofUrl": "https://www.biblegateway.com/passage/?search=Luke+10%3A25-37&version=NIV"
   },
   {
     "id": "pic-7",
     "category": "The Compassion of Christ",
     "questionText": "What Bible story does this image depict?",
     "imageUrl": "/Fellowship%20Pictures/pic-7.png",
-    "answerText": "(Review this image and update the answer)",
-    "insightText": "(Review pic-7.png and update the insight)",
-    "proofUrl": null
+    "answerText": "The Parable of the Lost Sheep",
+    "insightText": "Luke 15:1-7, Matthew 18:10-14 — A shepherd leaves his ninety-nine sheep to search for the one that is lost, illustrating God's relentless love for every individual.",
+    "proofUrl": [
+      { "label": "Luke 15:1-7", "url": "https://www.biblegateway.com/passage/?search=Luke+15%3A1-7&version=NIV" },
+      { "label": "Matthew 18:10-14", "url": "https://www.biblegateway.com/passage/?search=Matthew+18%3A10-14&version=NIV" }
+    ]
   },
   {
     "id": "pic-8",
     "category": "The Compassion of Christ",
     "questionText": "What Bible story does this image depict?",
     "imageUrl": "/Fellowship%20Pictures/pic-8.png",
-    "answerText": "(Review this image and update the answer)",
-    "insightText": "(Review pic-8.png and update the insight)",
-    "proofUrl": null
+    "answerText": "Jesus Heals a Man with Leprosy",
+    "insightText": "Matthew 8:1-4, Mark 1:40-45, Luke 5:12-16 — Jesus reaches out and touches a man with leprosy, healing him and showing compassion to the outcast.",
+    "proofUrl": [
+      { "label": "Matthew 8:1-4", "url": "https://www.biblegateway.com/passage/?search=Matthew+8%3A1-4&version=NIV" },
+      { "label": "Mark 1:40-45", "url": "https://www.biblegateway.com/passage/?search=Mark+1%3A40-45&version=NIV" },
+      { "label": "Luke 5:12-16", "url": "https://www.biblegateway.com/passage/?search=Luke+5%3A12-16&version=NIV" }
+    ]
   }
 ]
