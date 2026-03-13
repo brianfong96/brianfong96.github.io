@@ -1,47 +1,56 @@
 [
   {
     "id": "1",
-    "category": "Where is it From?",
-    "questionText": "\"Money is the root of all evil.\"",
+    "category": "Biblical or Not",
+    "questionText": "\"The fear of the Lord is the beginning of wisdom.\"",
     "imageUrl": null,
-    "answerText": "Not From the Bible.",
-    "insightText": "The actual verse is 1 Timothy 6:10 (NIV): \"For the love of money is a root of all kinds of evil.\" The misquote drops \"the love of\" and changes \"a root of all kinds of evil\" to \"the root of all evil.\"",
-    "proofUrl": "https://www.biblegateway.com/passage/?search=1+Timothy+6%3A10&version=NIV"
+    "answerText": "Biblical (but often misattributed).",
+    "insightText": "While this is a famous Biblical concept, a common misconception is that it originates in Psalm 1. It actually appears in Psalm 111:10 and Proverbs 9:10. Beyond getting the book right, the meaning is frequently misunderstood today. Biblical 'fear' does not mean terror or dread of a punitive deity. In ancient Hebrew wisdom literature, it refers to a profound reverence and submission to God's authority. This posture serves as the absolute starting point for a well-ordered life, contrasting sharply with the modern idea of wisdom being purely intellectual knowledge.",
+    "proofUrl": "https://www.biblegateway.com/passage/?search=Psalm+111%3A10&version=NIV"
   },
   {
     "id": "2",
     "category": "Where is it From?",
-    "questionText": "\"God helps those who help themselves.\"",
+    "questionText": "\"Money is the root of all evil.\"",
     "imageUrl": null,
     "answerText": "Not From the Bible.",
-    "insightText": "This was first written by English politician Algernon Sidney in *Discourses Concerning Government* (1698) and later popularized by Benjamin Franklin in *Poor Richard's Almanack* (1736). The Bible emphasizes God helping the helpless (Psalm 72:12-13).",
-    "proofUrl": "https://www.biblegateway.com/passage/?search=Psalm+72%3A12-13&version=NIV"
+    "insightText": "The actual text in 1 Timothy 6:10 targets the love of money, not the currency itself. Dropping those words changes the entire theological meaning. Money is a morally neutral tool, but prioritizing wealth over God creates an idol. Context matters because the Bible frequently highlights wealthy figures like Abraham and Job who used their resources faithfully without letting money rule their hearts.",
+    "proofUrl": "https://www.biblegateway.com/passage/?search=1+Timothy+6%3A10&version=NIV"
   },
   {
     "id": "3",
     "category": "Where is it From?",
-    "questionText": "\"Speak up for those who cannot speak for themselves.\"",
+    "questionText": "\"God helps those who help themselves.\"",
     "imageUrl": null,
-    "answerText": "From the Bible — Proverbs 31:8",
-    "insightText": "Proverbs 31:8 (NIV): \"Speak up for those who cannot speak for themselves, for the rights of all who are destitute.\" A direct mandate for advocacy and compassion.",
-    "proofUrl": "https://www.biblegateway.com/passage/?search=Proverbs+31%3A8&version=NIV"
+    "answerText": "Not From the Bible.",
+    "insightText": "This originated with English politicians and Benjamin Franklin, not the Bible. In fact, it contradicts the core message of the gospel. The Biblical narrative consistently shows God stepping in to save those who are entirely helpless, such as the Israelites trapped at the Red Sea or humanity trapped in sin. Grace relies on God's unmerited favor rather than human self-reliance.",
+    "proofUrl": "https://www.biblegateway.com/passage/?search=Psalm+72%3A12-13&version=NIV"
   },
   {
     "id": "4",
     "category": "Where is it From?",
-    "questionText": "\"Hate the sin, not the sinner.\"",
+    "questionText": "\"Speak up for those who cannot speak for themselves.\"",
     "imageUrl": null,
-    "answerText": "Not From the Bible.",
-    "insightText": "This comes from St. Augustine's Letter 211 (c. 424 AD): \"Cum dilectione hominum et odio vitiorum\" — \"With love for mankind and hatred of sins.\" It was later adapted by Mahatma Gandhi in his 1929 autobiography.",
-    "proofUrl": "https://www.augustinus.it/latino/lettere/lettera_217_testo.htm"
+    "answerText": "From the Bible — Proverbs 31:8",
+    "insightText": "Proverbs 31:8 is a mother warning her son, King Lemuel, about the responsibilities of leadership. It serves as a direct mandate for advocacy. Biblical justice requires active intervention for the marginalized and destitute. True righteousness is not just avoiding personal sin but stepping into the gap to protect those who lack a voice in society.",
+    "proofUrl": "https://www.biblegateway.com/passage/?search=Proverbs+31%3A8&version=NIV"
   },
   {
     "id": "5",
     "category": "Where is it From?",
+    "questionText": "\"Hate the sin, not the sinner.\"",
+    "imageUrl": null,
+    "answerText": "Not From the Bible.",
+    "insightText": "St. Augustine wrote this in Letter 211, and Mahatma Gandhi later popularized it. While it aligns conceptually with passages like Jude 1:23, separating a person's identity from their actions is a philosophical framework. The Bible commands loving your enemies directly. People often use this phrase to soften harsh judgments, but reading the actual text forces a deeper, more challenging call to radical love.",
+    "proofUrl": "https://www.augustinus.it/latino/lettere/lettera_217_testo.htm"
+  },
+  {
+    "id": "6",
+    "category": "Where is it From?",
     "questionText": "\"If your enemy is hungry, feed him.\"",
     "imageUrl": null,
     "answerText": "From the Bible — Romans 12:20; Proverbs 25:21",
-    "insightText": "Romans 12:20 (NIV): \"On the contrary: 'If your enemy is hungry, feed him; if he is thirsty, give him something to drink. In doing this, you will heap burning coals on his head.'\" Also found in Proverbs 25:21.",
+    "insightText": "Romans 12:20 quotes Proverbs 25:21 directly. The instruction to heap burning coals on his head sounds violent, but in ancient Near Eastern context, it likely refers to an Egyptian ritual of carrying coals on the head to demonstrate public repentance. Responding to hostility with radical, unexpected kindness is designed to disarm the enemy and awaken their conscience.",
     "proofUrl": [
       {
         "label": "Romans 12:20",
@@ -59,7 +68,7 @@
     "questionText": "\"Religion that God accepts as pure is this: to look after orphans and widows in their distress.\"",
     "imageUrl": null,
     "answerText": "From the Bible — James 1:27",
-    "insightText": "James 1:27 (NIV): \"Religion that God our Father accepts as pure and faultless is this: to look after orphans and widows in their distress and to keep oneself from being polluted by the world.\"",
+    "insightText": "James 1:27 defines pure religion through action. The author argues that genuine faith must produce tangible results in how we treat the most vulnerable members of society. It challenges the idea that spiritual maturity is just about right beliefs or attending services. True transformation always overflows into practical compassion.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=James+1%3A27&version=NIV"
   },
   {
@@ -68,7 +77,7 @@
     "questionText": "\"This too shall pass.\"",
     "imageUrl": null,
     "answerText": "Not From the Bible.",
-    "insightText": "This is an ancient Persian proverb, often attributed to Persian Sufi poets such as Attar of Nishapur. It was later popularized in the West by Abraham Lincoln in an 1859 address. It does not appear anywhere in the Bible.",
+    "insightText": "This is an ancient Persian proverb popularized by Abraham Lincoln. It offers fatalistic comfort that bad times will eventually end. The Bible offers a completely different perspective. Instead of relying on the temporary nature of time, scripture anchors hope in the eternal nature of God, promising that His word and love endure forever even when circumstances do not change.",
     "proofUrl": "https://www.biblegateway.com/quicksearch/?quicksearch=%22this+too+shall+pass%22&version=NIV"
   },
   {
@@ -77,7 +86,7 @@
     "questionText": "\"God will not give you more than you can handle.\"",
     "imageUrl": null,
     "answerText": "Not From the Bible.",
-    "insightText": "This is a misquote of 1 Corinthians 10:13 (NIV): \"No temptation has overtaken you except what is common to mankind. And God is faithful; he will not let you be tempted beyond what you can bear.\" The verse is about *temptation*, not suffering. The Bible is full of people who suffered beyond their own capacity (2 Corinthians 1:8).",
+    "insightText": "This drastically misrepresents 1 Corinthians 10:13, which is specifically about enduring temptation, not suffering. The Bible is filled with people who faced agony far beyond their human capacity to handle. Believing this misquote can cause deep guilt when you feel overwhelmed. The reality is that life will give you more than you can bear, which is exactly what forces reliance on God's strength rather than your own.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=1+Corinthians+10%3A13&version=NIV"
   },
   {
@@ -86,7 +95,7 @@
     "questionText": "\"Carry each other's burdens.\"",
     "imageUrl": null,
     "answerText": "From the Bible — Galatians 6:2",
-    "insightText": "Galatians 6:2 (NIV): \"Carry each other's burdens, and in this way you will fulfill the law of Christ.\"",
+    "insightText": "Galatians 6:2 commands believers to step into the messiness of each other's lives. Fulfilling the law of Christ refers back to Jesus' command to love one another. Biblical community is not about self-sufficient individuals sitting in rows. It requires actively sharing the weight of grief, sin, and struggle, making mutual dependence a feature of faith rather than a flaw.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Galatians+6%3A2&version=NIV"
   },
   {
@@ -95,7 +104,7 @@
     "questionText": "\"Charity begins at home.\"",
     "imageUrl": null,
     "answerText": "Not From the Bible.",
-    "insightText": "This phrase comes from Sir Thomas Browne's *Religio Medici* (1642): \"Charity begins at home, is the voice of the world.\" It does not appear in the Bible, though 1 Timothy 5:8 urges providing for one's household.",
+    "insightText": "Sir Thomas Browne coined this phrase in 1642. While 1 Timothy 5:8 strictly commands providing for your own family, treating this secular proverb as absolute truth limits generosity. Jesus continuously pushed his followers to expand their definition of neighbor far beyond their front door, demanding sacrificial love for strangers and even enemies.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=1+Timothy+5%3A8&version=NIV"
   },
   {
@@ -104,7 +113,7 @@
     "questionText": "\"He who shuts his ear to the cry of the poor will also cry himself and not be answered.\"",
     "imageUrl": null,
     "answerText": "From the Bible — Proverbs 21:13",
-    "insightText": "Proverbs 21:13 (NIV): \"Whoever shuts their ears to the cry of the poor will also cry out and not be answered.\" A harsh warning about ignoring those in need.",
+    "insightText": "Proverbs 21:13 establishes a stark principle of spiritual reciprocity. The Biblical worldview closely ties our relationship with God to our treatment of the vulnerable. Ignoring the cries of the poor is treated as an affront to their Creator. The text warns that apathy breeds isolation, and those who withhold mercy will find themselves lacking it when they face their own crisis.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Proverbs+21%3A13&version=NIV"
   },
   {
@@ -113,7 +122,7 @@
     "questionText": "\"To thine own self be true.\"",
     "imageUrl": null,
     "answerText": "Not From the Bible.",
-    "insightText": "This is a line spoken by Polonius in William Shakespeare's *Hamlet* (Act 1, Scene 3, c. 1600): \"This above all: to thine own self be true.\"",
+    "insightText": "Polonius speaks this line in Shakespeare's Hamlet. It promotes trusting your own internal compass. The Bible teaches the exact opposite. Jeremiah 17:9 states the human heart is deceitful, and Jesus tells his followers to deny themselves in Luke 9:23. Scripture positions God's word, not personal feelings or subjective identity, as the ultimate source of truth and direction.",
     "proofUrl": "https://www.biblegateway.com/quicksearch/?quicksearch=%22to+thine+own+self%22&version=KJV"
   },
   {
@@ -122,7 +131,7 @@
     "questionText": "\"A bruised reed he will not break.\"",
     "imageUrl": null,
     "answerText": "From the Bible — Isaiah 42:3",
-    "insightText": "Isaiah 42:3 (NIV): \"A bruised reed he will not break, and a smoldering wick he will not snuff out. In faithfulness he will bring forth justice.\" Also quoted by Jesus in Matthew 12:20.",
+    "insightText": "Isaiah 42:3 is a messianic prophecy describing the gentle character of the coming servant. A bruised reed and a smoldering wick represent people who are battered, exhausted, and on the verge of breaking. Instead of discarding damaged things like the world does, the text reveals a God who deliberately tenderly restores the broken.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Isaiah+42%3A3&version=NIV"
   },
   {
@@ -131,7 +140,7 @@
     "questionText": "\"The lion shall lay down with the lamb.\"",
     "imageUrl": null,
     "answerText": "Not From the Bible.",
-    "insightText": "This is a common misquote. Isaiah 11:6 (NIV) actually says: \"The wolf will live with the lamb, the leopard will lie down with the goat, the calf and the lion and the yearling together; and a little child will lead them.\" It's the *wolf*, not the lion, with the lamb.",
+    "insightText": "Isaiah 11:6 pairs the wolf with the lamb, and the young lion with the calf. The cultural memory shifted to a lion and lamb because the Book of Revelation refers to Jesus as both the Lion of Judah and the Lamb that was slain. People retroactively pasted the lion into Isaiah's peaceful kingdom prophecy because the visual contrast of an apex predator alongside a vulnerable lamb is highly memorable.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Isaiah+11%3A6&version=NIV"
   },
   {
@@ -140,7 +149,7 @@
     "questionText": "\"Do unto others as you would have them do unto you.\"",
     "imageUrl": null,
     "answerText": "From the Bible — Luke 6:31; Matthew 7:12",
-    "insightText": "Luke 6:31 (NIV): \"Do to others as you would have them do to you.\" Known as the Golden Rule. Also found in Matthew 7:12.",
+    "insightText": "Luke 6:31 moves beyond basic fairness. Jesus places this command right after telling his followers to love their enemies and bless those who curse them. The biblical standard of treatment is not based on how others treat you, nor is it based on how they deserve to be treated. It demands initiating unconditional goodness based entirely on how you would wish to be loved.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Luke+6%3A31&version=NIV"
   },
   {
@@ -149,7 +158,7 @@
     "questionText": "\"Spare the rod, spoil the child.\"",
     "imageUrl": null,
     "answerText": "Not From the Bible.",
-    "insightText": "This exact phrasing is from Samuel Butler's satirical poem *Hudibras* (1664): \"Love is a boy by poets styl'd; Then spare the rod and spoil the child.\" It is loosely based on Proverbs 13:24 (NIV): \"Whoever spares the rod hates their children, but the one who loves their children is careful to discipline them.\"",
+    "insightText": "Samuel Butler wrote this exact phrase in a 1664 satirical poem. It loosely references Proverbs 13:24. The biblical concept of the rod involves guidance, correction, and protection, much like a shepherd uses a staff to keep sheep from walking off a cliff. Equating it purely with physical punishment misses the deeper textual emphasis on loving, intentional discipline.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Proverbs+13%3A24&version=NIV"
   },
   {
@@ -158,7 +167,7 @@
     "questionText": "\"Let him who is without sin cast the first stone.\"",
     "imageUrl": null,
     "answerText": "From the Bible — John 8:7",
-    "insightText": "John 8:7 (NIV): \"When they kept on questioning him, he straightened up and said to them, 'Let any one of you who is without sin be the first to throw a stone at her.'\"",
+    "insightText": "In John 8:7, Jesus brilliantly traps the religious leaders. By demanding the executioner be sinless, he shifts the focus from the woman's obvious guilt to the crowd's hidden hypocrisy. The text does not minimize her sin, as he later tells her to leave her life of sin. Instead, it strips humans of the right to act as ultimate judges over one another.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=John+8%3A7&version=NIV"
   },
   {
@@ -167,7 +176,7 @@
     "questionText": "\"Pride goes before a fall.\"",
     "imageUrl": null,
     "answerText": "From the Bible — Proverbs 16:18",
-    "insightText": "Proverbs 16:18 (NIV): \"Pride goes before destruction, a haughty spirit before a fall.\" The common saying is a shortened version of this verse.",
+    "insightText": "Proverbs 16:18 specifically warns that a haughty spirit precedes a fall. Arrogance is dangerous because it creates a false sense of self-sufficiency. In biblical wisdom literature, pride is the root of all rebellion against God. It blinds people to their own weaknesses and sets them up for catastrophic failure by refusing to heed correction.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Proverbs+16%3A18&version=NIV"
   },
   {
@@ -176,7 +185,7 @@
     "questionText": "\"Neither a borrower nor a lender be.\"",
     "imageUrl": null,
     "answerText": "Not From the Bible.",
-    "insightText": "This is spoken by Polonius in William Shakespeare's *Hamlet* (Act 1, Scene 3, c. 1600): \"Neither a borrower nor a lender be, for loan oft loses both itself and friend.\" The Bible actually discusses lending in Deuteronomy 15:8 and Psalm 37:26.",
+    "insightText": "This is purely secular financial advice given by Polonius in Hamlet. The Bible actually encourages radical lending. In Luke 6:35, Jesus tells his followers to lend without expecting anything back. While scripture warns about the dangers of debt making you a slave to the lender, it commands generosity and open-handedness toward those in genuine need.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Psalm+37%3A26&version=NIV"
   },
   {
@@ -185,7 +194,7 @@
     "questionText": "\"Blessed are the merciful, for they will be shown mercy.\"",
     "imageUrl": null,
     "answerText": "From the Bible — Matthew 5:7",
-    "insightText": "Matthew 5:7 (NIV): \"Blessed are the merciful, for they will be shown mercy.\" Part of Jesus' Sermon on the Mount (the Beatitudes).",
+    "insightText": "Found in the Beatitudes in Matthew 5:7, this verse reveals the cyclical nature of grace. Recognizing your own desperate need for God's forgiveness naturally compels you to extend that same grace to others. The text implies that a heart incapable of showing mercy to fellow humans has likely never truly understood or received divine mercy itself.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Matthew+5%3A7&version=NIV"
   },
   {
@@ -194,7 +203,7 @@
     "questionText": "\"God works in mysterious ways.\"",
     "imageUrl": null,
     "answerText": "Not From the Bible.",
-    "insightText": "This comes from William Cowper's hymn *Light Shining out of Darkness* (1773), commonly known as \"God Moves in a Mysterious Way.\" The opening line: \"God moves in a mysterious way, His wonders to perform.\" It is not a Bible verse.",
+    "insightText": "William Cowper wrote this in a 1773 hymn. While Isaiah 55 says God's thoughts are higher than ours, dismissing confusing situations as mysterious ways is a cop-out. The Bible is literally a book of revelation. It shows a God who actively works to make His character, will, and redemptive plans known to humanity through prophets and ultimately through Jesus.",
     "proofUrl": "https://www.biblegateway.com/quicksearch/?quicksearch=%22mysterious+ways%22&version=NIV"
   },
   {
@@ -203,7 +212,7 @@
     "questionText": "\"A gentle answer turns away wrath.\"",
     "imageUrl": null,
     "answerText": "From the Bible — Proverbs 15:1",
-    "insightText": "Proverbs 15:1 (NIV): \"A gentle answer turns away wrath, but a harsh word stirs up anger.\"",
+    "insightText": "Proverbs 15:1 offers highly practical wisdom on de-escalation. Human nature responds to aggression with more aggression. The biblical approach requires the emotional discipline to short-circuit anger with gentleness. It demonstrates how controlling your own spirit has the power to diffuse toxic situations and change the trajectory of an entire conflict.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Proverbs+15%3A1&version=NIV"
   },
   {
@@ -212,7 +221,7 @@
     "questionText": "\"Be kind, for everyone you meet is fighting a hard battle.\"",
     "imageUrl": null,
     "answerText": "Not From the Bible.",
-    "insightText": "This quote is widely attributed to Ian Maclaren (pen name of Rev. John Watson), a Scottish author and minister, from around 1897. It is often misattributed to Plato. It does not appear in the Bible.",
+    "insightText": "Widely attributed to Reverend John Watson in 1897, this is a beautiful sentiment about empathy. However, the biblical command to love others is rooted in something much deeper than shared struggles. Scripture demands kindness because every single person is created in the image of God (Genesis 1:27), giving them inherent dignity regardless of their hidden battles.",
     "proofUrl": "https://www.biblegateway.com/quicksearch/?quicksearch=%22fighting+a+hard+battle%22&version=NIV"
   },
   {
@@ -221,7 +230,7 @@
     "questionText": "\"As iron sharpens iron, so one person sharpens another.\"",
     "imageUrl": null,
     "answerText": "From the Bible — Proverbs 27:17",
-    "insightText": "Proverbs 27:17 (NIV): \"As iron sharpens iron, so one person sharpens another.\"",
+    "insightText": "Proverbs 27:17 highlights that true community requires friction. You cannot sharpen a blade by rubbing it against soft cloth. In the same way, spiritual and personal growth happens through mutual challenge, accountability, and honest feedback. The text destroys the idea of passive agreement, showing that robust relationships make both people stronger.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Proverbs+27%3A17&version=NIV"
   },
   {
@@ -230,7 +239,7 @@
     "questionText": "\"Weeping may stay for the night, but rejoicing comes in the morning.\"",
     "imageUrl": null,
     "answerText": "From the Bible — Psalm 30:5",
-    "insightText": "Psalm 30:5 (NIV): \"For his anger lasts only a moment, but his favor lasts a lifetime; weeping may stay for the night, but rejoicing comes in the morning.\"",
+    "insightText": "Psalm 30:5 provides a profound promise of restoration. It does not deny the brutal reality of current suffering or demand fake positivity. Instead, it acknowledges the deep pain of the night while anchoring the believer's hope in the certainty of God's future joy. It teaches that grief is a temporary season in light of eternal redemption.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Psalm+30%3A5&version=NIV"
   },
   {
@@ -239,7 +248,7 @@
     "questionText": "\"The eye is the lamp of the body.\"",
     "imageUrl": null,
     "answerText": "From the Bible — Matthew 6:22",
-    "insightText": "Matthew 6:22 (NIV): \"The eye is the lamp of the body. If your eyes are healthy, your whole body will be full of light.\"",
+    "insightText": "In Matthew 6:22, Jesus uses the eye as a metaphor for focus and desire. What you look at, obsess over, and pursue determines your internal spiritual condition. If your vision is focused on God and generosity, your life fills with light. If your focus is clouded by greed and materialism, the resulting spiritual darkness is absolute.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Matthew+6%3A22&version=NIV"
   },
   {
@@ -248,7 +257,7 @@
     "questionText": "\"A fool and his money are soon parted.\"",
     "imageUrl": null,
     "answerText": "Not From the Bible.",
-    "insightText": "This proverb is attributed to Thomas Tusser's *Five Hundred Points of Good Husbandry* (1573). While the Bible has much to say about foolishness and wealth (Proverbs 21:20), this exact phrase is not in Scripture.",
+    "insightText": "Thomas Tusser coined this in 1573. The Bible certainly warns against foolish financial decisions in the book of Proverbs, but its primary focus is entirely different. Scripture cares more about stewardship and generosity than wealth retention. A biblical fool is not just someone who loses money, but someone who hoards it without acknowledging God as the provider.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Proverbs+21%3A20&version=NIV"
   },
   {
@@ -257,16 +266,25 @@
     "questionText": "\"The truth will set you free.\"",
     "imageUrl": null,
     "answerText": "From the Bible — John 8:32",
-    "insightText": "John 8:32 (NIV): \"Then you will know the truth, and the truth will set you free.\" Jesus said this to the Jews who believed in him.",
+    "insightText": "John 8:32 is often quoted on university buildings as a tribute to academic knowledge. However, context is crucial. In the preceding verse, Jesus says that if you hold to his teaching, then you will know the truth. The freedom promised here is not about intellectual enlightenment. It is liberation from the enslavement of sin through obedience to Christ.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=John+8%3A32&version=NIV"
   },
   {
     "id": "30",
     "category": "Where is it From?",
+    "questionText": "\"There is no God.\"",
+    "imageUrl": null,
+    "answerText": "Technically a quote, but Not Biblical truth.",
+    "insightText": "You can find these exact four words in Psalm 14:1, but the full verse says: 'The fool says in his heart, \"There is no God.\"' This proves why cherry-picking phrases is dangerous. Ripping a sentence out of its surrounding context can make the text say the exact opposite of its true meaning. The Bible contains quotes from Satan and corrupt kings, so mere presence on the page does not equal a biblical endorsement.",
+    "proofUrl": "https://www.biblegateway.com/passage/?search=Psalm+14%3A1&version=NIV"
+  },
+  {
+    "id": "31",
+    "category": "Where is it From?",
     "questionText": "\"Love your neighbor and hate your enemy.\"",
     "imageUrl": null,
     "answerText": "Not From the Bible.",
-    "insightText": "Jesus quotes this cultural saying in Matthew 5:43-44 (NIV) to correct it: \"You have heard that it was said, 'Love your neighbor and hate your enemy.' But I tell you, love your enemies and pray for those who persecute you.\" The \"hate your enemy\" part was a popular addition — it is not found in the Old Testament.",
+    "insightText": "In Matthew 5:43-44, Jesus quotes a cultural distortion of the law to correct it. Leviticus 19:18 commanded loving your neighbor, but people conveniently added the hate your enemy loophole. Jesus closes this loophole, demanding radical love and prayer for persecutors. Reading the Old Testament alongside the New shows how Jesus perfectly fulfills the true intent of the law.",
     "proofUrl": "https://www.biblegateway.com/passage/?search=Matthew+5%3A43-44&version=NIV"
   }
 ]
