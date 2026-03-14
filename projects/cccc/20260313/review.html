@@ -88,7 +88,7 @@
       // Text questions
       html += '<h2 class="section">Part 1: Where is it From? (1 pt each)</h2>';
       textQs.forEach((q, i) => {
-        const isFromBible = q.answerText.startsWith('From the Bible');
+        const isFromBible = q.answerText.startsWith('From the Bible') || q.answerText === 'Biblical.';
         html += `
           <div class="card">
             <div class="q-num">#${i + 1}</div>
