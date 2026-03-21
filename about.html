@@ -444,7 +444,8 @@
                 ctx.shadowBlur = focused ? 12 : 4;
                 ctx.stroke();
                 ctx.shadowBlur = 0;
-                // Draw arrowhead pointing from child toward parent
+                // Draw arrowhead only when zoomed in
+                if (zoomedIn) {
                 var angle = Math.atan2(pc.y - nc.y, pc.x - nc.x);
                 var arrowLen = 10;
                 var ax = nc.x + Math.cos(angle) * 18;
@@ -458,6 +459,7 @@
                 ctx.lineWidth = focused ? 2 : 1.5;
                 ctx.shadowBlur = 0;
                 ctx.stroke();
+                }
                 [pc, nc].forEach(function(pt) {
                     ctx.beginPath();
                     ctx.arc(pt.x, pt.y, focused ? 5 : 3, 0, Math.PI * 2);
