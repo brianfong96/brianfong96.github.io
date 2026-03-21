@@ -203,66 +203,7 @@
         }
 
         /* Controls - bottom left for zoom, bottom right for fit */
-        .graph-controls {
-            position: absolute;
-            bottom: 16px;
-            left: 16px;
-            z-index: 10;
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-
-        .graph-controls button {
-            width: 34px;
-            height: 34px;
-            padding: 0;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: rgba(1, 8, 3, 0.95);
-            color: var(--accent-color);
-            font-size: 1rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .graph-controls button:hover {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 12px rgba(53, 255, 107, 0.14);
-        }
-
-        .graph-controls .zoom-label {
-            color: var(--muted-text);
-            font-size: 0.68rem;
-            letter-spacing: 0.08em;
-            min-width: 36px;
-            text-align: center;
-        }
-
-        .graph-fit {
-            position: absolute;
-            bottom: 16px;
-            right: 16px;
-            z-index: 10;
-            padding: 6px 14px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: rgba(1, 8, 3, 0.95);
-            color: var(--accent-color);
-            font-size: 0.72rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            cursor: pointer;
-        }
-
-        .graph-fit:hover {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 12px rgba(53, 255, 107, 0.14);
-        }
-
-        @media (max-width: 700px) {
+@media (max-width: 700px) {
             .graph-viewport { height: 60vh; min-height: 400px; }
             .graph-node.focused { max-width: 90vw; }
         }
@@ -366,14 +307,7 @@
                             </div>
 </div>
                     </div>
-
-                    <div class="graph-controls">
-                        <button id="graph-zoom-out" aria-label="Zoom out">−</button>
-                        <span class="zoom-label" id="zoom-label">100%</span>
-                        <button id="graph-zoom-in" aria-label="Zoom in">+</button>
-                        <button class="graph-fit" id="graph-reset">Fit All</button>
-                    </div>
-                </div>
+</div>
             </section>
             <section class="section">
                 <div class="section-heading">
@@ -409,7 +343,6 @@
         var world = document.getElementById('graph-world');
         var canvas = document.getElementById('graph-lines');
         var ctx = canvas.getContext('2d');
-        var resetBtn = document.getElementById('graph-reset');
         var centerNode = document.getElementById('node-center');
         var nodes = document.querySelectorAll('.graph-node:not(.center-node)');
 
@@ -692,10 +625,7 @@
                 if (nodeDrag && nodeDrag.moved) { node._wasDragged = true; }
             });
         });
-
-        resetBtn.addEventListener('click', resetView);
-
-        // Viewport drag to pan
+// Viewport drag to pan
         var dragging = false, startX, startY, origX, origY;
         viewport.addEventListener('mousedown', function(e) {
             if (e.target.closest('.graph-node') || e.target.closest('.graph-reset')) return;
@@ -729,77 +659,8 @@
         viewport.addEventListener('touchend', function() {
             if (dragging) { dragging = false; world.style.transition = 'transform 0.6s ease'; }
         });
-
-        
-        // Zoom state
-        var currentScale = 1;
-        var currentTx = 0, currentTy = 0;
-        var zoomLabel = document.getElementById('zoom-label');
-
-        function parseTransform() {
-            var m = world.style.transform.match(/translate\(([^,]+),\s*([^)]+)\)\s*scale\(([^)]+)\)/);
-            if (m) {
-                currentTx = parseFloat(m[1]);
-                currentTy = parseFloat(m[2]);
-                currentScale = parseFloat(m[3]);
-            }
-        }
-
-        function applyZoom(newScale, cx, cy) {
-            newScale = Math.max(0.3, Math.min(2.5, newScale));
-            parseTransform();
-            // Zoom toward cursor/center
-            var ratio = newScale / currentScale;
-            var ntx = cx - ratio * (cx - currentTx);
-            var nty = cy - ratio * (cy - currentTy);
-            currentScale = newScale;
-            currentTx = ntx;
-            currentTy = nty;
-            world.style.transform = 'translate(' + ntx + 'px,' + nty + 'px) scale(' + newScale + ')';
-            world.style.transformOrigin = '0 0';
-            if (zoomLabel) zoomLabel.textContent = Math.round(newScale * 100) + '%';
-            drawLines();
-        }
-
-        // Mouse wheel zoom
-        viewport.addEventListener('wheel', function(e) {
-            e.preventDefault();
-            parseTransform();
-            var rect = viewport.getBoundingClientRect();
-            var cx = e.clientX - rect.left;
-            var cy = e.clientY - rect.top;
-            var delta = e.deltaY > 0 ? 0.9 : 1.1;
-            applyZoom(currentScale * delta, cx, cy);
-        }, { passive: false });
-
-        // + / - buttons
-        document.getElementById('graph-zoom-in').addEventListener('click', function() {
-            parseTransform();
-            var vw = viewport.clientWidth, vh = viewport.clientHeight;
-            applyZoom(currentScale * 1.2, vw / 2, vh / 2);
-        });
-
-        document.getElementById('graph-zoom-out').addEventListener('click', function() {
-            parseTransform();
-            var vw = viewport.clientWidth, vh = viewport.clientHeight;
-            applyZoom(currentScale / 1.2, vw / 2, vh / 2);
-        });
-
-        // Update zoom label on resetView
-        var origZoomOut = zoomOut;
-        zoomOut = function() {
-            origZoomOut();
-            parseTransform();
-            if (zoomLabel) zoomLabel.textContent = Math.round(currentScale * 100) + '%';
-        };
-
-        var origZoomToNode = zoomToNode;
-        zoomToNode = function(el) {
-            origZoomToNode(el);
-            if (zoomLabel) zoomLabel.textContent = '100%';
-        };
-
-        // Nav arrow click handlers
+// + / - buttons
+// Nav arrow click handlers
         document.querySelectorAll('.nav-arrow[data-goto]').forEach(function(arrow) {
             arrow.addEventListener('click', function(e) {
                 e.stopPropagation();
