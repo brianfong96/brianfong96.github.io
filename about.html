@@ -413,6 +413,22 @@
         var allDraggableNodes = [centerNode].concat(Array.from(nodes));
         allDraggableNodes.forEach(setupNodeDrag);
 
+        var GAP = 8;
+        function wouldOverlap(movingNode, newLeft, newTop) {
+            var mw = movingNode.offsetWidth, mh = movingNode.offsetHeight;
+            for (var i = 0; i < allDraggableNodes.length; i++) {
+                var other = allDraggableNodes[i];
+                if (other === movingNode) continue;
+                var ol = other.offsetLeft, ot = other.offsetTop;
+                var ow = other.offsetWidth, oh = other.offsetHeight;
+                if (newLeft < ol + ow + GAP && newLeft + mw + GAP > ol &&
+                    newTop < ot + oh + GAP && newTop + mh + GAP > ot) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         window.addEventListener('mousemove', function(e) {
             if (!nodeDrag) return;
             var dx = e.clientX - nodeDrag.startX;
@@ -423,9 +439,13 @@
                 nodeDrag.node.style.cursor = 'grabbing';
             }
             if (nodeDrag.moved) {
-                nodeDrag.node.style.left = (nodeDrag.origLeft + dx) + 'px';
-                nodeDrag.node.style.top = (nodeDrag.origTop + dy) + 'px';
-                drawLines();
+                var newLeft = nodeDrag.origLeft + dx;
+                var newTop = nodeDrag.origTop + dy;
+                if (!wouldOverlap(nodeDrag.node, newLeft, newTop)) {
+                    nodeDrag.node.style.left = newLeft + 'px';
+                    nodeDrag.node.style.top = newTop + 'px';
+                    drawLines();
+                }
             }
         });
 
