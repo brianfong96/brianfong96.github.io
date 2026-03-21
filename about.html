@@ -392,11 +392,63 @@
             resetView();
         });
 
-        nodes.forEach(function(node) {
+        // Node drag or click
+        var nodeDrag = null;
+        var DRAG_THRESHOLD = 5;
+
+        function setupNodeDrag(node) {
+            node.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+                nodeDrag = {
+                    node: node,
+                    startX: e.clientX,
+                    startY: e.clientY,
+                    origLeft: node.offsetLeft,
+                    origTop: node.offsetTop,
+                    moved: false
+                };
+            });
+        }
+
+        var allDraggableNodes = [centerNode].concat(Array.from(nodes));
+        allDraggableNodes.forEach(setupNodeDrag);
+
+        window.addEventListener('mousemove', function(e) {
+            if (!nodeDrag) return;
+            var dx = e.clientX - nodeDrag.startX;
+            var dy = e.clientY - nodeDrag.startY;
+            if (!nodeDrag.moved && Math.abs(dx) + Math.abs(dy) > DRAG_THRESHOLD) {
+                nodeDrag.moved = true;
+                nodeDrag.node.style.transition = 'none';
+                nodeDrag.node.style.cursor = 'grabbing';
+            }
+            if (nodeDrag.moved) {
+                nodeDrag.node.style.left = (nodeDrag.origLeft + dx) + 'px';
+                nodeDrag.node.style.top = (nodeDrag.origTop + dy) + 'px';
+                drawLines();
+            }
+        });
+
+        window.addEventListener('mouseup', function() {
+            if (nodeDrag) {
+                if (nodeDrag.moved) {
+                    nodeDrag.node.style.transition = '';
+                    nodeDrag.node.style.cursor = '';
+                    drawLines();
+                }
+                nodeDrag = null;
+            }
+        });
+
+        // Click (only if not dragged)
+        allDraggableNodes.forEach(function(node) {
             node.addEventListener('click', function() {
+                // Skip if this was a drag
+                if (node._wasDragged) { node._wasDragged = false; return; }
+                if (node === centerNode) { resetView(); return; }
+
                 var wasFocused = node.classList.contains('focused');
                 nodes.forEach(function(n) { n.classList.remove('focused'); });
-
                 if (!wasFocused) {
                     node.classList.add('focused');
                     scrambleNode(node);
@@ -404,70 +456,51 @@
                 } else {
                     panTo(centerNode);
                 }
-                // Continuously redraw lines during expand/collapse animation
                 var animStart = performance.now();
-                function trackLines(t) {
-                    drawLines();
-                    if (t - animStart < 600) requestAnimationFrame(trackLines);
-                }
+                function trackLines(t) { drawLines(); if (t - animStart < 600) requestAnimationFrame(trackLines); }
                 requestAnimationFrame(trackLines);
+            });
+
+            node.addEventListener('mouseup', function() {
+                if (nodeDrag && nodeDrag.moved) { node._wasDragged = true; }
             });
         });
 
         resetBtn.addEventListener('click', resetView);
 
-        // drag to pan
+        // Viewport drag to pan
         var dragging = false, startX, startY, origX, origY;
         viewport.addEventListener('mousedown', function(e) {
             if (e.target.closest('.graph-node') || e.target.closest('.graph-reset')) return;
             dragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
+            startX = e.clientX; startY = e.clientY;
             var m = world.style.transform.match(/translate\(([^,]+),\s*([^)]+)\)/);
-            origX = m ? parseFloat(m[1]) : 0;
-            origY = m ? parseFloat(m[2]) : 0;
+            origX = m ? parseFloat(m[1]) : 0; origY = m ? parseFloat(m[2]) : 0;
             world.style.transition = 'none';
         });
         window.addEventListener('mousemove', function(e) {
             if (!dragging) return;
-            var dx = e.clientX - startX;
-            var dy = e.clientY - startY;
-            var nx = origX + dx;
-            var ny = origY + dy;
-            world.style.transform = 'translate(' + nx + 'px,' + ny + 'px)';
+            world.style.transform = 'translate(' + (origX + e.clientX - startX) + 'px,' + (origY + e.clientY - startY) + 'px)';
         });
         window.addEventListener('mouseup', function() {
-            if (dragging) {
-                dragging = false;
-                world.style.transition = 'transform 0.6s ease';
-            }
+            if (dragging) { dragging = false; world.style.transition = 'transform 0.6s ease'; }
         });
 
-        // touch support
+        // Touch: viewport pan
         viewport.addEventListener('touchstart', function(e) {
-            if (e.target.closest('.graph-node') || e.target.closest('.graph-reset')) return;
-            if (e.touches.length !== 1) return;
+            if (e.target.closest('.graph-node') || e.target.closest('.graph-reset') || e.touches.length !== 1) return;
             dragging = true;
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
+            startX = e.touches[0].clientX; startY = e.touches[0].clientY;
             var m = world.style.transform.match(/translate\(([^,]+),\s*([^)]+)\)/);
-            origX = m ? parseFloat(m[1]) : 0;
-            origY = m ? parseFloat(m[2]) : 0;
+            origX = m ? parseFloat(m[1]) : 0; origY = m ? parseFloat(m[2]) : 0;
             world.style.transition = 'none';
         }, { passive: true });
         viewport.addEventListener('touchmove', function(e) {
             if (!dragging || e.touches.length !== 1) return;
-            var dx = e.touches[0].clientX - startX;
-            var dy = e.touches[0].clientY - startY;
-            var nx = origX + dx;
-            var ny = origY + dy;
-            world.style.transform = 'translate(' + nx + 'px,' + ny + 'px)';
+            world.style.transform = 'translate(' + (origX + e.touches[0].clientX - startX) + 'px,' + (origY + e.touches[0].clientY - startY) + 'px)';
         }, { passive: true });
         viewport.addEventListener('touchend', function() {
-            if (dragging) {
-                dragging = false;
-                world.style.transition = 'transform 0.6s ease';
-            }
+            if (dragging) { dragging = false; world.style.transition = 'transform 0.6s ease'; }
         });
 
         drawLines();

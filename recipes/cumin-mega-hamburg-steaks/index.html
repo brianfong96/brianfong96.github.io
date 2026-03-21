@@ -395,10 +395,62 @@
         var allGraphNodes = document.querySelectorAll(".graph-node");
         allGraphNodes.forEach(function(n) { scrambleNode(n); });
 
-        centerNode.addEventListener('click', resetView);
+        centerNode.addEventListener('click', function() {
+            if (centerNode._wasDragged) { centerNode._wasDragged = false; return; }
+            resetView();
+        });
+
+        // Node drag or click
+        var nodeDrag = null;
+        var DRAG_THRESHOLD = 5;
+
+        function setupNodeDrag(node) {
+            node.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+                nodeDrag = {
+                    node: node,
+                    startX: e.clientX,
+                    startY: e.clientY,
+                    origLeft: node.offsetLeft,
+                    origTop: node.offsetTop,
+                    moved: false
+                };
+            });
+        }
+
+        var allDraggableNodes = [centerNode].concat(Array.from(nodes));
+        allDraggableNodes.forEach(setupNodeDrag);
+
+        window.addEventListener('mousemove', function(e) {
+            if (!nodeDrag) return;
+            var dx = e.clientX - nodeDrag.startX;
+            var dy = e.clientY - nodeDrag.startY;
+            if (!nodeDrag.moved && Math.abs(dx) + Math.abs(dy) > DRAG_THRESHOLD) {
+                nodeDrag.moved = true;
+                nodeDrag.node.style.transition = 'none';
+                nodeDrag.node.style.cursor = 'grabbing';
+            }
+            if (nodeDrag.moved) {
+                nodeDrag.node.style.left = (nodeDrag.origLeft + dx) + 'px';
+                nodeDrag.node.style.top = (nodeDrag.origTop + dy) + 'px';
+                drawLines();
+            }
+        });
+
+        window.addEventListener('mouseup', function() {
+            if (nodeDrag) {
+                if (nodeDrag.moved) {
+                    nodeDrag.node.style.transition = '';
+                    nodeDrag.node.style.cursor = '';
+                    drawLines();
+                }
+                nodeDrag = null;
+            }
+        });
 
         nodes.forEach(function(node) {
             node.addEventListener('click', function() {
+                if (node._wasDragged) { node._wasDragged = false; return; }
                 var wasFocused = node.classList.contains('focused');
                 nodes.forEach(function(n) { n.classList.remove('focused'); });
                 if (!wasFocused) {
@@ -412,11 +464,19 @@
                 function trackLines(t) { drawLines(); if (t - animStart < 600) requestAnimationFrame(trackLines); }
                 requestAnimationFrame(trackLines);
             });
+
+            node.addEventListener('mouseup', function() {
+                if (nodeDrag && nodeDrag.moved) { node._wasDragged = true; }
+            });
+        });
+
+        centerNode.addEventListener('mouseup', function() {
+            if (nodeDrag && nodeDrag.moved) { centerNode._wasDragged = true; }
         });
 
         resetBtn.addEventListener('click', resetView);
 
-        // drag
+        // Viewport drag to pan
         var dragging = false, startX, startY, origX, origY;
         viewport.addEventListener('mousedown', function(e) {
             if (e.target.closest('.graph-node') || e.target.closest('.graph-reset')) return;
