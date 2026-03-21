@@ -5,11 +5,161 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>About - Brian Fong</title>
     <link rel="stylesheet" href="assets/css/style.css" />
+    <style>
+        .graph-viewport {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            min-height: 500px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            background: rgba(0, 2, 0, 0.6);
+            cursor: grab;
+        }
+
+        .graph-viewport:active {
+            cursor: grabbing;
+        }
+
+        .graph-world {
+            position: absolute;
+            width: 1200px;
+            height: 900px;
+            transition: transform 0.6s ease;
+        }
+
+        .graph-world canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .graph-node {
+            position: absolute;
+            padding: 20px 24px;
+            border: 1px solid rgba(53, 255, 107, 0.28);
+            border-radius: 14px;
+            background: rgba(1, 8, 3, 0.95);
+            cursor: pointer;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            z-index: 2;
+            max-width: 280px;
+        }
+
+        .graph-node.center-node {
+            max-width: 340px;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 30px rgba(53, 255, 107, 0.2);
+        }
+
+        .graph-node:hover,
+        .graph-node.focused {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 32px rgba(53, 255, 107, 0.25);
+        }
+
+        .graph-node h3 {
+            margin: 0 0 6px;
+            color: var(--accent-color);
+            font-size: 0.95rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .graph-node .node-tag {
+            display: inline-block;
+            padding: 2px 10px;
+            margin-bottom: 10px;
+            border-radius: 999px;
+            background: rgba(53, 255, 107, 0.1);
+            border: 1px solid rgba(53, 255, 107, 0.22);
+            color: var(--accent-color);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .graph-node p {
+            color: var(--muted-text);
+            font-size: 0.88rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .graph-node .node-detail {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.45s ease, opacity 0.35s ease;
+        }
+
+        .graph-node.focused .node-detail {
+            max-height: 250px;
+            opacity: 1;
+        }
+
+        .graph-node .node-hint {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            color: rgba(53, 255, 107, 0.5);
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .graph-node .node-hint svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+            animation: pulseArrow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulseArrow {
+            0%, 100% { opacity: 0.4; transform: translateX(0); }
+            50% { opacity: 1; transform: translateX(3px); }
+        }
+
+        .graph-node.focused .node-hint {
+            display: none;
+        }
+
+        .graph-reset {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            z-index: 10;
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: rgba(1, 8, 3, 0.95);
+            color: var(--accent-color);
+            font-size: 0.78rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .graph-reset:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 14px rgba(53, 255, 107, 0.16);
+        }
+
+        @media (max-width: 700px) {
+            .graph-viewport {
+                height: 60vh;
+                min-height: 400px;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="topbar">
         <a class="home-link" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
-        <button id="sidebar-toggle" aria-label="Toggle navigation">&#9776;</button>
+        <button id="sidebar-toggle" aria-label="Toggle navigation"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></button>
     </header>
     <nav class="sidebar" id="sidebar">
         <ul class="nav-links">
@@ -26,29 +176,58 @@
             <div class="hero-content">
                 <p class="eyebrow">About</p>
                 <h1>About Me</h1>
-                <p class="hero-copy">Senior software engineer with a passion for building across disciplines.</p>
+                <p class="hero-copy">Click any node to focus on it. Drag to pan the graph.</p>
             </div>
         </header>
         <main>
             <section class="section">
-                <p class="page-copy">I'm Brian Fong, a senior software engineer. My work spans mixed reality, game development, cybersecurity, red teaming, and AI. I enjoy taking on hard problems across different domains and building tools and experiences that actually get used.</p>
-                <div class="meta-grid">
-                    <article class="meta-card">
-                        <h3>Mixed Reality</h3>
-                        <p>I started my software engineering career as an intern at Microsoft, where I got the chance to work on the HoloLens. I helped build a mixed reality application in partnership with BC Cancer to support cancer research.</p>
-                    </article>
-                    <article class="meta-card">
-                        <h3>Game Development</h3>
-                        <p>Game dev is a hobby I like to pursue in my free time. I enjoy prototyping interactive experiences, experimenting with mechanics, and building things just for the fun of it.</p>
-                    </article>
-                    <article class="meta-card">
-                        <h3>Cybersecurity &amp; Red Teaming</h3>
-                        <p>This is where I started my full-time software engineering career. I worked at Microsoft on the Azure Red Team and then the Microsoft Red Team, where I helped build a graph of cloud assets to identify attack paths. I developed a system to programmatically identify all attack paths that violate security boundaries.</p>
-                    </article>
-                    <article class="meta-card">
-                        <h3>AI</h3>
-                        <p>This is where I am right now — I'm currently working on M365 Copilot at Microsoft, building AI-powered experiences that help people get more done.</p>
-                    </article>
+                <div class="graph-viewport" id="graph-viewport">
+                    <div class="graph-world" id="graph-world">
+                        <canvas id="graph-lines"></canvas>
+
+                        <div class="graph-node center-node" id="node-center" style="left:430px;top:380px;">
+                            <h3>Brian Fong</h3>
+                            <p>I'm a senior software engineer. My work spans mixed reality, game development, cybersecurity, red teaming, and AI. I enjoy taking on hard problems across different domains and building tools and experiences that actually get used.</p>
+                        </div>
+
+                        <div class="graph-node" id="node-mr" data-connects="node-center" style="left:100px;top:120px;">
+                            <span class="node-tag">Intern</span>
+                            <h3>Mixed Reality</h3>
+                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                            <div class="node-detail">
+                                <p>I started my software engineering career as an intern at Microsoft, where I got the chance to work on the HoloLens. I helped build a mixed reality application in partnership with BC Cancer to support cancer research.</p>
+                            </div>
+                        </div>
+
+                        <div class="graph-node" id="node-cyber" data-connects="node-center" style="left:820px;top:100px;">
+                            <span class="node-tag">Career Start</span>
+                            <h3>Cybersecurity &amp; Red Teaming</h3>
+                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                            <div class="node-detail">
+                                <p>This is where I started my full-time software engineering career. I worked at Microsoft on the Azure Red Team and then the Microsoft Red Team, where I helped build a graph of cloud assets to identify attack paths. I developed a system to programmatically identify all attack paths that violate security boundaries.</p>
+                            </div>
+                        </div>
+
+                        <div class="graph-node" id="node-ai" data-connects="node-center" style="left:850px;top:620px;">
+                            <span class="node-tag">Current</span>
+                            <h3>AI</h3>
+                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                            <div class="node-detail">
+                                <p>This is where I am right now — I'm currently working on M365 Copilot at Microsoft, building AI-powered experiences that help people get more done.</p>
+                            </div>
+                        </div>
+
+                        <div class="graph-node" id="node-gamedev" data-connects="node-center" style="left:80px;top:640px;">
+                            <span class="node-tag">Hobby</span>
+                            <h3>Game Development</h3>
+                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                            <div class="node-detail">
+                                <p>Game dev is a hobby I like to pursue in my free time. I enjoy prototyping interactive experiences, experimenting with mechanics, and building things just for the fun of it.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="graph-reset" id="graph-reset">Reset View</button>
                 </div>
             </section>
             <section class="section">
@@ -73,6 +252,232 @@
     </div>
     <script src="assets/js/data.js"></script>
     <script src="assets/js/main.js"></script>
+    <script>
+    function initGraph() {
+        var viewport = document.getElementById('graph-viewport');
+        if (!viewport || viewport.dataset.initialized) return;
+        viewport.dataset.initialized = 'true';
+        // Ensure layout is computed before measuring positions
+        requestAnimationFrame(function() { requestAnimationFrame(function() {
+        var GLYPHS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホΞΨΩΦΣΛΠΔ@#$%&*';
+        var viewport = document.getElementById('graph-viewport');
+        var world = document.getElementById('graph-world');
+        var canvas = document.getElementById('graph-lines');
+        var ctx = canvas.getContext('2d');
+        var resetBtn = document.getElementById('graph-reset');
+        var centerNode = document.getElementById('node-center');
+        var nodes = document.querySelectorAll('.graph-node:not(.center-node)');
+
+        var worldW = 1200, worldH = 900;
+        canvas.width = worldW;
+        canvas.height = worldH;
+
+        function getNodeCenter(el) {
+            return {
+                x: el.offsetLeft + el.offsetWidth / 2,
+                y: el.offsetTop + 20
+            };
+        }
+
+        function drawLines() {
+            ctx.clearRect(0, 0, worldW, worldH);
+            var cc = getNodeCenter(centerNode);
+
+            nodes.forEach(function(node) {
+                var nc = getNodeCenter(node);
+                var focused = node.classList.contains('focused');
+
+                ctx.beginPath();
+                ctx.moveTo(cc.x, cc.y);
+
+                var mx = (cc.x + nc.x) / 2;
+                var my = (cc.y + nc.y) / 2;
+                var dx = nc.x - cc.x;
+                var offset = dx > 0 ? -40 : 40;
+                ctx.quadraticCurveTo(mx + offset, my, nc.x, nc.y);
+
+                ctx.strokeStyle = focused
+                    ? 'rgba(53, 255, 107, 0.8)'
+                    : 'rgba(53, 255, 107, 0.25)';
+                ctx.lineWidth = focused ? 2.5 : 1.5;
+                ctx.shadowColor = 'rgba(53, 255, 107, 0.3)';
+                ctx.shadowBlur = focused ? 12 : 4;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+
+                // draw small circle at each end
+                [cc, nc].forEach(function(pt) {
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, focused ? 5 : 3, 0, Math.PI * 2);
+                    ctx.fillStyle = focused
+                        ? 'rgba(53, 255, 107, 0.9)'
+                        : 'rgba(53, 255, 107, 0.5)';
+                    ctx.fill();
+                });
+            });
+        }
+
+        function panTo(targetEl) {
+            var vw = viewport.clientWidth;
+            var vh = viewport.clientHeight;
+            var nc = getNodeCenter(targetEl);
+            var tx = -(nc.x - vw / 2);
+            var ty = -(nc.y - vh / 2);
+            world.style.transform = 'translate(' + tx + 'px,' + ty + 'px)';
+            // Also scroll the page so the graph viewport is visible
+            viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function scrambleNode(el) {
+            var targets = [];
+            var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+                acceptNode: function(n) {
+                    if (!n.textContent.trim()) return NodeFilter.FILTER_REJECT;
+                    return NodeFilter.FILTER_ACCEPT;
+                }
+            });
+            var n;
+            while ((n = walker.nextNode())) targets.push({ node: n, original: n.textContent });
+            if (!targets.length) return;
+
+            targets.forEach(function(t) {
+                var s = '';
+                for (var i = 0; i < t.original.length; i++) {
+                    var ch = t.original[i];
+                    s += (ch === ' ' || ch === '\n') ? ch : GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+                }
+                t.node.textContent = s;
+            });
+
+            var frame = 0, total = 14;
+            var locked = targets.map(function(t) { return new Array(t.original.length).fill(false); });
+            var id = setInterval(function() {
+                frame++;
+                var p = frame / total;
+                targets.forEach(function(t, ti) {
+                    var s = '';
+                    for (var i = 0; i < t.original.length; i++) {
+                        var ch = t.original[i];
+                        if (ch === ' ' || ch === '\n') s += ch;
+                        else if (locked[ti][i]) s += ch;
+                        else if (Math.random() < p * p) { locked[ti][i] = true; s += ch; }
+                        else s += GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+                    }
+                    t.node.textContent = s;
+                });
+                if (frame >= total) {
+                    clearInterval(id);
+                    targets.forEach(function(t) { t.node.textContent = t.original; });
+                }
+            }, 30);
+        }
+
+        function resetView() {
+            nodes.forEach(function(n) { n.classList.remove('focused'); });
+            panTo(centerNode);
+            drawLines();
+        }
+
+        // initial position: center on the center node
+        resetView();
+
+        centerNode.addEventListener('click', function() {
+            resetView();
+        });
+
+        nodes.forEach(function(node) {
+            node.addEventListener('click', function() {
+                var wasFocused = node.classList.contains('focused');
+                nodes.forEach(function(n) { n.classList.remove('focused'); });
+
+                if (!wasFocused) {
+                    node.classList.add('focused');
+                    scrambleNode(node);
+                    panTo(node);
+                } else {
+                    panTo(centerNode);
+                }
+                // Continuously redraw lines during expand/collapse animation
+                var animStart = performance.now();
+                function trackLines(t) {
+                    drawLines();
+                    if (t - animStart < 600) requestAnimationFrame(trackLines);
+                }
+                requestAnimationFrame(trackLines);
+            });
+        });
+
+        resetBtn.addEventListener('click', resetView);
+
+        // drag to pan
+        var dragging = false, startX, startY, origX, origY;
+        viewport.addEventListener('mousedown', function(e) {
+            if (e.target.closest('.graph-node') || e.target.closest('.graph-reset')) return;
+            dragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            var m = world.style.transform.match(/translate\(([^,]+),\s*([^)]+)\)/);
+            origX = m ? parseFloat(m[1]) : 0;
+            origY = m ? parseFloat(m[2]) : 0;
+            world.style.transition = 'none';
+        });
+        window.addEventListener('mousemove', function(e) {
+            if (!dragging) return;
+            var dx = e.clientX - startX;
+            var dy = e.clientY - startY;
+            var nx = origX + dx;
+            var ny = origY + dy;
+            world.style.transform = 'translate(' + nx + 'px,' + ny + 'px)';
+        });
+        window.addEventListener('mouseup', function() {
+            if (dragging) {
+                dragging = false;
+                world.style.transition = 'transform 0.6s ease';
+            }
+        });
+
+        // touch support
+        viewport.addEventListener('touchstart', function(e) {
+            if (e.target.closest('.graph-node') || e.target.closest('.graph-reset')) return;
+            if (e.touches.length !== 1) return;
+            dragging = true;
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+            var m = world.style.transform.match(/translate\(([^,]+),\s*([^)]+)\)/);
+            origX = m ? parseFloat(m[1]) : 0;
+            origY = m ? parseFloat(m[2]) : 0;
+            world.style.transition = 'none';
+        }, { passive: true });
+        viewport.addEventListener('touchmove', function(e) {
+            if (!dragging || e.touches.length !== 1) return;
+            var dx = e.touches[0].clientX - startX;
+            var dy = e.touches[0].clientY - startY;
+            var nx = origX + dx;
+            var ny = origY + dy;
+            world.style.transform = 'translate(' + nx + 'px,' + ny + 'px)';
+        }, { passive: true });
+        viewport.addEventListener('touchend', function() {
+            if (dragging) {
+                dragging = false;
+                world.style.transition = 'transform 0.6s ease';
+            }
+        });
+
+        drawLines();
+        window.addEventListener('resize', function() { drawLines(); });
+    }); });
+    }
+
+    // Run on initial load
+    if (document.readyState === 'complete') {
+        initGraph();
+    } else {
+        window.addEventListener('load', initGraph);
+    }
+    // Also run on pageshow (bfcache restore)
+    window.addEventListener('pageshow', function() {
+        setTimeout(initGraph, 100);
+    });
+    </script>
 </body>
 </html>
-

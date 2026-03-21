@@ -186,13 +186,18 @@ main {
 }
 
 #sidebar-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 42px;
     height: 42px;
+    padding: 0;
     border: 1px solid var(--border-color);
     border-radius: 10px;
     background: linear-gradient(180deg, rgba(2, 12, 5, 0.96), rgba(0, 5, 2, 0.96));
     color: var(--accent-color);
     font-size: 1.3rem;
+    line-height: 1;
     box-shadow: 0 0 16px rgba(53, 255, 107, 0.18);
     cursor: pointer;
     transition: transform 0.28s ease, box-shadow 0.28s ease;

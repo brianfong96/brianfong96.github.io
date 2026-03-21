@@ -109,41 +109,44 @@
 
         var oldItems = collectTextNodes(contentEl);
 
-        // Start fetching new page immediately
+        // Start fetching to check if page has inline scripts
         var fetchPromise = fetch(href).then(function (r) { return r.text(); });
 
         // Scramble out the current page
         scrambleOut(oldItems).then(function () {
-            // Wait for fetch to complete
             return fetchPromise;
         }).then(function (html) {
-            // Parse the new page
             var parser = new DOMParser();
             var newDoc = parser.parseFromString(html, 'text/html');
+            var newBody = newDoc.querySelector('body');
+            var hasInlineScripts = newBody && newBody.querySelectorAll('script:not([src])').length > 0;
+            var hasPageStyles = newDoc.querySelector('head style') !== null;
+
+            // If the target page has its own scripts or styles,
+            // do a real navigation so everything initializes cleanly
+            if (hasInlineScripts || hasPageStyles) {
+                window.location.href = href;
+                return;
+            }
+
             var newContent = newDoc.querySelector('.content');
             var newTitle = newDoc.querySelector('title');
 
             if (newContent) {
-                // Swap content
                 contentEl.innerHTML = newContent.innerHTML;
             }
             if (newTitle) {
                 document.title = newTitle.textContent;
             }
 
-            // Update URL without reload
             history.pushState(null, '', href);
-
-            // Re-run page setup on the new content
             reinitPage();
 
-            // Scramble the new content in
             var newItems = collectTextNodes(contentEl);
             return scrambleIn(newItems);
         }).then(function () {
             isTransitioning = false;
         }).catch(function () {
-            // If fetch fails, fall back to normal navigation
             window.location.href = href;
         });
     }

@@ -85,18 +85,27 @@ label {
 
 .toggle-group {
     margin-bottom: 22px;
-    padding: 14px;
+    padding: 16px;
 }
 
 .toggle-group label {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin: 8px 0 0;
+    margin: 10px 0 0;
+    padding: 4px 0;
     color: var(--text-color);
     text-transform: none;
     letter-spacing: 0.02em;
     font-size: 0.95rem;
+}
+
+.toggle-group .group-title {
+    margin-bottom: 12px;
+}
+
+.toggle-group .option-note {
+    margin-bottom: 8px;
 }
 
 .action-row {
@@ -119,7 +128,7 @@ label {
 
 input[type="radio"] {
     width: auto;
-    margin: 0;
+    margin: 0 4px 0 0;
     accent-color: var(--accent-secondary);
 }
 
