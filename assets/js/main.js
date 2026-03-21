@@ -96,38 +96,94 @@
     }
 
     // ── SPA-style page transition ──
-    // 1. Scramble current page text → glyphs
-    // 2. Fetch new page HTML in background
-    // 3. Swap .content innerHTML
-    // 4. Scramble new page text glyphs → real
-    // No reload, no flash, no fade to black.
     var isTransitioning = false;
+    var currentScrambleId = 0;
+    var lastOriginalItems = null;
 
-    function doPageTransition(href) {
-        if (isTransitioning) return;
+    function cancelCurrentTransition() {
+        // Bump the scramble ID so any in-progress animations stop
+        currentScrambleId++;
+        // Restore any garbled text from a previous scramble
+        if (lastOriginalItems) {
+            lastOriginalItems.forEach(function (t) {
+                try { t.node.textContent = t.original; } catch (e) {}
+            });
+            lastOriginalItems = null;
+        }
+        isTransitioning = false;
+    }
+
+    function doPageTransition(href, skipPushState) {
+        // Cancel any in-progress transition and restore text
+        if (isTransitioning) {
+            cancelCurrentTransition();
+        }
         isTransitioning = true;
+        var myId = ++currentScrambleId;
 
         var oldItems = collectTextNodes(contentEl);
+        lastOriginalItems = oldItems;
 
-        // Start fetching to check if page has inline scripts
+        // Start fetching in parallel with scramble-out
         var fetchPromise = fetch(href).then(function (r) { return r.text(); });
 
         // Scramble out the current page
         scrambleOut(oldItems).then(function () {
+            if (myId !== currentScrambleId) return; // cancelled
             return fetchPromise;
         }).then(function (html) {
+            if (!html || myId !== currentScrambleId) return; // cancelled
+            lastOriginalItems = null;
+
             var parser = new DOMParser();
             var newDoc = parser.parseFromString(html, 'text/html');
             var newBody = newDoc.querySelector('body');
             var hasInlineScripts = newBody && newBody.querySelectorAll('script:not([src])').length > 0;
             var hasPageStyles = newDoc.querySelector('head style') !== null;
 
-            // If the target page has its own scripts or styles,
+            // If the target page has inline scripts or embedded styles,
             // do a real navigation so everything initializes cleanly
             if (hasInlineScripts || hasPageStyles) {
                 window.location.href = href;
                 return;
             }
+
+            // Remove previously injected page-specific stylesheets and scripts
+            document.querySelectorAll('[data-spa-injected]').forEach(function (el) {
+                el.parentNode.removeChild(el);
+            });
+
+            // Resolve relative hrefs against the target page URL
+            var baseUrl = new URL(href, window.location.href);
+
+            // Inject page-specific stylesheets not present in current page
+            var currentSheets = new Set(
+                Array.from(document.querySelectorAll('link[rel="stylesheet"]:not([data-spa-injected])'))
+                    .map(function (l) { return new URL(l.getAttribute('href'), window.location.href).href; })
+            );
+            newDoc.querySelectorAll('link[rel="stylesheet"]').forEach(function (l) {
+                var resolvedHref = new URL(l.getAttribute('href'), baseUrl).href;
+                if (!currentSheets.has(resolvedHref)) {
+                    var link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = resolvedHref;
+                    link.setAttribute('data-spa-injected', 'true');
+                    document.head.appendChild(link);
+                }
+            });
+
+            // Collect page-specific scripts to load after content swap
+            var currentScripts = new Set(
+                Array.from(document.querySelectorAll('script[src]:not([data-spa-injected])'))
+                    .map(function (s) { return new URL(s.getAttribute('src'), window.location.href).href; })
+            );
+            var scriptsToLoad = [];
+            newDoc.querySelectorAll('script[src]').forEach(function (s) {
+                var resolvedSrc = new URL(s.getAttribute('src'), baseUrl).href;
+                if (!currentScripts.has(resolvedSrc)) {
+                    scriptsToLoad.push(resolvedSrc);
+                }
+            });
 
             var newContent = newDoc.querySelector('.content');
             var newTitle = newDoc.querySelector('title');
@@ -139,14 +195,40 @@
                 document.title = newTitle.textContent;
             }
 
-            history.pushState(null, '', href);
+            if (!skipPushState) {
+                history.pushState(null, '', href);
+            }
             reinitPage();
 
-            var newItems = collectTextNodes(contentEl);
-            return scrambleIn(newItems);
+            // Load page-specific scripts sequentially
+            function loadScripts(srcs, i) {
+                if (i >= srcs.length) return Promise.resolve();
+                return new Promise(function (resolve) {
+                    var script = document.createElement('script');
+                    script.src = srcs[i];
+                    script.setAttribute('data-spa-injected', 'true');
+                    script.onload = resolve;
+                    script.onerror = resolve;
+                    document.body.appendChild(script);
+                }).then(function () { return loadScripts(srcs, i + 1); });
+            }
+
+            return loadScripts(scriptsToLoad, 0).then(function () {
+                if (myId !== currentScrambleId) return; // cancelled
+                var newItems = collectTextNodes(contentEl);
+                lastOriginalItems = newItems;
+                return scrambleIn(newItems);
+            });
         }).then(function () {
-            isTransitioning = false;
+            if (myId === currentScrambleId) {
+                isTransitioning = false;
+                lastOriginalItems = null;
+            }
         }).catch(function () {
+            if (myId === currentScrambleId) {
+                isTransitioning = false;
+                lastOriginalItems = null;
+            }
             window.location.href = href;
         });
     }
@@ -199,7 +281,7 @@
 
     // ── Handle back/forward ──
     window.addEventListener('popstate', function () {
-        doPageTransition(window.location.href);
+        doPageTransition(window.location.href, true);
     });
 
     // ── Menu scrim ──

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" type="image/png" href="assets/Portfolio Site Web icon.png">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>About - Brian Fong</title>
@@ -20,8 +21,8 @@
 
         .graph-world {
             position: absolute;
-            width: 1100px;
-            height: 650px;
+            width: 1420px;
+            height: 850px;
             transition: transform 0.6s ease;
         }
 
@@ -57,7 +58,8 @@
         }
 
         .graph-node.focused {
-            max-width: 420px;
+            max-width: min(520px, 80vw);
+            width: max-content;
             padding: 22px 26px;
             border-color: var(--accent-color);
             box-shadow: 0 0 36px rgba(53, 255, 107, 0.28);
@@ -247,8 +249,8 @@
                     <div class="graph-world" id="graph-world">
                         <canvas id="graph-lines"></canvas>
 
-                        <div class="graph-node center-node" id="node-center" style="left:350px;top:30px;">
-                            <div class="nav-arrows"><div class="nav-arrows-down"><a class="nav-arrow" data-goto="node-mr"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Mixed Reality</a><a class="nav-arrow" data-goto="node-cyber"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Cybersecurity</a><a class="nav-arrow" data-goto="node-hobby"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Hobby</a></div></div>
+                        <div class="graph-node center-node" id="node-center" style="left:670px;top:30px;">
+                            <div class="nav-arrows"><div class="nav-arrows-down"><a class="nav-arrow" data-goto="node-mr"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Mixed Reality</a><a class="nav-arrow" data-goto="node-cyber"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Azure Core Security</a><a class="nav-arrow" data-goto="node-hobby"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Hobby</a><a class="nav-arrow" data-goto="node-edu"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Education</a></div></div>
                             <h3>Brian Fong</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
@@ -256,28 +258,58 @@
                             </div>
 </div>
 
-                        <div class="graph-node" id="node-mr" data-connects="node-center" style="left:40px;top:200px;">
-                            <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-center"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Brian Fong</a></div></div>
-                            <span class="node-tag">Internship</span>
+                        <div class="graph-node" id="node-mr" data-connects="node-center" style="left:360px;top:200px;">
+                            <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-center"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Brian Fong</a></div><div class="nav-arrows-down"><a class="nav-arrow" data-goto="node-bigpark"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Big Park</a></div></div>
+                            <span class="node-tag">Fall 2018</span>
                             <h3>Mixed Reality</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
-                                <p>I started my software engineering career as an intern at Microsoft, where I got the chance to work on the HoloLens. I helped build a mixed reality application in partnership with BC Cancer to support cancer research.</p>
+                                <p>I started my software engineering career as an intern at Microsoft Vancouver through the Garage program, where I got the chance to work on the HoloLens. I helped build a mixed reality application in partnership with BC Cancer to support cancer research.</p>
                             </div>
 </div>
 
-                        <div class="graph-node" id="node-cyber" data-connects="node-center" style="left:350px;top:200px;">
-                            <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-center"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Brian Fong</a></div><div class="nav-arrows-down"><a class="nav-arrow" data-goto="node-ai"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> AI</a></div></div>
-                            <span class="node-tag">Career Start</span>
-                            <h3>Cybersecurity &amp; Red Teaming</h3>
+                        <div class="graph-node" id="node-bigpark" data-connects="node-mr" style="left:360px;top:420px;">
+                            <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-mr"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Mixed Reality</a></div><div class="nav-arrows-down"><a class="nav-arrow" data-goto="node-azurert"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Azure Red Team Intern</a></div></div>
+                            <span class="node-tag">Internship</span>
+                            <h3>Big Park</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
-                                <p>This is where I started my full-time software engineering career. I worked at Microsoft on the Azure Red Team and then the Microsoft Red Team, where I helped build a graph of cloud assets to identify attack paths. I developed a system to programmatically identify all attack paths that violate security boundaries.</p>
+                                <p>I interned at Microsoft Big Park, where I worked on the 3D engine in Windows.</p>
                             </div>
 </div>
 
-                        <div class="graph-node" id="node-ai" data-connects="node-cyber" style="left:350px;top:420px;">
-                            <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-cyber"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Cybersecurity</a></div></div>
+                        <div class="graph-node" id="node-azurert" data-connects="node-bigpark" style="left:360px;top:640px;">
+                            <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-bigpark"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Big Park</a></div></div>
+                            <span class="node-tag">Internship</span>
+                            <h3>Azure Red Team Intern</h3>
+                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                            <div class="node-detail">
+                                <p>I interned at Microsoft in Redmond on the Azure Red Team, where I worked on visualizing attack graphs across the company on the HoloLens. I also had the chance to mentor the Garage program team of interns there.</p>
+                            </div>
+</div>
+
+                        <div class="graph-node" id="node-cyber" data-connects="node-center" style="left:670px;top:200px;">
+                            <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-center"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Brian Fong</a></div><div class="nav-arrows-down"><a class="nav-arrow" data-goto="node-redteam"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Red Team</a></div></div>
+                            <span class="node-tag">March 2020</span>
+                            <h3>Azure Core Security</h3>
+                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                            <div class="node-detail">
+                                <p>This is where I started my full-time software engineering career in Redmond, right when COVID work-from-home began. I worked at Microsoft in Azure Core Security Services on trusted VMs.</p>
+                            </div>
+</div>
+
+                        <div class="graph-node" id="node-redteam" data-connects="node-cyber" style="left:670px;top:420px;">
+                            <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-cyber"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Azure Core Security</a></div><div class="nav-arrows-down"><a class="nav-arrow" data-goto="node-ai"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> AI</a></div></div>
+                            <span class="node-tag">5+ Years</span>
+                            <h3>Red Team</h3>
+                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                            <div class="node-detail">
+                                <p>I've been on the red team for over five years, working on the Azure Red Team and then the Microsoft Red Team. I helped build a graph of cloud assets to identify attack paths and developed a system to programmatically identify all attack paths that violate security boundaries.</p>
+                            </div>
+</div>
+
+                        <div class="graph-node" id="node-ai" data-connects="node-redteam" style="left:670px;top:640px;">
+                            <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-redteam"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Red Team</a></div></div>
                             <span class="node-tag">Current</span>
                             <h3>Artificial Intelligence</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
@@ -286,7 +318,17 @@
                             </div>
 </div>
 
-                        <div class="graph-node" id="node-hobby" data-connects="node-center" style="left:680px;top:200px;">
+                        <div class="graph-node" id="node-edu" data-connects="node-center" style="left:40px;top:200px;">
+                            <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-center"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Brian Fong</a></div></div>
+                            <span class="node-tag">2014–2019</span>
+                            <h3>Education</h3>
+                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                            <div class="node-detail">
+                                <p>I earned my Bachelor of Science in Computer Science from Simon Fraser University. During that time, I interned at Microsoft for three terms and also worked as a Microsoft contractor for an additional term.</p>
+                            </div>
+</div>
+
+                        <div class="graph-node" id="node-hobby" data-connects="node-center" style="left:1000px;top:200px;">
                             <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-center"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Brian Fong</a></div><div class="nav-arrows-down"><a class="nav-arrow" data-goto="node-gamedev"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Game Dev</a><a class="nav-arrow" data-goto="node-ma"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Martial Arts</a></div></div>
                             <span class="node-tag">Personal</span>
                             <h3>Hobby</h3>
@@ -296,23 +338,23 @@
                             </div>
 </div>
 
-                        <div class="graph-node" id="node-gamedev" data-connects="node-hobby" style="left:620px;top:420px;">
+                        <div class="graph-node" id="node-gamedev" data-connects="node-hobby" style="left:940px;top:420px;">
                             <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-hobby"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Hobby</a></div></div>
                             <span class="node-tag">Creative</span>
                             <h3>Game Dev</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
-                                <p>Game dev is a hobby I like to pursue in my free time. I enjoy prototyping interactive experiences, experimenting with mechanics, and building things just for the fun of it.</p>
+                                <p>Game dev is a hobby I like to pursue in my free time. I work primarily with Unity, which is actually how I landed my first internship at Microsoft. I enjoy prototyping interactive experiences, experimenting with mechanics, and building things just for the fun of it.</p>
                             </div>
 </div>
 
-                        <div class="graph-node" id="node-ma" data-connects="node-hobby" style="left:820px;top:420px;">
+                        <div class="graph-node" id="node-ma" data-connects="node-hobby" style="left:1140px;top:420px;">
                             <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-hobby"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Hobby</a></div></div>
                             <span class="node-tag">Physical</span>
                             <h3>Martial Arts</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
-                                <p>I train martial arts to stay disciplined and physically active. It complements the mental work of engineering with a physical practice that demands focus and consistency.</p>
+                                <p>I've been learning LiuHeBaFa for over a decade under Mario Lam. Beyond the physical practice, it has taught me a great deal about applying its theories and philosophies to different facets of my life. It complements the mental work of engineering with a discipline that demands focus, consistency, and continuous self-reflection.</p>
                             </div>
 </div>
                     </div>
@@ -355,7 +397,7 @@
         var centerNode = document.getElementById('node-center');
         var nodes = document.querySelectorAll('.graph-node:not(.center-node)');
 
-        var worldW = 1100, worldH = 650;
+        var worldW = 1420, worldH = 850;
         canvas.width = worldW;
         canvas.height = worldH;
 
@@ -470,6 +512,7 @@
 
         function zoomOut() {
             nodes.forEach(function(n) { n.classList.remove('focused'); });
+            centerNode.classList.remove('focused');
             world.classList.remove('has-focus');
             var vw = viewport.clientWidth, vh = viewport.clientHeight;
             var scaleX = vw / worldW;
@@ -514,7 +557,7 @@
                 centerNode.classList.add('focused');
                 world.classList.add('has-focus');
                 scrambleNode(centerNode);
-                panTo(centerNode);
+                zoomToNode(centerNode);
             } else {
                 world.classList.remove('has-focus');
                 zoomOut();
@@ -615,7 +658,7 @@
             node.addEventListener('click', function() {
                 // Skip if this was a drag
                 if (node._wasDragged) { node._wasDragged = false; return; }
-                if (node === centerNode) { resetView(); return; }
+                if (node === centerNode) return;
 
                 var wasFocused = node.classList.contains('focused');
                 nodes.forEach(function(n) { n.classList.remove('focused'); });
@@ -623,10 +666,10 @@
                     node.classList.add('focused');
                     world.classList.add('has-focus');
                     scrambleNode(node);
-                    panTo(node);
+                    zoomToNode(node);
                 } else {
                     world.classList.remove('has-focus');
-                    panTo(centerNode);
+                    zoomOut();
                 }
                 var animStart = performance.now();
                 function trackLines(t) { drawLines(); if (t - animStart < 600) requestAnimationFrame(trackLines); }
@@ -686,7 +729,7 @@
                 targetNode.classList.add('focused');
                 world.classList.add('has-focus');
                 scrambleNode(targetNode);
-                panTo(targetNode);
+                zoomToNode(targetNode);
 
                 var animStart = performance.now();
                 function trackLines(t) { drawLines(); if (t - animStart < 600) requestAnimationFrame(trackLines); }
