@@ -24,8 +24,8 @@
 
         .graph-world {
             position: absolute;
-            width: 1200px;
-            height: 900px;
+            width: 900px;
+            height: 700px;
             transition: transform 0.6s ease;
         }
 
@@ -185,12 +185,12 @@
                     <div class="graph-world" id="graph-world">
                         <canvas id="graph-lines"></canvas>
 
-                        <div class="graph-node center-node" id="node-center" style="left:430px;top:380px;">
+                        <div class="graph-node center-node" id="node-center" style="left:280px;top:270px;">
                             <h3>Brian Fong</h3>
                             <p>I'm a senior software engineer. My work spans mixed reality, game development, cybersecurity, red teaming, and AI. I enjoy taking on hard problems across different domains and building tools and experiences that actually get used.</p>
                         </div>
 
-                        <div class="graph-node" id="node-mr" data-connects="node-center" style="left:100px;top:120px;">
+                        <div class="graph-node" id="node-mr" data-connects="node-center" style="left:60px;top:60px;">
                             <span class="node-tag">Intern</span>
                             <h3>Mixed Reality</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
@@ -199,7 +199,7 @@
                             </div>
                         </div>
 
-                        <div class="graph-node" id="node-cyber" data-connects="node-center" style="left:820px;top:100px;">
+                        <div class="graph-node" id="node-cyber" data-connects="node-center" style="left:560px;top:50px;">
                             <span class="node-tag">Career Start</span>
                             <h3>Cybersecurity &amp; Red Teaming</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
@@ -208,7 +208,7 @@
                             </div>
                         </div>
 
-                        <div class="graph-node" id="node-ai" data-connects="node-center" style="left:850px;top:620px;">
+                        <div class="graph-node" id="node-ai" data-connects="node-center" style="left:570px;top:480px;">
                             <span class="node-tag">Current</span>
                             <h3>AI</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
@@ -217,7 +217,7 @@
                             </div>
                         </div>
 
-                        <div class="graph-node" id="node-gamedev" data-connects="node-center" style="left:80px;top:640px;">
+                        <div class="graph-node" id="node-gamedev" data-connects="node-center" style="left:50px;top:490px;">
                             <span class="node-tag">Hobby</span>
                             <h3>Game Development</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
@@ -268,7 +268,7 @@
         var centerNode = document.getElementById('node-center');
         var nodes = document.querySelectorAll('.graph-node:not(.center-node)');
 
-        var worldW = 1200, worldH = 900;
+        var worldW = 900, worldH = 700;
         canvas.width = worldW;
         canvas.height = worldH;
 
@@ -374,12 +374,19 @@
 
         function resetView() {
             nodes.forEach(function(n) { n.classList.remove('focused'); });
-            panTo(centerNode);
+            var vw = viewport.clientWidth, vh = viewport.clientHeight;
+            var tx = -(worldW / 2 - vw / 2);
+            var ty = -(worldH / 2 - vh / 2);
+            world.style.transform = 'translate(' + tx + 'px,' + ty + 'px)';
             drawLines();
         }
 
         // initial position: center on the center node
         resetView();
+
+        // Glyph scramble-in on arrival
+        var allGraphNodes = document.querySelectorAll(".graph-node");
+        allGraphNodes.forEach(function(n) { scrambleNode(n); });
 
         centerNode.addEventListener('click', function() {
             resetView();

@@ -20,8 +20,8 @@
         .graph-viewport:active { cursor: grabbing; }
         .graph-world {
             position: absolute;
-            width: 1400px;
-            height: 1100px;
+            width: 900px;
+            height: 700px;
             transition: transform 0.6s ease;
         }
         .graph-world canvas {
@@ -194,12 +194,12 @@
                     <div class="graph-world" id="graph-world">
                         <canvas id="graph-lines"></canvas>
 
-                        <div class="graph-node center-node" id="node-center" style="left:500px;top:440px;">
+                        <div class="graph-node center-node" id="node-center" style="left:280px;top:230px;">
                             <h3>Overview</h3>
                             <p>High-protein, savory "Mega Hamburg Steaks" using a panade of whole wheat bread and milk to keep 3kg of ground beef tender. Seasoned with cumin, cayenne, and chicken stock — six massive 500g patties bridging meatloaf and Japanese Hamburg steak.</p>
                         </div>
 
-                        <div class="graph-node" id="node-ingredients" data-connects="node-center" style="left:100px;top:140px;">
+                        <div class="graph-node" id="node-ingredients" data-connects="node-center" style="left:40px;top:50px;">
                             <span class="node-tag">10 Items</span>
                             <h3>Ingredients</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
@@ -219,7 +219,7 @@
                             </div>
                         </div>
 
-                        <div class="graph-node" id="node-prep" data-connects="node-center" style="left:900px;top:120px;">
+                        <div class="graph-node" id="node-prep" data-connects="node-center" style="left:560px;top:40px;">
                             <span class="node-tag">5 Steps</span>
                             <h3>Preparation</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
@@ -234,7 +234,7 @@
                             </div>
                         </div>
 
-                        <div class="graph-node" id="node-roast" data-connects="node-center" style="left:120px;top:720px;">
+                        <div class="graph-node" id="node-roast" data-connects="node-center" style="left:40px;top:420px;">
                             <span class="node-tag">Oven</span>
                             <h3>Roasting</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
@@ -261,7 +261,7 @@
                             </div>
                         </div>
 
-                        <div class="graph-node" id="node-tips" data-connects="node-center" style="left:880px;top:700px;">
+                        <div class="graph-node" id="node-tips" data-connects="node-center" style="left:580px;top:420px;">
                             <span class="node-tag">Tips</span>
                             <h3>Key Tips</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
@@ -301,7 +301,7 @@
         var centerNode = document.getElementById('node-center');
         var nodes = document.querySelectorAll('.graph-node:not(.center-node)');
 
-        var worldW = 1400, worldH = 1100;
+        var worldW = 900, worldH = 700;
         canvas.width = worldW;
         canvas.height = worldH;
 
@@ -383,11 +383,17 @@
 
         function resetView() {
             nodes.forEach(function(n) { n.classList.remove('focused'); });
-            panTo(centerNode);
+            var vw = viewport.clientWidth, vh = viewport.clientHeight;
+            var tx = -(worldW / 2 - vw / 2);
+            var ty = -(worldH / 2 - vh / 2);
+            world.style.transform = 'translate(' + tx + 'px,' + ty + 'px)';
             drawLines();
         }
 
         resetView();
+
+        var allGraphNodes = document.querySelectorAll(".graph-node");
+        allGraphNodes.forEach(function(n) { scrambleNode(n); });
 
         centerNode.addEventListener('click', resetView);
 
