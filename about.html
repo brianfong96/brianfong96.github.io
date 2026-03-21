@@ -147,6 +147,45 @@
             border-color: var(--accent-color);
             box-shadow: 0 0 14px rgba(53, 255, 107, 0.16);
         }
+        .graph-controls {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            z-index: 10;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .graph-controls button {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: rgba(1, 8, 3, 0.95);
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .graph-controls button:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 14px rgba(53, 255, 107, 0.16);
+        }
+
+        .graph-controls .zoom-label {
+            color: var(--muted-text);
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            min-width: 40px;
+            text-align: center;
+        }
+
 
         @media (max-width: 700px) {
             .graph-viewport {
@@ -245,7 +284,12 @@
                         </div>
                     </div>
 
-                    <button class="graph-reset" id="graph-reset">Zoom Out</button>
+                    <div class="graph-controls">
+                        <button id="graph-zoom-out" aria-label="Zoom out">−</button>
+                        <span class="zoom-label" id="zoom-label">100%</span>
+                        <button id="graph-zoom-in" aria-label="Zoom in">+</button>
+                        <button class="graph-reset" id="graph-reset" style="width:auto;padding:0 12px;">Fit</button>
+                    </div>
                 </div>
             </section>
             <section class="section">
@@ -564,6 +608,75 @@
         viewport.addEventListener('touchend', function() {
             if (dragging) { dragging = false; world.style.transition = 'transform 0.6s ease'; }
         });
+
+        
+        // Zoom state
+        var currentScale = 1;
+        var currentTx = 0, currentTy = 0;
+        var zoomLabel = document.getElementById('zoom-label');
+
+        function parseTransform() {
+            var m = world.style.transform.match(/translate\(([^,]+),\s*([^)]+)\)\s*scale\(([^)]+)\)/);
+            if (m) {
+                currentTx = parseFloat(m[1]);
+                currentTy = parseFloat(m[2]);
+                currentScale = parseFloat(m[3]);
+            }
+        }
+
+        function applyZoom(newScale, cx, cy) {
+            newScale = Math.max(0.3, Math.min(2.5, newScale));
+            parseTransform();
+            // Zoom toward cursor/center
+            var ratio = newScale / currentScale;
+            var ntx = cx - ratio * (cx - currentTx);
+            var nty = cy - ratio * (cy - currentTy);
+            currentScale = newScale;
+            currentTx = ntx;
+            currentTy = nty;
+            world.style.transform = 'translate(' + ntx + 'px,' + nty + 'px) scale(' + newScale + ')';
+            world.style.transformOrigin = '0 0';
+            if (zoomLabel) zoomLabel.textContent = Math.round(newScale * 100) + '%';
+            drawLines();
+        }
+
+        // Mouse wheel zoom
+        viewport.addEventListener('wheel', function(e) {
+            e.preventDefault();
+            parseTransform();
+            var rect = viewport.getBoundingClientRect();
+            var cx = e.clientX - rect.left;
+            var cy = e.clientY - rect.top;
+            var delta = e.deltaY > 0 ? 0.9 : 1.1;
+            applyZoom(currentScale * delta, cx, cy);
+        }, { passive: false });
+
+        // + / - buttons
+        document.getElementById('graph-zoom-in').addEventListener('click', function() {
+            parseTransform();
+            var vw = viewport.clientWidth, vh = viewport.clientHeight;
+            applyZoom(currentScale * 1.2, vw / 2, vh / 2);
+        });
+
+        document.getElementById('graph-zoom-out').addEventListener('click', function() {
+            parseTransform();
+            var vw = viewport.clientWidth, vh = viewport.clientHeight;
+            applyZoom(currentScale / 1.2, vw / 2, vh / 2);
+        });
+
+        // Update zoom label on resetView
+        var origZoomOut = zoomOut;
+        zoomOut = function() {
+            origZoomOut();
+            parseTransform();
+            if (zoomLabel) zoomLabel.textContent = Math.round(currentScale * 100) + '%';
+        };
+
+        var origZoomToNode = zoomToNode;
+        zoomToNode = function(el) {
+            origZoomToNode(el);
+            if (zoomLabel) zoomLabel.textContent = '100%';
+        };
 
         drawLines();
         window.addEventListener('resize', function() { drawLines(); });
