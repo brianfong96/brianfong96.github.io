@@ -13,14 +13,10 @@
             min-height: 500px;
             overflow: hidden;
             border: none;
-            border-radius: 0;
             background: transparent;
             cursor: grab;
         }
-
-        .graph-viewport:active {
-            cursor: grabbing;
-        }
+        .graph-viewport:active { cursor: grabbing; }
 
         .graph-world {
             position: absolute;
@@ -38,52 +34,65 @@
 
         .graph-node {
             position: absolute;
-            padding: 20px 24px;
-            border: 1px solid rgba(53, 255, 107, 0.28);
-            border-radius: 14px;
+            padding: 12px 16px;
+            border: 1px solid rgba(53, 255, 107, 0.22);
+            border-radius: 12px;
             background: rgba(1, 8, 3, 0.95);
             cursor: pointer;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
             z-index: 2;
-            max-width: 280px;
+            max-width: 200px;
+            font-size: 0.82rem;
+            transition: all 0.4s ease;
         }
 
         .graph-node.center-node {
-            max-width: 340px;
+            max-width: 240px;
             border-color: var(--accent-color);
-            box-shadow: 0 0 30px rgba(53, 255, 107, 0.2);
+            box-shadow: 0 0 20px rgba(53, 255, 107, 0.15);
         }
 
-        .graph-node:hover,
-        .graph-node.focused {
+        .graph-node:hover {
             border-color: var(--accent-color);
-            box-shadow: 0 0 32px rgba(53, 255, 107, 0.25);
+            box-shadow: 0 0 24px rgba(53, 255, 107, 0.2);
+        }
+
+        .graph-node.focused {
+            max-width: 420px;
+            padding: 22px 26px;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 36px rgba(53, 255, 107, 0.28);
+            z-index: 20;
+            font-size: 0.9rem;
         }
 
         .graph-node h3 {
-            margin: 0 0 6px;
+            margin: 0 0 4px;
             color: var(--accent-color);
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             letter-spacing: 0.12em;
             text-transform: uppercase;
         }
 
+        .graph-node.focused h3 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
         .graph-node .node-tag {
             display: inline-block;
-            padding: 2px 10px;
-            margin-bottom: 10px;
+            padding: 2px 8px;
+            margin-bottom: 6px;
             border-radius: 999px;
             background: rgba(53, 255, 107, 0.1);
             border: 1px solid rgba(53, 255, 107, 0.22);
             color: var(--accent-color);
-            font-size: 0.7rem;
+            font-size: 0.62rem;
             letter-spacing: 0.14em;
             text-transform: uppercase;
         }
 
         .graph-node p {
             color: var(--muted-text);
-            font-size: 0.88rem;
             line-height: 1.5;
             margin: 0;
         }
@@ -92,28 +101,27 @@
             max-height: 0;
             overflow: hidden;
             opacity: 0;
-            transition: max-height 0.45s ease, opacity 0.35s ease;
+            transition: max-height 0.4s ease, opacity 0.35s ease;
         }
 
         .graph-node.focused .node-detail {
-            max-height: 250px;
+            max-height: 300px;
             opacity: 1;
         }
 
         .graph-node .node-hint {
             display: flex;
             align-items: center;
-            gap: 6px;
-            margin-top: 8px;
-            color: rgba(53, 255, 107, 0.5);
-            font-size: 0.72rem;
+            gap: 5px;
+            margin-top: 6px;
+            color: rgba(53, 255, 107, 0.45);
+            font-size: 0.65rem;
             letter-spacing: 0.1em;
             text-transform: uppercase;
         }
 
         .graph-node .node-hint svg {
-            width: 14px;
-            height: 14px;
+            width: 12px; height: 12px;
             fill: currentColor;
             animation: pulseArrow 1.5s ease-in-out infinite;
         }
@@ -123,49 +131,79 @@
             50% { opacity: 1; transform: translateX(3px); }
         }
 
-        .graph-node.focused .node-hint {
+        .graph-node.focused .node-hint { display: none; }
+
+        /* Nav arrows on focused node */
+        .nav-arrows {
             display: none;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
         }
 
-        .graph-reset {
-            position: absolute;
-            bottom: 16px;
-            right: 16px;
-            z-index: 10;
-            padding: 8px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            background: rgba(1, 8, 3, 0.95);
+        .graph-node.focused .nav-arrows {
+            display: flex;
+        }
+
+        .nav-arrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border: 1px solid rgba(53, 255, 107, 0.3);
+            border-radius: 8px;
+            background: rgba(53, 255, 107, 0.06);
             color: var(--accent-color);
-            font-size: 0.78rem;
+            font-size: 0.7rem;
             letter-spacing: 0.1em;
             text-transform: uppercase;
             cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .graph-reset:hover {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 14px rgba(53, 255, 107, 0.16);
+        .nav-arrow:hover {
+            background: rgba(53, 255, 107, 0.12);
+            box-shadow: 0 0 12px rgba(53, 255, 107, 0.14);
         }
+
+        .nav-arrow svg {
+            width: 12px; height: 12px;
+            fill: currentColor;
+        }
+
+        /* Focus mode: hide others */
+        .graph-world.has-focus .graph-node:not(.focused) {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.7);
+        }
+
+        .graph-world.has-focus .graph-node.focused {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Controls - bottom left for zoom, bottom right for fit */
         .graph-controls {
             position: absolute;
             bottom: 16px;
-            right: 16px;
+            left: 16px;
             z-index: 10;
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
         }
 
         .graph-controls button {
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             padding: 0;
             border: 1px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 8px;
             background: rgba(1, 8, 3, 0.95);
             color: var(--accent-color);
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
@@ -174,47 +212,41 @@
 
         .graph-controls button:hover {
             border-color: var(--accent-color);
-            box-shadow: 0 0 14px rgba(53, 255, 107, 0.16);
+            box-shadow: 0 0 12px rgba(53, 255, 107, 0.14);
         }
 
         .graph-controls .zoom-label {
             color: var(--muted-text);
-            font-size: 0.72rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            min-width: 40px;
+            font-size: 0.68rem;
+            letter-spacing: 0.08em;
+            min-width: 36px;
             text-align: center;
         }
 
-
-
-        .graph-world.has-focus .graph-node:not(.focused):not(.center-node) {
-            opacity: 0.35;
-            transform: scale(0.85);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-
-        .graph-world.has-focus .graph-node.center-node {
-            opacity: 0.5;
-            transition: opacity 0.4s ease;
-        }
-
-        .graph-world.has-focus .graph-node.focused {
-            opacity: 1;
-            transform: scale(1);
+        .graph-fit {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
             z-index: 10;
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            padding: 6px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: rgba(1, 8, 3, 0.95);
+            color: var(--accent-color);
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
         }
 
-        .graph-node {
-            transition: opacity 0.4s ease, transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        .graph-fit:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 12px rgba(53, 255, 107, 0.14);
         }
 
         @media (max-width: 700px) {
-            .graph-viewport {
-                height: 60vh;
-                min-height: 400px;
-            }
+            .graph-viewport { height: 60vh; min-height: 400px; }
+            .graph-node.focused { max-width: 90vw; }
         }
     </style>
 </head>
@@ -249,7 +281,15 @@
 
                         <div class="graph-node center-node" id="node-center" style="left:350px;top:30px;">
                             <h3>Brian Fong</h3>
-                            <p>Senior software engineer. My work spans mixed reality, game development, cybersecurity, red teaming, and AI.</p>
+                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                            <div class="node-detail">
+                                <p>Senior software engineer. My work spans mixed reality, game development, cybersecurity, red teaming, and AI.</p>
+                            </div>
+                            <div class="nav-arrows">
+                                <a class="nav-arrow" data-goto="node-mr"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Mixed Reality</a>
+                                <a class="nav-arrow" data-goto="node-cyber"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Cybersecurity</a>
+                                <a class="nav-arrow" data-goto="node-hobby"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Hobby</a>
+                            </div>
                         </div>
 
                         <div class="graph-node" id="node-mr" data-connects="node-center" style="left:40px;top:200px;">
@@ -258,6 +298,9 @@
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
                                 <p>I started my software engineering career as an intern at Microsoft, where I got the chance to work on the HoloLens. I helped build a mixed reality application in partnership with BC Cancer to support cancer research.</p>
+                            </div>
+                            <div class="nav-arrows">
+                                <a class="nav-arrow" data-goto="node-center"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Brian Fong</a>
                             </div>
                         </div>
 
@@ -268,6 +311,10 @@
                             <div class="node-detail">
                                 <p>This is where I started my full-time software engineering career. I worked at Microsoft on the Azure Red Team and then the Microsoft Red Team, where I helped build a graph of cloud assets to identify attack paths. I developed a system to programmatically identify all attack paths that violate security boundaries.</p>
                             </div>
+                            <div class="nav-arrows">
+                                <a class="nav-arrow" data-goto="node-center"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Brian Fong</a>
+                                <a class="nav-arrow" data-goto="node-ai"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> AI</a>
+                            </div>
                         </div>
 
                         <div class="graph-node" id="node-ai" data-connects="node-cyber" style="left:350px;top:420px;">
@@ -276,6 +323,9 @@
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
                                 <p>This is where I am right now — I'm currently working on M365 Copilot at Microsoft, building AI-powered experiences that help people get more done.</p>
+                            </div>
+                            <div class="nav-arrows">
+                                <a class="nav-arrow" data-goto="node-cyber"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Cybersecurity</a>
                             </div>
                         </div>
 
@@ -286,6 +336,11 @@
                             <div class="node-detail">
                                 <p>Outside of work I spend my time on creative and physical pursuits that keep me sharp and energized.</p>
                             </div>
+                            <div class="nav-arrows">
+                                <a class="nav-arrow" data-goto="node-center"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Brian Fong</a>
+                                <a class="nav-arrow" data-goto="node-gamedev"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Game Dev</a>
+                                <a class="nav-arrow" data-goto="node-ma"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Martial Arts</a>
+                            </div>
                         </div>
 
                         <div class="graph-node" id="node-gamedev" data-connects="node-hobby" style="left:620px;top:420px;">
@@ -294,6 +349,9 @@
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
                                 <p>Game dev is a hobby I like to pursue in my free time. I enjoy prototyping interactive experiences, experimenting with mechanics, and building things just for the fun of it.</p>
+                            </div>
+                            <div class="nav-arrows">
+                                <a class="nav-arrow" data-goto="node-hobby"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Hobby</a>
                             </div>
                         </div>
 
@@ -304,6 +362,9 @@
                             <div class="node-detail">
                                 <p>I train martial arts to stay disciplined and physically active. It complements the mental work of engineering with a physical practice that demands focus and consistency.</p>
                             </div>
+                            <div class="nav-arrows">
+                                <a class="nav-arrow" data-goto="node-hobby"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Hobby</a>
+                            </div>
                         </div>
                     </div>
 
@@ -311,7 +372,7 @@
                         <button id="graph-zoom-out" aria-label="Zoom out">−</button>
                         <span class="zoom-label" id="zoom-label">100%</span>
                         <button id="graph-zoom-in" aria-label="Zoom in">+</button>
-                        <button class="graph-reset" id="graph-reset" style="width:auto;padding:0 12px;">Fit</button>
+                        <button class="graph-fit" id="graph-reset">Fit All</button>
                     </div>
                 </div>
             </section>
@@ -499,7 +560,22 @@
         allGraphNodes.forEach(function(n) { scrambleNode(n); });
 
         centerNode.addEventListener('click', function() {
-            resetView();
+            if (centerNode._wasDragged) { centerNode._wasDragged = false; return; }
+            var wasFocused = centerNode.classList.contains('focused');
+            nodes.forEach(function(n) { n.classList.remove('focused'); });
+            centerNode.classList.remove('focused');
+            if (!wasFocused) {
+                centerNode.classList.add('focused');
+                world.classList.add('has-focus');
+                scrambleNode(centerNode);
+                panTo(centerNode);
+            } else {
+                world.classList.remove('has-focus');
+                zoomOut();
+            }
+            var animStart = performance.now();
+            function trackLines(t) { drawLines(); if (t - animStart < 600) requestAnimationFrame(trackLines); }
+            requestAnimationFrame(trackLines);
         });
 
         // Node drag or click
@@ -703,6 +779,28 @@
             origZoomToNode(el);
             if (zoomLabel) zoomLabel.textContent = '100%';
         };
+
+        // Nav arrow click handlers
+        document.querySelectorAll('.nav-arrow[data-goto]').forEach(function(arrow) {
+            arrow.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var targetId = arrow.dataset.goto;
+                var targetNode = document.getElementById(targetId);
+                if (!targetNode) return;
+
+                // Focus the target node
+                nodes.forEach(function(n) { n.classList.remove('focused'); });
+                centerNode.classList.remove('focused');
+                targetNode.classList.add('focused');
+                world.classList.add('has-focus');
+                scrambleNode(targetNode);
+                panTo(targetNode);
+
+                var animStart = performance.now();
+                function trackLines(t) { drawLines(); if (t - animStart < 600) requestAnimationFrame(trackLines); }
+                requestAnimationFrame(trackLines);
+            });
+        });
 
         drawLines();
         window.addEventListener('resize', function() { drawLines(); });

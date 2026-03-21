@@ -43,7 +43,7 @@
         .recipe-node.center-node {
             border-color: var(--accent-color);
             box-shadow: 0 0 24px rgba(53, 255, 107, 0.18);
-            cursor: default;
+            cursor: pointer;
         }
 
         .recipe-node:hover,
@@ -57,7 +57,7 @@
             transform: scale(0.97);
         }
 
-        .recipe-nodes.has-focus .recipe-node.center-node {
+        .recipe-nodes.has-focus .recipe-node.center-node:not(.focused) {
             opacity: 0.5;
         }
 
@@ -208,9 +208,12 @@
         <main>
             <section class="section">
                 <div class="recipe-nodes" id="recipe-nodes">
-                    <div class="recipe-node center-node">
+                    <div class="recipe-node center-node" id="node-overview">
                         <h3>Overview</h3>
-                        <p>High-protein, savory "Mega Hamburg Steaks" using a panade of whole wheat bread and milk to keep 3kg of ground beef tender. Seasoned with cumin, cayenne, and chicken stock — six massive 500g patties bridging meatloaf and Japanese Hamburg steak.</p>
+                        <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                        <div class="node-detail">
+                            <p>High-protein, savory "Mega Hamburg Steaks" using a panade of whole wheat bread and milk to keep 3kg of ground beef tender. Seasoned with cumin, cayenne, and chicken stock — six massive 500g patties bridging meatloaf and Japanese Hamburg steak.</p>
+                        </div>
                     </div>
 
                     <div class="edge-line"></div>
@@ -310,7 +313,7 @@
     (function() {
         var GLYPHS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホΞΨΩΦΣΛΠΔ@#$%&*';
         var container = document.getElementById('recipe-nodes');
-        var nodes = document.querySelectorAll('.recipe-node:not(.center-node)');
+        var nodes = document.querySelectorAll('.recipe-node');
 
         function scrambleNode(el) {
             var targets = [];
@@ -361,13 +364,14 @@
                     container.classList.add('has-focus');
                     scrambleNode(node);
 
-                    // Wait for expand animation then scroll to center
+                    // Wait for expand animation to settle, then smoothly scroll to center
                     setTimeout(function() {
                         var rect = node.getBoundingClientRect();
                         var viewH = window.innerHeight;
-                        var scrollTarget = window.scrollY + rect.top - (viewH / 2) + (rect.height / 2);
-                        window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
-                    }, 100);
+                        var nodeCenter = rect.top + rect.height / 2;
+                        var offset = nodeCenter - viewH / 2;
+                        window.scrollBy({ top: offset, behavior: 'smooth' });
+                    }, 450);
                 } else {
                     container.classList.remove('has-focus');
                 }
