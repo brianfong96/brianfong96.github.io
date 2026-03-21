@@ -599,20 +599,39 @@
         var allDraggableNodes = [centerNode].concat(Array.from(nodes));
         allDraggableNodes.forEach(setupNodeDrag);
 
-        var GAP = 8;
-        function wouldOverlap(movingNode, newLeft, newTop) {
+        var GAP = 12;
+
+        function pushOverlapping(movingNode) {
+            var ml = movingNode.offsetLeft, mt = movingNode.offsetTop;
             var mw = movingNode.offsetWidth, mh = movingNode.offsetHeight;
+            var mcx = ml + mw / 2, mcy = mt + mh / 2;
+
             for (var i = 0; i < allDraggableNodes.length; i++) {
                 var other = allDraggableNodes[i];
                 if (other === movingNode) continue;
+
                 var ol = other.offsetLeft, ot = other.offsetTop;
                 var ow = other.offsetWidth, oh = other.offsetHeight;
-                if (newLeft < ol + ow + GAP && newLeft + mw + GAP > ol &&
-                    newTop < ot + oh + GAP && newTop + mh + GAP > ot) {
-                    return true;
+                var ocx = ol + ow / 2, ocy = ot + oh / 2;
+
+                var overlapX = (mw + ow) / 2 + GAP - Math.abs(mcx - ocx);
+                var overlapY = (mh + oh) / 2 + GAP - Math.abs(mcy - ocy);
+
+                if (overlapX > 0 && overlapY > 0) {
+                    var pushX = mcx < ocx ? overlapX : -overlapX;
+                    var pushY = mcy < ocy ? overlapY : -overlapY;
+
+                    if (overlapX < overlapY) {
+                        other.style.transition = 'left 0.3s ease, top 0.3s ease';
+                        other.style.left = (ol + pushX) + 'px';
+                    } else {
+                        other.style.transition = 'left 0.3s ease, top 0.3s ease';
+                        other.style.top = (ot + pushY) + 'px';
+                    }
+
+                    setTimeout(function() { other.style.transition = ''; }, 320);
                 }
             }
-            return false;
         }
 
         window.addEventListener('mousemove', function(e) {
@@ -627,11 +646,10 @@
             if (nodeDrag.moved) {
                 var newLeft = nodeDrag.origLeft + dx;
                 var newTop = nodeDrag.origTop + dy;
-                if (!wouldOverlap(nodeDrag.node, newLeft, newTop)) {
-                    nodeDrag.node.style.left = newLeft + 'px';
-                    nodeDrag.node.style.top = newTop + 'px';
-                    drawLines();
-                }
+                nodeDrag.node.style.left = newLeft + 'px';
+                nodeDrag.node.style.top = newTop + 'px';
+                pushOverlapping(nodeDrag.node);
+                drawLines();
             }
         });
 
