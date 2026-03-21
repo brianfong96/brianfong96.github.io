@@ -731,6 +731,38 @@ input[type="submit"] {
     margin-bottom: 0;
 }
 
+.social-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background: rgba(1, 8, 3, 0.96);
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.social-link:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 20px rgba(53, 255, 107, 0.18);
+    transform: translateY(-2px);
+}
+
+.social-link svg {
+    flex-shrink: 0;
+}
+
 .footer {
     margin-top: auto;
     padding: 24px;

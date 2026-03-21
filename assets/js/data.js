@@ -12,19 +12,19 @@ const siteData = {
         {
             title: 'About',
             url: 'about.html',
-            description: 'A short overview of Brian Fong, his background, and what this site is for.',
+            description: 'Who I am and what I work on — mixed reality, game dev, cybersecurity, red teaming, and AI.',
             section: 'Pages'
         },
         {
             title: 'Blog',
             url: 'blog.html',
-            description: 'A cleaned-up home for future engineering notes, experiments, and updates.',
+            description: 'Engineering notes, project write-ups, and other things worth sharing.',
             section: 'Pages'
         },
         {
             title: 'Music',
             url: 'music.html',
-            description: 'A reset page reserved for future recordings, sketches, and releases.',
+            description: 'Recordings, sketches, and releases.',
             section: 'Pages'
         }
     ]
