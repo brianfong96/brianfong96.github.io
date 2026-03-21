@@ -6,168 +6,161 @@
     <title>Cumin-Spiced Mega Hamburg Steaks - Brian Fong</title>
     <link rel="stylesheet" href="../../assets/css/style.css" />
     <style>
-        .recipe-nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 32px;
-        }
-
-        .recipe-nav a {
-            padding: 10px 16px;
+        .graph-viewport {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            min-height: 500px;
+            overflow: hidden;
             border: 1px solid var(--border-color);
-            border-radius: 10px;
-            background: rgba(1, 8, 3, 0.94);
+            border-radius: 16px;
+            background: rgba(0, 2, 0, 0.6);
+            cursor: grab;
+        }
+        .graph-viewport:active { cursor: grabbing; }
+        .graph-world {
+            position: absolute;
+            width: 1400px;
+            height: 1100px;
+            transition: transform 0.6s ease;
+        }
+        .graph-world canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .graph-node {
+            position: absolute;
+            padding: 20px 24px;
+            border: 1px solid rgba(53, 255, 107, 0.22);
+            border-radius: 14px;
+            background: rgba(1, 8, 3, 0.95);
+            cursor: pointer;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            z-index: 2;
+            max-width: 320px;
+        }
+        .graph-node.center-node {
+            max-width: 400px;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 30px rgba(53, 255, 107, 0.2);
+        }
+        .graph-node:hover, .graph-node.focused {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 32px rgba(53, 255, 107, 0.25);
+        }
+        .graph-node h3 {
+            margin: 0 0 6px;
             color: var(--accent-color);
-            text-decoration: none;
-            font-size: 0.82rem;
+            font-size: 0.95rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+        .graph-node .node-tag {
+            display: inline-block;
+            padding: 2px 10px;
+            margin-bottom: 10px;
+            border-radius: 999px;
+            background: rgba(53, 255, 107, 0.1);
+            border: 1px solid rgba(53, 255, 107, 0.22);
+            color: var(--accent-color);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+        .graph-node p, .graph-node ul, .graph-node ol {
+            color: var(--muted-text);
+            font-size: 0.88rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .graph-node ul, .graph-node ol { padding-left: 18px; margin-top: 8px; }
+        .graph-node li { margin-bottom: 6px; }
+        .graph-node li strong { color: var(--accent-color); }
+        .graph-node .node-detail {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.45s ease, opacity 0.35s ease;
+        }
+        .graph-node.focused .node-detail {
+            max-height: 600px;
+            opacity: 1;
+        }
+        .graph-node .node-hint {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            color: rgba(53, 255, 107, 0.5);
+            font-size: 0.72rem;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
         }
-
-        .recipe-nav a:hover {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 16px rgba(53, 255, 107, 0.16);
-            transform: translateY(-1px);
-        }
-
-        .recipe-intro {
-            max-width: 800px;
-            margin-bottom: 36px;
-            color: var(--muted-text);
-            font-size: 1.02rem;
-            line-height: 1.7;
-        }
-
-        .recipe-section {
-            margin-bottom: 40px;
-        }
-
-        .recipe-section h2 {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(53, 255, 107, 0.2);
-            color: var(--accent-color);
-            font-size: 1.1rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-        }
-
-        .recipe-section h2 svg {
-            width: 20px;
-            height: 20px;
+        .graph-node .node-hint svg {
+            width: 14px; height: 14px;
             fill: currentColor;
-            flex-shrink: 0;
+            animation: pulseArrow 1.5s ease-in-out infinite;
         }
-
-        .ingredients-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        @keyframes pulseArrow {
+            0%, 100% { opacity: 0.4; transform: translateX(0); }
+            50% { opacity: 1; transform: translateX(3px); }
         }
-
-        .ingredients-list li {
-            position: relative;
-            padding: 12px 16px 12px 20px;
-            margin-bottom: 8px;
-            border: 1px solid rgba(53, 255, 107, 0.14);
-            border-radius: 10px;
-            background: rgba(1, 8, 3, 0.92);
-            color: var(--text-color);
-            font-size: 0.94rem;
-        }
-
-        .ingredients-list li::before {
-            content: "▸";
-            position: absolute;
-            left: 8px;
-            color: var(--accent-color);
-        }
-
-        .ingredients-list li strong {
-            color: var(--accent-color);
-        }
-
-        .steps-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            counter-reset: step;
-        }
-
-        .steps-list li {
-            position: relative;
-            padding: 18px 20px 18px 56px;
-            margin-bottom: 14px;
-            border: 1px solid rgba(53, 255, 107, 0.16);
-            border-radius: 14px;
-            background: rgba(1, 8, 3, 0.94);
-            color: var(--muted-text);
-            font-size: 0.94rem;
-            line-height: 1.6;
-            counter-increment: step;
-        }
-
-        .steps-list li::before {
-            content: counter(step);
-            position: absolute;
-            left: 16px;
-            top: 16px;
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--accent-color);
-            border-radius: 8px;
-            background: rgba(53, 255, 107, 0.08);
-            color: var(--accent-color);
-            font-size: 0.82rem;
-            font-weight: 700;
-        }
-
-        .steps-list li strong {
-            color: var(--text-color);
-        }
-
+        .graph-node.focused .node-hint { display: none; }
         .temp-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 14px;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
         }
-
         .temp-card {
-            padding: 18px;
-            border: 1px solid rgba(53, 255, 107, 0.18);
-            border-radius: 12px;
-            background: rgba(1, 8, 3, 0.94);
+            padding: 12px;
+            border: 1px solid rgba(53, 255, 107, 0.14);
+            border-radius: 10px;
+            background: rgba(0, 4, 1, 0.8);
         }
-
-        .temp-card .temp-label {
+        .temp-label {
             display: block;
-            margin-bottom: 6px;
             color: var(--accent-color);
-            font-size: 0.78rem;
-            letter-spacing: 0.12em;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
+            margin-bottom: 4px;
         }
-
-        .temp-card .temp-value {
+        .temp-value {
             display: block;
             color: var(--text-color);
-            font-size: 1.1rem;
             font-weight: 700;
+            font-size: 0.95rem;
         }
-
-        .temp-card .temp-note {
+        .temp-note {
             display: block;
-            margin-top: 6px;
+            margin-top: 4px;
             color: var(--muted-text);
-            font-size: 0.85rem;
+            font-size: 0.78rem;
+        }
+        .graph-reset {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            z-index: 10;
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: rgba(1, 8, 3, 0.95);
+            color: var(--accent-color);
+            font-size: 0.78rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        .graph-reset:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 14px rgba(53, 255, 107, 0.16);
+        }
+        @media (max-width: 700px) {
+            .graph-viewport { height: 60vh; min-height: 400px; }
         }
     </style>
 </head>
@@ -191,86 +184,99 @@
             <div class="hero-content">
                 <p class="eyebrow">Recipe</p>
                 <h1>Cumin-Spiced Mega Hamburg Steaks</h1>
-                <p class="hero-copy">High-protein, savory patties — part meatloaf, part Japanese Hamburg steak.</p>
+                <p class="hero-copy">Click any section node to read more. Drag to pan.</p>
                 <a href="../../recipes.html" class="back-button">Back to Recipes</a>
             </div>
         </header>
         <main>
             <section class="section">
-                <nav class="recipe-nav">
-                    <a href="#overview">Overview</a>
-                    <a href="#ingredients">Ingredients</a>
-                    <a href="#preparation">Preparation</a>
-                    <a href="#roasting">Roasting</a>
-                </nav>
+                <div class="graph-viewport" id="graph-viewport">
+                    <div class="graph-world" id="graph-world">
+                        <canvas id="graph-lines"></canvas>
 
-                <div class="recipe-section" id="overview">
-                    <h2>
-                        <svg viewBox="0 0 24 24"><path d="M11 7h2v2h-2V7zm0 4h2v6h-2v-6zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-                        Overview
-                    </h2>
-                    <p class="recipe-intro">This recipe creates a high-protein, flavorful meatloaf or "Mega Hamburg Steak" using a panade of whole wheat bread and milk to ensure 3kg of ground beef remains tender and juicy. Seasoned with cumin, cayenne, and powdered chicken stock, these portions provide a savory, slightly spicy profile perfect for a hearty main course. By shaping the beef into six massive 500g patties, you achieve a roasted exterior with a succulent center, bridging the gap between a traditional meatloaf and a Japanese-style Hamburg steak.</p>
-                </div>
-
-                <div class="recipe-section" id="ingredients">
-                    <h2>
-                        <svg viewBox="0 0 24 24"><path d="M18.06 23h-2.12L14 21.06l-1.94 1.94H9.94L8 21.06 6.06 23H3.94L2 21.06V3h20v18.06L20.06 23h-2zM6 19.06l2 2 2-2 2 2 2-2 2 2 2-2V5H4v14.06l2 2z"/><path d="M7 7h10v2H7zm0 4h10v2H7zm0 4h7v2H7z"/></svg>
-                        Ingredients
-                    </h2>
-                    <ul class="ingredients-list">
-                        <li><strong>3 kg</strong> Ground Beef (Medium or Lean)</li>
-                        <li><strong>6–8 slices</strong> Whole Wheat Bread (torn into small bits)</li>
-                        <li><strong>1 ½ cups</strong> Whole Milk</li>
-                        <li><strong>3 large</strong> Eggs (beaten)</li>
-                        <li><strong>4 tbsp</strong> Powdered Chicken Stock</li>
-                        <li><strong>2 tbsp</strong> Cumin</li>
-                        <li><strong>1 tsp</strong> Cayenne Pepper</li>
-                        <li><strong>2 tbsp</strong> Red Pepper Flakes</li>
-                        <li><strong>1 large</strong> Onion (finely minced)</li>
-                        <li><strong>4 cloves</strong> Garlic (minced)</li>
-                    </ul>
-                </div>
-
-                <div class="recipe-section" id="preparation">
-                    <h2>
-                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>
-                        Preparation
-                    </h2>
-                    <ol class="steps-list">
-                        <li><strong>Prepare the Panade:</strong> In a large mixing bowl, soak the torn whole wheat bread in the milk for 10 minutes. Use a fork to mash the bread into a consistent paste. This step is essential for moisture retention.</li>
-                        <li><strong>Incorporate Seasonings:</strong> Stir the beaten eggs, powdered chicken stock, cumin, cayenne, red pepper, minced onion, and garlic directly into the bread paste. Mixing the spices into the liquid base ensures even distribution throughout the massive 3kg of meat.</li>
-                        <li><strong>Combine with Beef:</strong> Add the ground beef to the bowl. Using your hands, gently fold the meat into the seasoned mixture. Stop as soon as the ingredients are combined; overworking the beef will result in a tough, rubbery texture.</li>
-                        <li><strong>Shape the Steaks:</strong> Divide the mixture into six equal portions, roughly 500g each. Shape them into thick, oval patties. Use your thumb to press a deep, wide indentation into the center of each patty to prevent them from doming or bulging as they cook.</li>
-                        <li><strong>Arrange for Roasting:</strong> Place the patties on two parchment-lined baking sheets (three per sheet) to allow for proper air circulation.</li>
-                    </ol>
-                </div>
-
-                <div class="recipe-section" id="roasting">
-                    <h2>
-                        <svg viewBox="0 0 24 24"><path d="M13.5 0.67s0.74 2.65 0.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l0.03-0.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5 0.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-0.36 3.6-1.21 4.62-2.58 0.39 1.29 0.59 2.65 0.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/></svg>
-                        Oven Roasting &amp; Temperature
-                    </h2>
-                    <div class="temp-grid">
-                        <div class="temp-card">
-                            <span class="temp-label">Oven Temperature</span>
-                            <span class="temp-value">190°C (375°F)</span>
-                            <span class="temp-note">Pre-heat before roasting</span>
+                        <div class="graph-node center-node" id="node-center" style="left:500px;top:440px;">
+                            <h3>Overview</h3>
+                            <p>High-protein, savory "Mega Hamburg Steaks" using a panade of whole wheat bread and milk to keep 3kg of ground beef tender. Seasoned with cumin, cayenne, and chicken stock — six massive 500g patties bridging meatloaf and Japanese Hamburg steak.</p>
                         </div>
-                        <div class="temp-card">
-                            <span class="temp-label">Roasting Time</span>
-                            <span class="temp-value">35–45 minutes</span>
+
+                        <div class="graph-node" id="node-ingredients" data-connects="node-center" style="left:100px;top:140px;">
+                            <span class="node-tag">10 Items</span>
+                            <h3>Ingredients</h3>
+                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                            <div class="node-detail">
+                                <ul>
+                                    <li><strong>3 kg</strong> Ground Beef (Medium or Lean)</li>
+                                    <li><strong>6-8 slices</strong> Whole Wheat Bread (torn)</li>
+                                    <li><strong>1 1/2 cups</strong> Whole Milk</li>
+                                    <li><strong>3 large</strong> Eggs (beaten)</li>
+                                    <li><strong>4 tbsp</strong> Powdered Chicken Stock</li>
+                                    <li><strong>2 tbsp</strong> Cumin</li>
+                                    <li><strong>1 tsp</strong> Cayenne Pepper</li>
+                                    <li><strong>2 tbsp</strong> Red Pepper Flakes</li>
+                                    <li><strong>1 large</strong> Onion (finely minced)</li>
+                                    <li><strong>4 cloves</strong> Garlic (minced)</li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="temp-card">
-                            <span class="temp-label">Pull Temperature</span>
-                            <span class="temp-value">68°C (155°F)</span>
-                            <span class="temp-note">Internal temp when removed</span>
+
+                        <div class="graph-node" id="node-prep" data-connects="node-center" style="left:900px;top:120px;">
+                            <span class="node-tag">5 Steps</span>
+                            <h3>Preparation</h3>
+                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                            <div class="node-detail">
+                                <ol>
+                                    <li><strong>Panade:</strong> Soak torn bread in milk 10 min, mash to paste.</li>
+                                    <li><strong>Season:</strong> Stir eggs, chicken stock, cumin, cayenne, red pepper, onion, garlic into paste.</li>
+                                    <li><strong>Combine:</strong> Fold beef into mixture gently. Don't overwork.</li>
+                                    <li><strong>Shape:</strong> Divide into 6 x 500g oval patties. Thumb-press center indentation.</li>
+                                    <li><strong>Arrange:</strong> Place on 2 parchment-lined sheets, 3 per sheet.</li>
+                                </ol>
+                            </div>
                         </div>
-                        <div class="temp-card">
-                            <span class="temp-label">Rest</span>
-                            <span class="temp-value">10–15 minutes</span>
-                            <span class="temp-note">Carry-over brings it to 71°C (160°F)</span>
+
+                        <div class="graph-node" id="node-roast" data-connects="node-center" style="left:120px;top:720px;">
+                            <span class="node-tag">Oven</span>
+                            <h3>Roasting</h3>
+                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                            <div class="node-detail">
+                                <div class="temp-grid">
+                                    <div class="temp-card">
+                                        <span class="temp-label">Oven</span>
+                                        <span class="temp-value">190C / 375F</span>
+                                    </div>
+                                    <div class="temp-card">
+                                        <span class="temp-label">Time</span>
+                                        <span class="temp-value">35-45 min</span>
+                                    </div>
+                                    <div class="temp-card">
+                                        <span class="temp-label">Pull at</span>
+                                        <span class="temp-value">68C / 155F</span>
+                                    </div>
+                                    <div class="temp-card">
+                                        <span class="temp-label">Rest</span>
+                                        <span class="temp-value">10-15 min</span>
+                                        <span class="temp-note">Carry-over to 71C</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="graph-node" id="node-tips" data-connects="node-center" style="left:880px;top:700px;">
+                            <span class="node-tag">Tips</span>
+                            <h3>Key Tips</h3>
+                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                            <div class="node-detail">
+                                <ul>
+                                    <li>The panade (bread + milk paste) is essential for moisture retention in this much meat.</li>
+                                    <li>Mix spices into the liquid base first for even distribution.</li>
+                                    <li>Stop folding as soon as combined — overworked beef = tough texture.</li>
+                                    <li>The thumb indentation prevents doming during roasting.</li>
+                                    <li>Resting lets carry-over cooking finish the job safely.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
+                    <button class="graph-reset" id="graph-reset">Reset View</button>
                 </div>
             </section>
         </main>
@@ -280,5 +286,166 @@
     </div>
     <script src="../../assets/js/data.js"></script>
     <script src="../../assets/js/main.js"></script>
+    <script>
+    function initGraph() {
+        var viewport = document.getElementById('graph-viewport');
+        if (!viewport || viewport.dataset.initialized) return;
+        viewport.dataset.initialized = 'true';
+        requestAnimationFrame(function() { requestAnimationFrame(function() {
+
+        var GLYPHS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホΞΨΩΦΣΛΠΔ@#$%&*';
+        var world = document.getElementById('graph-world');
+        var canvas = document.getElementById('graph-lines');
+        var ctx = canvas.getContext('2d');
+        var resetBtn = document.getElementById('graph-reset');
+        var centerNode = document.getElementById('node-center');
+        var nodes = document.querySelectorAll('.graph-node:not(.center-node)');
+
+        var worldW = 1400, worldH = 1100;
+        canvas.width = worldW;
+        canvas.height = worldH;
+
+        function getNodeCenter(el) {
+            return { x: el.offsetLeft + el.offsetWidth / 2, y: el.offsetTop + 20 };
+        }
+
+        function drawLines() {
+            ctx.clearRect(0, 0, worldW, worldH);
+            var cc = getNodeCenter(centerNode);
+            nodes.forEach(function(node) {
+                var nc = getNodeCenter(node);
+                var focused = node.classList.contains('focused');
+                ctx.beginPath();
+                ctx.moveTo(cc.x, cc.y);
+                var mx = (cc.x + nc.x) / 2;
+                var my = (cc.y + nc.y) / 2;
+                var dx = nc.x - cc.x;
+                ctx.quadraticCurveTo(mx + (dx > 0 ? -40 : 40), my, nc.x, nc.y);
+                ctx.strokeStyle = focused ? 'rgba(53,255,107,0.8)' : 'rgba(53,255,107,0.25)';
+                ctx.lineWidth = focused ? 2.5 : 1.5;
+                ctx.shadowColor = 'rgba(53,255,107,0.3)';
+                ctx.shadowBlur = focused ? 12 : 4;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+                [cc, nc].forEach(function(pt) {
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, focused ? 5 : 3, 0, Math.PI * 2);
+                    ctx.fillStyle = focused ? 'rgba(53,255,107,0.9)' : 'rgba(53,255,107,0.5)';
+                    ctx.fill();
+                });
+            });
+        }
+
+        function panTo(targetEl) {
+            var vw = viewport.clientWidth, vh = viewport.clientHeight;
+            var nc = getNodeCenter(targetEl);
+            world.style.transform = 'translate(' + (-(nc.x - vw/2)) + 'px,' + (-(nc.y - vh/2)) + 'px)';
+            viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function scrambleNode(el) {
+            var targets = [];
+            var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+                acceptNode: function(n) { return n.textContent.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT; }
+            });
+            var n; while ((n = walker.nextNode())) targets.push({ node: n, original: n.textContent });
+            if (!targets.length) return;
+            targets.forEach(function(t) {
+                var s = '';
+                for (var i = 0; i < t.original.length; i++) {
+                    var ch = t.original[i];
+                    s += (ch === ' ' || ch === '\n') ? ch : GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+                }
+                t.node.textContent = s;
+            });
+            var frame = 0, total = 14;
+            var locked = targets.map(function(t) { return new Array(t.original.length).fill(false); });
+            var id = setInterval(function() {
+                frame++;
+                var p = frame / total;
+                targets.forEach(function(t, ti) {
+                    var s = '';
+                    for (var i = 0; i < t.original.length; i++) {
+                        var ch = t.original[i];
+                        if (ch === ' ' || ch === '\n') s += ch;
+                        else if (locked[ti][i]) s += ch;
+                        else if (Math.random() < p * p) { locked[ti][i] = true; s += ch; }
+                        else s += GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+                    }
+                    t.node.textContent = s;
+                });
+                if (frame >= total) {
+                    clearInterval(id);
+                    targets.forEach(function(t) { t.node.textContent = t.original; });
+                }
+            }, 30);
+        }
+
+        function resetView() {
+            nodes.forEach(function(n) { n.classList.remove('focused'); });
+            panTo(centerNode);
+            drawLines();
+        }
+
+        resetView();
+
+        centerNode.addEventListener('click', resetView);
+
+        nodes.forEach(function(node) {
+            node.addEventListener('click', function() {
+                var wasFocused = node.classList.contains('focused');
+                nodes.forEach(function(n) { n.classList.remove('focused'); });
+                if (!wasFocused) {
+                    node.classList.add('focused');
+                    scrambleNode(node);
+                    panTo(node);
+                } else {
+                    panTo(centerNode);
+                }
+                var animStart = performance.now();
+                function trackLines(t) { drawLines(); if (t - animStart < 600) requestAnimationFrame(trackLines); }
+                requestAnimationFrame(trackLines);
+            });
+        });
+
+        resetBtn.addEventListener('click', resetView);
+
+        // drag
+        var dragging = false, startX, startY, origX, origY;
+        viewport.addEventListener('mousedown', function(e) {
+            if (e.target.closest('.graph-node') || e.target.closest('.graph-reset')) return;
+            dragging = true; startX = e.clientX; startY = e.clientY;
+            var m = world.style.transform.match(/translate\(([^,]+),\s*([^)]+)\)/);
+            origX = m ? parseFloat(m[1]) : 0; origY = m ? parseFloat(m[2]) : 0;
+            world.style.transition = 'none';
+        });
+        window.addEventListener('mousemove', function(e) {
+            if (!dragging) return;
+            world.style.transform = 'translate(' + (origX + e.clientX - startX) + 'px,' + (origY + e.clientY - startY) + 'px)';
+        });
+        window.addEventListener('mouseup', function() { if (dragging) { dragging = false; world.style.transition = 'transform 0.6s ease'; } });
+
+        viewport.addEventListener('touchstart', function(e) {
+            if (e.target.closest('.graph-node') || e.target.closest('.graph-reset') || e.touches.length !== 1) return;
+            dragging = true; startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+            var m = world.style.transform.match(/translate\(([^,]+),\s*([^)]+)\)/);
+            origX = m ? parseFloat(m[1]) : 0; origY = m ? parseFloat(m[2]) : 0;
+            world.style.transition = 'none';
+        }, { passive: true });
+        viewport.addEventListener('touchmove', function(e) {
+            if (!dragging || e.touches.length !== 1) return;
+            world.style.transform = 'translate(' + (origX + e.touches[0].clientX - startX) + 'px,' + (origY + e.touches[0].clientY - startY) + 'px)';
+        }, { passive: true });
+        viewport.addEventListener('touchend', function() { if (dragging) { dragging = false; world.style.transition = 'transform 0.6s ease'; } });
+
+        drawLines();
+        window.addEventListener('resize', drawLines);
+    }); });
+    }
+
+    if (document.readyState === 'complete') { initGraph(); }
+    else { window.addEventListener('load', initGraph); }
+    window.addEventListener('pageshow', function() { setTimeout(initGraph, 100); });
+    </script>
 </body>
 </html>
