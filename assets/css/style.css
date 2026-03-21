@@ -102,7 +102,6 @@ ul {
 h1,
 h2,
 h3,
-.logo,
 .button-link,
 .back-button,
 .nav-links a,
@@ -114,7 +113,6 @@ h3,
 h1,
 h2,
 h3,
-.logo,
 .section-heading h2,
 .hero-content h1 {
     text-shadow: 0 0 14px rgba(53, 255, 107, 0.24);
@@ -143,24 +141,91 @@ main {
 
 /* glyph transition is handled in-place via JS — no overlay needed */
 
-.sidebar {
-    width: 260px;
-    height: 100vh;
+/* ── Top bar ── */
+
+.topbar {
     position: fixed;
     top: 0;
     left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 60px;
+    background: rgba(0, 2, 0, 0.94);
+    border-bottom: 1px solid var(--border-color);
+    backdrop-filter: blur(12px);
+    z-index: 1100;
+}
+
+.home-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--accent-color);
+    border-radius: 10px;
+    background: rgba(53, 255, 107, 0.08);
+    color: var(--accent-color);
+    text-decoration: none;
+    box-shadow: inset 0 0 0 1px rgba(53, 255, 107, 0.12), 0 0 16px rgba(53, 255, 107, 0.1);
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.home-link:hover {
+    box-shadow: 0 0 20px rgba(53, 255, 107, 0.2);
+    transform: translateY(-1px);
+}
+
+.home-link svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+#sidebar-toggle {
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(2, 12, 5, 0.96), rgba(0, 5, 2, 0.96));
+    color: var(--accent-color);
+    font-size: 1.3rem;
+    box-shadow: 0 0 16px rgba(53, 255, 107, 0.18);
+    cursor: pointer;
+    transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+
+body.sidebar-open #sidebar-toggle {
+    transform: rotate(90deg);
+}
+
+/* ── Dropdown nav panel ── */
+
+.sidebar {
+    position: fixed;
+    top: 60px;
+    right: 0;
+    width: 260px;
+    max-height: calc(100vh - 60px);
     overflow-y: auto;
     scrollbar-width: none;
-    padding: 28px 20px;
+    padding: 16px;
     background:
         linear-gradient(180deg, rgba(0, 2, 0, 0.98), rgba(1, 8, 3, 0.96)),
         linear-gradient(135deg, rgba(53, 255, 107, 0.07), transparent 50%);
-    border-right: 1px solid var(--border-color);
+    border-left: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 0 0 0 16px;
     box-shadow: 0 0 24px rgba(53, 255, 107, 0.14);
-    backdrop-filter: blur(8px);
-    transform: translateX(-100%);
-    transition: transform 0.28s ease, box-shadow 0.28s ease;
-    z-index: 1000;
+    backdrop-filter: blur(12px);
+    transform: translateY(-10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.28s ease, opacity 0.28s ease, box-shadow 0.28s ease;
+    z-index: 1050;
 }
 
 .sidebar::-webkit-scrollbar {
@@ -168,73 +233,14 @@ main {
     height: 0;
 }
 
-.sidebar::before {
-    content: "";
-    position: absolute;
-    top: -30%;
-    bottom: -30%;
-    left: -15%;
-    width: 50%;
-    background: linear-gradient(180deg, transparent, rgba(53, 255, 107, 0.14), transparent);
-    transform: rotate(14deg);
-    animation: sidebarBeam 4.6s linear infinite;
-}
-
-.sidebar::after {
-    content: "";
-    position: absolute;
-    inset: 12px 10px 12px 12px;
-    border: 1px solid rgba(53, 255, 107, 0.12);
-    border-right: 0;
-    background:
-        linear-gradient(90deg, transparent 0 10%, rgba(53, 255, 107, 0.16) 10% 11%, transparent 11% 25%, rgba(53, 255, 107, 0.1) 25% 26%, transparent 26% 100%),
-        linear-gradient(180deg, transparent 0 7%, rgba(53, 255, 107, 0.12) 7% 8%, transparent 8% 20%, rgba(53, 255, 107, 0.08) 20% 21%, transparent 21% 100%);
-    opacity: 0.7;
-    pointer-events: none;
-    animation: sidebarCircuit 6s linear infinite;
-}
-
 .sidebar.open {
-    transform: translateX(0);
-    box-shadow: 0 0 34px rgba(53, 255, 107, 0.2);
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+    box-shadow: 0 8px 34px rgba(53, 255, 107, 0.2);
 }
 
-#sidebar-toggle {
-    position: fixed;
-    top: 16px;
-    left: 16px;
-    width: 50px;
-    height: 50px;
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    background: linear-gradient(180deg, rgba(2, 12, 5, 0.96), rgba(0, 5, 2, 0.96));
-    color: var(--accent-color);
-    font-size: 1.4rem;
-    box-shadow: 0 0 18px rgba(53, 255, 107, 0.2);
-    cursor: pointer;
-    transition: transform 0.28s ease, box-shadow 0.28s ease, left 0.3s ease;
-    z-index: 1100;
-}
-
-body.sidebar-open #sidebar-toggle {
-    left: 276px;
-    transform: rotate(90deg);
-}
-
-.logo {
-    display: inline-flex;
-    align-items: center;
-    padding: 10px 14px;
-    margin-bottom: 28px;
-    border: 1px solid var(--accent-color);
-    border-radius: 10px;
-    background: rgba(53, 255, 107, 0.08);
-    color: var(--accent-color);
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-decoration: none;
-    box-shadow: inset 0 0 0 1px rgba(53, 255, 107, 0.12), 0 0 20px rgba(53, 255, 107, 0.12);
-}
+/* nav link stagger animation */
 
 .nav-links {
     list-style: none;
@@ -335,7 +341,6 @@ body.sidebar-open #sidebar-toggle {
 }
 
 body.sidebar-open .content {
-    margin-left: 280px;
     filter: brightness(0.95);
 }
 
@@ -859,12 +864,10 @@ input[type="submit"] {
 }
 
 @media (max-width: 700px) {
-    body.sidebar-open .content {
-        margin-left: 0;
-    }
-
-    body.sidebar-open #sidebar-toggle {
-        left: 16px;
+    .sidebar {
+        width: 100%;
+        border-left: none;
+        border-radius: 0;
     }
 
     .content::before,
