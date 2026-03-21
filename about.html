@@ -245,7 +245,7 @@
                         </div>
                     </div>
 
-                    <button class="graph-reset" id="graph-reset">Reset View</button>
+                    <button class="graph-reset" id="graph-reset">Zoom Out</button>
                 </div>
             </section>
             <section class="section">
@@ -316,6 +316,20 @@
                 ctx.shadowBlur = focused ? 12 : 4;
                 ctx.stroke();
                 ctx.shadowBlur = 0;
+                // Draw arrowhead pointing from child toward parent
+                var angle = Math.atan2(pc.y - nc.y, pc.x - nc.x);
+                var arrowLen = 10;
+                var ax = nc.x + Math.cos(angle) * 18;
+                var ay = nc.y + Math.sin(angle) * 18;
+                ctx.beginPath();
+                ctx.moveTo(ax, ay);
+                ctx.lineTo(ax - arrowLen * Math.cos(angle - 0.4), ay - arrowLen * Math.sin(angle - 0.4));
+                ctx.moveTo(ax, ay);
+                ctx.lineTo(ax - arrowLen * Math.cos(angle + 0.4), ay - arrowLen * Math.sin(angle + 0.4));
+                ctx.strokeStyle = focused ? 'rgba(53,255,107,0.9)' : 'rgba(53,255,107,0.4)';
+                ctx.lineWidth = focused ? 2 : 1.5;
+                ctx.shadowBlur = 0;
+                ctx.stroke();
                 [pc, nc].forEach(function(pt) {
                     ctx.beginPath();
                     ctx.arc(pt.x, pt.y, focused ? 5 : 3, 0, Math.PI * 2);
@@ -380,14 +394,34 @@
             }, 30);
         }
 
-        function resetView() {
+        var zoomedIn = false;
+
+        function zoomOut() {
             nodes.forEach(function(n) { n.classList.remove('focused'); });
             var vw = viewport.clientWidth, vh = viewport.clientHeight;
-            var tx = -(worldW / 2 - vw / 2);
-            var ty = -(worldH / 2 - vh / 2);
-            world.style.transform = 'translate(' + tx + 'px,' + ty + 'px)';
+            var scaleX = vw / worldW;
+            var scaleY = vh / worldH;
+            var scale = Math.min(scaleX, scaleY, 1) * 0.92;
+            var tx = (vw - worldW * scale) / 2;
+            var ty = (vh - worldH * scale) / 2;
+            world.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+            world.style.transformOrigin = '0 0';
+            zoomedIn = false;
             drawLines();
         }
+
+        function zoomToNode(targetEl) {
+            var vw = viewport.clientWidth, vh = viewport.clientHeight;
+            var nc = { x: targetEl.offsetLeft + targetEl.offsetWidth / 2, y: targetEl.offsetTop + targetEl.offsetHeight / 2 };
+            var tx = -(nc.x - vw / 2);
+            var ty = -(nc.y - vh / 2);
+            world.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(1)';
+            world.style.transformOrigin = '0 0';
+            zoomedIn = true;
+            viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function resetView() { zoomOut(); }
 
         // initial position: center on the center node
         resetView();
