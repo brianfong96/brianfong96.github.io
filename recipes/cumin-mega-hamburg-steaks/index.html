@@ -6,58 +6,75 @@
     <title>Cumin-Spiced Mega Hamburg Steaks - Brian Fong</title>
     <link rel="stylesheet" href="../../assets/css/style.css" />
     <style>
-        .graph-viewport {
+        .recipe-nodes {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .recipe-node {
             position: relative;
-            width: 100%;
-            height: 70vh;
-            min-height: 500px;
             overflow: hidden;
-            border: none;
-            border-radius: 0;
-            background: transparent;
-            cursor: grab;
-        }
-        .graph-viewport:active { cursor: grabbing; }
-        .graph-world {
-            position: absolute;
-            width: 1060px;
-            height: 500px;
-            transition: transform 0.6s ease;
-        }
-        .graph-world canvas {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-        }
-        .graph-node {
-            position: absolute;
-            padding: 20px 24px;
+            padding: 22px 26px;
             border: 1px solid rgba(53, 255, 107, 0.22);
             border-radius: 14px;
             background: rgba(1, 8, 3, 0.95);
             cursor: pointer;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            z-index: 2;
-            max-width: 320px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.4s ease, transform 0.3s ease;
         }
-        .graph-node.center-node {
-            max-width: 400px;
+
+        .recipe-node::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background:
+                linear-gradient(90deg, transparent, rgba(53, 255, 107, 0.9), transparent) top / 220% 1px no-repeat,
+                linear-gradient(180deg, transparent, rgba(53, 255, 107, 0.75), transparent) right / 1px 220% no-repeat,
+                linear-gradient(270deg, transparent, rgba(53, 255, 107, 0.9), transparent) bottom / 220% 1px no-repeat,
+                linear-gradient(0deg, transparent, rgba(53, 255, 107, 0.75), transparent) left / 1px 220% no-repeat;
+            animation: borderTrace 5s linear infinite;
+            opacity: 0.7;
+        }
+
+        .recipe-node.center-node {
             border-color: var(--accent-color);
-            box-shadow: 0 0 30px rgba(53, 255, 107, 0.2);
+            box-shadow: 0 0 24px rgba(53, 255, 107, 0.18);
+            cursor: default;
         }
-        .graph-node:hover, .graph-node.focused {
+
+        .recipe-node:hover,
+        .recipe-node.focused {
             border-color: var(--accent-color);
-            box-shadow: 0 0 32px rgba(53, 255, 107, 0.25);
+            box-shadow: 0 0 28px rgba(53, 255, 107, 0.22);
         }
-        .graph-node h3 {
+
+        .recipe-nodes.has-focus .recipe-node:not(.focused):not(.center-node) {
+            opacity: 0.35;
+            transform: scale(0.97);
+        }
+
+        .recipe-nodes.has-focus .recipe-node.center-node {
+            opacity: 0.5;
+        }
+
+        .recipe-nodes.has-focus .recipe-node.focused {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .recipe-node h3 {
             margin: 0 0 6px;
             color: var(--accent-color);
             font-size: 0.95rem;
             letter-spacing: 0.12em;
             text-transform: uppercase;
         }
-        .graph-node .node-tag {
+
+        .recipe-node .node-tag {
             display: inline-block;
             padding: 2px 10px;
             margin-bottom: 10px;
@@ -69,26 +86,33 @@
             letter-spacing: 0.14em;
             text-transform: uppercase;
         }
-        .graph-node p, .graph-node ul, .graph-node ol {
+
+        .recipe-node p,
+        .recipe-node ul,
+        .recipe-node ol {
             color: var(--muted-text);
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             line-height: 1.6;
             margin: 0;
         }
-        .graph-node ul, .graph-node ol { padding-left: 18px; margin-top: 8px; }
-        .graph-node li { margin-bottom: 6px; }
-        .graph-node li strong { color: var(--accent-color); }
-        .graph-node .node-detail {
+
+        .recipe-node ul, .recipe-node ol { padding-left: 18px; margin-top: 8px; }
+        .recipe-node li { margin-bottom: 6px; }
+        .recipe-node li strong { color: var(--accent-color); }
+
+        .recipe-node .node-detail {
             max-height: 0;
             overflow: hidden;
             opacity: 0;
             transition: max-height 0.45s ease, opacity 0.35s ease;
         }
-        .graph-node.focused .node-detail {
-            max-height: 600px;
+
+        .recipe-node.focused .node-detail {
+            max-height: 800px;
             opacity: 1;
         }
-        .graph-node .node-hint {
+
+        .recipe-node .node-hint {
             display: flex;
             align-items: center;
             gap: 6px;
@@ -98,28 +122,41 @@
             letter-spacing: 0.1em;
             text-transform: uppercase;
         }
-        .graph-node .node-hint svg {
+
+        .recipe-node .node-hint svg {
             width: 14px; height: 14px;
             fill: currentColor;
             animation: pulseArrow 1.5s ease-in-out infinite;
         }
+
         @keyframes pulseArrow {
             0%, 100% { opacity: 0.4; transform: translateX(0); }
             50% { opacity: 1; transform: translateX(3px); }
         }
-        .graph-node.focused .node-hint { display: none; }
+
+        .recipe-node.focused .node-hint { display: none; }
+
+        .edge-line {
+            width: 2px;
+            height: 20px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, rgba(53, 255, 107, 0.5), rgba(53, 255, 107, 0.15));
+        }
+
         .temp-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-top: 10px;
         }
+
         .temp-card {
             padding: 12px;
             border: 1px solid rgba(53, 255, 107, 0.14);
             border-radius: 10px;
             background: rgba(0, 4, 1, 0.8);
         }
+
         .temp-label {
             display: block;
             color: var(--accent-color);
@@ -128,125 +165,19 @@
             text-transform: uppercase;
             margin-bottom: 4px;
         }
+
         .temp-value {
             display: block;
             color: var(--text-color);
             font-weight: 700;
             font-size: 0.95rem;
         }
+
         .temp-note {
             display: block;
             margin-top: 4px;
             color: var(--muted-text);
             font-size: 0.78rem;
-        }
-        .graph-reset {
-            position: absolute;
-            bottom: 16px;
-            right: 16px;
-            z-index: 10;
-            padding: 8px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            background: rgba(1, 8, 3, 0.95);
-            color: var(--accent-color);
-            font-size: 0.78rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            cursor: pointer;
-        }
-        .graph-reset:hover {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 14px rgba(53, 255, 107, 0.16);
-        }
-        .graph-controls {
-            position: absolute;
-            bottom: 16px;
-            right: 16px;
-            z-index: 10;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .graph-controls button {
-            width: 36px;
-            height: 36px;
-            padding: 0;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            background: rgba(1, 8, 3, 0.95);
-            color: var(--accent-color);
-            font-size: 1.1rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .graph-controls button:hover {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 14px rgba(53, 255, 107, 0.16);
-        }
-
-        .graph-controls .zoom-label {
-            color: var(--muted-text);
-            font-size: 0.72rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            min-width: 40px;
-            text-align: center;
-        }
-
-
-        .graph-world.has-focus .graph-node:not(.focused):not(.center-node) {
-            opacity: 0.35;
-            transform: scale(0.85);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-
-        .graph-world.has-focus .graph-node.center-node {
-            opacity: 0.5;
-            transition: opacity 0.4s ease;
-        }
-
-        .graph-world.has-focus .graph-node.focused {
-            opacity: 1;
-            transform: scale(1);
-            z-index: 10;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        .graph-node {
-            transition: opacity 0.4s ease, transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        @media (max-width: 700px) {
-            .graph-viewport { height: 60vh; min-height: 400px; }
-            .graph-world {
-                position: relative !important;
-                width: 100% !important;
-                height: auto !important;
-                transform: none !important;
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
-                padding: 16px;
-            }
-            .graph-world canvas { display: none; }
-            .graph-node {
-                position: relative !important;
-                left: auto !important;
-                top: auto !important;
-                max-width: 100% !important;
-            }
-            .graph-node .node-detail {
-                max-height: none !important;
-                opacity: 1 !important;
-            }
-            .graph-node .node-hint { display: none !important; }
-            .graph-viewport { height: auto; min-height: 0; overflow: visible; }
-            .graph-reset { display: none; }
         }
     </style>
 </head>
@@ -270,103 +201,101 @@
             <div class="hero-content">
                 <p class="eyebrow">Recipe</p>
                 <h1>Cumin-Spiced Mega Hamburg Steaks</h1>
-                <p class="hero-copy">Click any section node to read more. Drag to pan.</p>
+                <p class="hero-copy">Click any section to expand. Click again to collapse.</p>
                 <a href="../../recipes.html" class="back-button">Back to Recipes</a>
             </div>
         </header>
         <main>
             <section class="section">
-                <div class="graph-viewport" id="graph-viewport">
-                    <div class="graph-world" id="graph-world">
-                        <canvas id="graph-lines"></canvas>
+                <div class="recipe-nodes" id="recipe-nodes">
+                    <div class="recipe-node center-node">
+                        <h3>Overview</h3>
+                        <p>High-protein, savory "Mega Hamburg Steaks" using a panade of whole wheat bread and milk to keep 3kg of ground beef tender. Seasoned with cumin, cayenne, and chicken stock — six massive 500g patties bridging meatloaf and Japanese Hamburg steak.</p>
+                    </div>
 
-                        <div class="graph-node center-node" id="node-center" style="left:310px;top:30px;">
-                            <h3>Overview</h3>
-                            <p>High-protein, savory "Mega Hamburg Steaks" using a panade of whole wheat bread and milk to keep 3kg of ground beef tender. Seasoned with cumin, cayenne, and chicken stock — six massive 500g patties bridging meatloaf and Japanese Hamburg steak.</p>
+                    <div class="edge-line"></div>
+
+                    <div class="recipe-node" id="node-ingredients">
+                        <span class="node-tag">10 Items</span>
+                        <h3>Ingredients</h3>
+                        <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                        <div class="node-detail">
+                            <ul>
+                                <li><strong>3 kg</strong> Ground Beef (Medium or Lean)</li>
+                                <li><strong>6-8 slices</strong> Whole Wheat Bread (torn)</li>
+                                <li><strong>1 1/2 cups</strong> Whole Milk</li>
+                                <li><strong>3 large</strong> Eggs (beaten)</li>
+                                <li><strong>4 tbsp</strong> Powdered Chicken Stock</li>
+                                <li><strong>2 tbsp</strong> Cumin</li>
+                                <li><strong>1 tsp</strong> Cayenne Pepper</li>
+                                <li><strong>2 tbsp</strong> Red Pepper Flakes</li>
+                                <li><strong>1 large</strong> Onion (finely minced)</li>
+                                <li><strong>4 cloves</strong> Garlic (minced)</li>
+                            </ul>
                         </div>
+                    </div>
 
-                        <div class="graph-node" id="node-ingredients" data-connects="node-center" style="left:20px;top:220px;">
-                            <span class="node-tag">10 Items</span>
-                            <h3>Ingredients</h3>
-                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
-                            <div class="node-detail">
-                                <ul>
-                                    <li><strong>3 kg</strong> Ground Beef (Medium or Lean)</li>
-                                    <li><strong>6-8 slices</strong> Whole Wheat Bread (torn)</li>
-                                    <li><strong>1 1/2 cups</strong> Whole Milk</li>
-                                    <li><strong>3 large</strong> Eggs (beaten)</li>
-                                    <li><strong>4 tbsp</strong> Powdered Chicken Stock</li>
-                                    <li><strong>2 tbsp</strong> Cumin</li>
-                                    <li><strong>1 tsp</strong> Cayenne Pepper</li>
-                                    <li><strong>2 tbsp</strong> Red Pepper Flakes</li>
-                                    <li><strong>1 large</strong> Onion (finely minced)</li>
-                                    <li><strong>4 cloves</strong> Garlic (minced)</li>
-                                </ul>
-                            </div>
+                    <div class="edge-line"></div>
+
+                    <div class="recipe-node" id="node-prep">
+                        <span class="node-tag">5 Steps</span>
+                        <h3>Preparation</h3>
+                        <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                        <div class="node-detail">
+                            <ol>
+                                <li><strong>Panade:</strong> Soak torn bread in milk 10 min, mash to paste.</li>
+                                <li><strong>Season:</strong> Stir eggs, chicken stock, cumin, cayenne, red pepper, onion, garlic into paste.</li>
+                                <li><strong>Combine:</strong> Fold beef into mixture gently. Don't overwork.</li>
+                                <li><strong>Shape:</strong> Divide into 6 x 500g oval patties. Thumb-press center indentation.</li>
+                                <li><strong>Arrange:</strong> Place on 2 parchment-lined sheets, 3 per sheet.</li>
+                            </ol>
                         </div>
+                    </div>
 
-                        <div class="graph-node" id="node-prep" data-connects="node-ingredients" style="left:280px;top:220px;">
-                            <span class="node-tag">5 Steps</span>
-                            <h3>Preparation</h3>
-                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
-                            <div class="node-detail">
-                                <ol>
-                                    <li><strong>Panade:</strong> Soak torn bread in milk 10 min, mash to paste.</li>
-                                    <li><strong>Season:</strong> Stir eggs, chicken stock, cumin, cayenne, red pepper, onion, garlic into paste.</li>
-                                    <li><strong>Combine:</strong> Fold beef into mixture gently. Don't overwork.</li>
-                                    <li><strong>Shape:</strong> Divide into 6 x 500g oval patties. Thumb-press center indentation.</li>
-                                    <li><strong>Arrange:</strong> Place on 2 parchment-lined sheets, 3 per sheet.</li>
-                                </ol>
-                            </div>
-                        </div>
+                    <div class="edge-line"></div>
 
-                        <div class="graph-node" id="node-roast" data-connects="node-prep" style="left:540px;top:220px;">
-                            <span class="node-tag">Oven</span>
-                            <h3>Roasting</h3>
-                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
-                            <div class="node-detail">
-                                <div class="temp-grid">
-                                    <div class="temp-card">
-                                        <span class="temp-label">Oven</span>
-                                        <span class="temp-value">190C / 375F</span>
-                                    </div>
-                                    <div class="temp-card">
-                                        <span class="temp-label">Time</span>
-                                        <span class="temp-value">35-45 min</span>
-                                    </div>
-                                    <div class="temp-card">
-                                        <span class="temp-label">Pull at</span>
-                                        <span class="temp-value">68C / 155F</span>
-                                    </div>
-                                    <div class="temp-card">
-                                        <span class="temp-label">Rest</span>
-                                        <span class="temp-value">10-15 min</span>
-                                        <span class="temp-note">Carry-over to 71C</span>
-                                    </div>
+                    <div class="recipe-node" id="node-roast">
+                        <span class="node-tag">Oven</span>
+                        <h3>Roasting</h3>
+                        <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                        <div class="node-detail">
+                            <div class="temp-grid">
+                                <div class="temp-card">
+                                    <span class="temp-label">Oven</span>
+                                    <span class="temp-value">190C / 375F</span>
+                                </div>
+                                <div class="temp-card">
+                                    <span class="temp-label">Time</span>
+                                    <span class="temp-value">35-45 min</span>
+                                </div>
+                                <div class="temp-card">
+                                    <span class="temp-label">Pull at</span>
+                                    <span class="temp-value">68C / 155F</span>
+                                </div>
+                                <div class="temp-card">
+                                    <span class="temp-label">Rest</span>
+                                    <span class="temp-value">10-15 min</span>
+                                    <span class="temp-note">Carry-over to 71C</span>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="graph-node" id="node-tips" data-connects="node-center" style="left:780px;top:220px;">
-                            <span class="node-tag">Tips</span>
-                            <h3>Key Tips</h3>
-                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
-                            <div class="node-detail">
-                                <ul>
-                                    <li>The panade (bread + milk paste) is essential for moisture retention in this much meat.</li>
-                                    <li>Mix spices into the liquid base first for even distribution.</li>
-                                    <li>Stop folding as soon as combined — overworked beef = tough texture.</li>
-                                    <li>The thumb indentation prevents doming during roasting.</li>
-                                    <li>Resting lets carry-over cooking finish the job safely.</li>
-                                </ul>
-                            </div>
-                        </div>
                     </div>
-                    <div class="graph-controls">
-                        <button id="graph-zoom-out" aria-label="Zoom out">−</button>
-                        <span class="zoom-label" id="zoom-label">100%</span>
-                        <button id="graph-zoom-in" aria-label="Zoom in">+</button>
-                        <button class="graph-reset" id="graph-reset" style="width:auto;padding:0 12px;">Fit</button>
+
+                    <div class="edge-line"></div>
+
+                    <div class="recipe-node" id="node-tips">
+                        <span class="node-tag">Tips</span>
+                        <h3>Key Tips</h3>
+                        <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                        <div class="node-detail">
+                            <ul>
+                                <li>The panade (bread + milk paste) is essential for moisture retention in this much meat.</li>
+                                <li>Mix spices into the liquid base first for even distribution.</li>
+                                <li>Stop folding as soon as combined — overworked beef = tough texture.</li>
+                                <li>The thumb indentation prevents doming during roasting.</li>
+                                <li>Resting lets carry-over cooking finish the job safely.</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -378,76 +307,10 @@
     <script src="../../assets/js/data.js"></script>
     <script src="../../assets/js/main.js"></script>
     <script>
-    function initGraph() {
-        var viewport = document.getElementById('graph-viewport');
-        if (!viewport || viewport.dataset.initialized) return;
-        viewport.dataset.initialized = 'true';
-        requestAnimationFrame(function() { requestAnimationFrame(function() {
-
+    (function() {
         var GLYPHS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホΞΨΩΦΣΛΠΔ@#$%&*';
-        var world = document.getElementById('graph-world');
-        var canvas = document.getElementById('graph-lines');
-        var ctx = canvas.getContext('2d');
-        var resetBtn = document.getElementById('graph-reset');
-        var centerNode = document.getElementById('node-center');
-        var nodes = document.querySelectorAll('.graph-node:not(.center-node)');
-
-        var worldW = 1060, worldH = 500;
-        canvas.width = worldW;
-        canvas.height = worldH;
-
-        function getNodeCenter(el) {
-            return { x: el.offsetLeft + el.offsetWidth / 2, y: el.offsetTop + 20 };
-        }
-
-        function drawLines() {
-            ctx.clearRect(0, 0, worldW, worldH);
-            nodes.forEach(function(node) {
-                var parentId = node.dataset.connects;
-                var parent = document.getElementById(parentId);
-                if (!parent) return;
-                var pc = { x: parent.offsetLeft + parent.offsetWidth / 2, y: parent.offsetTop + parent.offsetHeight };
-                var nc = { x: node.offsetLeft + node.offsetWidth / 2, y: node.offsetTop };
-                var focused = node.classList.contains('focused');
-                ctx.beginPath();
-                ctx.moveTo(pc.x, pc.y);
-                var midY = (pc.y + nc.y) / 2;
-                ctx.bezierCurveTo(pc.x, midY, nc.x, midY, nc.x, nc.y);
-                ctx.strokeStyle = focused ? 'rgba(53,255,107,0.8)' : 'rgba(53,255,107,0.25)';
-                ctx.lineWidth = focused ? 2.5 : 1.5;
-                ctx.shadowColor = 'rgba(53,255,107,0.3)';
-                ctx.shadowBlur = focused ? 12 : 4;
-                ctx.stroke();
-                ctx.shadowBlur = 0;
-                // Draw arrowhead pointing from child toward parent
-                var angle = Math.atan2(pc.y - nc.y, pc.x - nc.x);
-                var arrowLen = 10;
-                var ax = nc.x + Math.cos(angle) * 18;
-                var ay = nc.y + Math.sin(angle) * 18;
-                ctx.beginPath();
-                ctx.moveTo(ax, ay);
-                ctx.lineTo(ax - arrowLen * Math.cos(angle - 0.4), ay - arrowLen * Math.sin(angle - 0.4));
-                ctx.moveTo(ax, ay);
-                ctx.lineTo(ax - arrowLen * Math.cos(angle + 0.4), ay - arrowLen * Math.sin(angle + 0.4));
-                ctx.strokeStyle = focused ? 'rgba(53,255,107,0.9)' : 'rgba(53,255,107,0.4)';
-                ctx.lineWidth = focused ? 2 : 1.5;
-                ctx.shadowBlur = 0;
-                ctx.stroke();
-                [pc, nc].forEach(function(pt) {
-                    ctx.beginPath();
-                    ctx.arc(pt.x, pt.y, focused ? 5 : 3, 0, Math.PI * 2);
-                    ctx.fillStyle = focused ? 'rgba(53,255,107,0.9)' : 'rgba(53,255,107,0.5)';
-                    ctx.fill();
-                });
-            });
-        }
-
-        function panTo(targetEl) {
-            var vw = viewport.clientWidth, vh = viewport.clientHeight;
-            var nc = getNodeCenter(targetEl);
-            world.style.transform = 'translate(' + (-(nc.x - vw/2)) + 'px,' + (-(nc.y - vh/2)) + 'px)';
-            viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+        var container = document.getElementById('recipe-nodes');
+        var nodes = document.querySelectorAll('.recipe-node:not(.center-node)');
 
         function scrambleNode(el) {
             var targets = [];
@@ -487,251 +350,33 @@
             }, 30);
         }
 
-        var zoomedIn = false;
-
-        function zoomOut() {
-            nodes.forEach(function(n) { n.classList.remove('focused'); });
-            world.classList.remove('has-focus');
-            var vw = viewport.clientWidth, vh = viewport.clientHeight;
-            var scaleX = vw / worldW;
-            var scaleY = vh / worldH;
-            var scale = Math.min(scaleX, scaleY, 1) * 0.92;
-            var tx = (vw - worldW * scale) / 2;
-            var ty = (vh - worldH * scale) / 2;
-            world.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
-            world.style.transformOrigin = '0 0';
-            zoomedIn = false;
-            drawLines();
-        }
-
-        function zoomToNode(targetEl) {
-            var vw = viewport.clientWidth, vh = viewport.clientHeight;
-            var nc = { x: targetEl.offsetLeft + targetEl.offsetWidth / 2, y: targetEl.offsetTop + targetEl.offsetHeight / 2 };
-            var tx = -(nc.x - vw / 2);
-            var ty = -(nc.y - vh / 2);
-            world.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(1)';
-            world.style.transformOrigin = '0 0';
-            zoomedIn = true;
-            viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        function resetView() { zoomOut(); }
-
-        resetView();
-        parseTransform();
-        if (zoomLabel) zoomLabel.textContent = Math.round(currentScale * 100) + '%';
-
-        var allGraphNodes = document.querySelectorAll(".graph-node");
-        allGraphNodes.forEach(function(n) { scrambleNode(n); });
-
-        centerNode.addEventListener('click', function() {
-            if (centerNode._wasDragged) { centerNode._wasDragged = false; return; }
-            resetView();
-        });
-
-        // Node drag or click
-        var nodeDrag = null;
-        var DRAG_THRESHOLD = 5;
-
-        function setupNodeDrag(node) {
-            node.addEventListener('mousedown', function(e) {
-                e.stopPropagation();
-                nodeDrag = {
-                    node: node,
-                    startX: e.clientX,
-                    startY: e.clientY,
-                    origLeft: node.offsetLeft,
-                    origTop: node.offsetTop,
-                    moved: false
-                };
-            });
-        }
-
-        var allDraggableNodes = [centerNode].concat(Array.from(nodes));
-        allDraggableNodes.forEach(setupNodeDrag);
-
-        var GAP = 8;
-        function wouldOverlap(movingNode, newLeft, newTop) {
-            var mw = movingNode.offsetWidth, mh = movingNode.offsetHeight;
-            for (var i = 0; i < allDraggableNodes.length; i++) {
-                var other = allDraggableNodes[i];
-                if (other === movingNode) continue;
-                var ol = other.offsetLeft, ot = other.offsetTop;
-                var ow = other.offsetWidth, oh = other.offsetHeight;
-                if (newLeft < ol + ow + GAP && newLeft + mw + GAP > ol &&
-                    newTop < ot + oh + GAP && newTop + mh + GAP > ot) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        window.addEventListener('mousemove', function(e) {
-            if (!nodeDrag) return;
-            var dx = e.clientX - nodeDrag.startX;
-            var dy = e.clientY - nodeDrag.startY;
-            if (!nodeDrag.moved && Math.abs(dx) + Math.abs(dy) > DRAG_THRESHOLD) {
-                nodeDrag.moved = true;
-                nodeDrag.node.style.transition = 'none';
-                nodeDrag.node.style.cursor = 'grabbing';
-            }
-            if (nodeDrag.moved) {
-                var newLeft = nodeDrag.origLeft + dx;
-                var newTop = nodeDrag.origTop + dy;
-                if (!wouldOverlap(nodeDrag.node, newLeft, newTop)) {
-                    nodeDrag.node.style.left = newLeft + 'px';
-                    nodeDrag.node.style.top = newTop + 'px';
-                    drawLines();
-                }
-            }
-        });
-
-        window.addEventListener('mouseup', function() {
-            if (nodeDrag) {
-                if (nodeDrag.moved) {
-                    nodeDrag.node.style.transition = '';
-                    nodeDrag.node.style.cursor = '';
-                    drawLines();
-                }
-                nodeDrag = null;
-            }
-        });
-
         nodes.forEach(function(node) {
             node.addEventListener('click', function() {
-                if (node._wasDragged) { node._wasDragged = false; return; }
                 var wasFocused = node.classList.contains('focused');
+
                 nodes.forEach(function(n) { n.classList.remove('focused'); });
+
                 if (!wasFocused) {
                     node.classList.add('focused');
-                    world.classList.add('has-focus');
+                    container.classList.add('has-focus');
                     scrambleNode(node);
-                    panTo(node);
+
+                    // Wait for expand animation then scroll to center
+                    setTimeout(function() {
+                        var rect = node.getBoundingClientRect();
+                        var viewH = window.innerHeight;
+                        var scrollTarget = window.scrollY + rect.top - (viewH / 2) + (rect.height / 2);
+                        window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+                    }, 100);
                 } else {
-                    world.classList.remove('has-focus');
-                    panTo(centerNode);
+                    container.classList.remove('has-focus');
                 }
-                var animStart = performance.now();
-                function trackLines(t) { drawLines(); if (t - animStart < 600) requestAnimationFrame(trackLines); }
-                requestAnimationFrame(trackLines);
-            });
-
-            node.addEventListener('mouseup', function() {
-                if (nodeDrag && nodeDrag.moved) { node._wasDragged = true; }
             });
         });
 
-        centerNode.addEventListener('mouseup', function() {
-            if (nodeDrag && nodeDrag.moved) { centerNode._wasDragged = true; }
-        });
-
-        resetBtn.addEventListener('click', resetView);
-
-        // Viewport drag to pan
-        var dragging = false, startX, startY, origX, origY;
-        viewport.addEventListener('mousedown', function(e) {
-            if (e.target.closest('.graph-node') || e.target.closest('.graph-reset')) return;
-            dragging = true; startX = e.clientX; startY = e.clientY;
-            var m = world.style.transform.match(/translate\(([^,]+),\s*([^)]+)\)/);
-            origX = m ? parseFloat(m[1]) : 0; origY = m ? parseFloat(m[2]) : 0;
-            world.style.transition = 'none';
-        });
-        window.addEventListener('mousemove', function(e) {
-            if (!dragging) return;
-            world.style.transform = 'translate(' + (origX + e.clientX - startX) + 'px,' + (origY + e.clientY - startY) + 'px)';
-        });
-        window.addEventListener('mouseup', function() { if (dragging) { dragging = false; world.style.transition = 'transform 0.6s ease'; } });
-
-        viewport.addEventListener('touchstart', function(e) {
-            if (e.target.closest('.graph-node') || e.target.closest('.graph-reset') || e.touches.length !== 1) return;
-            dragging = true; startX = e.touches[0].clientX; startY = e.touches[0].clientY;
-            var m = world.style.transform.match(/translate\(([^,]+),\s*([^)]+)\)/);
-            origX = m ? parseFloat(m[1]) : 0; origY = m ? parseFloat(m[2]) : 0;
-            world.style.transition = 'none';
-        }, { passive: true });
-        viewport.addEventListener('touchmove', function(e) {
-            if (!dragging || e.touches.length !== 1) return;
-            world.style.transform = 'translate(' + (origX + e.touches[0].clientX - startX) + 'px,' + (origY + e.touches[0].clientY - startY) + 'px)';
-        }, { passive: true });
-        viewport.addEventListener('touchend', function() { if (dragging) { dragging = false; world.style.transition = 'transform 0.6s ease'; } });
-
-        
-        // Zoom state
-        var currentScale = 1;
-        var currentTx = 0, currentTy = 0;
-        var zoomLabel = document.getElementById('zoom-label');
-
-        function parseTransform() {
-            var m = world.style.transform.match(/translate\(([^,]+),\s*([^)]+)\)\s*scale\(([^)]+)\)/);
-            if (m) {
-                currentTx = parseFloat(m[1]);
-                currentTy = parseFloat(m[2]);
-                currentScale = parseFloat(m[3]);
-            }
-        }
-
-        function applyZoom(newScale, cx, cy) {
-            newScale = Math.max(0.3, Math.min(2.5, newScale));
-            parseTransform();
-            // Zoom toward cursor/center
-            var ratio = newScale / currentScale;
-            var ntx = cx - ratio * (cx - currentTx);
-            var nty = cy - ratio * (cy - currentTy);
-            currentScale = newScale;
-            currentTx = ntx;
-            currentTy = nty;
-            world.style.transform = 'translate(' + ntx + 'px,' + nty + 'px) scale(' + newScale + ')';
-            world.style.transformOrigin = '0 0';
-            if (zoomLabel) zoomLabel.textContent = Math.round(newScale * 100) + '%';
-            drawLines();
-        }
-
-        // Mouse wheel zoom
-        viewport.addEventListener('wheel', function(e) {
-            e.preventDefault();
-            parseTransform();
-            var rect = viewport.getBoundingClientRect();
-            var cx = e.clientX - rect.left;
-            var cy = e.clientY - rect.top;
-            var delta = e.deltaY > 0 ? 0.9 : 1.1;
-            applyZoom(currentScale * delta, cx, cy);
-        }, { passive: false });
-
-        // + / - buttons
-        document.getElementById('graph-zoom-in').addEventListener('click', function() {
-            parseTransform();
-            var vw = viewport.clientWidth, vh = viewport.clientHeight;
-            applyZoom(currentScale * 1.2, vw / 2, vh / 2);
-        });
-
-        document.getElementById('graph-zoom-out').addEventListener('click', function() {
-            parseTransform();
-            var vw = viewport.clientWidth, vh = viewport.clientHeight;
-            applyZoom(currentScale / 1.2, vw / 2, vh / 2);
-        });
-
-        // Update zoom label on resetView
-        var origZoomOut = zoomOut;
-        zoomOut = function() {
-            origZoomOut();
-            parseTransform();
-            if (zoomLabel) zoomLabel.textContent = Math.round(currentScale * 100) + '%';
-        };
-
-        var origZoomToNode = zoomToNode;
-        zoomToNode = function(el) {
-            origZoomToNode(el);
-            if (zoomLabel) zoomLabel.textContent = '100%';
-        };
-
-        drawLines();
-        window.addEventListener('resize', drawLines);
-    }); });
-    }
-
-    if (document.readyState === 'complete') { initGraph(); }
-    else { window.addEventListener('load', initGraph); }
-    window.addEventListener('pageshow', function() { setTimeout(initGraph, 100); });
+        // Scramble in on load
+        document.querySelectorAll('.recipe-node').forEach(function(n) { scrambleNode(n); });
+    })();
     </script>
 </body>
 </html>
