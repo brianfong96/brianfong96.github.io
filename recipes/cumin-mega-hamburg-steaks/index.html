@@ -20,8 +20,8 @@
         .graph-viewport:active { cursor: grabbing; }
         .graph-world {
             position: absolute;
-            width: 900px;
-            height: 700px;
+            width: 1060px;
+            height: 500px;
             transition: transform 0.6s ease;
         }
         .graph-world canvas {
@@ -161,6 +161,30 @@
         }
         @media (max-width: 700px) {
             .graph-viewport { height: 60vh; min-height: 400px; }
+            .graph-world {
+                position: relative !important;
+                width: 100% !important;
+                height: auto !important;
+                transform: none !important;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                padding: 16px;
+            }
+            .graph-world canvas { display: none; }
+            .graph-node {
+                position: relative !important;
+                left: auto !important;
+                top: auto !important;
+                max-width: 100% !important;
+            }
+            .graph-node .node-detail {
+                max-height: none !important;
+                opacity: 1 !important;
+            }
+            .graph-node .node-hint { display: none !important; }
+            .graph-viewport { height: auto; min-height: 0; overflow: visible; }
+            .graph-reset { display: none; }
         }
     </style>
 </head>
@@ -194,12 +218,12 @@
                     <div class="graph-world" id="graph-world">
                         <canvas id="graph-lines"></canvas>
 
-                        <div class="graph-node center-node" id="node-center" style="left:280px;top:230px;">
+                        <div class="graph-node center-node" id="node-center" style="left:310px;top:30px;">
                             <h3>Overview</h3>
                             <p>High-protein, savory "Mega Hamburg Steaks" using a panade of whole wheat bread and milk to keep 3kg of ground beef tender. Seasoned with cumin, cayenne, and chicken stock — six massive 500g patties bridging meatloaf and Japanese Hamburg steak.</p>
                         </div>
 
-                        <div class="graph-node" id="node-ingredients" data-connects="node-center" style="left:40px;top:50px;">
+                        <div class="graph-node" id="node-ingredients" data-connects="node-center" style="left:20px;top:220px;">
                             <span class="node-tag">10 Items</span>
                             <h3>Ingredients</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
@@ -219,7 +243,7 @@
                             </div>
                         </div>
 
-                        <div class="graph-node" id="node-prep" data-connects="node-center" style="left:560px;top:40px;">
+                        <div class="graph-node" id="node-prep" data-connects="node-center" style="left:280px;top:220px;">
                             <span class="node-tag">5 Steps</span>
                             <h3>Preparation</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
@@ -234,7 +258,7 @@
                             </div>
                         </div>
 
-                        <div class="graph-node" id="node-roast" data-connects="node-center" style="left:40px;top:420px;">
+                        <div class="graph-node" id="node-roast" data-connects="node-center" style="left:540px;top:220px;">
                             <span class="node-tag">Oven</span>
                             <h3>Roasting</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
@@ -261,7 +285,7 @@
                             </div>
                         </div>
 
-                        <div class="graph-node" id="node-tips" data-connects="node-center" style="left:580px;top:420px;">
+                        <div class="graph-node" id="node-tips" data-connects="node-center" style="left:780px;top:220px;">
                             <span class="node-tag">Tips</span>
                             <h3>Key Tips</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
@@ -301,7 +325,7 @@
         var centerNode = document.getElementById('node-center');
         var nodes = document.querySelectorAll('.graph-node:not(.center-node)');
 
-        var worldW = 900, worldH = 700;
+        var worldW = 1060, worldH = 500;
         canvas.width = worldW;
         canvas.height = worldH;
 
@@ -311,23 +335,24 @@
 
         function drawLines() {
             ctx.clearRect(0, 0, worldW, worldH);
-            var cc = getNodeCenter(centerNode);
             nodes.forEach(function(node) {
-                var nc = getNodeCenter(node);
+                var parentId = node.dataset.connects;
+                var parent = document.getElementById(parentId);
+                if (!parent) return;
+                var pc = { x: parent.offsetLeft + parent.offsetWidth / 2, y: parent.offsetTop + parent.offsetHeight };
+                var nc = { x: node.offsetLeft + node.offsetWidth / 2, y: node.offsetTop };
                 var focused = node.classList.contains('focused');
                 ctx.beginPath();
-                ctx.moveTo(cc.x, cc.y);
-                var mx = (cc.x + nc.x) / 2;
-                var my = (cc.y + nc.y) / 2;
-                var dx = nc.x - cc.x;
-                ctx.quadraticCurveTo(mx + (dx > 0 ? -40 : 40), my, nc.x, nc.y);
+                ctx.moveTo(pc.x, pc.y);
+                var midY = (pc.y + nc.y) / 2;
+                ctx.bezierCurveTo(pc.x, midY, nc.x, midY, nc.x, nc.y);
                 ctx.strokeStyle = focused ? 'rgba(53,255,107,0.8)' : 'rgba(53,255,107,0.25)';
                 ctx.lineWidth = focused ? 2.5 : 1.5;
                 ctx.shadowColor = 'rgba(53,255,107,0.3)';
                 ctx.shadowBlur = focused ? 12 : 4;
                 ctx.stroke();
                 ctx.shadowBlur = 0;
-                [cc, nc].forEach(function(pt) {
+                [pc, nc].forEach(function(pt) {
                     ctx.beginPath();
                     ctx.arc(pt.x, pt.y, focused ? 5 : 3, 0, Math.PI * 2);
                     ctx.fillStyle = focused ? 'rgba(53,255,107,0.9)' : 'rgba(53,255,107,0.5)';
