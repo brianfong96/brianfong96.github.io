@@ -187,6 +187,29 @@
         }
 
 
+
+        .graph-world.has-focus .graph-node:not(.focused):not(.center-node) {
+            opacity: 0.35;
+            transform: scale(0.85);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .graph-world.has-focus .graph-node.center-node {
+            opacity: 0.5;
+            transition: opacity 0.4s ease;
+        }
+
+        .graph-world.has-focus .graph-node.focused {
+            opacity: 1;
+            transform: scale(1);
+            z-index: 10;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .graph-node {
+            transition: opacity 0.4s ease, transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
         @media (max-width: 700px) {
             .graph-viewport {
                 height: 60vh;
@@ -442,6 +465,7 @@
 
         function zoomOut() {
             nodes.forEach(function(n) { n.classList.remove('focused'); });
+            world.classList.remove('has-focus');
             var vw = viewport.clientWidth, vh = viewport.clientHeight;
             var scaleX = vw / worldW;
             var scaleY = vh / worldH;
@@ -557,9 +581,11 @@
                 nodes.forEach(function(n) { n.classList.remove('focused'); });
                 if (!wasFocused) {
                     node.classList.add('focused');
+                    world.classList.add('has-focus');
                     scrambleNode(node);
                     panTo(node);
                 } else {
+                    world.classList.remove('has-focus');
                     panTo(centerNode);
                 }
                 var animStart = performance.now();
