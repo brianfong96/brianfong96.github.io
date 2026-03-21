@@ -24,8 +24,8 @@
 
         .graph-world {
             position: absolute;
-            width: 900px;
-            height: 700px;
+            width: 1100px;
+            height: 650px;
             transition: transform 0.6s ease;
         }
 
@@ -185,13 +185,13 @@
                     <div class="graph-world" id="graph-world">
                         <canvas id="graph-lines"></canvas>
 
-                        <div class="graph-node center-node" id="node-center" style="left:280px;top:270px;">
+                        <div class="graph-node center-node" id="node-center" style="left:350px;top:30px;">
                             <h3>Brian Fong</h3>
-                            <p>I'm a senior software engineer. My work spans mixed reality, game development, cybersecurity, red teaming, and AI. I enjoy taking on hard problems across different domains and building tools and experiences that actually get used.</p>
+                            <p>Senior software engineer. My work spans mixed reality, game development, cybersecurity, red teaming, and AI.</p>
                         </div>
 
-                        <div class="graph-node" id="node-mr" data-connects="node-center" style="left:60px;top:60px;">
-                            <span class="node-tag">Intern</span>
+                        <div class="graph-node" id="node-mr" data-connects="node-center" style="left:40px;top:200px;">
+                            <span class="node-tag">Internship</span>
                             <h3>Mixed Reality</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
@@ -199,7 +199,7 @@
                             </div>
                         </div>
 
-                        <div class="graph-node" id="node-cyber" data-connects="node-center" style="left:560px;top:50px;">
+                        <div class="graph-node" id="node-cyber" data-connects="node-center" style="left:350px;top:200px;">
                             <span class="node-tag">Career Start</span>
                             <h3>Cybersecurity &amp; Red Teaming</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
@@ -208,21 +208,39 @@
                             </div>
                         </div>
 
-                        <div class="graph-node" id="node-ai" data-connects="node-center" style="left:570px;top:480px;">
+                        <div class="graph-node" id="node-ai" data-connects="node-cyber" style="left:350px;top:420px;">
                             <span class="node-tag">Current</span>
-                            <h3>AI</h3>
+                            <h3>Artificial Intelligence</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
                                 <p>This is where I am right now — I'm currently working on M365 Copilot at Microsoft, building AI-powered experiences that help people get more done.</p>
                             </div>
                         </div>
 
-                        <div class="graph-node" id="node-gamedev" data-connects="node-center" style="left:50px;top:490px;">
-                            <span class="node-tag">Hobby</span>
-                            <h3>Game Development</h3>
+                        <div class="graph-node" id="node-hobby" data-connects="node-center" style="left:680px;top:200px;">
+                            <span class="node-tag">Personal</span>
+                            <h3>Hobby</h3>
+                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                            <div class="node-detail">
+                                <p>Outside of work I spend my time on creative and physical pursuits that keep me sharp and energized.</p>
+                            </div>
+                        </div>
+
+                        <div class="graph-node" id="node-gamedev" data-connects="node-hobby" style="left:620px;top:420px;">
+                            <span class="node-tag">Creative</span>
+                            <h3>Game Dev</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
                                 <p>Game dev is a hobby I like to pursue in my free time. I enjoy prototyping interactive experiences, experimenting with mechanics, and building things just for the fun of it.</p>
+                            </div>
+                        </div>
+
+                        <div class="graph-node" id="node-ma" data-connects="node-hobby" style="left:820px;top:420px;">
+                            <span class="node-tag">Physical</span>
+                            <h3>Martial Arts</h3>
+                            <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
+                            <div class="node-detail">
+                                <p>I train martial arts to stay disciplined and physically active. It complements the mental work of engineering with a physical practice that demands focus and consistency.</p>
                             </div>
                         </div>
                     </div>
@@ -268,7 +286,7 @@
         var centerNode = document.getElementById('node-center');
         var nodes = document.querySelectorAll('.graph-node:not(.center-node)');
 
-        var worldW = 900, worldH = 700;
+        var worldW = 1100, worldH = 650;
         canvas.width = worldW;
         canvas.height = worldH;
 
@@ -281,37 +299,27 @@
 
         function drawLines() {
             ctx.clearRect(0, 0, worldW, worldH);
-            var cc = getNodeCenter(centerNode);
-
             nodes.forEach(function(node) {
-                var nc = getNodeCenter(node);
+                var parentId = node.dataset.connects;
+                var parent = document.getElementById(parentId);
+                if (!parent) return;
+                var pc = { x: parent.offsetLeft + parent.offsetWidth / 2, y: parent.offsetTop + parent.offsetHeight };
+                var nc = { x: node.offsetLeft + node.offsetWidth / 2, y: node.offsetTop };
                 var focused = node.classList.contains('focused');
-
                 ctx.beginPath();
-                ctx.moveTo(cc.x, cc.y);
-
-                var mx = (cc.x + nc.x) / 2;
-                var my = (cc.y + nc.y) / 2;
-                var dx = nc.x - cc.x;
-                var offset = dx > 0 ? -40 : 40;
-                ctx.quadraticCurveTo(mx + offset, my, nc.x, nc.y);
-
-                ctx.strokeStyle = focused
-                    ? 'rgba(53, 255, 107, 0.8)'
-                    : 'rgba(53, 255, 107, 0.25)';
+                ctx.moveTo(pc.x, pc.y);
+                var midY = (pc.y + nc.y) / 2;
+                ctx.bezierCurveTo(pc.x, midY, nc.x, midY, nc.x, nc.y);
+                ctx.strokeStyle = focused ? 'rgba(53,255,107,0.8)' : 'rgba(53,255,107,0.25)';
                 ctx.lineWidth = focused ? 2.5 : 1.5;
-                ctx.shadowColor = 'rgba(53, 255, 107, 0.3)';
+                ctx.shadowColor = 'rgba(53,255,107,0.3)';
                 ctx.shadowBlur = focused ? 12 : 4;
                 ctx.stroke();
                 ctx.shadowBlur = 0;
-
-                // draw small circle at each end
-                [cc, nc].forEach(function(pt) {
+                [pc, nc].forEach(function(pt) {
                     ctx.beginPath();
                     ctx.arc(pt.x, pt.y, focused ? 5 : 3, 0, Math.PI * 2);
-                    ctx.fillStyle = focused
-                        ? 'rgba(53, 255, 107, 0.9)'
-                        : 'rgba(53, 255, 107, 0.5)';
+                    ctx.fillStyle = focused ? 'rgba(53,255,107,0.9)' : 'rgba(53,255,107,0.5)';
                     ctx.fill();
                 });
             });
