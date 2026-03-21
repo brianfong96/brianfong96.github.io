@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Brian Fong - Senior Software Engineer</title>
+    <title>Brian Fong | Software Engineer</title>
     <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
@@ -22,20 +22,44 @@
     <div class="content">
         <header class="hero" id="home">
             <div class="hero-content">
+                <p class="eyebrow">Software engineer</p>
                 <h1>Brian Fong</h1>
+                <p class="hero-copy">I build practical software, thoughtful product experiences, and tools that stay useful over time.</p>
+                <div class="hero-actions">
+                    <a href="projects.html" class="button-link primary">View R.P.R.P.G.</a>
+                    <a href="about.html" class="button-link secondary">Read About</a>
+                </div>
             </div>
         </header>
         <main>
-            <section id="updates" class="section">
-                <h2>Latest Updates</h2>
-                <ul class="updates">
-                    <li>Launched this new portfolio site.</li>
-                    <li>Stay tuned for more content!</li>
-                </ul>
+            <section id="overview" class="section">
+                <div class="section-heading">
+                    <h2>A more focused home on the web</h2>
+                    <p>This site now keeps things simple: one featured project, a cleaner set of pages, and room to grow without clutter.</p>
+                </div>
+                <div class="split-layout">
+                    <div class="split-panel">
+                        <h3>What you can find here</h3>
+                        <p>The current focus is R.P.R.P.G., an offline password generator designed to create repeatable passwords from memorable inputs. The rest of the site is intentionally lightweight while I rebuild the writing, music, and personal sections.</p>
+                    </div>
+                    <div class="split-panel">
+                        <h3>Sections</h3>
+                        <ul class="pill-list">
+                            <li>Projects</li>
+                            <li>About</li>
+                            <li>Blog</li>
+                            <li>Music</li>
+                            <li>Recipes reset</li>
+                        </ul>
+                    </div>
+                </div>
             </section>
 
             <section id="contents" class="section">
-                <h2>Contents</h2>
+                <div class="section-heading">
+                    <h2>Browse the site</h2>
+                    <p>Use the search box to quickly filter the currently active pages and the featured project.</p>
+                </div>
                 <input type="text" id="contents-search" placeholder="Search contents..." />
                 <ul id="toc-list" class="list-buttons"></ul>
             </section>
@@ -48,4 +72,3 @@
     <script src="assets/js/main.js"></script>
 </body>
 </html>
-
