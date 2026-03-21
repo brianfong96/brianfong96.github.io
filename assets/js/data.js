@@ -13,6 +13,12 @@ const siteData = {
             url: 'recipes/cumin-mega-hamburg-steaks/index.html',
             description: 'High-protein, savory 500g patties seasoned with cumin, cayenne, and chicken stock — part meatloaf, part Japanese Hamburg steak.',
             section: 'Recipes'
+        },
+        {
+            title: 'Cantonese-Style Soy & Ginger Baked Chicken',
+            url: 'recipes/cantonese-soy-ginger-chicken/index.html',
+            description: 'Savory-sweet roast chicken with light soy, dark soy, and Shaoxing wine — crispy lacquered skin, succulent bone-in dark meat.',
+            section: 'Recipes'
         }
     ],
     pages: [

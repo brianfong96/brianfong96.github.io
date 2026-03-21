@@ -38,10 +38,16 @@
     }
 
     // ── Scramble OUT: real text → all glyphs ──
-    function scrambleOut(items) {
+    // Accepts optional abort signal { aborted: false } to cancel mid-animation
+    function scrambleOut(items, signal) {
         return new Promise(function (resolve) {
             var frame = 0, total = 14;
             var id = setInterval(function () {
+                if (signal && signal.aborted) {
+                    clearInterval(id);
+                    resolve();
+                    return;
+                }
                 frame++;
                 var p = frame / total;
                 items.forEach(function (t) {
@@ -58,7 +64,8 @@
     }
 
     // ── Scramble IN: glyphs → real text (always restores originals) ──
-    function scrambleIn(items) {
+    // Accepts optional abort signal { aborted: false } to cancel mid-animation
+    function scrambleIn(items, signal) {
         // Start fully glyphed
         items.forEach(function (t) {
             var s = '';
@@ -73,6 +80,13 @@
             var locked = items.map(function (t) { return new Array(t.original.length).fill(false); });
 
             var id = setInterval(function () {
+                if (signal && signal.aborted) {
+                    clearInterval(id);
+                    // Restore originals immediately on abort
+                    items.forEach(function (t) { t.node.textContent = t.original; });
+                    resolve();
+                    return;
+                }
                 frame++;
                 var p = frame / total;
                 items.forEach(function (t, ti) {
@@ -99,10 +113,16 @@
     var isTransitioning = false;
     var currentScrambleId = 0;
     var lastOriginalItems = null;
+    var currentAbortSignal = null;
 
     function cancelCurrentTransition() {
-        // Bump the scramble ID so any in-progress animations stop
+        // Bump the scramble ID so any in-progress promise chains stop
         currentScrambleId++;
+        // Abort any running scramble animations immediately
+        if (currentAbortSignal) {
+            currentAbortSignal.aborted = true;
+            currentAbortSignal = null;
+        }
         // Restore any garbled text from a previous scramble
         if (lastOriginalItems) {
             lastOriginalItems.forEach(function (t) {
@@ -120,6 +140,8 @@
         }
         isTransitioning = true;
         var myId = ++currentScrambleId;
+        var signal = { aborted: false };
+        currentAbortSignal = signal;
 
         var oldItems = collectTextNodes(contentEl);
         lastOriginalItems = oldItems;
@@ -128,7 +150,7 @@
         var fetchPromise = fetch(href).then(function (r) { return r.text(); });
 
         // Scramble out the current page
-        scrambleOut(oldItems).then(function () {
+        scrambleOut(oldItems, signal).then(function () {
             if (myId !== currentScrambleId) return; // cancelled
             return fetchPromise;
         }).then(function (html) {
@@ -137,18 +159,8 @@
 
             var parser = new DOMParser();
             var newDoc = parser.parseFromString(html, 'text/html');
-            var newBody = newDoc.querySelector('body');
-            var hasInlineScripts = newBody && newBody.querySelectorAll('script:not([src])').length > 0;
-            var hasPageStyles = newDoc.querySelector('head style') !== null;
 
-            // If the target page has inline scripts or embedded styles,
-            // do a real navigation so everything initializes cleanly
-            if (hasInlineScripts || hasPageStyles) {
-                window.location.href = href;
-                return;
-            }
-
-            // Remove previously injected page-specific stylesheets and scripts
+            // Remove previously injected page-specific resources
             document.querySelectorAll('[data-spa-injected]').forEach(function (el) {
                 el.parentNode.removeChild(el);
             });
@@ -156,7 +168,7 @@
             // Resolve relative hrefs against the target page URL
             var baseUrl = new URL(href, window.location.href);
 
-            // Inject page-specific stylesheets not present in current page
+            // Inject page-specific <link> stylesheets not present in current page
             var currentSheets = new Set(
                 Array.from(document.querySelectorAll('link[rel="stylesheet"]:not([data-spa-injected])'))
                     .map(function (l) { return new URL(l.getAttribute('href'), window.location.href).href; })
@@ -172,7 +184,15 @@
                 }
             });
 
-            // Collect page-specific scripts to load after content swap
+            // Inject embedded <style> blocks from <head>
+            newDoc.querySelectorAll('head style').forEach(function (s) {
+                var style = document.createElement('style');
+                style.textContent = s.textContent;
+                style.setAttribute('data-spa-injected', 'true');
+                document.head.appendChild(style);
+            });
+
+            // Collect page-specific external scripts to load after content swap
             var currentScripts = new Set(
                 Array.from(document.querySelectorAll('script[src]:not([data-spa-injected])'))
                     .map(function (s) { return new URL(s.getAttribute('src'), window.location.href).href; })
@@ -184,6 +204,15 @@
                     scriptsToLoad.push(resolvedSrc);
                 }
             });
+
+            // Collect inline scripts from <body>
+            var newBody = newDoc.querySelector('body');
+            var inlineScripts = [];
+            if (newBody) {
+                newBody.querySelectorAll('script:not([src])').forEach(function (s) {
+                    inlineScripts.push(s.textContent);
+                });
+            }
 
             var newContent = newDoc.querySelector('.content');
             var newTitle = newDoc.querySelector('title');
@@ -200,7 +229,7 @@
             }
             reinitPage();
 
-            // Load page-specific scripts sequentially
+            // Load page-specific external scripts sequentially
             function loadScripts(srcs, i) {
                 if (i >= srcs.length) return Promise.resolve();
                 return new Promise(function (resolve) {
@@ -213,21 +242,39 @@
                 }).then(function () { return loadScripts(srcs, i + 1); });
             }
 
+            // Collect text nodes before inline scripts run (they may scramble text)
+            var newItems = collectTextNodes(contentEl);
+            lastOriginalItems = newItems;
+
+            // Execute inline scripts first so graphs/interactivity initialize
+            // Set flag so page scripts skip their own scramble-on-load
+            window.__spaTransition = true;
+
             return loadScripts(scriptsToLoad, 0).then(function () {
+                inlineScripts.forEach(function (code) {
+                    var script = document.createElement('script');
+                    script.textContent = code;
+                    script.setAttribute('data-spa-injected', 'true');
+                    document.body.appendChild(script);
+                });
+            }).then(function () {
                 if (myId !== currentScrambleId) return; // cancelled
-                var newItems = collectTextNodes(contentEl);
-                lastOriginalItems = newItems;
-                return scrambleIn(newItems);
+                // SPA scrambleIn with the clean pre-collected text
+                return scrambleIn(newItems, signal);
+            }).then(function () {
+                window.__spaTransition = false;
             });
         }).then(function () {
             if (myId === currentScrambleId) {
                 isTransitioning = false;
                 lastOriginalItems = null;
+                currentAbortSignal = null;
             }
         }).catch(function () {
             if (myId === currentScrambleId) {
                 isTransitioning = false;
                 lastOriginalItems = null;
+                currentAbortSignal = null;
             }
             window.location.href = href;
         });
