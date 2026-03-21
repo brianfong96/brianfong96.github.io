@@ -731,6 +731,19 @@ input[type="submit"] {
     margin-bottom: 0;
 }
 
+.section-buttons {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    margin-top: 24px;
+}
+
+.section-buttons .button-link {
+    justify-content: center;
+    min-height: 52px;
+    font-size: 0.92rem;
+}
+
 .social-links {
     display: flex;
     flex-wrap: wrap;
@@ -872,3 +885,4 @@ input[type="submit"] {
         padding: 24px;
     }
 }
+
