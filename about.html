@@ -136,13 +136,30 @@
         /* Nav arrows on focused node */
         .nav-arrows {
             display: none;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 12px;
         }
 
         .graph-node.focused .nav-arrows {
+            display: contents;
+        }
+
+        .nav-arrows-up,
+        .nav-arrows-down {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
+            gap: 8px;
+            z-index: 30;
+        }
+
+        .nav-arrows-up {
+            bottom: 100%;
+            margin-bottom: 8px;
+        }
+
+        .nav-arrows-down {
+            top: 100%;
+            margin-top: 8px;
         }
 
         .nav-arrow {
@@ -152,13 +169,14 @@
             padding: 6px 12px;
             border: 1px solid rgba(53, 255, 107, 0.3);
             border-radius: 8px;
-            background: rgba(53, 255, 107, 0.06);
+            background: rgba(1, 8, 3, 0.95);
             color: var(--accent-color);
             font-size: 0.7rem;
             letter-spacing: 0.1em;
             text-transform: uppercase;
             cursor: pointer;
             text-decoration: none;
+            white-space: nowrap;
             transition: background 0.2s ease, box-shadow 0.2s ease;
         }
 
@@ -280,92 +298,73 @@
                         <canvas id="graph-lines"></canvas>
 
                         <div class="graph-node center-node" id="node-center" style="left:350px;top:30px;">
+                            <div class="nav-arrows"><div class="nav-arrows-down"><a class="nav-arrow" data-goto="node-mr"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Mixed Reality</a><a class="nav-arrow" data-goto="node-cyber"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Cybersecurity</a><a class="nav-arrow" data-goto="node-hobby"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Hobby</a></div></div>
                             <h3>Brian Fong</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
                                 <p>Senior software engineer. My work spans mixed reality, game development, cybersecurity, red teaming, and AI.</p>
                             </div>
-                            <div class="nav-arrows">
-                                <a class="nav-arrow" data-goto="node-mr"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Mixed Reality</a>
-                                <a class="nav-arrow" data-goto="node-cyber"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Cybersecurity</a>
-                                <a class="nav-arrow" data-goto="node-hobby"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Hobby</a>
-                            </div>
-                        </div>
+</div>
 
                         <div class="graph-node" id="node-mr" data-connects="node-center" style="left:40px;top:200px;">
+                            <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-center"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Brian Fong</a></div></div>
                             <span class="node-tag">Internship</span>
                             <h3>Mixed Reality</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
                                 <p>I started my software engineering career as an intern at Microsoft, where I got the chance to work on the HoloLens. I helped build a mixed reality application in partnership with BC Cancer to support cancer research.</p>
                             </div>
-                            <div class="nav-arrows">
-                                <a class="nav-arrow" data-goto="node-center"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Brian Fong</a>
-                            </div>
-                        </div>
+</div>
 
                         <div class="graph-node" id="node-cyber" data-connects="node-center" style="left:350px;top:200px;">
+                            <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-center"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Brian Fong</a></div><div class="nav-arrows-down"><a class="nav-arrow" data-goto="node-ai"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> AI</a></div></div>
                             <span class="node-tag">Career Start</span>
                             <h3>Cybersecurity &amp; Red Teaming</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
                                 <p>This is where I started my full-time software engineering career. I worked at Microsoft on the Azure Red Team and then the Microsoft Red Team, where I helped build a graph of cloud assets to identify attack paths. I developed a system to programmatically identify all attack paths that violate security boundaries.</p>
                             </div>
-                            <div class="nav-arrows">
-                                <a class="nav-arrow" data-goto="node-center"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Brian Fong</a>
-                                <a class="nav-arrow" data-goto="node-ai"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> AI</a>
-                            </div>
-                        </div>
+</div>
 
                         <div class="graph-node" id="node-ai" data-connects="node-cyber" style="left:350px;top:420px;">
+                            <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-cyber"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Cybersecurity</a></div></div>
                             <span class="node-tag">Current</span>
                             <h3>Artificial Intelligence</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
                                 <p>This is where I am right now — I'm currently working on M365 Copilot at Microsoft, building AI-powered experiences that help people get more done.</p>
                             </div>
-                            <div class="nav-arrows">
-                                <a class="nav-arrow" data-goto="node-cyber"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Cybersecurity</a>
-                            </div>
-                        </div>
+</div>
 
                         <div class="graph-node" id="node-hobby" data-connects="node-center" style="left:680px;top:200px;">
+                            <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-center"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Brian Fong</a></div><div class="nav-arrows-down"><a class="nav-arrow" data-goto="node-gamedev"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Game Dev</a><a class="nav-arrow" data-goto="node-ma"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Martial Arts</a></div></div>
                             <span class="node-tag">Personal</span>
                             <h3>Hobby</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
                                 <p>Outside of work I spend my time on creative and physical pursuits that keep me sharp and energized.</p>
                             </div>
-                            <div class="nav-arrows">
-                                <a class="nav-arrow" data-goto="node-center"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Brian Fong</a>
-                                <a class="nav-arrow" data-goto="node-gamedev"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Game Dev</a>
-                                <a class="nav-arrow" data-goto="node-ma"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg> Martial Arts</a>
-                            </div>
-                        </div>
+</div>
 
                         <div class="graph-node" id="node-gamedev" data-connects="node-hobby" style="left:620px;top:420px;">
+                            <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-hobby"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Hobby</a></div></div>
                             <span class="node-tag">Creative</span>
                             <h3>Game Dev</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
                                 <p>Game dev is a hobby I like to pursue in my free time. I enjoy prototyping interactive experiences, experimenting with mechanics, and building things just for the fun of it.</p>
                             </div>
-                            <div class="nav-arrows">
-                                <a class="nav-arrow" data-goto="node-hobby"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Hobby</a>
-                            </div>
-                        </div>
+</div>
 
                         <div class="graph-node" id="node-ma" data-connects="node-hobby" style="left:820px;top:420px;">
+                            <div class="nav-arrows"><div class="nav-arrows-up"><a class="nav-arrow" data-goto="node-hobby"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Hobby</a></div></div>
                             <span class="node-tag">Physical</span>
                             <h3>Martial Arts</h3>
                             <span class="node-hint"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> click to explore</span>
                             <div class="node-detail">
                                 <p>I train martial arts to stay disciplined and physically active. It complements the mental work of engineering with a physical practice that demands focus and consistency.</p>
                             </div>
-                            <div class="nav-arrows">
-                                <a class="nav-arrow" data-goto="node-hobby"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg> Hobby</a>
-                            </div>
-                        </div>
+</div>
                     </div>
 
                     <div class="graph-controls">
