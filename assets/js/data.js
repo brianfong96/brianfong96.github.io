@@ -7,7 +7,14 @@ const siteData = {
             section: 'Projects'
         }
     ],
-    recipes: [],
+    recipes: [
+        {
+            title: 'Cumin-Spiced Mega Hamburg Steaks',
+            url: 'recipes/cumin-mega-hamburg-steaks/index.html',
+            description: 'High-protein, savory 500g patties seasoned with cumin, cayenne, and chicken stock — part meatloaf, part Japanese Hamburg steak.',
+            section: 'Recipes'
+        }
+    ],
     pages: [
         {
             title: 'About',

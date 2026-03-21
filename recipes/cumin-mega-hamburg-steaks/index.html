@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cumin-Spiced Mega Hamburg Steaks - Brian Fong</title>
+    <link rel="stylesheet" href="../../assets/css/style.css" />
+    <style>
+        .recipe-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 32px;
+        }
+
+        .recipe-nav a {
+            padding: 10px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: rgba(1, 8, 3, 0.94);
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 0.82rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+        }
+
+        .recipe-nav a:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 16px rgba(53, 255, 107, 0.16);
+            transform: translateY(-1px);
+        }
+
+        .recipe-intro {
+            max-width: 800px;
+            margin-bottom: 36px;
+            color: var(--muted-text);
+            font-size: 1.02rem;
+            line-height: 1.7;
+        }
+
+        .recipe-section {
+            margin-bottom: 40px;
+        }
+
+        .recipe-section h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(53, 255, 107, 0.2);
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .recipe-section h2 svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        .ingredients-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .ingredients-list li {
+            position: relative;
+            padding: 12px 16px 12px 20px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(53, 255, 107, 0.14);
+            border-radius: 10px;
+            background: rgba(1, 8, 3, 0.92);
+            color: var(--text-color);
+            font-size: 0.94rem;
+        }
+
+        .ingredients-list li::before {
+            content: "▸";
+            position: absolute;
+            left: 8px;
+            color: var(--accent-color);
+        }
+
+        .ingredients-list li strong {
+            color: var(--accent-color);
+        }
+
+        .steps-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            counter-reset: step;
+        }
+
+        .steps-list li {
+            position: relative;
+            padding: 18px 20px 18px 56px;
+            margin-bottom: 14px;
+            border: 1px solid rgba(53, 255, 107, 0.16);
+            border-radius: 14px;
+            background: rgba(1, 8, 3, 0.94);
+            color: var(--muted-text);
+            font-size: 0.94rem;
+            line-height: 1.6;
+            counter-increment: step;
+        }
+
+        .steps-list li::before {
+            content: counter(step);
+            position: absolute;
+            left: 16px;
+            top: 16px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--accent-color);
+            border-radius: 8px;
+            background: rgba(53, 255, 107, 0.08);
+            color: var(--accent-color);
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .steps-list li strong {
+            color: var(--text-color);
+        }
+
+        .temp-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+        }
+
+        .temp-card {
+            padding: 18px;
+            border: 1px solid rgba(53, 255, 107, 0.18);
+            border-radius: 12px;
+            background: rgba(1, 8, 3, 0.94);
+        }
+
+        .temp-card .temp-label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--accent-color);
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .temp-card .temp-value {
+            display: block;
+            color: var(--text-color);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .temp-card .temp-note {
+            display: block;
+            margin-top: 6px;
+            color: var(--muted-text);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a class="home-link" href="../../index.html" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
+        <button id="sidebar-toggle" aria-label="Toggle navigation"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></button>
+    </header>
+    <nav class="sidebar" id="sidebar">
+        <ul class="nav-links">
+            <li><a href="../../index.html">Home</a></li>
+            <li><a href="../../about.html">About</a></li>
+            <li><a href="../../projects.html">Projects</a></li>
+            <li><a href="../../blog.html">Blog</a></li>
+            <li><a href="../../recipes.html">Recipes</a></li>
+            <li><a href="../../music.html">Music</a></li>
+        </ul>
+    </nav>
+    <div class="content">
+        <header class="hero small">
+            <div class="hero-content">
+                <p class="eyebrow">Recipe</p>
+                <h1>Cumin-Spiced Mega Hamburg Steaks</h1>
+                <p class="hero-copy">High-protein, savory patties — part meatloaf, part Japanese Hamburg steak.</p>
+                <a href="../../recipes.html" class="back-button">Back to Recipes</a>
+            </div>
+        </header>
+        <main>
+            <section class="section">
+                <nav class="recipe-nav">
+                    <a href="#overview">Overview</a>
+                    <a href="#ingredients">Ingredients</a>
+                    <a href="#preparation">Preparation</a>
+                    <a href="#roasting">Roasting</a>
+                </nav>
+
+                <div class="recipe-section" id="overview">
+                    <h2>
+                        <svg viewBox="0 0 24 24"><path d="M11 7h2v2h-2V7zm0 4h2v6h-2v-6zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        Overview
+                    </h2>
+                    <p class="recipe-intro">This recipe creates a high-protein, flavorful meatloaf or "Mega Hamburg Steak" using a panade of whole wheat bread and milk to ensure 3kg of ground beef remains tender and juicy. Seasoned with cumin, cayenne, and powdered chicken stock, these portions provide a savory, slightly spicy profile perfect for a hearty main course. By shaping the beef into six massive 500g patties, you achieve a roasted exterior with a succulent center, bridging the gap between a traditional meatloaf and a Japanese-style Hamburg steak.</p>
+                </div>
+
+                <div class="recipe-section" id="ingredients">
+                    <h2>
+                        <svg viewBox="0 0 24 24"><path d="M18.06 23h-2.12L14 21.06l-1.94 1.94H9.94L8 21.06 6.06 23H3.94L2 21.06V3h20v18.06L20.06 23h-2zM6 19.06l2 2 2-2 2 2 2-2 2 2 2-2V5H4v14.06l2 2z"/><path d="M7 7h10v2H7zm0 4h10v2H7zm0 4h7v2H7z"/></svg>
+                        Ingredients
+                    </h2>
+                    <ul class="ingredients-list">
+                        <li><strong>3 kg</strong> Ground Beef (Medium or Lean)</li>
+                        <li><strong>6–8 slices</strong> Whole Wheat Bread (torn into small bits)</li>
+                        <li><strong>1 ½ cups</strong> Whole Milk</li>
+                        <li><strong>3 large</strong> Eggs (beaten)</li>
+                        <li><strong>4 tbsp</strong> Powdered Chicken Stock</li>
+                        <li><strong>2 tbsp</strong> Cumin</li>
+                        <li><strong>1 tsp</strong> Cayenne Pepper</li>
+                        <li><strong>2 tbsp</strong> Red Pepper Flakes</li>
+                        <li><strong>1 large</strong> Onion (finely minced)</li>
+                        <li><strong>4 cloves</strong> Garlic (minced)</li>
+                    </ul>
+                </div>
+
+                <div class="recipe-section" id="preparation">
+                    <h2>
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>
+                        Preparation
+                    </h2>
+                    <ol class="steps-list">
+                        <li><strong>Prepare the Panade:</strong> In a large mixing bowl, soak the torn whole wheat bread in the milk for 10 minutes. Use a fork to mash the bread into a consistent paste. This step is essential for moisture retention.</li>
+                        <li><strong>Incorporate Seasonings:</strong> Stir the beaten eggs, powdered chicken stock, cumin, cayenne, red pepper, minced onion, and garlic directly into the bread paste. Mixing the spices into the liquid base ensures even distribution throughout the massive 3kg of meat.</li>
+                        <li><strong>Combine with Beef:</strong> Add the ground beef to the bowl. Using your hands, gently fold the meat into the seasoned mixture. Stop as soon as the ingredients are combined; overworking the beef will result in a tough, rubbery texture.</li>
+                        <li><strong>Shape the Steaks:</strong> Divide the mixture into six equal portions, roughly 500g each. Shape them into thick, oval patties. Use your thumb to press a deep, wide indentation into the center of each patty to prevent them from doming or bulging as they cook.</li>
+                        <li><strong>Arrange for Roasting:</strong> Place the patties on two parchment-lined baking sheets (three per sheet) to allow for proper air circulation.</li>
+                    </ol>
+                </div>
+
+                <div class="recipe-section" id="roasting">
+                    <h2>
+                        <svg viewBox="0 0 24 24"><path d="M13.5 0.67s0.74 2.65 0.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l0.03-0.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5 0.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-0.36 3.6-1.21 4.62-2.58 0.39 1.29 0.59 2.65 0.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/></svg>
+                        Oven Roasting &amp; Temperature
+                    </h2>
+                    <div class="temp-grid">
+                        <div class="temp-card">
+                            <span class="temp-label">Oven Temperature</span>
+                            <span class="temp-value">190°C (375°F)</span>
+                            <span class="temp-note">Pre-heat before roasting</span>
+                        </div>
+                        <div class="temp-card">
+                            <span class="temp-label">Roasting Time</span>
+                            <span class="temp-value">35–45 minutes</span>
+                        </div>
+                        <div class="temp-card">
+                            <span class="temp-label">Pull Temperature</span>
+                            <span class="temp-value">68°C (155°F)</span>
+                            <span class="temp-note">Internal temp when removed</span>
+                        </div>
+                        <div class="temp-card">
+                            <span class="temp-label">Rest</span>
+                            <span class="temp-value">10–15 minutes</span>
+                            <span class="temp-note">Carry-over brings it to 71°C (160°F)</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer class="footer">
+            <p>&copy; <span id="year"></span> Brian Fong. All Rights Reserved.</p>
+        </footer>
+    </div>
+    <script src="../../assets/js/data.js"></script>
+    <script src="../../assets/js/main.js"></script>
+</body>
+</html>
