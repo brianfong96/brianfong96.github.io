@@ -190,7 +190,7 @@
             fill: currentColor;
         }
 
-        /* Focus mode: hide others */
+        /* Focus mode: hide others and fade edges */
         .graph-world.has-focus .graph-node:not(.focused) {
             opacity: 0;
             pointer-events: none;
@@ -200,6 +200,15 @@
         .graph-world.has-focus .graph-node.focused {
             opacity: 1;
             pointer-events: auto;
+        }
+
+        .graph-world.has-focus canvas {
+            opacity: 0.1;
+            transition: opacity 0.4s ease;
+        }
+
+        .graph-world canvas {
+            transition: opacity 0.4s ease;
         }
 
         /* Controls - bottom left for zoom, bottom right for fit */
@@ -402,14 +411,15 @@
         }
 
         function panTo(targetEl) {
-            var vw = viewport.clientWidth;
-            var vh = viewport.clientHeight;
-            var nc = getNodeCenter(targetEl);
+            var vw = viewport.clientWidth, vh = viewport.clientHeight;
+            var nc = { x: targetEl.offsetLeft + targetEl.offsetWidth / 2, y: targetEl.offsetTop + targetEl.offsetHeight / 2 };
             var tx = -(nc.x - vw / 2);
             var ty = -(nc.y - vh / 2);
             world.style.transform = 'translate(' + tx + 'px,' + ty + 'px)';
-            // Also scroll the page so the graph viewport is visible
-            viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Scroll the page so the viewport is centered on screen
+            setTimeout(function() {
+                viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
         }
 
         function scrambleNode(el) {
@@ -481,7 +491,9 @@
             world.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(1)';
             world.style.transformOrigin = '0 0';
             zoomedIn = true;
-            viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(function() {
+                viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
         }
 
         function resetView() { zoomOut(); }
