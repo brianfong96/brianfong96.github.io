@@ -21,6 +21,15 @@ const siteData = {
             section: 'Recipes'
         }
     ],
+    blogs: [
+        {
+            title: 'Will AI Take Over?',
+            url: 'blog/will-ai-take-over/index.html',
+            description: 'A reflection on AI\'s reach, human ego, and why the throne won\'t be surrendered easily.',
+            section: 'Blog',
+            date: '2026-03-22'
+        }
+    ],
     pages: [
         {
             title: 'About',

@@ -296,6 +296,7 @@
         if (typeof siteData !== 'undefined') {
             populateList('projects-list', siteData.projects || []);
             populateList('recipes-list', siteData.recipes || []);
+            populateList('blogs-list', siteData.blogs || []);
             var all = [].concat(siteData.projects || [], siteData.recipes || [],
                 siteData.pages || [], siteData.music || [], siteData.blogs || []);
             populateList('toc-list', all);
@@ -481,6 +482,7 @@
     if (typeof siteData !== 'undefined') {
         populateList('projects-list', siteData.projects || []);
         populateList('recipes-list', siteData.recipes || []);
+        populateList('blogs-list', siteData.blogs || []);
         var all = [].concat(siteData.projects || [], siteData.recipes || [],
             siteData.pages || [], siteData.music || [], siteData.blogs || []);
         populateList('toc-list', all);

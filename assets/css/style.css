@@ -786,6 +786,43 @@ input[type="submit"] {
     flex-shrink: 0;
 }
 
+/* ── Blog ── */
+
+.blog-date {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    background: rgba(53, 255, 107, 0.08);
+    border: 1px solid rgba(53, 255, 107, 0.2);
+    color: var(--muted-text);
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.blog-prose {
+    max-width: 740px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.blog-prose .note-card {
+    padding: 24px 28px;
+}
+
+.blog-prose .note-card p {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin-bottom: 0;
+}
+
+.blog-prose .note-card p + p {
+    margin-top: 1.2em;
+}
+
 .footer {
     margin-top: auto;
     padding: 24px;
