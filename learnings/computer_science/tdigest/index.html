@@ -364,6 +364,15 @@
                     <div class="note-card">
                         <p>The trick is asymmetric compression: <strong style="color:var(--warning-color)">large centroids in the middle, tiny centroids near p0 and p100</strong>. The center can tolerate approximation. The tails cannot.</p>
                     </div>
+                    <div class="note-card">
+                        <p><strong style="color:var(--accent-color)">q (quantile)</strong> — a number from 0 to 1 that describes <em>where</em> a centroid sits in the sorted distribution. <span class="inline-formula">q = 0</span> is the absolute minimum, <span class="inline-formula">q = 0.5</span> is the median, <span class="inline-formula">q = 1</span> is the maximum. The algorithm uses <span class="inline-formula">q</span> to decide how much compression a centroid is allowed.</p>
+                    </div>
+                    <div class="note-card">
+                        <p><strong style="color:var(--accent-color)">limit (maxWeight)</strong> — the maximum number of samples a centroid at quantile <span class="inline-formula">q</span> is allowed to absorb. Near the tails (<span class="inline-formula">q ≈ 0</span> or <span class="inline-formula">q ≈ 1</span>) the limit is very small (often 1–3), preserving extreme-value accuracy. Near the center (<span class="inline-formula">q ≈ 0.5</span>) the limit can be hundreds, because median approximation is cheap.</p>
+                    </div>
+                    <div class="note-card">
+                        <p><strong style="color:var(--warning-color)">No upper or lower bound on values.</strong> The demo clamps to 0–1000 for visual clarity, but real T-Digests accept <em>any</em> floating-point number — negative, zero, millions, whatever arrives. For example, API response latencies might range from 1 ms to 30,000 ms with no fixed cap. T-Digest handles this naturally because it only cares about <em>relative rank</em> (quantile position), not absolute magnitude.</p>
+                    </div>
                 </div>
                 <div class="callout"><strong>Core mental model:</strong> this demo is now a code stepper. Each click walks the pseudocode and the number line together, so you can see exactly which line changes the digest.</div>
 
