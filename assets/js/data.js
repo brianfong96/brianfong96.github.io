@@ -1,4 +1,12 @@
 const siteData = {
+    learnings: [
+        {
+            title: 'HyperLogLog',
+            url: 'learnings/computer_science/hyperloglog/index.html',
+            description: 'A probabilistic data structure for counting distinct elements with O(log log n) memory. Interactive tutorial with animated register visualization.',
+            category: 'Computer Science'
+        }
+    ],
     projects: [
         {
             title: 'R.P.R.P.G.',

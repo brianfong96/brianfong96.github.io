@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learnings - Brian Fong</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/learnings.css" />
+</head>
+<body>
+    <header class="topbar">
+        <a class="home-link" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
+        <button id="sidebar-toggle" aria-label="Toggle navigation"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></button>
+    </header>
+    <nav class="sidebar" id="sidebar">
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="learnings.html">Learnings</a></li>
+        </ul>
+    </nav>
+    <div class="content">
+        <header class="hero small">
+            <div class="hero-content">
+                <p class="eyebrow">Learnings</p>
+                <h1>Learnings</h1>
+                <p class="hero-copy">A compilation of topics I'm learning or have learned — each one presented as an interactive tutorial with explanations, pseudocode, and animations.</p>
+            </div>
+        </header>
+        <main>
+            <section class="section">
+                <div class="section-heading">
+                    <h2>Directory</h2>
+                    <p>Explore interactive tutorials organized by topic area.</p>
+                </div>
+                <div class="learnings-toc">
+                    <div class="toc-tree">
+                        <div class="toc-folder">
+                            <div class="toc-folder-header">
+                                <svg class="toc-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                                <span class="toc-folder-name">learnings/</span>
+                            </div>
+                            <div class="toc-children">
+                                <div class="toc-folder">
+                                    <div class="toc-folder-header">
+                                        <svg class="toc-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                                        <span class="toc-folder-name">computer_science/</span>
+                                    </div>
+                                    <div class="toc-children" id="toc-cs"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer class="footer">
+            <p>&copy; <span id="year"></span> Brian Fong. All Rights Reserved.</p>
+        </footer>
+    </div>
+    <script src="assets/js/data.js?v=8304231"></script>
+    <script src="assets/js/main.js?v=8304231"></script>
+</body>
+</html>

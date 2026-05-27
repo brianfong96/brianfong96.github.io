@@ -297,8 +297,10 @@
             populateList('projects-list', siteData.projects || []);
             populateList('recipes-list', siteData.recipes || []);
             populateList('blogs-list', siteData.blogs || []);
+            populateList('learnings-list', siteData.learnings || []);
+            populateLearningsToc();
             var all = [].concat(siteData.projects || [], siteData.recipes || [],
-                siteData.pages || [], siteData.music || [], siteData.blogs || []);
+                siteData.pages || [], siteData.music || [], siteData.blogs || [], siteData.learnings || []);
             populateList('toc-list', all);
         }
 
@@ -439,6 +441,25 @@
         });
     }
 
+    function populateLearningsToc() {
+        var container = document.getElementById('toc-cs');
+        if (!container || typeof siteData === 'undefined') return;
+        container.innerHTML = '';
+        var items = (siteData.learnings || []).filter(function (item) {
+            return item.category === 'Computer Science';
+        });
+        items.forEach(function (item) {
+            var file = document.createElement('a');
+            file.href = item.url;
+            file.className = 'toc-file';
+            file.innerHTML =
+                '<svg class="toc-icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6z"/></svg>' +
+                '<span class="toc-file-name">' + item.title + '</span>' +
+                '<span class="toc-file-desc">' + (item.description || '') + '</span>';
+            container.appendChild(file);
+        });
+    }
+
     // ── Highlight current nav ──
     document.querySelectorAll('.nav-links a').forEach(function (link) {
         try {
@@ -483,8 +504,10 @@
         populateList('projects-list', siteData.projects || []);
         populateList('recipes-list', siteData.recipes || []);
         populateList('blogs-list', siteData.blogs || []);
+        populateList('learnings-list', siteData.learnings || []);
+        populateLearningsToc();
         var all = [].concat(siteData.projects || [], siteData.recipes || [],
-            siteData.pages || [], siteData.music || [], siteData.blogs || []);
+            siteData.pages || [], siteData.music || [], siteData.blogs || [], siteData.learnings || []);
         populateList('toc-list', all);
     }
 

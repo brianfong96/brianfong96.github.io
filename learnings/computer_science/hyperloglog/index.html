@@ -1,0 +1,2671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="../../../assets/favicon.png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HyperLogLog - Learnings - Brian Fong</title>
+    <link rel="stylesheet" href="../../../assets/css/style.css" />
+    <link rel="stylesheet" href="../../../assets/css/learnings.css" />
+</head>
+<body>
+    <header class="topbar">
+        <a class="home-link" href="../../../index.html" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
+        <button id="sidebar-toggle" aria-label="Toggle navigation"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></button>
+    </header>
+    <nav class="sidebar" id="sidebar">
+        <ul class="nav-links">
+            <li><a href="../../../index.html">Home</a></li>
+            <li><a href="../../../about.html">About</a></li>
+            <li><a href="../../../projects.html">Projects</a></li>
+            <li><a href="../../../learnings.html">Learnings</a></li>
+        </ul>
+    </nav>
+    <div class="content">
+        <header class="hero small">
+            <div class="hero-content">
+                <p class="eyebrow">Learnings</p>
+                <h1>HyperLogLog</h1>
+                <p class="hero-copy">A probabilistic data structure that estimates the number of distinct elements in a dataset using a fixed, tiny amount of memory — with remarkable accuracy.</p>
+                <a href="../../../learnings.html" class="back-button">&#8592; Back to Learnings</a>
+            </div>
+        </header>
+        <main>
+            <!-- Step indicator -->
+            <div class="step-wrap">
+                <div class="step-indicator" id="step-indicator"></div>
+                <div class="step-progress-label" id="step-progress-label">
+                    Step <span id="step-cur">1</span> of <span id="step-total">8</span> &nbsp;—&nbsp; <span class="step-name" id="step-name-label">The Problem</span>
+                </div>
+            </div>
+
+            <!-- ══════════════════════════════════════════════════════
+                 STEP 0 — The Problem
+            ══════════════════════════════════════════════════════ -->
+            <section class="step-panel section active" id="step-0">
+                <div class="section-heading"><h2>The Problem: Counting Distinct Elements</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card">
+                        <p>Imagine you run a website and you want to answer a simple question: <strong style="color:var(--accent-color)">how many unique visitors came today?</strong> You might have 50 million log events. How do you count distinct user IDs efficiently?</p>
+                    </div>
+                    <div class="note-card">
+                        <p>The naive solution is a <strong style="color:var(--accent-color)">hash set</strong> — store every unique ID you see. It's exact, but memory grows linearly with distinct elements. 50 million unique users × 8 bytes = <strong style="color:var(--warning-color)">400 MB minimum</strong>. Across thousands of daily queries on petabyte-scale data, this is unworkable.</p>
+                    </div>
+                    <div class="note-card">
+                        <p>This is the <strong style="color:var(--accent-color)">cardinality estimation</strong> problem. Cardinality = number of distinct elements in a multiset. The key insight: we don't always need exact counts. An answer of "~48.3 million" is just as useful as "48,312,994" for most analytics — and far cheaper to compute.</p>
+                    </div>
+                </div>
+                <table class="learn-table" style="margin-top:20px">
+                    <thead><tr><th>Approach</th><th>Memory</th><th>Error</th><th>Notes</th></tr></thead>
+                    <tbody>
+                        <tr><td>Exact hash set</td><td>O(n)</td><td class="hi">0%</td><td>Exact, scales with data</td></tr>
+                        <tr><td>Bloom filter</td><td>O(n)</td><td>False positives</td><td>Membership, not count</td></tr>
+                        <tr><td>Flajolet-Martin (1985)</td><td>O(log n)</td><td>~8%</td><td>First probabilistic approach</td></tr>
+                        <tr><td>LogLog (2003)</td><td>O(log log n)</td><td>~5%</td><td>Predecessor to HLL</td></tr>
+                        <tr><td class="hi">HyperLogLog (2007)</td><td class="hi">O(log log n)</td><td class="hi">~1–2%</td><td class="hi">State of the art</td></tr>
+                    </tbody>
+                </table>
+                <div class="callout"><strong>Key trade-off:</strong> HyperLogLog uses a fixed amount of memory regardless of how many items you add. 10 million or 10 billion — the memory stays the same.</div>
+                <div class="step-nav-cards only-next">
+                    <button class="step-btn next" data-step="1"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">The Key Insight</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <!-- ══════════════════════════════════════════════════════
+                 STEP 1 — The Key Insight
+            ══════════════════════════════════════════════════════ -->
+            <section class="step-panel section" id="step-1">
+                <div class="section-heading"><h2>The Key Insight: Leading Zeros &amp; Probability</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card">
+                        <p>Flip a fair coin until you get <strong style="color:var(--accent-color)">heads</strong>. The probability of getting exactly <em>k</em> tails before the first head is <span class="inline-formula">1 / 2<sup>k+1</sup></span>. Seeing 5 tails in a row has probability 1/64 — rare.</p>
+                    </div>
+                    <div class="note-card">
+                        <p>Now apply this to <strong style="color:var(--accent-color)">hash values</strong>. A good hash function produces bits that are independently and uniformly 0 or 1. The <em>leading zeros</em> in a hash behave exactly like coin-flip tails. A hash starting with <em>k</em> zeros has probability <span class="inline-formula">1/2<sup>k</sup></span>.</p>
+                    </div>
+                    <div class="note-card">
+                        <p>Therefore: if the <strong style="color:var(--accent-color)">maximum leading-zero count</strong> across all hashes is <em>k</em>, you've probably processed around <span class="inline-formula">2<sup>k</sup></span> distinct elements. This single bit-pattern observation is the seed of the entire algorithm.</p>
+                    </div>
+                </div>
+                <div class="callout"><strong>Core intuition:</strong> If the rarest bit pattern you've ever seen has k leading zeros, you've probably processed ~2<sup>k</sup> distinct items to find it.</div>
+
+                <!-- Hash Stream Visualization -->
+                <div class="hash-stream-wrap" style="margin-top:20px">
+                    <div class="hash-stream-bar">
+                        HASH STREAM — NAMES → BINARY
+                        <span class="auto-run-badge" id="stream-badge" style="display:none">● RUNNING</span>
+                    </div>
+                    <div class="hash-stream-body">
+                        <p class="hash-stream-desc">Watch names get hashed into 32-bit binary strings. The <span style="color:var(--warning-color)">leading zeros</span> tell us about cardinality — the more we see, the more distinct items we've likely processed.</p>
+
+                        <div class="hash-stream-layout">
+                            <!-- Main visualization area -->
+                            <div class="hash-stream-main">
+                                <div class="hash-stream-current" id="stream-current">
+                                    <div class="stream-current-label">CURRENT</div>
+                                    <div class="stream-current-name" id="stream-current-name">—</div>
+                                    <div class="stream-current-arrow">↓ FNV-1a hash</div>
+                                    <div class="stream-current-bits" id="stream-current-bits"></div>
+                                </div>
+
+                                <!-- Stats cards -->
+                                <div class="hash-stream-stats">
+                                    <div class="hash-card"><div class="hash-card-label">Names Hashed</div><div class="hash-card-value" id="stream-count">0</div></div>
+                                    <div class="hash-card"><div class="hash-card-label">Max Leading Zeros</div><div class="hash-card-value" id="stream-max-lz">0</div></div>
+                                    <div class="hash-card"><div class="hash-card-label">Estimated Distinct</div><div class="hash-card-value" id="stream-estimate">1</div></div>
+                                </div>
+
+                                <!-- Controls -->
+                                <div class="hash-stream-controls">
+                                    <button class="stream-play-btn" id="stream-play-btn">
+                                        <svg id="stream-play-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                                        <svg id="stream-pause-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+                                        <span id="stream-play-label">Play</span>
+                                    </button>
+                                    <button id="stream-step-btn">Step</button>
+                                    <button id="stream-reset-btn">Reset</button>
+                                    <div class="stream-speed-control">
+                                        <label for="stream-speed">Speed</label>
+                                        <input type="range" id="stream-speed" min="1" max="5" value="3" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- History sidebar -->
+                            <div class="hash-stream-history">
+                                <div class="stream-history-header">LAST 20 HASHED</div>
+                                <ul class="stream-history-list" id="stream-history-list">
+                                    <li class="stream-history-empty">Press Play or Step to begin...</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="0"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">The Problem</span></div></button>
+                    <button class="step-btn next" data-step="2"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">LogLog</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <!-- ══════════════════════════════════════════════════════
+                 STEP 2 — LogLog
+            ══════════════════════════════════════════════════════ -->
+            <section class="step-panel section" id="step-2">
+                <div class="section-heading"><h2>LogLog: The Predecessor</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card">
+                        <p>The <strong style="color:var(--accent-color)">Flajolet-Martin (1985)</strong> algorithm used a single maximum leading-zero counter, but variance was high (~78%). Durand &amp; Flajolet's <strong style="color:var(--accent-color)">LogLog (2003)</strong> fixed this by splitting the stream into <em>m</em> sub-streams and averaging.</p>
+                    </div>
+                    <div class="note-card">
+                        <p>The idea: use the <strong style="color:var(--accent-color)">first b bits</strong> of each hash to assign the element to one of <span class="inline-formula">m = 2<sup>b</sup></span> buckets. Track the max leading zeros in each bucket independently, then take the average. Using <em>m</em> buckets reduces standard error from ~78% to <span class="inline-formula">~1.30 / √m</span>.</p>
+                    </div>
+                    <div class="note-card">
+                        <p>The name "LogLog" comes from the memory footprint: with n distinct elements, you need at most <span class="inline-formula">log<sub>2</sub>(log<sub>2</sub>(n))</span> bits per register to store the max leading-zero count. At n = 1 billion, that's only <strong style="color:var(--accent-color)">30 bits max per register</strong> — fits in 5 bits easily.</p>
+                    </div>
+                </div>
+                <div class="callout warn"><strong>Weakness:</strong> LogLog uses an arithmetic mean of register values, which is sensitive to outliers. One bucket with an unusually high ρ can skew the whole estimate. HyperLogLog replaces this with a harmonic mean.</div>
+                <div class="pseudo-block">
+                    <div class="pseudo-header">LOGLOG — PSEUDOCODE</div>
+                    <pre class="pseudo-code"><span class="cm">// Initialize</span>
+b = 10                          <span class="cm">// bits for bucket index</span>
+m = 2^b = 1024                  <span class="cm">// number of buckets (registers)</span>
+M[0..m-1] = 0                   <span class="cm">// all registers start at zero</span>
+
+<span class="cm">// ADD element x</span>
+<span class="kw">function</span> <span class="fn">ADD</span>(x):
+    h  = <span class="fn">hash</span>(x)              <span class="cm">// uniform hash (e.g. 64-bit)</span>
+    j  = h[<span class="num">0</span>..b-<span class="num">1</span>]             <span class="cm">// top b bits → bucket index j ∈ [0, m)</span>
+    w  = h[b..]               <span class="cm">// remaining bits</span>
+    ρ  = <span class="fn">leading_zeros</span>(w) + <span class="num">1</span>  <span class="cm">// position of first 1-bit (min=1)</span>
+    M[j] = <span class="fn">MAX</span>(M[j], ρ)       <span class="cm">// keep maximum per bucket</span>
+
+<span class="cm">// ESTIMATE cardinality (LogLog estimator)</span>
+<span class="kw">function</span> <span class="fn">COUNT</span>():
+    avg = (<span class="num">1</span>/m) × Σ M[j]       <span class="cm">// arithmetic mean of all registers</span>
+    E   = α_m × m × <span class="num">2</span>^avg     <span class="cm">// α_m ≈ 0.39701 corrects bias</span>
+    <span class="kw">return</span> E</pre>
+                </div>
+
+                <!-- Interactive LogLog Demo -->
+                <div class="algo-demo-wrap">
+                    <div class="algo-demo-bar">
+                        INTERACTIVE — LOGLOG vs SINGLE COUNTER
+                        <span class="auto-run-badge" id="ll-badge" style="display:none">● RUNNING</span>
+                    </div>
+                    <div class="algo-demo-body">
+                        <p class="algo-demo-desc">Compare a <strong style="color:var(--warning-color)">single max counter</strong> (Flajolet-Martin) vs <strong style="color:var(--accent-color)">LogLog with m buckets</strong>. Watch how splitting into buckets dramatically reduces estimation error.</p>
+
+                        <div class="algo-demo-controls">
+                            <button class="stream-play-btn" id="ll-play-btn">
+                                <svg id="ll-play-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                                <svg id="ll-pause-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+                                <span id="ll-play-label">Play</span>
+                            </button>
+                            <button id="ll-step-btn">+10</button>
+                            <button id="ll-bulk-100">+100</button>
+                            <button id="ll-bulk-1k">+1K</button>
+                            <button id="ll-bulk-10k">+10K</button>
+                            <button id="ll-bulk-100k">+100K</button>
+                            <button id="ll-reset-btn">Reset</button>
+                            <div class="stream-speed-control">
+                                <label for="ll-speed">Speed</label>
+                                <input type="range" id="ll-speed" min="1" max="5" value="3" />
+                            </div>
+                            <div class="stream-speed-control">
+                                <label for="ll-precision">b=<span id="ll-b-val">3</span> (m=<span id="ll-m-val">8</span>)</label>
+                                <input type="range" id="ll-precision" min="2" max="10" value="3" />
+                            </div>
+                        </div>
+
+                        <!-- Registers grid (8 buckets) -->
+                        <div class="ll-registers-section">
+                            <div class="ll-registers-label">LOGLOG REGISTERS (b=3, m=8 buckets)</div>
+                            <div class="ll-registers-grid" id="ll-reg-grid"></div>
+                        </div>
+
+                        <!-- Entry breakdown table -->
+                        <div class="algo-breakdown-section">
+                            <div class="algo-breakdown-label">ENTRY BREAKDOWN — last 10 processed</div>
+                            <div class="algo-breakdown-scroll">
+                                <table class="algo-breakdown-table" id="ll-breakdown-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Hash (hex)</th>
+                                            <th>Top 3 bits → Bucket</th>
+                                            <th>Suffix</th>
+                                            <th>ρ (leading 0s + 1)</th>
+                                            <th>M[j] updated?</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ll-breakdown-body">
+                                        <tr class="algo-breakdown-empty"><td colspan="6">Press Play or Step to see entries...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Comparison cards -->
+                        <div class="algo-compare-grid">
+                            <div class="algo-compare-card">
+                                <div class="algo-compare-header" style="border-color:var(--warning-color)">Single Counter (Flajolet-Martin)</div>
+                                <div class="algo-compare-body">
+                                    <div class="algo-metric"><span class="algo-metric-label">Max ρ seen</span><span class="algo-metric-value" id="ll-fm-rho">0</span></div>
+                                    <div class="algo-metric"><span class="algo-metric-label">Estimate (2<sup>ρ</sup>)</span><span class="algo-metric-value" id="ll-fm-est" style="color:var(--warning-color)">1</span></div>
+                                    <div class="algo-metric"><span class="algo-metric-label">Error</span><span class="algo-metric-value" id="ll-fm-err">—</span></div>
+                                </div>
+                            </div>
+                            <div class="algo-compare-card">
+                                <div class="algo-compare-header" style="border-color:var(--accent-color)">LogLog (m=8, arithmetic mean)</div>
+                                <div class="algo-compare-body">
+                                    <div class="algo-metric"><span class="algo-metric-label">Avg register</span><span class="algo-metric-value" id="ll-ll-avg">0.00</span></div>
+                                    <div class="algo-metric"><span class="algo-metric-label">Estimate</span><span class="algo-metric-value" id="ll-ll-est" style="color:var(--accent-color)">0</span></div>
+                                    <div class="algo-metric"><span class="algo-metric-label">Error</span><span class="algo-metric-value" id="ll-ll-err">—</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actual count & error chart -->
+                        <div class="algo-status-row">
+                            <span>Actual distinct: <strong id="ll-actual" style="color:var(--accent-color)">0</strong></span>
+                            <span>Items processed: <strong id="ll-total" style="color:var(--muted-text)">0</strong></span>
+                        </div>
+
+                        <!-- Error over time mini-chart -->
+                        <div class="algo-error-chart-wrap">
+                            <div class="algo-error-chart-label">ESTIMATES vs TRUE COUNT</div>
+                            <canvas id="ll-error-canvas" width="600" height="100"></canvas>
+                            <div class="algo-error-legend">
+                                <span class="algo-legend-item"><span class="algo-legend-dot" style="background:rgba(255,255,255,0.6);border:1px dashed rgba(255,255,255,0.4)"></span> True Count</span>
+                                <span class="algo-legend-item"><span class="algo-legend-dot" style="background:var(--warning-color)"></span> Single Counter</span>
+                                <span class="algo-legend-item"><span class="algo-legend-dot" style="background:var(--accent-color)"></span> LogLog (m=8)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="1"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">The Key Insight</span></div></button>
+                    <button class="step-btn next" data-step="3"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">HyperLogLog</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <!-- ══════════════════════════════════════════════════════
+                 STEP 3 — HyperLogLog Algorithm
+            ══════════════════════════════════════════════════════ -->
+            <section class="step-panel section" id="step-3">
+                <div class="section-heading"><h2>HyperLogLog: The Full Algorithm</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card">
+                        <p>Flajolet, Fusy, Gandouet &amp; Meunier (2007) made one key change: replace the arithmetic mean with a <strong style="color:var(--accent-color)">harmonic mean</strong> over <span class="inline-formula">2<sup>-M[j]</sup></span>. The harmonic mean naturally weights outliers downward. One rogue register with a huge value contributes nearly zero to the sum, making the estimate robust.</p>
+                    </div>
+                    <div class="note-card">
+                        <p>This brings the standard error from LogLog's <span class="inline-formula">1.30 / √m</span> down to <span class="inline-formula">1.04 / √m</span>. Two range corrections handle edge cases: <strong style="color:var(--accent-color)">linear counting</strong> when many registers are still zero (sparse data), and a <strong style="color:var(--accent-color)">large-range correction</strong> when the estimate is very large relative to the hash space.</p>
+                    </div>
+                </div>
+                <div class="pseudo-block">
+                    <div class="pseudo-header">HYPERLOGLOG — PSEUDOCODE</div>
+                    <pre class="pseudo-code"><span class="cm">// ── Initialize ──────────────────────────────────────────────</span>
+b = 10                          <span class="cm">// precision bits (typical range: 4–16)</span>
+m = 2^b                         <span class="cm">// number of registers</span>
+M[0..m-1] = 0                   <span class="cm">// all registers start at zero</span>
+
+<span class="cm">// ── ADD element x ───────────────────────────────────────────</span>
+<span class="kw">function</span> <span class="fn">ADD</span>(x):
+    h    = <span class="fn">uniform_hash</span>(x)     <span class="cm">// 64-bit uniformly distributed hash</span>
+    j    = h[<span class="num">0</span>..b-<span class="num">1</span>]            <span class="cm">// top b bits → register index j</span>
+    w    = h[b..]               <span class="cm">// remaining (64-b) bits</span>
+    ρ    = <span class="fn">leading_zeros</span>(w) + <span class="num">1</span> <span class="cm">// position of first 1-bit (min=1, max=65-b)</span>
+    M[j] = <span class="fn">MAX</span>(M[j], ρ)        <span class="cm">// update register with maximum</span>
+
+<span class="cm">// ── ESTIMATE cardinality ─────────────────────────────────────</span>
+<span class="kw">function</span> <span class="fn">COUNT</span>():
+    Z = <span class="num">1</span> / Σ( <span class="num">2</span>^(-M[j]) )       <span class="cm">// harmonic mean denominator (sum of 2^-reg)</span>
+    E = α_m × m² × Z            <span class="cm">// raw HLL estimate</span>
+
+    <span class="cm">// ── Small-range correction (linear counting) ─────────────</span>
+    <span class="kw">if</span> E ≤ <span class="num">2.5</span>m:
+        V = #{j : M[j] == <span class="num">0</span>}    <span class="cm">// count empty registers</span>
+        <span class="kw">if</span> V > <span class="num">0</span>:
+            E = m × <span class="fn">ln</span>(m / V)   <span class="cm">// more accurate when data is sparse</span>
+
+    <span class="cm">// ── Large-range correction ────────────────────────────────</span>
+    <span class="kw">if</span> E > (<span class="num">1</span>/<span class="num">30</span>) × <span class="num">2</span>^<span class="num">32</span>:
+        E = -<span class="num">2</span>^<span class="num">32</span> × <span class="fn">ln</span>(<span class="num">1</span> - E/<span class="num">2</span>^<span class="num">32</span>) <span class="cm">// adjust for hash space saturation</span>
+
+    <span class="kw">return</span> <span class="fn">round</span>(E)
+
+<span class="cm">// ── α_m bias correction constants ───────────────────────────</span>
+α_16  = <span class="num">0.673</span>
+α_32  = <span class="num">0.697</span>
+α_64  = <span class="num">0.709</span>
+α_m   = <span class="num">0.7213</span> / (<span class="num">1</span> + <span class="num">1.079</span>/m)  <span class="cm">// general formula for m ≥ 128</span></pre>
+                </div>
+
+                <!-- Interactive HLL vs LogLog Demo -->
+                <div class="algo-demo-wrap">
+                    <div class="algo-demo-bar">
+                        INTERACTIVE — HYPERLOGLOG vs LOGLOG
+                        <span class="auto-run-badge" id="hll-cmp-badge" style="display:none">● RUNNING</span>
+                    </div>
+                    <div class="algo-demo-body">
+                        <p class="algo-demo-desc">Same data, different estimators. <strong style="color:var(--warning-color)">LogLog</strong> uses arithmetic mean (sensitive to outliers). <strong style="color:var(--accent-color)">HyperLogLog</strong> uses harmonic mean (robust). Watch the error difference grow as outlier registers appear.</p>
+
+                        <div class="algo-demo-controls">
+                            <button class="stream-play-btn" id="hll-cmp-play-btn">
+                                <svg id="hll-cmp-play-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                                <svg id="hll-cmp-pause-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+                                <span id="hll-cmp-play-label">Play</span>
+                            </button>
+                            <button id="hll-cmp-step-btn">+10</button>
+                            <button id="hll-cmp-bulk-100">+100</button>
+                            <button id="hll-cmp-bulk-1k">+1K</button>
+                            <button id="hll-cmp-bulk-10k">+10K</button>
+                            <button id="hll-cmp-bulk-100k">+100K</button>
+                            <button id="hll-cmp-reset-btn">Reset</button>
+                            <div class="stream-speed-control">
+                                <label for="hll-cmp-speed">Speed</label>
+                                <input type="range" id="hll-cmp-speed" min="1" max="5" value="3" />
+                            </div>
+                            <div class="stream-speed-control">
+                                <label for="hll-cmp-precision">b=<span id="hll-cmp-b-val">4</span> (m=<span id="hll-cmp-m-val">16</span>)</label>
+                                <input type="range" id="hll-cmp-precision" min="2" max="10" value="4" />
+                            </div>
+                        </div>
+
+                        <!-- Registers grid (16 buckets for b=4) -->
+                        <div class="ll-registers-section">
+                            <div class="ll-registers-label">SHARED REGISTERS (b=4, m=16 buckets)</div>
+                            <div class="ll-registers-grid hll-cmp-grid" id="hll-cmp-reg-grid"></div>
+                        </div>
+
+                        <!-- Entry breakdown table -->
+                        <div class="algo-breakdown-section">
+                            <div class="algo-breakdown-label">ENTRY BREAKDOWN — last 10 processed</div>
+                            <div class="algo-breakdown-scroll">
+                                <table class="algo-breakdown-table" id="hll-cmp-breakdown-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Hash (hex)</th>
+                                            <th>Top 4 bits → Bucket</th>
+                                            <th>Suffix</th>
+                                            <th>ρ (leading 0s + 1)</th>
+                                            <th>M[j] updated?</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="hll-cmp-breakdown-body">
+                                        <tr class="algo-breakdown-empty"><td colspan="6">Press Play or Step to see entries...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Comparison cards -->
+                        <div class="algo-compare-grid">
+                            <div class="algo-compare-card">
+                                <div class="algo-compare-header" style="border-color:var(--warning-color)">LogLog (arithmetic mean)</div>
+                                <div class="algo-compare-body">
+                                    <div class="algo-metric"><span class="algo-metric-label">Mean type</span><span class="algo-metric-value" style="font-size:0.72rem;color:var(--muted-text)">Σ M[j] / m</span></div>
+                                    <div class="algo-metric"><span class="algo-metric-label">Estimate</span><span class="algo-metric-value" id="hll-cmp-ll-est" style="color:var(--warning-color)">0</span></div>
+                                    <div class="algo-metric"><span class="algo-metric-label">Error</span><span class="algo-metric-value" id="hll-cmp-ll-err">—</span></div>
+                                </div>
+                            </div>
+                            <div class="algo-compare-card">
+                                <div class="algo-compare-header" style="border-color:var(--accent-color)">HyperLogLog (harmonic mean)</div>
+                                <div class="algo-compare-body">
+                                    <div class="algo-metric"><span class="algo-metric-label">Mean type</span><span class="algo-metric-value" style="font-size:0.72rem;color:var(--muted-text)">1 / Σ 2<sup>-M[j]</sup></span></div>
+                                    <div class="algo-metric"><span class="algo-metric-label">Estimate</span><span class="algo-metric-value" id="hll-cmp-hll-est" style="color:var(--accent-color)">0</span></div>
+                                    <div class="algo-metric"><span class="algo-metric-label">Error</span><span class="algo-metric-value" id="hll-cmp-hll-err">—</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="algo-status-row">
+                            <span>Actual distinct: <strong id="hll-cmp-actual" style="color:var(--accent-color)">0</strong></span>
+                            <span>Items processed: <strong id="hll-cmp-total" style="color:var(--muted-text)">0</strong></span>
+                        </div>
+
+                        <!-- Error over time -->
+                        <div class="algo-error-chart-wrap">
+                            <div class="algo-error-chart-label">ESTIMATES vs TRUE COUNT</div>
+                            <canvas id="hll-cmp-error-canvas" width="600" height="100"></canvas>
+                            <div class="algo-error-legend">
+                                <span class="algo-legend-item"><span class="algo-legend-dot" style="background:rgba(255,255,255,0.6);border:1px dashed rgba(255,255,255,0.4)"></span> True Count</span>
+                                <span class="algo-legend-item"><span class="algo-legend-dot" style="background:var(--warning-color)"></span> LogLog (arithmetic)</span>
+                                <span class="algo-legend-item"><span class="algo-legend-dot" style="background:var(--accent-color)"></span> HyperLogLog (harmonic)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="2"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">LogLog</span></div></button>
+                    <button class="step-btn next" data-step="4"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">Memory Deep Dive</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <!-- ══════════════════════════════════════════════════════
+                 STEP 4 — Memory Deep Dive
+            ══════════════════════════════════════════════════════ -->
+            <section class="step-panel section" id="step-4">
+                <div class="section-heading">
+                    <h2>Memory Deep Dive: How Many Bytes?</h2>
+                    <p>The claim "O(log log n) memory" sounds abstract. Let's make it concrete.</p>
+                </div>
+                <div class="blog-prose">
+                    <div class="note-card">
+                        <h4 style="color:var(--accent-color);margin:0 0 8px 0;font-size:0.9rem;">What is Precision <em>b</em>?</h4>
+                        <p>The precision parameter <strong>b</strong> is the single "tuning knob" in HyperLogLog. It determines how many of the hash's leading bits are used to select a <em>bucket</em> (register). Specifically:</p>
+                        <ul style="margin:10px 0 10px 16px;line-height:1.8;">
+                            <li><strong>b bits</strong> are taken from the front of each hash → they index into one of <span class="inline-formula">m = 2<sup>b</sup></span> registers.</li>
+                            <li>The remaining <span class="inline-formula">(64 − b)</span> suffix bits are where we count leading zeros (ρ).</li>
+                            <li>Higher b = more registers = <strong>better accuracy</strong> but <strong>more memory</strong>.</li>
+                            <li>Lower b = fewer registers = less memory but higher variance in the estimate.</li>
+                        </ul>
+                        <p>Think of it as splitting your data into <span class="inline-formula">2<sup>b</sup></span> independent experiments. More experiments → more reliable average → tighter estimate. The standard error is approximately <span class="inline-formula">1.04 / √m</span>, so doubling b's exponent halves the error.</p>
+                        <table style="width:100%;font-size:0.78rem;margin-top:10px;border-collapse:collapse;">
+                            <thead>
+                                <tr style="border-bottom:1px solid rgba(53,255,107,0.2);">
+                                    <th style="padding:4px 8px;text-align:left;color:var(--accent-color);">b</th>
+                                    <th style="padding:4px 8px;text-align:left;color:var(--accent-color);">Registers (m)</th>
+                                    <th style="padding:4px 8px;text-align:left;color:var(--accent-color);">Memory</th>
+                                    <th style="padding:4px 8px;text-align:left;color:var(--accent-color);">Std. Error</th>
+                                </tr>
+                            </thead>
+                            <tbody style="color:var(--text-color);">
+                                <tr><td style="padding:3px 8px;">4</td><td style="padding:3px 8px;">16</td><td style="padding:3px 8px;">12 B</td><td style="padding:3px 8px;">~26%</td></tr>
+                                <tr><td style="padding:3px 8px;">8</td><td style="padding:3px 8px;">256</td><td style="padding:3px 8px;">192 B</td><td style="padding:3px 8px;">~6.5%</td></tr>
+                                <tr><td style="padding:3px 8px;">10</td><td style="padding:3px 8px;">1,024</td><td style="padding:3px 8px;">768 B</td><td style="padding:3px 8px;">~3.25%</td></tr>
+                                <tr style="color:var(--accent-color);font-weight:600;"><td style="padding:3px 8px;">12</td><td style="padding:3px 8px;">4,096</td><td style="padding:3px 8px;">3 KB</td><td style="padding:3px 8px;">~1.6%</td></tr>
+                                <tr><td style="padding:3px 8px;">14</td><td style="padding:3px 8px;">16,384</td><td style="padding:3px 8px;">12 KB</td><td style="padding:3px 8px;">~0.8%</td></tr>
+                                <tr><td style="padding:3px 8px;">16</td><td style="padding:3px 8px;">65,536</td><td style="padding:3px 8px;">48 KB</td><td style="padding:3px 8px;">~0.4%</td></tr>
+                            </tbody>
+                        </table>
+                        <p style="margin-top:10px;color:var(--muted-text);font-size:0.8rem;">Redis uses b=14 by default. Most production systems use b=12–16 depending on accuracy requirements.</p>
+                    </div>
+                    <div class="note-card">
+                        <p>With precision b, there are <span class="inline-formula">m = 2<sup>b</sup></span> registers. Each register stores a value from 1 to <span class="inline-formula">(64 − b + 1)</span> — the maximum possible position of the first 1-bit in the suffix. For b = 10, that's at most 55. To store a number 1–55 you need <span class="inline-formula">⌈log<sub>2</sub>(55)⌉ = 6 bits</span> per register.</p>
+                    </div>
+                    <div class="note-card">
+                        <p>For virtually all practical precision values (b ≤ 58), this works out to exactly <strong style="color:var(--accent-color)">6 bits per register</strong>. So the total storage is simply <span class="inline-formula">m × 6 bits = 2<sup>b</sup> × 6 bits = 2<sup>b</sup> × ¾ bytes</span>. At b = 12 (4,096 registers): 4096 × 6 = 24,576 bits = <strong style="color:var(--accent-color)">3,072 bytes ≈ 3 KB</strong> — regardless of whether you've counted 1 item or 1 trillion.</p>
+                    </div>
+                </div>
+
+                <!-- Register & Bits Explanation with Animation -->
+                <div class="mem-panel" style="margin-top:24px;">
+                    <div class="mem-panel-bar">REGISTERS & BITS EXPLAINED</div>
+                    <div class="mem-panel-body">
+                        <div class="blog-prose" style="margin-bottom:16px;">
+                            <div class="note-card" style="margin-top:0;">
+                                <h4 style="color:var(--accent-color);margin:0 0 8px 0;font-size:0.9rem;">What is a Register?</h4>
+                                <p>A <strong>register</strong> is a tiny counter — one per bucket. It stores a single number: the <em>maximum</em> ρ (position of the first 1-bit in the suffix) seen for any element hashed to that bucket. That's it. Not the elements themselves, not a count of elements — just one small integer per bucket.</p>
+                                <p style="margin-top:8px;">If you have b=4 (16 buckets), your entire data structure is just <strong>16 numbers</strong>. Each number starts at 0 and only ever increases.</p>
+                            </div>
+                            <div class="note-card">
+                                <h4 style="color:var(--accent-color);margin:0 0 8px 0;font-size:0.9rem;">What are "Bits per Register"?</h4>
+                                <p>Each register stores the max ρ value. With a 32-bit hash and b=4, the suffix is 28 bits long, so ρ can range from 1 to 29. To store a number up to 29 in binary, you need <span class="inline-formula">⌈log<sub>2</sub>(29)⌉ = 5 bits</span>.</p>
+                                <p style="margin-top:8px;">In practice with 64-bit hashes, registers need <strong>6 bits</strong> each. That means each register is less than a single byte — you can pack multiple registers into adjacent bytes with bit manipulation.</p>
+                                <p style="margin-top:8px;color:var(--muted-text);font-size:0.82rem;"><em>Analogy:</em> Imagine 16 sticky notes on a wall, one per bucket. Each note only says a number like "3" or "7". You never write the actual items — just the biggest leading-zeros count seen. That's the entire data structure.</p>
+                            </div>
+                        </div>
+
+                        <!-- Animated register demo -->
+                        <div class="algo-demo-controls" style="margin-bottom:12px;">
+                            <button class="algo-btn" id="reg-ex-step-btn">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 12,7 5,11"/></svg>
+                                <span>Step</span>
+                            </button>
+                            <button class="algo-btn" id="reg-ex-play-btn">
+                                <svg id="reg-ex-play-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 12,7 5,11"/></svg>
+                                <svg id="reg-ex-pause-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><rect x="3" y="3" width="3" height="8"/><rect x="8" y="3" width="3" height="8"/></svg>
+                                <span id="reg-ex-play-label">Auto</span>
+                            </button>
+                            <button class="algo-btn" id="reg-ex-reset-btn">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1,7 a6,6 0 1,1 1,4 M1,7 L1,3 M1,7 L4,7"/></svg>
+                                <span>Reset</span>
+                            </button>
+                        </div>
+
+                        <!-- Current hash breakdown -->
+                        <div id="reg-ex-breakdown" class="reg-ex-breakdown" style="min-height:80px;">
+                            <div class="reg-ex-prompt" style="color:var(--muted-text);font-style:italic;text-align:center;padding:16px;">Press Step or Auto to see how a hash maps to a register…</div>
+                        </div>
+
+                        <!-- Register strip visualization -->
+                        <div style="margin-top:16px;">
+                            <div style="font-size:0.72rem;color:var(--muted-text);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Registers (b=3, m=8) — each cell shows stored ρ value in binary</div>
+                            <div id="reg-ex-strip" class="reg-ex-strip"></div>
+                        </div>
+
+                        <!-- Total memory annotation -->
+                        <div id="reg-ex-mem-note" class="reg-ex-mem-note" style="margin-top:12px;">
+                            Total memory: 8 registers × 5 bits = <strong style="color:var(--accent-color);">40 bits (5 bytes)</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive memory calculator -->
+                <div class="mem-panel">
+                    <div class="mem-panel-bar">INTERACTIVE MEMORY CALCULATOR</div>
+                    <div class="mem-panel-body">
+                        <div class="mem-sliders">
+                            <div class="mem-slider-row">
+                                <label>Precision b</label>
+                                <input type="range" id="mem-b" min="4" max="16" value="10" />
+                                <span class="mem-val" id="mem-b-val" style="color:var(--accent-color)">10</span>
+                            </div>
+                            <div class="mem-slider-row">
+                                <label>Unique items n</label>
+                                <input type="range" id="mem-n" min="3" max="12" value="6" />
+                                <span class="mem-val" id="mem-n-val" style="color:var(--warning-color)">1,000,000</span>
+                            </div>
+                        </div>
+
+                        <!-- Stat cards -->
+                        <div class="hash-result-cards" id="mem-stat-cards">
+                            <div class="hash-card"><div class="hash-card-label">Registers (m = 2<sup>b</sup>)</div><div class="hash-card-value" id="mc-m">1,024</div></div>
+                            <div class="hash-card"><div class="hash-card-label">Bits / Register</div><div class="hash-card-value" id="mc-bpr">6</div></div>
+                            <div class="hash-card"><div class="hash-card-label">HLL Total Bytes</div><div class="hash-card-value" id="mc-bytes">768</div></div>
+                            <div class="hash-card"><div class="hash-card-label">Std Error ≈</div><div class="hash-card-value" id="mc-err">3.3%</div></div>
+                            <div class="hash-card"><div class="hash-card-label">Exact HashSet Bytes</div><div class="hash-card-value" id="mc-set" style="color:var(--warning-color)">8 MB</div></div>
+                            <div class="hash-card"><div class="hash-card-label">Memory Savings</div><div class="hash-card-value" id="mc-ratio" style="color:#7fffd4">10,000×</div></div>
+                        </div>
+
+                        <!-- Byte tape visualization -->
+                        <div>
+                            <div class="byte-tape-label">HLL byte footprint — each cell = 1 byte <span id="bt-cap-note" style="color:var(--accent-color)"></span></div>
+                            <div class="byte-tape" id="byte-tape"></div>
+                        </div>
+
+                        <!-- Comparison bars -->
+                        <div class="mem-compare-wrap">
+                            <div class="mem-compare-label">Memory comparison (log scale)</div>
+                            <div class="mem-bar-row">
+                                <span class="mem-bar-name">HLL</span>
+                                <div class="mem-bar-track"><div class="mem-bar-fill hll-fill" id="bar-hll" style="width:20%"></div></div>
+                                <span class="mem-bar-annotation" id="bar-hll-label">768 B</span>
+                            </div>
+                            <div class="mem-bar-row">
+                                <span class="mem-bar-name">HashSet</span>
+                                <div class="mem-bar-track"><div class="mem-bar-fill set-fill" id="bar-set" style="width:80%"></div></div>
+                                <span class="mem-bar-annotation" id="bar-set-label">8 MB</span>
+                            </div>
+                        </div>
+
+                        <!-- Analogy -->
+                        <div id="mem-analogy" class="callout" style="margin:0"></div>
+                    </div>
+                </div>
+
+                <!-- Full table -->
+                <table class="learn-table" style="margin-top:8px">
+                    <thead><tr><th>b</th><th>Registers m</th><th>Bits/reg</th><th>Total bits</th><th>Total bytes</th><th>Std error</th></tr></thead>
+                    <tbody>
+                        <tr><td>4</td><td>16</td><td>6</td><td>96</td><td class="hi">12 B</td><td>26%</td></tr>
+                        <tr><td>5</td><td>32</td><td>6</td><td>192</td><td class="hi">24 B</td><td>18%</td></tr>
+                        <tr><td>8</td><td>256</td><td>6</td><td>1,536</td><td class="hi">192 B</td><td>6.5%</td></tr>
+                        <tr><td>10</td><td>1,024</td><td>6</td><td>6,144</td><td class="hi">768 B</td><td>3.3%</td></tr>
+                        <tr><td>12</td><td>4,096</td><td>6</td><td>24,576</td><td class="hi">3 KB</td><td>1.6%</td></tr>
+                        <tr><td>14</td><td>16,384</td><td>6</td><td>98,304</td><td class="hi">12 KB</td><td>0.8%</td></tr>
+                        <tr><td>16</td><td>65,536</td><td>6</td><td>393,216</td><td class="hi">48 KB</td><td>0.4%</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="3"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">HyperLogLog</span></div></button>
+                    <button class="step-btn next" data-step="5"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">Hash Visualizer</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <!-- ══════════════════════════════════════════════════════
+                 STEP 5 — Hash Visualizer
+            ══════════════════════════════════════════════════════ -->
+            <section class="step-panel section" id="step-5">
+                <div class="section-heading">
+                    <h2>Interactive: Hash &amp; Register Visualizer</h2>
+                    <p>Type any string to see <strong>step-by-step</strong> how HyperLogLog processes it — from characters to bucket placement.</p>
+                </div>
+                <div class="callout" style="margin-bottom:20px">This demo uses a 32-bit FNV-1a hash with <strong>b = 5</strong> (32 registers). Production systems use 64-bit hashes with b = 10–14.</div>
+
+                <div class="hash-viz-wrap">
+                    <div class="hash-viz-bar">HASH VISUALIZER — b=5, m=32</div>
+                    <div class="hash-viz-body">
+                        <div class="hash-input-row">
+                            <input type="text" id="hash-input" placeholder='Type a string (e.g. "hello world")' autocomplete="off" />
+                            <button id="hash-btn">Hash It</button>
+                        </div>
+                        <div class="hash-output" id="hash-output" style="display:none">
+                            <!-- Phase 1: String to characters -->
+                            <div class="hash-phase" id="hviz-phase-1">
+                                <div class="hash-phase-header"><span class="hash-phase-num">1</span> String → Character Codes</div>
+                                <div class="hash-phase-content" id="hviz-chars"></div>
+                            </div>
+                            <!-- Phase 2: Character codes through FNV-1a -->
+                            <div class="hash-phase" id="hviz-phase-2" style="display:none">
+                                <div class="hash-phase-header"><span class="hash-phase-num">2</span> FNV-1a Hashing</div>
+                                <div class="hash-phase-content" id="hviz-fnv"></div>
+                            </div>
+                            <!-- Phase 3: Hash to binary -->
+                            <div class="hash-phase" id="hviz-phase-3" style="display:none">
+                                <div class="hash-phase-header"><span class="hash-phase-num">3</span> Hash → 32-bit Binary</div>
+                                <div class="hash-phase-content">
+                                    <div class="hash-hex-line">Hash (hex): <span id="hash-hex">—</span></div>
+                                    <div style="font-size:0.72rem;color:var(--muted-text);margin:6px 0 2px">Binary representation — bits animate left to right:</div>
+                                    <div class="binary-row" id="binary-row"></div>
+                                    <div class="binary-legend">
+                                        <div class="legend-item"><div class="legend-dot idx"></div> Bucket index (top 5 bits)</div>
+                                        <div class="legend-item"><div class="legend-dot zero"></div> Leading zeros in suffix</div>
+                                        <div class="legend-item"><div class="legend-dot rest"></div> Remaining suffix bits</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Phase 4: Bucket identification -->
+                            <div class="hash-phase" id="hviz-phase-4" style="display:none">
+                                <div class="hash-phase-header"><span class="hash-phase-num">4</span> Identify Bucket</div>
+                                <div class="hash-phase-content" id="hviz-bucket"></div>
+                            </div>
+                            <!-- Phase 5: ρ calculation -->
+                            <div class="hash-phase" id="hviz-phase-5" style="display:none">
+                                <div class="hash-phase-header"><span class="hash-phase-num">5</span> Count Leading Zeros → ρ</div>
+                                <div class="hash-phase-content" id="hviz-rho"></div>
+                            </div>
+                            <!-- Phase 6: Register update -->
+                            <div class="hash-phase" id="hviz-phase-6" style="display:none">
+                                <div class="hash-phase-header"><span class="hash-phase-num">6</span> Register Update Decision</div>
+                                <div class="hash-phase-content" id="hviz-update"></div>
+                            </div>
+                            <!-- Summary cards -->
+                            <div class="hash-result-cards" id="hviz-summary" style="display:none">
+                                <div class="hash-card"><div class="hash-card-label">Register j</div><div class="hash-card-value" id="hash-j">—</div></div>
+                                <div class="hash-card"><div class="hash-card-label">Leading zeros</div><div class="hash-card-value" id="hash-lz">—</div></div>
+                                <div class="hash-card"><div class="hash-card-label">ρ (first 1-bit pos)</div><div class="hash-card-value" id="hash-rho">—</div></div>
+                                <div class="hash-card"><div class="hash-card-label">M[j] updated to</div><div class="hash-card-value" id="hash-update">—</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="4"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">Memory Deep Dive</span></div></button>
+                    <button class="step-btn next" data-step="6"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">Live Playground</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <!-- ══════════════════════════════════════════════════════
+                 STEP 6 — Live Playground
+            ══════════════════════════════════════════════════════ -->
+            <section class="step-panel section" id="step-6">
+                <div class="section-heading">
+                    <h2>Live Playground: HyperLogLog in Action</h2>
+                    <p>Add elements and watch the 32 registers fill up in real time.</p>
+                </div>
+
+                <div class="hll-demo-wrap">
+                    <div class="hll-demo-bar">
+                        HYPERLOGLOG DEMO — <span id="hll-bar-label">b=5, m=32</span>
+                        <span id="hll-running-badge" style="display:none;font-size:0.68rem;padding:3px 10px;border:1px solid var(--warning-color);border-radius:99px;background:rgba(154,255,87,0.08);color:var(--warning-color);letter-spacing:0.12em;animation:badgePulse 1.4s ease-in-out infinite">● STREAMING</span>
+                    </div>
+                    <div class="hll-demo-body">
+                        <!-- Precision control -->
+                        <div class="hll-precision-control" style="margin-bottom:14px;">
+                            <div class="stream-speed-control" style="display:inline-flex;">
+                                <label for="hll-precision">Precision b=<span id="hll-b-display">5</span> (m=<span id="hll-m-display">32</span> registers)</label>
+                                <input type="range" id="hll-precision" min="3" max="14" value="5" />
+                            </div>
+                        </div>
+
+                        <!-- Register grid -->
+                        <div>
+                            <div style="font-size:0.7rem;color:var(--muted-text);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:8px">Registers — hover to inspect &nbsp;|&nbsp; <span style="color:var(--accent-color)">darker = lower ρ</span>, <span style="color:#7fffd4">brighter = higher ρ</span></div>
+                            <div class="hll-registers" id="hll-reg-grid"></div>
+                        </div>
+
+                        <!-- Ticker -->
+                        <div class="hll-ticker" id="hll-ticker"><span style="color:rgba(53,255,107,0.3);font-style:italic">Add elements to start streaming...</span></div>
+
+                        <!-- Detailed breakdown for last added item -->
+                        <div class="hll-detail-breakdown" id="hll-detail-panel" style="display:none">
+                            <div style="font-size:0.7rem;color:var(--muted-text);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:8px">Last Item Breakdown</div>
+                            <div id="hll-detail-content" class="hll-detail-content"></div>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="hll-stats-grid">
+                            <div class="hll-stat"><div class="hll-stat-label">Actual Count</div><div class="hll-stat-value" id="stat-actual">0</div></div>
+                            <div class="hll-stat"><div class="hll-stat-label">HLL Estimate</div><div class="hll-stat-value" id="stat-estimate">0</div></div>
+                            <div class="hll-stat"><div class="hll-stat-label">Error</div><div class="hll-stat-value" id="stat-error">—</div></div>
+                            <div class="hll-stat"><div class="hll-stat-label">Zero Registers</div><div class="hll-stat-value" id="stat-zeros">32</div></div>
+                        </div>
+
+                        <!-- Controls -->
+                        <div class="hll-controls">
+                            <input type="text" id="hll-input" placeholder="Type a string to add..." autocomplete="off" />
+                            <button id="hll-add-btn">Add</button>
+                        </div>
+                        <div class="hll-btn-group">
+                            <button id="hll-bulk-10">Stream 10</button>
+                            <button id="hll-bulk-100">Stream 100</button>
+                            <button id="hll-bulk-1000">Stream 1K</button>
+                            <button id="hll-bulk-10000">Stream 10K</button>
+                            <button id="hll-bulk-100000">Stream 100K</button>
+                            <button id="hll-reset-btn">Reset</button>
+                        </div>
+
+                        <!-- Log -->
+                        <div>
+                            <div style="font-size:0.7rem;color:var(--muted-text);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:6px">Activity log</div>
+                            <div class="hll-log" id="hll-log"><div class="log-entry" style="color:rgba(53,255,107,0.3);font-style:italic">Add elements above to see activity here...</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="5"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">Hash Visualizer</span></div></button>
+                    <button class="step-btn next" data-step="7"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">Why It Matters</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <!-- ══════════════════════════════════════════════════════
+                 STEP 7 — Why It Matters
+            ══════════════════════════════════════════════════════ -->
+            <section class="step-panel section" id="step-7">
+                <div class="section-heading"><h2>Why It Matters</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card">
+                        <p><strong style="color:var(--accent-color)">Redis</strong> has built-in <code style="color:var(--warning-color)">PFADD</code> / <code style="color:var(--warning-color)">PFCOUNT</code> commands for HyperLogLog. Each HLL in Redis uses exactly <strong style="color:var(--accent-color)">12 KB</strong> (b=14, sparse-optimized). You can count billions of distinct items with a single Redis key.</p>
+                    </div>
+                    <div class="note-card">
+                        <p><strong style="color:var(--accent-color)">Google BigQuery</strong>, <strong style="color:var(--accent-color)">Apache Spark</strong>, and <strong style="color:var(--accent-color)">Apache Flink</strong> all use HLL for <code style="color:var(--warning-color)">COUNT DISTINCT</code> on massive datasets. Without it, a single GROUP BY query could require shuffling gigabytes of data across a cluster just to deduplicate IDs.</p>
+                    </div>
+                    <div class="note-card">
+                        <p><strong style="color:var(--accent-color)">HyperLogLog++ (2013, Google)</strong> refined the original with empirical bias-correction tables and a sparse register format for small cardinalities. It's now the de facto standard. The core idea — hash to bits, count leading zeros, track the max — remains unchanged from Flajolet's 2007 insight.</p>
+                    </div>
+                    <div class="note-card">
+                        <p>The key trade-off is elegant: give up exact counts (typically &lt;2% error) in exchange for constant memory. Knowing you had <em>about</em> 48.3 million unique visitors is just as actionable as knowing you had exactly 48,312,994 — and orders of magnitude cheaper to compute at scale.</p>
+                    </div>
+                </div>
+                <div class="callout"><strong>Summary:</strong> Hash every element. Split the hash into a register index (top b bits) and a suffix. Track the max leading-zero position (ρ) per register. Estimate cardinality with α_m × m² × harmonic_mean(2<sup>-M[j]</sup>). That's it.</div>
+                <div class="step-nav-cards only-prev">
+                    <button class="step-btn prev" data-step="6"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">Live Playground</span></div></button>
+                    <a href="../../../learnings.html" class="step-btn next" style="text-decoration:none"><div class="step-btn-text"><span class="step-btn-label">View All</span><span class="step-btn-name">Learnings</span></div><span class="step-btn-arrow">→</span></a>
+                </div>
+            </section>
+
+        </main>
+        <footer class="footer">
+            <p>&copy; <span id="year"></span> Brian Fong. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <script src="../../../assets/js/data.js"></script>
+    <script src="../../../assets/js/main.js"></script>
+    <script>
+    (function () {
+        'use strict';
+
+        /* ═══════════════════════════════════════════════════════════
+           UTILITIES
+        ══════════════════════════════════════════════════════════ */
+
+        function fnv1a32(str) {
+            var h = 2166136261;
+            for (var i = 0; i < str.length; i++)
+                h = Math.imul(h ^ str.charCodeAt(i), 16777619) >>> 0;
+            return h;
+        }
+
+        function countLeadingZeros(v, bits) {
+            if (v === 0) return bits;
+            var c = 0;
+            for (var i = bits - 1; i >= 0; i--) {
+                if ((v >>> i) & 1) break;
+                c++;
+            }
+            return c;
+        }
+
+        function toBin(n, bits) { return (n >>> 0).toString(2).padStart(bits, '0'); }
+
+        function fmtBytes(b) {
+            if (b < 1024) return b + ' B';
+            if (b < 1048576) return (b / 1024).toFixed(b % 1024 === 0 ? 0 : 1) + ' KB';
+            if (b < 1073741824) return (b / 1048576).toFixed(1) + ' MB';
+            return (b / 1073741824).toFixed(1) + ' GB';
+        }
+
+        function fmtNum(n) {
+            if (n >= 1e12) return (n / 1e12).toFixed(1) + 'T';
+            if (n >= 1e9)  return (n / 1e9).toFixed(1) + 'B';
+            if (n >= 1e6)  return (n / 1e6).toFixed(1) + 'M';
+            if (n >= 1e3)  return (n / 1e3).toFixed(0) + 'K';
+            return String(n);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           STEP NAVIGATION
+        ══════════════════════════════════════════════════════════ */
+
+        var STEPS = [
+            'The Problem',
+            'The Key Insight',
+            'LogLog',
+            'HyperLogLog',
+            'Memory Deep Dive',
+            'Hash Visualizer',
+            'Live Playground',
+            'Why It Matters'
+        ];
+        var currentStep = 0;
+        var indicatorEl = document.getElementById('step-indicator');
+        var stepCurEl   = document.getElementById('step-cur');
+        var stepNameEl  = document.getElementById('step-name-label');
+
+        // Build indicator dots
+        if (indicatorEl) {
+            STEPS.forEach(function (name, i) {
+                if (i > 0) {
+                    var conn = document.createElement('span');
+                    conn.className = 'step-conn';
+                    conn.id = 'conn-' + (i - 1);
+                    indicatorEl.appendChild(conn);
+                }
+                var dot = document.createElement('span');
+                dot.className = 'step-dot' + (i === 0 ? ' active' : '');
+                dot.id = 'dot-' + i;
+                dot.title = 'Step ' + (i + 1) + ': ' + name;
+                dot.textContent = i + 1;
+                dot.setAttribute('data-step', i);
+                dot.addEventListener('click', function () {
+                    goToStep(parseInt(this.getAttribute('data-step')), null);
+                });
+                indicatorEl.appendChild(dot);
+            });
+        }
+
+        function updateIndicator() {
+            for (var i = 0; i < STEPS.length; i++) {
+                var dot  = document.getElementById('dot-' + i);
+                var conn = document.getElementById('conn-' + (i - 1));
+                if (dot) {
+                    dot.classList.toggle('active', i === currentStep);
+                    dot.classList.toggle('done', i < currentStep);
+                }
+                if (conn) conn.classList.toggle('done', i <= currentStep);
+            }
+            if (stepCurEl) stepCurEl.textContent = currentStep + 1;
+            if (stepNameEl) stepNameEl.textContent = STEPS[currentStep];
+        }
+
+        function goToStep(n, fromDir) {
+            if (n < 0 || n >= STEPS.length || n === currentStep) return;
+            var direction = fromDir !== null ? fromDir : (n > currentStep ? 1 : -1);
+            var oldPanel  = document.getElementById('step-' + currentStep);
+            var newPanel  = document.getElementById('step-' + n);
+            if (!oldPanel || !newPanel) return;
+
+            oldPanel.classList.remove('active', 'from-prev');
+            newPanel.classList.add('active');
+            if (direction < 0) newPanel.classList.add('from-prev');
+            // Remove animation class after it fires
+            setTimeout(function () { newPanel.classList.remove('from-prev'); }, 350);
+
+            onStepDeactivate(currentStep);
+            currentStep = n;
+            onStepActivate(n);
+            updateIndicator();
+
+            // Scroll step indicator into view
+            var wrap = document.querySelector('.step-wrap');
+            if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Wire all step-btn buttons
+        document.querySelectorAll('.step-btn[data-step]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                goToStep(parseInt(btn.getAttribute('data-step')), null);
+            });
+        });
+
+        /* ═══════════════════════════════════════════════════════════
+           STEP LIFECYCLE HOOKS
+        ══════════════════════════════════════════════════════════ */
+
+        function onStepActivate(n) {
+            if (n === 1) HashStream.activate();
+            if (n === 2) LogLogDemo.activate();
+            if (n === 3) HllCompareDemo.activate();
+            if (n === 4) updateMemCalc();
+        }
+
+        function onStepDeactivate(n) {
+            if (n === 1) HashStream.deactivate();
+            if (n === 2) LogLogDemo.deactivate();
+            if (n === 3) HllCompareDemo.deactivate();
+            if (n === 4) RegisterExplainer.deactivate();
+        }
+
+        // Trigger lifecycle for initial step
+        onStepActivate(0);
+
+        /* ═══════════════════════════════════════════════════════════
+           HASH STREAM VISUALIZATION (Step 1)
+           ─────────────────────────────────────────────────────────
+           Streams names through FNV-1a, renders bits with leading-
+           zero highlighting, and maintains a scrollable history of
+           the last 20 hashed items. Fully self-contained module.
+        ══════════════════════════════════════════════════════════ */
+
+        var HashStream = (function () {
+            // ── Name generation pool ─────────────────────────────
+            var FIRST_NAMES = [
+                'alice','bob','charlie','diana','eve','frank','grace',
+                'henry','iris','jack','kate','liam','maya','noah',
+                'olivia','peter','quinn','rose','sam','tara','uma',
+                'victor','wendy','xander','yara','zach','aria','ben',
+                'cleo','dean','ella','finn','gina','hugo','ivy','joel'
+            ];
+            var LAST_NAMES = [
+                'smith','jones','lee','chen','garcia','patel','kim',
+                'nguyen','martinez','taylor','williams','brown','wilson',
+                'moore','thomas','jackson','white','harris','clark',
+                'lewis','walker','hall','young','king','wright','lopez',
+                'hill','scott','green','adams','baker','nelson','campbell'
+            ];
+
+            // ── Constants ────────────────────────────────────────
+            var MAX_HISTORY = 20;
+            var SPEED_MAP = [600, 400, 250, 140, 60]; // ms per tick at speed 1–5
+
+            // ── State ────────────────────────────────────────────
+            var state = {
+                running: false,
+                timerId: null,
+                count: 0,
+                maxLeadingZeros: 0,
+                nameIndex: 0,
+                history: []
+            };
+
+            // ── DOM refs (resolved once on init) ─────────────────
+            var dom = {};
+
+            function resolveDOM() {
+                dom.badge       = document.getElementById('stream-badge');
+                dom.currentName = document.getElementById('stream-current-name');
+                dom.currentBits = document.getElementById('stream-current-bits');
+                dom.count       = document.getElementById('stream-count');
+                dom.maxLz       = document.getElementById('stream-max-lz');
+                dom.estimate    = document.getElementById('stream-estimate');
+                dom.historyList = document.getElementById('stream-history-list');
+                dom.playBtn     = document.getElementById('stream-play-btn');
+                dom.playIcon    = document.getElementById('stream-play-icon');
+                dom.pauseIcon   = document.getElementById('stream-pause-icon');
+                dom.playLabel   = document.getElementById('stream-play-label');
+                dom.stepBtn     = document.getElementById('stream-step-btn');
+                dom.resetBtn    = document.getElementById('stream-reset-btn');
+                dom.speedSlider = document.getElementById('stream-speed');
+            }
+
+            // ── Name generator (deterministic cycle) ─────────────
+            function nextName() {
+                var fi = state.nameIndex % FIRST_NAMES.length;
+                var li = Math.floor(state.nameIndex / FIRST_NAMES.length) % LAST_NAMES.length;
+                var suffix = Math.floor(state.nameIndex / (FIRST_NAMES.length * LAST_NAMES.length));
+                state.nameIndex++;
+                var name = FIRST_NAMES[fi] + '_' + LAST_NAMES[li];
+                return suffix > 0 ? name + '_' + suffix : name;
+            }
+
+            // ── Core: hash one name and update state ─────────────
+            function processOne() {
+                var name = nextName();
+                var hash = fnv1a32(name);
+                var bits = toBin(hash, 32);
+                var lz   = countLeadingZeros(hash, 32);
+
+                state.count++;
+                if (lz > state.maxLeadingZeros) state.maxLeadingZeros = lz;
+
+                var entry = { name: name, bits: bits, lz: lz, hash: hash };
+                state.history.unshift(entry);
+                if (state.history.length > MAX_HISTORY) state.history.pop();
+
+                renderCurrent(entry);
+                renderStats();
+                renderHistory();
+            }
+
+            // ── Rendering ────────────────────────────────────────
+            function renderCurrent(entry) {
+                if (!dom.currentName || !dom.currentBits) return;
+                dom.currentName.textContent = entry.name;
+                dom.currentName.classList.remove('flash-in');
+                void dom.currentName.offsetWidth; // trigger reflow
+                dom.currentName.classList.add('flash-in');
+
+                // Build animated bit display
+                dom.currentBits.innerHTML = '';
+                for (var i = 0; i < entry.bits.length; i++) {
+                    var span = document.createElement('span');
+                    span.className = 'stream-bit' + (i < entry.lz ? ' leading-zero' : (i === entry.lz ? ' first-one' : ''));
+                    span.textContent = entry.bits[i];
+                    span.style.animationDelay = (i * 12) + 'ms';
+                    dom.currentBits.appendChild(span);
+                }
+            }
+
+            function renderStats() {
+                if (dom.count)    dom.count.textContent = state.count.toLocaleString();
+                if (dom.maxLz)    dom.maxLz.textContent = state.maxLeadingZeros;
+                if (dom.estimate) dom.estimate.textContent = '~' + Math.pow(2, state.maxLeadingZeros).toLocaleString();
+            }
+
+            function renderHistory() {
+                if (!dom.historyList) return;
+                dom.historyList.innerHTML = '';
+                if (state.history.length === 0) {
+                    var empty = document.createElement('li');
+                    empty.className = 'stream-history-empty';
+                    empty.textContent = 'Press Play or Step to begin...';
+                    dom.historyList.appendChild(empty);
+                    return;
+                }
+                for (var i = 0; i < state.history.length; i++) {
+                    var item = state.history[i];
+                    var li = document.createElement('li');
+                    li.className = 'stream-history-item' + (i === 0 ? ' newest' : '');
+                    li.innerHTML =
+                        '<span class="history-name">' + item.name + '</span>' +
+                        '<span class="history-lz">' + item.lz + ' zeros</span>';
+                    dom.historyList.appendChild(li);
+                }
+            }
+
+            // ── Playback controls ────────────────────────────────
+            function getInterval() {
+                var speed = dom.speedSlider ? parseInt(dom.speedSlider.value) : 3;
+                return SPEED_MAP[Math.max(0, Math.min(speed - 1, SPEED_MAP.length - 1))];
+            }
+
+            function play() {
+                if (state.running) return;
+                state.running = true;
+                updatePlayUI();
+                scheduleTick();
+            }
+
+            function pause() {
+                state.running = false;
+                if (state.timerId !== null) {
+                    clearTimeout(state.timerId);
+                    state.timerId = null;
+                }
+                updatePlayUI();
+            }
+
+            function toggle() {
+                state.running ? pause() : play();
+            }
+
+            function step() {
+                if (state.running) pause();
+                processOne();
+            }
+
+            function reset() {
+                pause();
+                state.count = 0;
+                state.maxLeadingZeros = 0;
+                state.nameIndex = 0;
+                state.history = [];
+                if (dom.currentName) dom.currentName.textContent = '—';
+                if (dom.currentBits) dom.currentBits.innerHTML = '';
+                renderStats();
+                renderHistory();
+            }
+
+            function scheduleTick() {
+                if (!state.running) return;
+                state.timerId = setTimeout(function () {
+                    processOne();
+                    scheduleTick();
+                }, getInterval());
+            }
+
+            function updatePlayUI() {
+                if (dom.playIcon)  dom.playIcon.style.display  = state.running ? 'none' : '';
+                if (dom.pauseIcon) dom.pauseIcon.style.display = state.running ? '' : 'none';
+                if (dom.playLabel) dom.playLabel.textContent    = state.running ? 'Pause' : 'Play';
+                if (dom.badge)     dom.badge.style.display      = state.running ? '' : 'none';
+            }
+
+            // ── Lifecycle (called by step navigation) ────────────
+            function activate() { play(); }
+            function deactivate() { pause(); }
+
+            // ── Initialization ───────────────────────────────────
+            function init() {
+                resolveDOM();
+                if (dom.playBtn)  dom.playBtn.addEventListener('click', toggle);
+                if (dom.stepBtn)  dom.stepBtn.addEventListener('click', step);
+                if (dom.resetBtn) dom.resetBtn.addEventListener('click', reset);
+                if (dom.speedSlider) {
+                    dom.speedSlider.addEventListener('input', function () {
+                        if (state.running) {
+                            clearTimeout(state.timerId);
+                            scheduleTick();
+                        }
+                    });
+                }
+                renderStats();
+                renderHistory();
+            }
+
+            // ── Public API ───────────────────────────────────────
+            return { init: init, activate: activate, deactivate: deactivate };
+        })();
+
+        /* ═══════════════════════════════════════════════════════════
+           LOGLOG DEMO (Step 2)
+           ─────────────────────────────────────────────────────────
+           Compares single-counter (Flajolet-Martin) vs LogLog with
+           m=8 buckets. Shows registers, estimates, and error chart.
+        ══════════════════════════════════════════════════════════ */
+
+        var LogLogDemo = (function () {
+            var B = 3, M = 8, SUFFIX_BITS = 32 - B;
+            var SPEED_MAP = [500, 320, 180, 100, 50];
+
+            function alphaM(m) {
+                if (m === 16) return 0.673;
+                if (m === 32) return 0.697;
+                if (m === 64) return 0.709;
+                return 0.7213 / (1 + 1.079 / m);
+            }
+
+            var state = {
+                running: false,
+                timerId: null,
+                registers: new Uint8Array(M),
+                globalMaxRho: 0,
+                seen: new Set(),
+                nameIdx: 0,
+                totalAdded: 0,
+                errorHistory: { fm: [], ll: [], actual: [] },
+                entryLog: [] // last 10 entries for breakdown table
+            };
+
+            var dom = {};
+
+            function resolveDOM() {
+                dom.badge     = document.getElementById('ll-badge');
+                dom.playBtn   = document.getElementById('ll-play-btn');
+                dom.playIcon  = document.getElementById('ll-play-icon');
+                dom.pauseIcon = document.getElementById('ll-pause-icon');
+                dom.playLabel = document.getElementById('ll-play-label');
+                dom.stepBtn   = document.getElementById('ll-step-btn');
+                dom.bulk100   = document.getElementById('ll-bulk-100');
+                dom.bulk1k    = document.getElementById('ll-bulk-1k');
+                dom.bulk10k   = document.getElementById('ll-bulk-10k');
+                dom.bulk100k  = document.getElementById('ll-bulk-100k');
+                dom.resetBtn  = document.getElementById('ll-reset-btn');
+                dom.speed     = document.getElementById('ll-speed');
+                dom.regGrid   = document.getElementById('ll-reg-grid');
+                dom.fmRho     = document.getElementById('ll-fm-rho');
+                dom.fmEst     = document.getElementById('ll-fm-est');
+                dom.fmErr     = document.getElementById('ll-fm-err');
+                dom.llAvg     = document.getElementById('ll-ll-avg');
+                dom.llEst     = document.getElementById('ll-ll-est');
+                dom.llErr     = document.getElementById('ll-ll-err');
+                dom.actual    = document.getElementById('ll-actual');
+                dom.total     = document.getElementById('ll-total');
+                dom.canvas    = document.getElementById('ll-error-canvas');
+                dom.breakdownBody = document.getElementById('ll-breakdown-body');
+                dom.precision = document.getElementById('ll-precision');
+                dom.bVal      = document.getElementById('ll-b-val');
+                dom.mVal      = document.getElementById('ll-m-val');
+            }
+
+            function setPrecision(newB) {
+                B = newB;
+                M = 1 << B;
+                SUFFIX_BITS = 32 - B;
+                if (dom.bVal) dom.bVal.textContent = B;
+                if (dom.mVal) dom.mVal.textContent = M;
+                state.registers = new Uint8Array(M);
+                state.globalMaxRho = 0;
+                state.seen = new Set();
+                state.nameIdx = 0;
+                state.totalAdded = 0;
+                state.errorHistory = { fm: [], ll: [], actual: [] };
+                state.entryLog = [];
+                buildGrid();
+                render();
+            }
+
+            // ── Name generator (unique from HashStream) ──────────
+            var NAMES = ['user','admin','guest','test','dev','prod','api','web','app','data',
+                         'node','edge','link','port','cell','grid','mesh','core','base','root'];
+            var DOMAINS = ['io','ai','ml','db','fs','os','vm','k8','ci','cd','ws','ns','gw','lb'];
+            function nextName() {
+                var n = NAMES[state.nameIdx % NAMES.length];
+                var d = DOMAINS[Math.floor(state.nameIdx / NAMES.length) % DOMAINS.length];
+                var gen = Math.floor(state.nameIdx / (NAMES.length * DOMAINS.length));
+                state.nameIdx++;
+                return gen > 0 ? n + '.' + d + '.' + gen : n + '.' + d;
+            }
+
+            // ── Add one item ─────────────────────────────────────
+            function addItem() {
+                var name = nextName();
+                state.seen.add(name);
+                state.totalAdded++;
+
+                var h = fnv1a32(name);
+                var j = h >>> (32 - B);
+                var w = h & ((1 << SUFFIX_BITS) - 1);
+                var lz = countLeadingZeros(w, SUFFIX_BITS);
+                var rho = lz + 1;
+
+                // Single counter
+                if (rho > state.globalMaxRho) state.globalMaxRho = rho;
+
+                // LogLog registers
+                var oldVal = state.registers[j];
+                var updated = rho > oldVal;
+                if (updated) state.registers[j] = rho;
+
+                // Track for breakdown table
+                state.entryLog.unshift({
+                    name: name,
+                    hex: '0x' + (h >>> 0).toString(16).toUpperCase().padStart(8, '0'),
+                    bucketBits: toBin(j, B),
+                    bucket: j,
+                    suffixBits: toBin(w, SUFFIX_BITS),
+                    rho: rho,
+                    updated: updated,
+                    oldVal: oldVal,
+                    newVal: updated ? rho : oldVal
+                });
+                if (state.entryLog.length > 10) state.entryLog.pop();
+            }
+
+            function addBatch(n) {
+                for (var i = 0; i < n; i++) addItem();
+                recordError();
+                render();
+            }
+
+            // ── Estimators ───────────────────────────────────────
+            function fmEstimate() {
+                return Math.pow(2, state.globalMaxRho);
+            }
+
+            function llEstimate() {
+                var sum = 0;
+                for (var i = 0; i < M; i++) sum += state.registers[i];
+                var avg = sum / M;
+                return alphaM(M) * M * Math.pow(2, avg);
+            }
+
+            function recordError() {
+                var actual = state.seen.size;
+                if (actual === 0) return;
+                state.errorHistory.fm.push(fmEstimate());
+                state.errorHistory.ll.push(llEstimate());
+                state.errorHistory.actual.push(actual);
+            }
+
+            // ── Rendering ────────────────────────────────────────
+            function render() {
+                var actual = state.seen.size;
+                var fmEst = fmEstimate();
+                var llEst = llEstimate();
+
+                if (dom.fmRho) dom.fmRho.textContent = state.globalMaxRho;
+                if (dom.fmEst) dom.fmEst.textContent = Math.round(fmEst).toLocaleString();
+                if (dom.fmErr) {
+                    if (actual > 0) {
+                        var fe = Math.abs(fmEst - actual) / actual * 100;
+                        dom.fmErr.textContent = fe.toFixed(1) + '%';
+                        dom.fmErr.style.color = fe < 20 ? '#7fffd4' : fe < 50 ? 'var(--warning-color)' : '#ff6b6b';
+                    } else { dom.fmErr.textContent = '—'; }
+                }
+
+                if (dom.llAvg) {
+                    var sum = 0;
+                    for (var i = 0; i < M; i++) sum += state.registers[i];
+                    dom.llAvg.textContent = (sum / M).toFixed(2);
+                }
+                if (dom.llEst) dom.llEst.textContent = Math.round(llEst).toLocaleString();
+                if (dom.llErr) {
+                    if (actual > 0) {
+                        var le = Math.abs(llEst - actual) / actual * 100;
+                        dom.llErr.textContent = le.toFixed(1) + '%';
+                        dom.llErr.style.color = le < 20 ? '#7fffd4' : le < 50 ? 'var(--warning-color)' : '#ff6b6b';
+                    } else { dom.llErr.textContent = '—'; }
+                }
+
+                if (dom.actual) dom.actual.textContent = actual.toLocaleString();
+                if (dom.total) dom.total.textContent = state.totalAdded.toLocaleString();
+
+                renderRegisters();
+                renderBreakdown();
+                renderErrorChart();
+            }
+
+            function renderBreakdown() {
+                if (!dom.breakdownBody) return;
+                if (state.entryLog.length === 0) {
+                    dom.breakdownBody.innerHTML = '<tr class="algo-breakdown-empty"><td colspan="6">Press Play or Step to see entries...</td></tr>';
+                    return;
+                }
+                dom.breakdownBody.innerHTML = '';
+                for (var i = 0; i < state.entryLog.length; i++) {
+                    var e = state.entryLog[i];
+                    var tr = document.createElement('tr');
+                    tr.className = i === 0 ? 'algo-breakdown-new' : '';
+                    tr.innerHTML =
+                        '<td class="bd-name">' + e.name + '</td>' +
+                        '<td class="bd-hash">' + e.hex + '</td>' +
+                        '<td><span class="bd-bits bd-idx">' + e.bucketBits + '</span> → <span class="bd-bucket">' + e.bucket + '</span></td>' +
+                        '<td class="bd-suffix">' + e.suffixBits.substring(0, 8) + '…</td>' +
+                        '<td class="bd-rho">' + e.rho + '</td>' +
+                        '<td class="' + (e.updated ? 'bd-yes' : 'bd-no') + '">' +
+                            (e.updated ? '✓ ' + e.oldVal + ' → ' + e.newVal : '✗ (M[' + e.bucket + ']=' + e.oldVal + ' ≥ ' + e.rho + ')') +
+                        '</td>';
+                    dom.breakdownBody.appendChild(tr);
+                }
+            }
+
+            function renderRegisters() {
+                if (!dom.regGrid) return;
+                for (var i = 0; i < M; i++) {
+                    var cell = dom.regGrid.children[i];
+                    if (!cell) continue;
+                    var v = state.registers[i];
+                    cell.querySelector('.ll-reg-val').textContent = v;
+                    var t = Math.min(v / 10, 1);
+                    cell.style.background = v > 0
+                        ? 'rgba(53,255,107,' + (0.06 + t * 0.35) + ')'
+                        : 'rgba(0,5,2,0.9)';
+                    cell.style.borderColor = v > 0
+                        ? 'rgba(53,255,107,' + (0.2 + t * 0.4) + ')'
+                        : 'rgba(53,255,107,0.15)';
+                }
+            }
+
+            function renderErrorChart() {
+                if (!dom.canvas) return;
+                var ctx = dom.canvas.getContext('2d');
+                var W = dom.canvas.width, H = dom.canvas.height;
+                ctx.clearRect(0, 0, W, H);
+
+                var fmH = state.errorHistory.fm;
+                var llH = state.errorHistory.ll;
+                var actH = state.errorHistory.actual;
+                if (actH.length < 2) return;
+
+                var maxVal = 0;
+                for (var i = 0; i < actH.length; i++) maxVal = Math.max(maxVal, fmH[i], llH[i], actH[i]);
+                maxVal = Math.max(maxVal, 1);
+
+                function drawLine(data, color, width, dash) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = width || 2;
+                    ctx.setLineDash(dash || []);
+                    for (var i = 0; i < data.length; i++) {
+                        var x = (i / (data.length - 1)) * W;
+                        var y = H - (data[i] / maxVal) * (H - 8);
+                        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+
+                drawLine(actH, 'rgba(255,255,255,0.6)', 2, [4, 3]);
+                drawLine(fmH, 'rgba(154,255,87,0.8)', 2);
+                drawLine(llH, 'rgba(53,255,107,0.9)', 2);
+            }
+
+            // ── Playback ─────────────────────────────────────────
+            function getInterval() {
+                var s = dom.speed ? parseInt(dom.speed.value) : 3;
+                return SPEED_MAP[Math.max(0, Math.min(s - 1, SPEED_MAP.length - 1))];
+            }
+
+            function play() {
+                if (state.running) return;
+                state.running = true;
+                updateUI();
+                tick();
+            }
+
+            function pause() {
+                state.running = false;
+                if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; }
+                updateUI();
+            }
+
+            function toggle() { state.running ? pause() : play(); }
+
+            function tick() {
+                if (!state.running) return;
+                addBatch(5);
+                state.timerId = setTimeout(tick, getInterval());
+            }
+
+            function stepManual() {
+                if (state.running) pause();
+                addBatch(10);
+            }
+
+            function reset() {
+                pause();
+                state.registers = new Uint8Array(M);
+                state.globalMaxRho = 0;
+                state.seen = new Set();
+                state.nameIdx = 0;
+                state.totalAdded = 0;
+                state.errorHistory = { fm: [], ll: [], actual: [] };
+                state.entryLog = [];
+                render();
+            }
+
+            function updateUI() {
+                if (dom.playIcon)  dom.playIcon.style.display  = state.running ? 'none' : '';
+                if (dom.pauseIcon) dom.pauseIcon.style.display = state.running ? '' : 'none';
+                if (dom.playLabel) dom.playLabel.textContent    = state.running ? 'Pause' : 'Play';
+                if (dom.badge)     dom.badge.style.display      = state.running ? '' : 'none';
+            }
+
+            // ── Build register grid ──────────────────────────────
+            function buildGrid() {
+                if (!dom.regGrid) return;
+                dom.regGrid.innerHTML = '';
+                for (var i = 0; i < M; i++) {
+                    var cell = document.createElement('div');
+                    cell.className = 'll-reg-cell';
+                    cell.innerHTML = '<span class="ll-reg-idx">' + i + '</span><span class="ll-reg-val">0</span>';
+                    dom.regGrid.appendChild(cell);
+                }
+            }
+
+            // ── Lifecycle ────────────────────────────────────────
+            function activate() { play(); }
+            function deactivate() { pause(); }
+
+            function bulkAdd(n) {
+                if (state.running) pause();
+                for (var i = 0; i < n; i++) addItem();
+                recordError();
+                render();
+            }
+
+            function init() {
+                resolveDOM();
+                buildGrid();
+                if (dom.playBtn)  dom.playBtn.addEventListener('click', toggle);
+                if (dom.stepBtn)  dom.stepBtn.addEventListener('click', stepManual);
+                if (dom.bulk100)  dom.bulk100.addEventListener('click', function () { bulkAdd(100); });
+                if (dom.bulk1k)   dom.bulk1k.addEventListener('click', function () { bulkAdd(1000); });
+                if (dom.bulk10k)  dom.bulk10k.addEventListener('click', function () { bulkAdd(10000); });
+                if (dom.bulk100k) dom.bulk100k.addEventListener('click', function () { bulkAdd(100000); });
+                if (dom.resetBtn) dom.resetBtn.addEventListener('click', reset);
+                if (dom.speed) dom.speed.addEventListener('input', function () {
+                    if (state.running) { clearTimeout(state.timerId); tick(); }
+                });
+                if (dom.precision) dom.precision.addEventListener('input', function () {
+                    if (state.running) pause();
+                    setPrecision(parseInt(dom.precision.value));
+                });
+                render();
+            }
+
+            return { init: init, activate: activate, deactivate: deactivate };
+        })();
+
+        /* ═══════════════════════════════════════════════════════════
+           HLL vs LOGLOG COMPARISON DEMO (Step 3)
+           ─────────────────────────────────────────────────────────
+           Same registers, two estimators. Shows how harmonic mean
+           outperforms arithmetic mean, especially with outliers.
+        ══════════════════════════════════════════════════════════ */
+
+        var HllCompareDemo = (function () {
+            var B = 4, M = 16, SUFFIX_BITS = 32 - B;
+            var SPEED_MAP = [500, 320, 180, 100, 50];
+
+            function alphaM(m) {
+                if (m === 16) return 0.673;
+                if (m === 32) return 0.697;
+                if (m === 64) return 0.709;
+                return 0.7213 / (1 + 1.079 / m);
+            }
+
+            var state = {
+                running: false,
+                timerId: null,
+                registers: new Uint8Array(M),
+                seen: new Set(),
+                nameIdx: 0,
+                totalAdded: 0,
+                errorHistory: { ll: [], hll: [], actual: [] },
+                entryLog: []
+            };
+
+            var dom = {};
+
+            function resolveDOM() {
+                dom.badge     = document.getElementById('hll-cmp-badge');
+                dom.playBtn   = document.getElementById('hll-cmp-play-btn');
+                dom.playIcon  = document.getElementById('hll-cmp-play-icon');
+                dom.pauseIcon = document.getElementById('hll-cmp-pause-icon');
+                dom.playLabel = document.getElementById('hll-cmp-play-label');
+                dom.stepBtn   = document.getElementById('hll-cmp-step-btn');
+                dom.bulk100   = document.getElementById('hll-cmp-bulk-100');
+                dom.bulk1k    = document.getElementById('hll-cmp-bulk-1k');
+                dom.bulk10k   = document.getElementById('hll-cmp-bulk-10k');
+                dom.bulk100k  = document.getElementById('hll-cmp-bulk-100k');
+                dom.resetBtn  = document.getElementById('hll-cmp-reset-btn');
+                dom.speed     = document.getElementById('hll-cmp-speed');
+                dom.regGrid   = document.getElementById('hll-cmp-reg-grid');
+                dom.llEst     = document.getElementById('hll-cmp-ll-est');
+                dom.llErr     = document.getElementById('hll-cmp-ll-err');
+                dom.hllEst    = document.getElementById('hll-cmp-hll-est');
+                dom.hllErr    = document.getElementById('hll-cmp-hll-err');
+                dom.actual    = document.getElementById('hll-cmp-actual');
+                dom.total     = document.getElementById('hll-cmp-total');
+                dom.canvas    = document.getElementById('hll-cmp-error-canvas');
+                dom.breakdownBody = document.getElementById('hll-cmp-breakdown-body');
+                dom.precision = document.getElementById('hll-cmp-precision');
+                dom.bVal      = document.getElementById('hll-cmp-b-val');
+                dom.mVal      = document.getElementById('hll-cmp-m-val');
+            }
+
+            function setPrecision(newB) {
+                B = newB;
+                M = 1 << B;
+                SUFFIX_BITS = 32 - B;
+                if (dom.bVal) dom.bVal.textContent = B;
+                if (dom.mVal) dom.mVal.textContent = M;
+                state.registers = new Uint8Array(M);
+                state.seen = new Set();
+                state.nameIdx = 0;
+                state.totalAdded = 0;
+                state.errorHistory = { ll: [], hll: [], actual: [] };
+                state.entryLog = [];
+                buildGrid();
+                render();
+            }
+
+            // ── Name generator ───────────────────────────────────
+            var WORDS = ['alpha','beta','gamma','delta','epsilon','zeta','eta','theta',
+                         'iota','kappa','lambda','mu','nu','xi','omicron','pi','rho',
+                         'sigma','tau','upsilon','phi','chi','psi','omega'];
+            var SUFFIXES = ['01','02','03','04','05','06','07','08','09','10',
+                            '11','12','13','14','15','16','17','18','19','20'];
+            function nextName() {
+                var w = WORDS[state.nameIdx % WORDS.length];
+                var s = SUFFIXES[Math.floor(state.nameIdx / WORDS.length) % SUFFIXES.length];
+                var gen = Math.floor(state.nameIdx / (WORDS.length * SUFFIXES.length));
+                state.nameIdx++;
+                return gen > 0 ? w + '-' + s + '-' + gen : w + '-' + s;
+            }
+
+            // ── Add item ─────────────────────────────────────────
+            function addItem() {
+                var name = nextName();
+                state.seen.add(name);
+                state.totalAdded++;
+
+                var h = fnv1a32(name);
+                var j = h >>> (32 - B);
+                var w = h & ((1 << SUFFIX_BITS) - 1);
+                var lz = countLeadingZeros(w, SUFFIX_BITS);
+                var rho = lz + 1;
+                var oldVal = state.registers[j];
+                var updated = rho > oldVal;
+                if (updated) state.registers[j] = rho;
+
+                state.entryLog.unshift({
+                    name: name,
+                    hex: '0x' + (h >>> 0).toString(16).padStart(8, '0'),
+                    bucketBits: toBin(j, B),
+                    bucket: j,
+                    suffixBits: toBin(w, SUFFIX_BITS),
+                    rho: rho,
+                    updated: updated,
+                    oldVal: oldVal,
+                    newVal: updated ? rho : oldVal
+                });
+                if (state.entryLog.length > 10) state.entryLog.length = 10;
+            }
+
+            function addBatch(n) {
+                for (var i = 0; i < n; i++) addItem();
+                recordError();
+                render();
+            }
+
+            // ── Estimators ───────────────────────────────────────
+            function llEstimate() {
+                var sum = 0;
+                for (var i = 0; i < M; i++) sum += state.registers[i];
+                var avg = sum / M;
+                return 0.39701 * M * Math.pow(2, avg);
+            }
+
+            function hllEstimate() {
+                var sum = 0;
+                for (var i = 0; i < M; i++) sum += Math.pow(2, -state.registers[i]);
+                var E = alphaM(M) * M * M / sum;
+                // Small range correction
+                var zeros = 0;
+                for (var i = 0; i < M; i++) if (state.registers[i] === 0) zeros++;
+                if (E <= 2.5 * M && zeros > 0) E = M * Math.log(M / zeros);
+                return E;
+            }
+
+            function recordError() {
+                var actual = state.seen.size;
+                if (actual === 0) return;
+                state.errorHistory.ll.push(llEstimate());
+                state.errorHistory.hll.push(hllEstimate());
+                state.errorHistory.actual.push(actual);
+            }
+
+            // ── Rendering ────────────────────────────────────────
+            function render() {
+                var actual = state.seen.size;
+                var llEst = llEstimate();
+                var hllEst = hllEstimate();
+
+                if (dom.llEst) dom.llEst.textContent = Math.round(llEst).toLocaleString();
+                if (dom.llErr) {
+                    if (actual > 0) {
+                        var e = Math.abs(llEst - actual) / actual * 100;
+                        dom.llErr.textContent = e.toFixed(1) + '%';
+                        dom.llErr.style.color = e < 15 ? '#7fffd4' : e < 40 ? 'var(--warning-color)' : '#ff6b6b';
+                    } else { dom.llErr.textContent = '—'; }
+                }
+
+                if (dom.hllEst) dom.hllEst.textContent = Math.round(hllEst).toLocaleString();
+                if (dom.hllErr) {
+                    if (actual > 0) {
+                        var e2 = Math.abs(hllEst - actual) / actual * 100;
+                        dom.hllErr.textContent = e2.toFixed(1) + '%';
+                        dom.hllErr.style.color = e2 < 15 ? '#7fffd4' : e2 < 40 ? 'var(--warning-color)' : '#ff6b6b';
+                    } else { dom.hllErr.textContent = '—'; }
+                }
+
+                if (dom.actual) dom.actual.textContent = actual.toLocaleString();
+                if (dom.total) dom.total.textContent = state.totalAdded.toLocaleString();
+
+                renderRegisters();
+                renderBreakdown();
+                renderErrorChart();
+            }
+
+            function renderBreakdown() {
+                if (!dom.breakdownBody) return;
+                if (state.entryLog.length === 0) {
+                    dom.breakdownBody.innerHTML = '<tr class="algo-breakdown-empty"><td colspan="6">Press Play or Step to see entries...</td></tr>';
+                    return;
+                }
+                dom.breakdownBody.innerHTML = '';
+                for (var i = 0; i < state.entryLog.length; i++) {
+                    var e = state.entryLog[i];
+                    var tr = document.createElement('tr');
+                    tr.className = i === 0 ? 'algo-breakdown-new' : '';
+                    tr.innerHTML =
+                        '<td class="bd-name">' + e.name + '</td>' +
+                        '<td class="bd-hash">' + e.hex + '</td>' +
+                        '<td><span class="bd-bits bd-idx">' + e.bucketBits + '</span> → <span class="bd-bucket">' + e.bucket + '</span></td>' +
+                        '<td class="bd-suffix">' + e.suffixBits.substring(0, 8) + '…</td>' +
+                        '<td class="bd-rho">' + e.rho + '</td>' +
+                        '<td class="' + (e.updated ? 'bd-yes' : 'bd-no') + '">' +
+                            (e.updated ? '✓ ' + e.oldVal + ' → ' + e.newVal : '✗ (M[' + e.bucket + ']=' + e.oldVal + ' ≥ ' + e.rho + ')') +
+                        '</td>';
+                    dom.breakdownBody.appendChild(tr);
+                }
+            }
+
+            function renderRegisters() {
+                if (!dom.regGrid) return;
+                for (var i = 0; i < M; i++) {
+                    var cell = dom.regGrid.children[i];
+                    if (!cell) continue;
+                    var v = state.registers[i];
+                    cell.querySelector('.ll-reg-val').textContent = v;
+                    var t = Math.min(v / 10, 1);
+                    cell.style.background = v > 0
+                        ? 'rgba(53,255,107,' + (0.06 + t * 0.35) + ')'
+                        : 'rgba(0,5,2,0.9)';
+                    cell.style.borderColor = v > 0
+                        ? 'rgba(53,255,107,' + (0.2 + t * 0.4) + ')'
+                        : 'rgba(53,255,107,0.15)';
+                }
+            }
+
+            function renderErrorChart() {
+                if (!dom.canvas) return;
+                var ctx = dom.canvas.getContext('2d');
+                var W = dom.canvas.width, H = dom.canvas.height;
+                ctx.clearRect(0, 0, W, H);
+
+                var llH = state.errorHistory.ll;
+                var hllH = state.errorHistory.hll;
+                var actH = state.errorHistory.actual;
+                if (actH.length < 2) return;
+
+                var maxVal = 0;
+                for (var i = 0; i < actH.length; i++) maxVal = Math.max(maxVal, llH[i], hllH[i], actH[i]);
+                maxVal = Math.max(maxVal, 1);
+
+                function drawLine(data, color, width, dash) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = width || 2;
+                    ctx.setLineDash(dash || []);
+                    for (var i = 0; i < data.length; i++) {
+                        var x = (i / (data.length - 1)) * W;
+                        var y = H - (data[i] / maxVal) * (H - 8);
+                        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+
+                drawLine(actH, 'rgba(255,255,255,0.6)', 2, [4, 3]);
+                drawLine(llH, 'rgba(154,255,87,0.8)', 2);
+                drawLine(hllH, 'rgba(53,255,107,0.9)', 2);
+            }
+
+            // ── Playback ─────────────────────────────────────────
+            function getInterval() {
+                var s = dom.speed ? parseInt(dom.speed.value) : 3;
+                return SPEED_MAP[Math.max(0, Math.min(s - 1, SPEED_MAP.length - 1))];
+            }
+
+            function play() {
+                if (state.running) return;
+                state.running = true;
+                updateUI();
+                tick();
+            }
+
+            function pause() {
+                state.running = false;
+                if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; }
+                updateUI();
+            }
+
+            function toggle() { state.running ? pause() : play(); }
+
+            function tick() {
+                if (!state.running) return;
+                addBatch(5);
+                state.timerId = setTimeout(tick, getInterval());
+            }
+
+            function stepManual() {
+                if (state.running) pause();
+                addBatch(10);
+            }
+
+            function reset() {
+                pause();
+                state.registers = new Uint8Array(M);
+                state.seen = new Set();
+                state.nameIdx = 0;
+                state.totalAdded = 0;
+                state.errorHistory = { ll: [], hll: [], actual: [] };
+                state.entryLog = [];
+                render();
+            }
+
+            function updateUI() {
+                if (dom.playIcon)  dom.playIcon.style.display  = state.running ? 'none' : '';
+                if (dom.pauseIcon) dom.pauseIcon.style.display = state.running ? '' : 'none';
+                if (dom.playLabel) dom.playLabel.textContent    = state.running ? 'Pause' : 'Play';
+                if (dom.badge)     dom.badge.style.display      = state.running ? '' : 'none';
+            }
+
+            function buildGrid() {
+                if (!dom.regGrid) return;
+                dom.regGrid.innerHTML = '';
+                for (var i = 0; i < M; i++) {
+                    var cell = document.createElement('div');
+                    cell.className = 'll-reg-cell';
+                    cell.innerHTML = '<span class="ll-reg-idx">' + i + '</span><span class="ll-reg-val">0</span>';
+                    dom.regGrid.appendChild(cell);
+                }
+            }
+
+            // ── Lifecycle ────────────────────────────────────────
+            function activate() { play(); }
+            function deactivate() { pause(); }
+
+            function bulkAdd(n) {
+                if (state.running) pause();
+                for (var i = 0; i < n; i++) addItem();
+                recordError();
+                render();
+            }
+
+            function init() {
+                resolveDOM();
+                buildGrid();
+                if (dom.playBtn)  dom.playBtn.addEventListener('click', toggle);
+                if (dom.stepBtn)  dom.stepBtn.addEventListener('click', stepManual);
+                if (dom.bulk100)  dom.bulk100.addEventListener('click', function () { bulkAdd(100); });
+                if (dom.bulk1k)   dom.bulk1k.addEventListener('click', function () { bulkAdd(1000); });
+                if (dom.bulk10k)  dom.bulk10k.addEventListener('click', function () { bulkAdd(10000); });
+                if (dom.bulk100k) dom.bulk100k.addEventListener('click', function () { bulkAdd(100000); });
+                if (dom.resetBtn) dom.resetBtn.addEventListener('click', reset);
+                if (dom.speed) dom.speed.addEventListener('input', function () {
+                    if (state.running) { clearTimeout(state.timerId); tick(); }
+                });
+                if (dom.precision) dom.precision.addEventListener('input', function () {
+                    if (state.running) pause();
+                    setPrecision(parseInt(dom.precision.value));
+                });
+                render();
+            }
+
+            return { init: init, activate: activate, deactivate: deactivate };
+        })();
+
+        /* ═══════════════════════════════════════════════════════════
+           REGISTER EXPLAINER (Step 4 — animated demo)
+        ══════════════════════════════════════════════════════════ */
+
+        var RegisterExplainer = (function () {
+            var B = 3, M = 8, SUFFIX_BITS = 32 - B, BITS_PER_REG = 5;
+            var NAMES = ['alice','bob','carol','dave','eve','frank','grace','heidi',
+                         'ivan','judy','karl','liam','mia','noah','olivia','pat',
+                         'quinn','rosa','sam','tina','uma','vic','wendy','xander'];
+            var SUFFIXES = ['@co','@io','@dev','@app','@net','@ai','@run','@web'];
+
+            var state = { registers: new Uint8Array(M), nameIdx: 0, running: false, timerId: null };
+            var dom = {};
+
+            function resolveDOM() {
+                dom.stepBtn   = document.getElementById('reg-ex-step-btn');
+                dom.playBtn   = document.getElementById('reg-ex-play-btn');
+                dom.playIcon  = document.getElementById('reg-ex-play-icon');
+                dom.pauseIcon = document.getElementById('reg-ex-pause-icon');
+                dom.playLabel = document.getElementById('reg-ex-play-label');
+                dom.resetBtn  = document.getElementById('reg-ex-reset-btn');
+                dom.breakdown = document.getElementById('reg-ex-breakdown');
+                dom.strip     = document.getElementById('reg-ex-strip');
+                dom.memNote   = document.getElementById('reg-ex-mem-note');
+            }
+
+            function nextName() {
+                var n = NAMES[state.nameIdx % NAMES.length];
+                var s = SUFFIXES[Math.floor(state.nameIdx / NAMES.length) % SUFFIXES.length];
+                state.nameIdx++;
+                return n + s;
+            }
+
+            function step() {
+                var name = nextName();
+                var h = fnv1a32(name);
+                var j = h >>> (32 - B);
+                var w = h & ((1 << SUFFIX_BITS) - 1);
+                var lz = countLeadingZeros(w, SUFFIX_BITS);
+                var rho = lz + 1;
+                var oldVal = state.registers[j];
+                var updated = rho > oldVal;
+                if (updated) state.registers[j] = rho;
+
+                renderBreakdown(name, h, j, w, rho, oldVal, updated);
+                renderStrip(j);
+                renderMemNote();
+            }
+
+            function renderBreakdown(name, h, j, w, rho, oldVal, updated) {
+                if (!dom.breakdown) return;
+                var hashBin = toBin(h, 32);
+                var bucketBits = hashBin.substring(0, B);
+                var suffixBits = hashBin.substring(B);
+                var hex = '0x' + (h >>> 0).toString(16).padStart(8, '0');
+
+                var html = '';
+                html += '<div class="reg-ex-row"><span class="reg-ex-label">Input:</span><span class="reg-ex-val" style="color:var(--accent-color);font-weight:600;">' + name + '</span></div>';
+                html += '<div class="reg-ex-row"><span class="reg-ex-label">Hash:</span><span class="reg-ex-val">' + hex + '</span></div>';
+                html += '<div class="reg-ex-row"><span class="reg-ex-label">Binary:</span>';
+                html += '<span class="reg-ex-highlight reg-ex-bucket-bits">' + bucketBits + '</span>';
+                html += '<span class="reg-ex-highlight reg-ex-suffix-bits">' + suffixBits.substring(0, 12) + '…</span></div>';
+                html += '<div class="reg-ex-row"><span class="reg-ex-label">Bucket:</span><span class="reg-ex-val">top ' + B + ' bits = <span class="reg-ex-highlight reg-ex-bucket-bits">' + bucketBits + '</span> = register <strong style="color:var(--accent-color);">' + j + '</strong></span></div>';
+                html += '<div class="reg-ex-row"><span class="reg-ex-label">ρ (rho):</span><span class="reg-ex-val">first 1-bit in suffix at position <span class="reg-ex-highlight reg-ex-rho-val">' + rho + '</span></span></div>';
+
+                if (updated) {
+                    html += '<div class="reg-ex-update-msg reg-ex-update-yes">✓ Register[' + j + '] updated: ' + oldVal + ' → ' + rho + ' (new max!)</div>';
+                } else {
+                    html += '<div class="reg-ex-update-msg reg-ex-update-no">✗ Register[' + j + '] stays at ' + oldVal + ' (already ≥ ' + rho + ')</div>';
+                }
+
+                dom.breakdown.innerHTML = html;
+            }
+
+            function renderStrip(activeJ) {
+                if (!dom.strip) return;
+                dom.strip.innerHTML = '';
+                for (var i = 0; i < M; i++) {
+                    var v = state.registers[i];
+                    var binStr = toBin(v, BITS_PER_REG);
+                    var cell = document.createElement('div');
+                    cell.className = 'reg-ex-cell' + (i === activeJ ? ' reg-ex-active' : '');
+                    if (v > 0) {
+                        var t = Math.min(v / 10, 1);
+                        cell.style.background = 'rgba(53,255,107,' + (0.04 + t * 0.12) + ')';
+                    }
+                    cell.innerHTML =
+                        '<span class="reg-ex-cell-idx">M[' + i + ']</span>' +
+                        '<span class="reg-ex-cell-dec">' + v + '</span>' +
+                        '<span class="reg-ex-cell-bin">' + binStr + '</span>';
+                    dom.strip.appendChild(cell);
+                }
+            }
+
+            function renderMemNote() {
+                if (!dom.memNote) return;
+                var maxVal = 0;
+                for (var i = 0; i < M; i++) if (state.registers[i] > maxVal) maxVal = state.registers[i];
+                var totalBits = M * BITS_PER_REG;
+                dom.memNote.innerHTML = 'Total memory: ' + M + ' registers × ' + BITS_PER_REG + ' bits = <strong style="color:var(--accent-color);">' + totalBits + ' bits (' + Math.ceil(totalBits / 8) + ' bytes)</strong>' +
+                    ' &nbsp;|&nbsp; Max stored value: ' + maxVal + ' (binary: ' + toBin(maxVal, BITS_PER_REG) + ')';
+            }
+
+            function play() {
+                if (state.running) return;
+                state.running = true;
+                updateUI();
+                tick();
+            }
+            function pause() {
+                state.running = false;
+                if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; }
+                updateUI();
+            }
+            function toggle() { state.running ? pause() : play(); }
+            function tick() {
+                if (!state.running) return;
+                step();
+                state.timerId = setTimeout(tick, 1200);
+            }
+
+            function reset() {
+                pause();
+                state.registers = new Uint8Array(M);
+                state.nameIdx = 0;
+                if (dom.breakdown) dom.breakdown.innerHTML = '<div class="reg-ex-prompt" style="color:var(--muted-text);font-style:italic;text-align:center;padding:16px;">Press Step or Auto to see how a hash maps to a register…</div>';
+                renderStrip(-1);
+                renderMemNote();
+            }
+
+            function updateUI() {
+                if (dom.playIcon)  dom.playIcon.style.display  = state.running ? 'none' : '';
+                if (dom.pauseIcon) dom.pauseIcon.style.display = state.running ? '' : 'none';
+                if (dom.playLabel) dom.playLabel.textContent    = state.running ? 'Stop' : 'Auto';
+            }
+
+            function init() {
+                resolveDOM();
+                renderStrip(-1);
+                renderMemNote();
+                if (dom.stepBtn)  dom.stepBtn.addEventListener('click', function () { if (state.running) pause(); step(); });
+                if (dom.playBtn)  dom.playBtn.addEventListener('click', toggle);
+                if (dom.resetBtn) dom.resetBtn.addEventListener('click', reset);
+            }
+
+            return { init: init, activate: function () {}, deactivate: function () { pause(); } };
+        })();
+
+        /* ═══════════════════════════════════════════════════════════
+           MEMORY CALCULATOR (Step 4)
+        ══════════════════════════════════════════════════════════ */
+
+        var memBSlider = document.getElementById('mem-b');
+        var memNSlider = document.getElementById('mem-n');
+
+        function updateMemCalc() {
+            if (!memBSlider) return;
+            var b = parseInt(memBSlider.value);
+            var nExp = parseInt(memNSlider.value);
+            var n = Math.pow(10, nExp);
+            var m = Math.pow(2, b);
+            var bitsPerReg = Math.ceil(Math.log2(64 - b + 2)); // 6 for all practical b
+            var totalBits  = m * bitsPerReg;
+            var hllBytes   = totalBits / 8;
+            var setBytes   = n * 8; // 64-bit hash per item
+            var errPct     = (1.04 / Math.sqrt(m) * 100).toFixed(1) + '%';
+            var ratio      = Math.round(setBytes / hllBytes);
+
+            // Update labels
+            var bv = document.getElementById('mem-b-val');
+            var nv = document.getElementById('mem-n-val');
+            if (bv) bv.textContent = b;
+            if (nv) nv.textContent = fmtNum(n);
+
+            // Update cards
+            function setCard(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+            setCard('mc-m',    m.toLocaleString());
+            setCard('mc-bpr',  bitsPerReg);
+            setCard('mc-bytes', fmtBytes(hllBytes));
+            setCard('mc-err',  errPct);
+            setCard('mc-set',  fmtBytes(setBytes));
+            setCard('mc-ratio', ratio.toLocaleString() + '×');
+
+            // Byte tape
+            var tape = document.getElementById('byte-tape');
+            if (tape) {
+                tape.innerHTML = '';
+                var showBytes = Math.min(hllBytes, 256);
+                var overflow  = hllBytes > 256;
+                for (var i = 0; i < showBytes; i++) {
+                    var cell = document.createElement('div');
+                    cell.className = 'byte-cell';
+                    tape.appendChild(cell);
+                }
+                var capNote = document.getElementById('bt-cap-note');
+                if (capNote) {
+                    capNote.textContent = overflow
+                        ? '(showing first 256 of ' + Math.round(hllBytes).toLocaleString() + ')'
+                        : '(' + Math.round(hllBytes).toLocaleString() + ' bytes total)';
+                }
+                var ovEl = tape.querySelector('.byte-tape-overflow');
+                if (overflow && !ovEl) {
+                    var ov = document.createElement('div');
+                    ov.className = 'byte-tape-overflow';
+                    ov.textContent = '... ' + fmtBytes(hllBytes - 256) + ' more';
+                    tape.appendChild(ov);
+                }
+            }
+
+            // Comparison bars (log scale)
+            var logHll = Math.log10(Math.max(hllBytes, 1));
+            var logSet = Math.log10(Math.max(setBytes, 1));
+            var logMax = Math.max(logHll, logSet, 1);
+            var hllPct = (logHll / logMax * 95).toFixed(1);
+            var setPct = (logSet / logMax * 95).toFixed(1);
+            var barHll = document.getElementById('bar-hll');
+            var barSet = document.getElementById('bar-set');
+            var lblHll = document.getElementById('bar-hll-label');
+            var lblSet = document.getElementById('bar-set-label');
+            if (barHll) barHll.style.width = hllPct + '%';
+            if (barSet) barSet.style.width = setPct + '%';
+            if (lblHll) lblHll.textContent = fmtBytes(hllBytes);
+            if (lblSet) lblSet.textContent = fmtBytes(setBytes);
+
+            // Analogy
+            var analogyEl = document.getElementById('mem-analogy');
+            if (analogyEl) {
+                var desc;
+                if (hllBytes < 60)        desc = 'smaller than a single tweet (280 chars).';
+                else if (hllBytes < 400)   desc = 'similar to a short text message.';
+                else if (hllBytes < 2048)  desc = 'smaller than most profile pictures\u2019 EXIF data.';
+                else if (hllBytes < 8192)  desc = 'similar to a Wikipedia article\'s plain text.';
+                else if (hllBytes < 51200) desc = 'smaller than a low-resolution thumbnail image.';
+                else                       desc = 'about the size of a medium-resolution thumbnail.';
+                analogyEl.innerHTML = '<strong>At b=' + b + ', your HLL uses ' + fmtBytes(hllBytes) + ' — '
+                    + desc + '</strong> The exact HashSet for ' + fmtNum(n) + ' items uses '
+                    + fmtBytes(setBytes) + ' — that\'s <strong style="color:#7fffd4">'
+                    + ratio.toLocaleString() + '× more memory</strong> for the same question.';
+            }
+        }
+
+        if (memBSlider) memBSlider.addEventListener('input', updateMemCalc);
+        if (memNSlider) memNSlider.addEventListener('input', updateMemCalc);
+
+        /* ═══════════════════════════════════════════════════════════
+           HyperLogLog STATE (shared between step 5 & 6)
+        ══════════════════════════════════════════════════════════ */
+
+        var B = 5;
+        var M_COUNT = 1 << B; // 32
+        var SUFFIX_BITS = 32 - B; // 27
+
+        function alphaM(m) {
+            if (m === 16) return 0.673;
+            if (m === 32) return 0.697;
+            if (m === 64) return 0.709;
+            return 0.7213 / (1 + 1.079 / m);
+        }
+
+        var hllState = {
+            registers: new Uint8Array(M_COUNT),
+            seen: new Set(),
+            reset: function () { this.registers = new Uint8Array(M_COUNT); this.seen = new Set(); },
+            add: function (str) {
+                var isNew = !this.seen.has(str);
+                this.seen.add(str);
+                var h = fnv1a32(str);
+                var j = h >>> SUFFIX_BITS;
+                var w = h & ((1 << SUFFIX_BITS) - 1);
+                var lz = countLeadingZeros(w, SUFFIX_BITS);
+                var rho = lz + 1;
+                var old = this.registers[j];
+                var updated = rho > old;
+                if (updated) this.registers[j] = rho;
+                return { h: h, j: j, w: w, lz: lz, rho: rho, old: old, updated: updated, isNew: isNew };
+            },
+            estimate: function () {
+                var m = M_COUNT, sum = 0;
+                for (var i = 0; i < m; i++) sum += Math.pow(2, -this.registers[i]);
+                var E = alphaM(m) * m * m / sum;
+                var zeros = 0;
+                for (var i = 0; i < m; i++) if (this.registers[i] === 0) zeros++;
+                if (E <= 2.5 * m && zeros > 0) E = m * Math.log(m / zeros);
+                return E;
+            },
+            zeroCount: function () {
+                var z = 0;
+                for (var i = 0; i < M_COUNT; i++) if (this.registers[i] === 0) z++;
+                return z;
+            }
+        };
+
+        function setPlaygroundPrecision(newB) {
+            B = newB;
+            M_COUNT = 1 << B;
+            SUFFIX_BITS = 32 - B;
+            hllState.registers = new Uint8Array(M_COUNT);
+            hllState.seen = new Set();
+            var bDisp = document.getElementById('hll-b-display');
+            var mDisp = document.getElementById('hll-m-display');
+            var barLabel = document.getElementById('hll-bar-label');
+            if (bDisp) bDisp.textContent = B;
+            if (mDisp) mDisp.textContent = M_COUNT;
+            if (barLabel) barLabel.textContent = 'b=' + B + ', m=' + M_COUNT;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           HASH VISUALIZER (Step 5) — multi-phase animated breakdown
+        ══════════════════════════════════════════════════════════ */
+
+        var hashInputEl  = document.getElementById('hash-input');
+        var hashBtnEl    = document.getElementById('hash-btn');
+        var hashOutputEl = document.getElementById('hash-output');
+        var binaryRowEl  = document.getElementById('binary-row');
+
+        var hvizPhases = [1,2,3,4,5,6].map(function(n) { return document.getElementById('hviz-phase-' + n); });
+        var hvizChars  = document.getElementById('hviz-chars');
+        var hvizFnv    = document.getElementById('hviz-fnv');
+        var hvizBucket = document.getElementById('hviz-bucket');
+        var hvizRho    = document.getElementById('hviz-rho');
+        var hvizUpdate = document.getElementById('hviz-update');
+        var hvizSummary = document.getElementById('hviz-summary');
+
+        function hideAllPhases() {
+            hvizPhases.forEach(function(p) { if (p) p.style.display = 'none'; });
+            if (hvizSummary) hvizSummary.style.display = 'none';
+        }
+
+        function showPhase(n, delay) {
+            setTimeout(function() {
+                if (hvizPhases[n-1]) {
+                    hvizPhases[n-1].style.display = '';
+                    hvizPhases[n-1].classList.add('hash-phase-animate');
+                    setTimeout(function() { hvizPhases[n-1].classList.remove('hash-phase-animate'); }, 500);
+                }
+            }, delay);
+        }
+
+        function runHashViz() {
+            var val = hashInputEl ? hashInputEl.value.trim() : '';
+            if (!val) return;
+            if (hashOutputEl) hashOutputEl.style.display = '';
+            hideAllPhases();
+
+            var h  = fnv1a32(val);
+            var j  = h >>> SUFFIX_BITS;
+            var w  = h & ((1 << SUFFIX_BITS) - 1);
+            var lz = countLeadingZeros(w, SUFFIX_BITS);
+            var rho = lz + 1;
+            var hex = '0x' + (h >>> 0).toString(16).toUpperCase().padStart(8, '0');
+            var fullBin = toBin(h, 32);
+            var bucketBits = fullBin.substring(0, B);
+            var suffixBits = fullBin.substring(B);
+            var currentReg = hllState.registers[j];
+            var updated = rho > currentReg;
+
+            // Phase 1: String → Character Codes (immediate)
+            showPhase(1, 0);
+            if (hvizChars) {
+                var charHtml = '<div class="hviz-char-grid">';
+                for (var i = 0; i < Math.min(val.length, 20); i++) {
+                    charHtml += '<div class="hviz-char-cell" style="animation-delay:' + (i * 40) + 'ms">'
+                        + '<span class="hviz-char-letter">' + (val[i] === ' ' ? '␣' : val[i].replace(/[<>&"]/g, '')) + '</span>'
+                        + '<span class="hviz-char-code">' + val.charCodeAt(i) + '</span>'
+                        + '</div>';
+                }
+                if (val.length > 20) charHtml += '<div class="hviz-char-cell"><span class="hviz-char-letter">…</span><span class="hviz-char-code">+' + (val.length - 20) + '</span></div>';
+                charHtml += '</div>';
+                charHtml += '<div style="font-size:0.72rem;color:var(--muted-text);margin-top:8px;">"' + val.substring(0,20) + (val.length > 20 ? '…' : '') + '" → [' + val.length + ' bytes fed into hash]</div>';
+                hvizChars.innerHTML = charHtml;
+            }
+
+            // Phase 2: FNV-1a process
+            showPhase(2, 350);
+            if (hvizFnv) {
+                var fnvHtml = '<div class="hviz-fnv-steps">';
+                fnvHtml += '<div class="hviz-fnv-line"><span class="hviz-fnv-label">Algorithm:</span> FNV-1a (32-bit)</div>';
+                fnvHtml += '<div class="hviz-fnv-line"><span class="hviz-fnv-label">Offset basis:</span> <span style="color:#9aff57;">2166136261</span> (0x811C9DC5)</div>';
+                fnvHtml += '<div class="hviz-fnv-line"><span class="hviz-fnv-label">For each byte:</span> hash = (hash XOR byte) × <span style="color:#9aff57;">16777619</span></div>';
+                fnvHtml += '<div class="hviz-fnv-line" style="margin-top:8px;"><span class="hviz-fnv-label">Result:</span> <span style="color:var(--accent-color);font-weight:700;">' + hex + '</span> (' + (h >>> 0) + ')</div>';
+                fnvHtml += '</div>';
+                hvizFnv.innerHTML = fnvHtml;
+            }
+
+            // Phase 3: Binary with bit reveal
+            showPhase(3, 700);
+            setTimeout(function() {
+                if (!binaryRowEl) return;
+                binaryRowEl.innerHTML = '';
+                var el = document.getElementById('hash-hex');
+                if (el) el.textContent = hex;
+
+                var elements = [];
+                for (var i = 0; i < B; i++) elements.push({ text: fullBin[i], cls: 'bit idx' });
+                elements.push({ text: '|', cls: 'bit sep' });
+                for (var i = 0; i < SUFFIX_BITS; i++) elements.push({ text: suffixBits[i], cls: 'bit ' + (i < lz ? 'zero' : (i === lz ? 'one first-one' : 'one')) });
+
+                var nodes = elements.map(function (d) {
+                    var span = document.createElement('span');
+                    span.className = d.cls;
+                    span.textContent = d.text;
+                    binaryRowEl.appendChild(span);
+                    return span;
+                });
+                nodes.forEach(function (node, idx) {
+                    setTimeout(function () { node.classList.add('visible'); }, idx * 18);
+                });
+            }, 700);
+
+            // Phase 4: Bucket identification
+            showPhase(4, 1500);
+            if (hvizBucket) {
+                setTimeout(function() {
+                    var bhtml = '<div class="hviz-bucket-explain">';
+                    bhtml += '<div class="hviz-bucket-step">Take the top <strong>' + B + '</strong> bits of the hash:</div>';
+                    bhtml += '<div class="hviz-bucket-bits">';
+                    for (var i = 0; i < B; i++) {
+                        bhtml += '<span class="hviz-bit-box hviz-bit-idx">' + bucketBits[i] + '</span>';
+                    }
+                    bhtml += '</div>';
+                    bhtml += '<div class="hviz-bucket-step" style="margin-top:8px;">Convert binary to decimal: <span style="color:#9aff57;">' + bucketBits + '</span><sub>2</sub> = <strong style="color:var(--accent-color);font-size:1.1rem;">' + j + '</strong><sub>10</sub></div>';
+                    bhtml += '<div class="hviz-bucket-step" style="margin-top:8px;">→ This element goes into <strong style="color:var(--accent-color);">Register[' + j + ']</strong> (out of ' + M_COUNT + ' total registers)</div>';
+                    bhtml += '</div>';
+                    hvizBucket.innerHTML = bhtml;
+                }, 1500);
+            }
+
+            // Phase 5: ρ (leading zeros)
+            showPhase(5, 2200);
+            if (hvizRho) {
+                setTimeout(function() {
+                    var rhtml = '<div class="hviz-rho-explain">';
+                    rhtml += '<div class="hviz-bucket-step">Look at the remaining <strong>' + SUFFIX_BITS + '</strong> suffix bits:</div>';
+                    rhtml += '<div class="hviz-bucket-bits" style="margin:8px 0;">';
+                    for (var i = 0; i < Math.min(SUFFIX_BITS, 20); i++) {
+                        var cls = 'hviz-bit-box';
+                        if (i < lz) cls += ' hviz-bit-zero';
+                        else if (i === lz) cls += ' hviz-bit-first-one';
+                        else cls += ' hviz-bit-rest';
+                        rhtml += '<span class="' + cls + '">' + suffixBits[i] + '</span>';
+                    }
+                    if (SUFFIX_BITS > 20) rhtml += '<span class="hviz-bit-box hviz-bit-rest" style="letter-spacing:-1px;">…</span>';
+                    rhtml += '</div>';
+                    rhtml += '<div class="hviz-bucket-step">';
+                    if (lz > 0) {
+                        rhtml += 'Count leading zeros: <span style="color:#7fffd4;font-weight:600;">' + lz + ' zero' + (lz > 1 ? 's' : '') + '</span> before the first <span style="color:var(--accent-color);">1</span>';
+                    } else {
+                        rhtml += 'First bit is already <span style="color:var(--accent-color);">1</span> — zero leading zeros';
+                    }
+                    rhtml += '</div>';
+                    rhtml += '<div class="hviz-bucket-step" style="margin-top:8px;">ρ = leading zeros + 1 = ' + lz + ' + 1 = <strong style="color:var(--accent-color);font-size:1.1rem;">' + rho + '</strong></div>';
+                    rhtml += '</div>';
+                    hvizRho.innerHTML = rhtml;
+                }, 2200);
+            }
+
+            // Phase 6: Register update decision
+            showPhase(6, 2900);
+            if (hvizUpdate) {
+                setTimeout(function() {
+                    var uhtml = '<div class="hviz-update-explain">';
+                    uhtml += '<div class="hviz-bucket-step">Current M[' + j + '] = <strong>' + currentReg + '</strong>, new ρ = <strong>' + rho + '</strong></div>';
+                    uhtml += '<div class="hviz-bucket-step" style="margin-top:8px;">';
+                    if (updated) {
+                        uhtml += '<span class="hviz-update-badge hviz-update-yes">✓ UPDATE</span> ρ (' + rho + ') > M[' + j + '] (' + currentReg + ') → set M[' + j + '] = <strong>' + rho + '</strong>';
+                    } else {
+                        uhtml += '<span class="hviz-update-badge hviz-update-no">✗ NO CHANGE</span> ρ (' + rho + ') ≤ M[' + j + '] (' + currentReg + ') → register already has a higher value';
+                    }
+                    uhtml += '</div>';
+                    uhtml += '</div>';
+                    hvizUpdate.innerHTML = uhtml;
+                }, 2900);
+            }
+
+            // Summary cards
+            setTimeout(function() {
+                if (hvizSummary) {
+                    hvizSummary.style.display = '';
+                    hvizSummary.classList.add('hash-phase-animate');
+                    setTimeout(function() { hvizSummary.classList.remove('hash-phase-animate'); }, 500);
+                }
+                var newVal = Math.max(currentReg, rho);
+                function setEl(id, txt, col) {
+                    var el = document.getElementById(id);
+                    if (el) { el.textContent = txt; if (col) el.style.color = col; }
+                }
+                setEl('hash-j', j);
+                setEl('hash-lz', lz);
+                setEl('hash-rho', rho);
+                setEl('hash-update', newVal + (updated ? '  ↑ updated' : '  (no change)'),
+                    updated ? 'var(--accent-color)' : 'var(--muted-text)');
+            }, 3400);
+        }
+
+        if (hashBtnEl) hashBtnEl.addEventListener('click', runHashViz);
+        if (hashInputEl) {
+            hashInputEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') runHashViz(); });
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           PLAYGROUND (Step 6) — animated streaming
+        ══════════════════════════════════════════════════════════ */
+
+        var regGrid = document.getElementById('hll-reg-grid');
+        var regCells = [];
+        var logEl    = document.getElementById('hll-log');
+        var tickerEl = document.getElementById('hll-ticker');
+        var runningBadge = document.getElementById('hll-running-badge');
+        var adjectives = ['swift','dark','bright','cold','red','blue','wild','fast','deep','sharp','neon','silent','lost','void','bright'];
+        var nouns      = ['fox','tree','lake','cloud','stone','fire','wave','leaf','moon','star','grid','node','byte','pulse','key'];
+        var rngSeed = 0;
+        function rndWord() { rngSeed++; return adjectives[fnv1a32('a'+rngSeed)%adjectives.length]+'_'+nouns[fnv1a32('n'+rngSeed)%nouns.length]+'_'+rngSeed; }
+
+        function buildGrid() {
+            if (!regGrid) return;
+            regGrid.innerHTML = '';
+            regCells = [];
+            for (var i = 0; i < M_COUNT; i++) {
+                var cell = document.createElement('div');
+                cell.className = 'hll-reg';
+                cell.innerHTML = '<span class="reg-idx">' + i + '</span><span class="reg-val">0</span>';
+                cell.title = 'Register ' + i + ': ρ = 0';
+                regGrid.appendChild(cell);
+                regCells.push(cell);
+            }
+        }
+
+        function regBg(val) {
+            if (val === 0) return 'rgba(0,5,2,0.9)';
+            var t = Math.min(val / 12, 1);
+            return 'rgba(53,255,107,' + (0.08 + t * 0.55) + ')';
+        }
+
+        function updateGrid(flashIdx) {
+            for (var i = 0; i < M_COUNT; i++) {
+                var v = hllState.registers[i];
+                var c = regCells[i];
+                if (!c) continue;
+                c.querySelector('.reg-val').textContent = v;
+                c.style.background = regBg(v);
+                c.style.borderColor = v > 0 ? 'rgba(53,255,107,' + (0.2 + Math.min(v / 10, 0.55)) + ')' : 'rgba(53,255,107,0.18)';
+                c.title = 'Register ' + i + ': ρ = ' + v;
+                c.classList.remove('flash', 'active');
+            }
+            if (flashIdx !== undefined && regCells[flashIdx]) {
+                regCells[flashIdx].classList.add('flash', 'active');
+                setTimeout(function () { if (regCells[flashIdx]) regCells[flashIdx].classList.remove('active'); }, 600);
+            }
+        }
+
+        function updateStats() {
+            var actual = hllState.seen.size;
+            var est    = hllState.estimate();
+            var zeros  = hllState.zeroCount();
+            var elA = document.getElementById('stat-actual');
+            var elE = document.getElementById('stat-estimate');
+            var elR = document.getElementById('stat-error');
+            var elZ = document.getElementById('stat-zeros');
+            if (elA) elA.textContent = actual.toLocaleString();
+            if (elE) elE.textContent = Math.round(est).toLocaleString();
+            if (elZ) elZ.textContent = zeros;
+            if (elR) {
+                if (actual > 0) {
+                    var err = Math.abs(est - actual) / actual * 100;
+                    elR.textContent = err.toFixed(1) + '%';
+                    elR.className = 'hll-stat-value ' + (err < 5 ? 'good' : err < 15 ? '' : 'warn');
+                } else {
+                    elR.textContent = '—';
+                    elR.className = 'hll-stat-value';
+                }
+            }
+        }
+
+        function setTicker(html) {
+            if (!tickerEl) return;
+            tickerEl.innerHTML = '<span class="hll-ticker-item">' + html + '</span>';
+        }
+
+        function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+        function appendLog(result, key) {
+            if (!logEl) return;
+            // Remove placeholder
+            var ph = logEl.querySelector('[style*="italic"]');
+            if (ph && ph.textContent.includes('Add elements')) logEl.removeChild(ph);
+            var entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = '"<span class="log-key">' + escHtml(key) + '</span>"'
+                + ' → reg <span class="log-reg">' + result.j + '</span>'
+                + ', ρ=<span class="log-rho">' + result.rho + '</span>'
+                + (result.updated ? ' <span class="log-new">(↑ updated to ' + result.rho + ')</span>' : '');
+            logEl.insertBefore(entry, logEl.firstChild);
+            while (logEl.children.length > 40) logEl.removeChild(logEl.lastChild);
+        }
+
+        function addToHll(str) {
+            if (!str) return;
+            var r = hllState.add(str);
+            updateGrid(r.j);
+            updateStats();
+            appendLog(r, str);
+            setTicker('"<span style="color:var(--warning-color)">' + escHtml(str.length > 28 ? str.slice(0,26)+'…' : str) + '</span>"'
+                + ' → reg <span style="color:var(--accent-color)">' + r.j + '</span>'
+                + ' ρ=<span style="color:#7fffd4">' + r.rho + '</span>');
+            renderDetailBreakdown(str, r);
+        }
+
+        function renderDetailBreakdown(str, r) {
+            var panel = document.getElementById('hll-detail-panel');
+            var content = document.getElementById('hll-detail-content');
+            if (!panel || !content) return;
+            panel.style.display = '';
+
+            var h = fnv1a32(str);
+            var fullBin = toBin(h, 32);
+            var bucketBits = fullBin.substring(0, B);
+            var suffixBits = fullBin.substring(B);
+            var hex = '0x' + (h >>> 0).toString(16).padStart(8, '0');
+
+            var html = '';
+            // Row 1: String → chars
+            html += '<div class="hll-detail-row"><span class="hll-detail-label">String</span><span class="hll-detail-val" style="color:var(--accent-color);">"' + escHtml(str.length > 24 ? str.slice(0, 22) + '…' : str) + '"</span></div>';
+
+            // Row 2: Hash hex
+            html += '<div class="hll-detail-row"><span class="hll-detail-label">Hash</span><span class="hll-detail-val">' + hex + '</span></div>';
+
+            // Row 3: Binary with color-coded segments
+            html += '<div class="hll-detail-row"><span class="hll-detail-label">Binary</span><span class="hll-detail-val">';
+            html += '<span class="hviz-inline-bits">';
+            for (var i = 0; i < B; i++) html += '<span class="hviz-bit-box hviz-bit-idx" style="padding:1px 3px;font-size:0.7rem;">' + bucketBits[i] + '</span>';
+            html += '<span style="color:var(--muted-text);margin:0 2px;">|</span>';
+            for (var i = 0; i < Math.min(SUFFIX_BITS, 14); i++) {
+                var cls = i < r.lz ? 'hviz-bit-zero' : (i === r.lz ? 'hviz-bit-first-one' : 'hviz-bit-rest');
+                html += '<span class="hviz-bit-box ' + cls + '" style="padding:1px 3px;font-size:0.7rem;">' + suffixBits[i] + '</span>';
+            }
+            if (SUFFIX_BITS > 14) html += '<span style="color:var(--muted-text);">…</span>';
+            html += '</span></span></div>';
+
+            // Row 4: Bucket
+            html += '<div class="hll-detail-row"><span class="hll-detail-label">Bucket</span><span class="hll-detail-val"><span style="color:#9aff57;">' + bucketBits + '</span><sub>2</sub> = Register[<strong style="color:var(--accent-color);">' + r.j + '</strong>]</span></div>';
+
+            // Row 5: ρ
+            html += '<div class="hll-detail-row"><span class="hll-detail-label">ρ</span><span class="hll-detail-val">' + r.lz + ' leading zero' + (r.lz !== 1 ? 's' : '') + ' + 1 = <strong style="color:var(--accent-color);">' + r.rho + '</strong></span></div>';
+
+            // Row 6: Update
+            html += '<div class="hll-detail-row"><span class="hll-detail-label">Update</span><span class="hll-detail-val">';
+            if (r.updated) {
+                html += '<span style="color:var(--accent-color);">✓</span> M[' + r.j + ']: ' + r.old + ' → ' + r.rho;
+            } else {
+                html += '<span style="color:var(--muted-text);">✗</span> M[' + r.j + '] = ' + r.old + ' (already ≥ ' + r.rho + ')';
+            }
+            html += '</span></div>';
+
+            content.innerHTML = html;
+        }
+
+        var streamBusy = false;
+
+        function streamAdd(items, batchSize, delayMs, onDone) {
+            if (streamBusy) return;
+            streamBusy = true;
+            if (runningBadge) runningBadge.style.display = '';
+            var idx = 0;
+            function tick() {
+                if (idx >= items.length) {
+                    updateGrid();
+                    updateStats();
+                    streamBusy = false;
+                    if (runningBadge) runningBadge.style.display = 'none';
+                    setTicker('Done — <span style="color:var(--accent-color)">' + items.length.toLocaleString() + ' items streamed</span>');
+                    if (onDone) onDone();
+                    return;
+                }
+                var end = Math.min(idx + batchSize, items.length);
+                var lastJ = -1;
+                while (idx < end) {
+                    var r = hllState.add(items[idx]);
+                    if (r.updated) lastJ = r.j;
+                    idx++;
+                }
+                // Update stats every batch
+                updateStats();
+                // Flash one register per batch
+                if (lastJ >= 0) {
+                    updateGrid(lastJ);
+                } else {
+                    // Flash a random active register for visual interest
+                    var activeRegs = [];
+                    for (var i = 0; i < M_COUNT; i++) if (hllState.registers[i] > 0) activeRegs.push(i);
+                    if (activeRegs.length > 0) updateGrid(activeRegs[Math.floor(Math.random() * activeRegs.length)]);
+                }
+                // Update ticker
+                var pct = Math.round(idx / items.length * 100);
+                setTicker('Streaming… <span style="color:var(--accent-color)">' + pct + '%</span> ('
+                    + idx.toLocaleString() + ' / ' + items.length.toLocaleString() + ')');
+                setTimeout(tick, delayMs);
+            }
+            tick();
+        }
+
+        function bulkAdd(count) {
+            var items = [];
+            for (var i = 0; i < count; i++) items.push(rndWord());
+            var frames = Math.min(count, 25);
+            var batch  = Math.ceil(count / frames);
+            var delay  = Math.ceil(800 / frames);
+            // Log summary entry
+            if (logEl) {
+                var ph2 = logEl.querySelector('[style*="italic"]');
+                if (ph2 && ph2.textContent.includes('Add elements')) logEl.removeChild(ph2);
+                var entry = document.createElement('div');
+                entry.className = 'log-entry';
+                entry.innerHTML = '<span class="log-new">Streaming ' + count.toLocaleString() + ' random items…</span>';
+                logEl.insertBefore(entry, logEl.firstChild);
+            }
+            streamAdd(items, batch, delay, function () {
+                if (logEl) {
+                    var entry = document.createElement('div');
+                    entry.className = 'log-entry';
+                    entry.innerHTML = '<span class="log-new">Done. Total unique: ' + hllState.seen.size.toLocaleString()
+                        + ', estimate: ' + Math.round(hllState.estimate()).toLocaleString() + '</span>';
+                    logEl.insertBefore(entry, logEl.firstChild);
+                }
+            });
+        }
+
+        function resetHll() {
+            if (streamBusy) return;
+            hllState.reset();
+            rngSeed = 0;
+            updateGrid();
+            updateStats();
+            if (logEl) logEl.innerHTML = '<div class="log-entry" style="color:rgba(53,255,107,0.3);font-style:italic">Add elements above to see activity here...</div>';
+            setTicker('<span style="color:rgba(53,255,107,0.3);font-style:italic">Add elements to start streaming...</span>');
+        }
+
+        var hllInputEl = document.getElementById('hll-input');
+        var hllAddBtn  = document.getElementById('hll-add-btn');
+
+        if (hllAddBtn) hllAddBtn.addEventListener('click', function () {
+            var v = hllInputEl ? hllInputEl.value.trim() : '';
+            if (v && !streamBusy) { addToHll(v); if (hllInputEl) hllInputEl.value = ''; }
+        });
+        if (hllInputEl) hllInputEl.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !streamBusy) { var v = hllInputEl.value.trim(); if (v) { addToHll(v); hllInputEl.value = ''; } }
+        });
+
+        var b10  = document.getElementById('hll-bulk-10');
+        var b100 = document.getElementById('hll-bulk-100');
+        var b1k  = document.getElementById('hll-bulk-1000');
+        var b10k = document.getElementById('hll-bulk-10000');
+        var b100k = document.getElementById('hll-bulk-100000');
+        var bRst = document.getElementById('hll-reset-btn');
+
+        if (b10)   b10.addEventListener('click',   function () { if (!streamBusy) bulkAdd(10); });
+        if (b100)  b100.addEventListener('click',  function () { if (!streamBusy) bulkAdd(100); });
+        if (b1k)   b1k.addEventListener('click',   function () { if (!streamBusy) bulkAdd(1000); });
+        if (b10k)  b10k.addEventListener('click',  function () { if (!streamBusy) bulkAdd(10000); });
+        if (b100k) b100k.addEventListener('click', function () { if (!streamBusy) bulkAdd(100000); });
+        if (bRst)  bRst.addEventListener('click',  resetHll);
+
+        // Playground precision slider
+        var pgPrecision = document.getElementById('hll-precision');
+        if (pgPrecision) {
+            pgPrecision.addEventListener('input', function () {
+                setPlaygroundPrecision(parseInt(pgPrecision.value));
+                updateGrid();
+                updateStats();
+            });
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           INIT
+        ══════════════════════════════════════════════════════════ */
+
+        HashStream.init();
+        LogLogDemo.init();
+        HllCompareDemo.init();
+        RegisterExplainer.init();
+        buildGrid();
+        updateGrid();
+        updateStats();
+        updateMemCalc();
+        updateIndicator();
+
+    })();
+    </script>
+</body>
+</html>
