@@ -5,6 +5,12 @@ const siteData = {
             url: 'learnings/computer_science/hyperloglog/index.html',
             description: 'A probabilistic data structure for counting distinct elements with O(log log n) memory. Interactive tutorial with animated register visualization.',
             category: 'Computer Science'
+        },
+        {
+            title: 'T-Digest',
+            url: 'learnings/computer_science/tdigest/index.html',
+            description: 'A streaming data structure for accurate percentile estimation (p50, p95, p99) using bounded memory with exceptional tail accuracy.',
+            category: 'Computer Science'
         }
     ],
     projects: [

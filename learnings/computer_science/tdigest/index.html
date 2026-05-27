@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="../../../assets/favicon.png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>T-Digest - Learnings - Brian Fong</title>
+    <link rel="stylesheet" href="../../../assets/css/style.css" />
+    <link rel="stylesheet" href="../../../assets/css/learnings.css" />
+</head>
+<body>
+    <header class="topbar">
+        <a class="home-link" href="../../../index.html" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
+        <button id="sidebar-toggle" aria-label="Toggle navigation"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></button>
+    </header>
+    <nav class="sidebar" id="sidebar">
+        <ul class="nav-links">
+            <li><a href="../../../index.html">Home</a></li>
+            <li><a href="../../../about.html">About</a></li>
+            <li><a href="../../../projects.html">Projects</a></li>
+            <li><a href="../../../learnings.html">Learnings</a></li>
+        </ul>
+    </nav>
+    <div class="content">
+        <header class="hero small">
+            <div class="hero-content">
+                <p class="eyebrow">Learnings</p>
+                <h1>T-Digest</h1>
+                <p class="hero-copy">A streaming quantile sketch that keeps p50, p95, p99, and even p99.9 queries accurate with only a compact list of weighted centroids.</p>
+                <a href="../../../learnings.html" class="back-button">&#8592; Back to Learnings</a>
+            </div>
+        </header>
+        <main>
+            <!-- Step Table of Contents -->
+            <div class="step-toc" id="step-toc">
+                <div class="step-toc-header">TABLE OF CONTENTS</div>
+                <ol class="step-toc-list">
+                    <li><button class="step-toc-item active" data-step="0"><span class="step-toc-num">01</span> The Problem</button></li>
+                    <li><button class="step-toc-item" data-step="1"><span class="step-toc-num">02</span> Key Insight</button></li>
+                    <li><button class="step-toc-item" data-step="2"><span class="step-toc-num">03</span> Scale Functions</button></li>
+                    <li><button class="step-toc-item" data-step="3"><span class="step-toc-num">04</span> Accuracy Comparison</button></li>
+                    <li><button class="step-toc-item" data-step="4"><span class="step-toc-num">05</span> Memory Deep Dive</button></li>
+                    <li><button class="step-toc-item" data-step="5"><span class="step-toc-num">06</span> Centroid Visualizer</button></li>
+                    <li><button class="step-toc-item" data-step="6"><span class="step-toc-num">07</span> Live Playground</button></li>
+                    <li><button class="step-toc-item" data-step="7"><span class="step-toc-num">08</span> Applications</button></li>
+                </ol>
+            </div>
+
+            <div class="step-wrap">
+                <div class="step-indicator" id="step-indicator"></div>
+                <div class="step-progress-label" id="step-progress-label">
+                    Step <span id="step-cur">1</span> of <span id="step-total">8</span> &nbsp;—&nbsp; <span class="step-name" id="step-name-label">The Problem</span>
+                </div>
+            </div>
+
+            <section class="step-panel section active" id="step-0">
+                <div class="section-heading"><h2>The Problem: Computing Percentiles on Streams</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card">
+                        <p>Modern systems care about percentiles, not averages. API latency, database tail response time, queue depth, and frame render time are usually summarized as <strong style="color:var(--accent-color)">p50, p95, p99, or p99.9</strong>. The challenge: values arrive continuously, sometimes millions per second.</p>
+                    </div>
+                    <div class="note-card">
+                        <p>The exact solution is easy to describe and terrible to scale: <strong style="color:var(--accent-color)">store every value, keep them sorted, then index into the array</strong>. That gives exact answers, but it costs <span class="inline-formula">O(n)</span> memory and requires shuffling a huge amount of data as the stream grows.</p>
+                    </div>
+                    <div class="note-card">
+                        <p>That becomes painful when you need percentiles over <strong style="color:var(--accent-color)">massive streams</strong>, merge summaries across machines, or keep dashboards hot for hours. What we actually want is a tiny summary that answers percentile queries well — especially in the <strong style="color:var(--warning-color)">tails</strong>.</p>
+                    </div>
+                </div>
+                <table class="learn-table" style="margin-top:20px">
+                    <thead><tr><th>Approach</th><th>Memory</th><th>Accuracy</th><th>Best use</th></tr></thead>
+                    <tbody>
+                        <tr><td>Exact sort</td><td>O(n)</td><td class="hi">Exact</td><td>Offline analysis, small datasets</td></tr>
+                        <tr><td>Reservoir sampling</td><td>O(k)</td><td>Accuracy varies</td><td>Cheap random sampling</td></tr>
+                        <tr><td>Q-Digest</td><td>O(1/ε × log U)</td><td>Range-bounded guarantees</td><td>Integer universes, bounded domains</td></tr>
+                        <tr><td class="hi">T-Digest</td><td class="hi">O(δ)</td><td class="hi">~0.1–1% error at extremes</td><td class="hi">Latency and tail monitoring</td></tr>
+                    </tbody>
+                </table>
+                <div class="callout"><strong>Why T-Digest matters:</strong> in monitoring, p99 is usually more important than p50. A sketch that is mediocre in the middle but sharp at the tails is often exactly what production systems need.</div>
+                <div class="step-nav-cards only-next">
+                    <button class="step-btn next" data-step="1"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">Key Insight</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <section class="step-panel section" id="step-1">
+                <div class="section-heading"><h2>The Key Insight: Centroids &amp; Compression</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card">
+                        <p>A T-Digest does not keep every value. Instead it keeps a short list of <strong style="color:var(--accent-color)">centroids</strong>. Each centroid stores a <strong>mean</strong> and a <strong>count</strong>. Think of it as saying: “these 37 nearby values are well represented by mean = 412.7.”</p>
+                    </div>
+                    <div class="note-card">
+                        <p>When a new value arrives, the digest tries to <strong style="color:var(--accent-color)">absorb it into the nearest centroid</strong>. If that centroid would become too large, the digest creates a new one instead. This is the core compression mechanism.</p>
+                    </div>
+                    <div class="note-card">
+                        <p>The trick is asymmetric compression: <strong style="color:var(--warning-color)">large centroids in the middle, tiny centroids near p0 and p100</strong>. The center can tolerate approximation. The tails cannot.</p>
+                    </div>
+                </div>
+                <div class="callout"><strong>Core mental model:</strong> T-Digest keeps a compressed, weighted map of the distribution — but it spends its “precision budget” where percentile dashboards care most.</div>
+
+                <div class="hash-stream-wrap" style="margin-top:20px">
+                    <div class="hash-stream-bar">
+                        VALUE STREAM — POINTS → CENTROIDS
+                        <span class="auto-run-badge" id="td-stream-badge" style="display:none">● RUNNING</span>
+                    </div>
+                    <div class="hash-stream-body">
+                        <p class="hash-stream-desc">Watch values arrive on a number line. Nearby observations merge into centroids, while isolated tail values remain small and precise.</p>
+                        <div class="hash-stream-layout">
+                            <div class="hash-stream-main">
+                                <div class="hash-stream-current" id="td-stream-current" style="min-height:160px;display:flex;flex-direction:column;gap:10px;justify-content:center;">
+                                    <div class="stream-current-label">CURRENT INSERT</div>
+                                    <div class="stream-current-name" id="td-stream-current-value">—</div>
+                                    <div class="stream-current-arrow" id="td-stream-current-action">↓ waiting for first value</div>
+                                    <div class="stream-current-bits" id="td-stream-current-summary" style="font-size:0.8rem;line-height:1.6;color:var(--text-color);text-align:center;">Centroids will form as the stream starts.</div>
+                                </div>
+                                <svg id="td-stream-svg" viewBox="0 0 760 220" style="width:100%;display:block;border:1px solid rgba(53,255,107,0.14);border-radius:12px;background:linear-gradient(180deg, rgba(2,6,13,0.96), rgba(0,10,2,0.95));margin:14px 0 18px;"></svg>
+                                <div class="hash-stream-stats">
+                                    <div class="hash-card"><div class="hash-card-label">Values Added</div><div class="hash-card-value" id="td-stream-total">0</div></div>
+                                    <div class="hash-card"><div class="hash-card-label">Centroid Count</div><div class="hash-card-value" id="td-stream-centroids">0</div></div>
+                                    <div class="hash-card"><div class="hash-card-label">Compression (δ)</div><div class="hash-card-value" id="td-stream-delta">80</div></div>
+                                </div>
+                                <div class="hash-stream-controls">
+                                    <button class="stream-play-btn" id="td-stream-play-btn">
+                                        <svg id="td-stream-play-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                                        <svg id="td-stream-pause-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+                                        <span id="td-stream-play-label">Play</span>
+                                    </button>
+                                    <button id="td-stream-step-btn">Step</button>
+                                    <button id="td-stream-reset-btn">Reset</button>
+                                    <div class="stream-speed-control">
+                                        <label for="td-stream-speed">Speed</label>
+                                        <input type="range" id="td-stream-speed" min="1" max="5" value="3" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hash-stream-history">
+                                <div class="stream-history-header">LAST 20 VALUES</div>
+                                <ul class="stream-history-list" id="td-stream-history-list">
+                                    <li class="stream-history-empty">Press Play or Step to begin...</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="0"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">The Problem</span></div></button>
+                    <button class="step-btn next" data-step="2"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">Scale Functions</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <section class="step-panel section" id="step-2">
+                <div class="section-heading"><h2>Scale Functions: Why Tails Need More Precision</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card">
+                        <p>T-Digest is not “merge whenever values are close.” It uses a <strong style="color:var(--accent-color)">scale function</strong> that limits how large a centroid can become at a given quantile <span class="inline-formula">q</span>. Near <span class="inline-formula">q = 0.5</span> centroids can be large. Near <span class="inline-formula">q = 0</span> or <span class="inline-formula">q = 1</span> they must stay tiny.</p>
+                    </div>
+                    <div class="note-card">
+                        <p>A common conceptual description is <span class="inline-formula">k(q) = δ / 2π × arcsin(2q - 1)</span>. You do not need the exact derivation to use it. The important idea is simple: <strong style="color:var(--accent-color)">tails map to tighter capacity limits</strong>.</p>
+                    </div>
+                </div>
+                <div class="callout"><strong>Interpretation:</strong> the scale function is how T-Digest “bends space.” Quantiles near the tails get expanded, so the digest spends more centroids there.</div>
+
+                <div class="algo-demo-wrap">
+                    <div class="algo-demo-bar">
+                        INTERACTIVE — SCALE FUNCTION &amp; CENTROID CAPACITY
+                        <span class="auto-run-badge" id="td-scale-badge" style="display:none">● RUNNING</span>
+                    </div>
+                    <div class="algo-demo-body">
+                        <p class="algo-demo-desc">The curve below shows how maximum centroid size changes across the distribution. Stream values in and watch centroids stay small in the tails while the middle compresses aggressively.</p>
+                        <div class="algo-demo-controls">
+                            <button class="stream-play-btn" id="td-scale-play-btn">
+                                <svg id="td-scale-play-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                                <svg id="td-scale-pause-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+                                <span id="td-scale-play-label">Play</span>
+                            </button>
+                            <button id="td-scale-step-btn">+10</button>
+                            <button id="td-scale-bulk-100">+100</button>
+                            <button id="td-scale-bulk-1k">+1K</button>
+                            <button id="td-scale-bulk-10k">+10K</button>
+                            <button id="td-scale-bulk-100k">+100K</button>
+                            <button id="td-scale-reset-btn">Reset</button>
+                            <div class="stream-speed-control">
+                                <label for="td-scale-speed">Speed</label>
+                                <input type="range" id="td-scale-speed" min="1" max="5" value="3" />
+                            </div>
+                            <div class="stream-speed-control">
+                                <label for="td-scale-delta">δ=<span id="td-scale-delta-label">100</span></label>
+                                <input type="range" id="td-scale-delta" min="25" max="300" value="100" />
+                            </div>
+                        </div>
+                        <canvas id="td-scale-canvas" width="860" height="230" style="width:100%;display:block;border:1px solid rgba(53,255,107,0.14);border-radius:12px;background:rgba(2,6,13,0.92);margin:18px 0 16px;"></canvas>
+                        <div class="ll-registers-section">
+                            <div class="ll-registers-label">CENTROID SIZE GRID — larger cells mean heavier centroids</div>
+                            <div class="ll-registers-grid" id="td-scale-grid"></div>
+                        </div>
+                        <div class="algo-breakdown-section">
+                            <div class="algo-breakdown-label">INSERT BREAKDOWN — last 10 processed</div>
+                            <div class="algo-breakdown-scroll">
+                                <table class="algo-breakdown-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Value</th>
+                                            <th>Nearest Centroid</th>
+                                            <th>Merged?</th>
+                                            <th>New Size</th>
+                                            <th>Quantile Region</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="td-scale-breakdown-body">
+                                        <tr class="algo-breakdown-empty"><td colspan="5">Press Play or Step to see capacity decisions...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="1"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">Key Insight</span></div></button>
+                    <button class="step-btn next" data-step="3"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">Accuracy Comparison</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <section class="step-panel section" id="step-3">
+                <div class="section-heading"><h2>T-Digest vs Naive: Accuracy Comparison</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card">
+                        <p>To judge a sketch, compare it to the exact answer. This demo keeps an exact sorted array and a T-Digest side by side on the same stream, then measures the error at <strong style="color:var(--accent-color)">p50, p75, p90, p95, and p99</strong>.</p>
+                    </div>
+                    <div class="note-card">
+                        <p>The interesting result is not “T-Digest is always perfect.” It is that <strong style="color:var(--warning-color)">error is intentionally smallest near the extremes</strong>. That is the opposite of many naive summaries.</p>
+                    </div>
+                </div>
+                <div class="callout"><strong>Takeaway:</strong> T-Digest is optimized for questions like “what is the p99 latency?” — not for recreating every rank exactly.</div>
+
+                <div class="algo-demo-wrap">
+                    <div class="algo-demo-bar">
+                        INTERACTIVE — EXACT SORTED ARRAY vs T-DIGEST
+                        <span class="auto-run-badge" id="td-accuracy-badge" style="display:none">● RUNNING</span>
+                    </div>
+                    <div class="algo-demo-body">
+                        <p class="algo-demo-desc">Both estimators see the same values. The exact array computes true percentiles. The T-Digest approximates them with dramatically less memory.</p>
+                        <div class="algo-demo-controls">
+                            <button class="stream-play-btn" id="td-accuracy-play-btn">
+                                <svg id="td-accuracy-play-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                                <svg id="td-accuracy-pause-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+                                <span id="td-accuracy-play-label">Play</span>
+                            </button>
+                            <button id="td-accuracy-step-btn">+10</button>
+                            <button id="td-accuracy-bulk-100">+100</button>
+                            <button id="td-accuracy-bulk-1k">+1K</button>
+                            <button id="td-accuracy-bulk-10k">+10K</button>
+                            <button id="td-accuracy-bulk-100k">+100K</button>
+                            <button id="td-accuracy-reset-btn">Reset</button>
+                            <div class="stream-speed-control">
+                                <label for="td-accuracy-speed">Speed</label>
+                                <input type="range" id="td-accuracy-speed" min="1" max="5" value="3" />
+                            </div>
+                            <div class="stream-speed-control">
+                                <label for="td-accuracy-delta">δ=<span id="td-accuracy-delta-label">100</span></label>
+                                <input type="range" id="td-accuracy-delta" min="25" max="300" value="100" />
+                            </div>
+                        </div>
+
+                        <table class="learn-table" id="td-accuracy-table" style="margin-top:18px">
+                            <thead>
+                                <tr><th>Percentile</th><th>True Value</th><th>T-Digest Estimate</th><th>Error</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>p50</td><td id="td-acc-true-50">—</td><td id="td-acc-est-50">—</td><td id="td-acc-err-50">—</td></tr>
+                                <tr><td>p75</td><td id="td-acc-true-75">—</td><td id="td-acc-est-75">—</td><td id="td-acc-err-75">—</td></tr>
+                                <tr><td>p90</td><td id="td-acc-true-90">—</td><td id="td-acc-est-90">—</td><td id="td-acc-err-90">—</td></tr>
+                                <tr><td>p95</td><td id="td-acc-true-95">—</td><td id="td-acc-est-95">—</td><td id="td-acc-err-95">—</td></tr>
+                                <tr><td>p99</td><td id="td-acc-true-99">—</td><td id="td-acc-est-99">—</td><td id="td-acc-err-99">—</td></tr>
+                            </tbody>
+                        </table>
+
+                        <canvas id="td-accuracy-canvas" width="860" height="230" style="width:100%;display:block;border:1px solid rgba(53,255,107,0.14);border-radius:12px;background:rgba(2,6,13,0.92);margin:18px 0 10px;"></canvas>
+                        <div class="algo-error-legend" style="margin-bottom:16px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
+                            <span class="algo-legend-item"><span class="algo-legend-dot" style="background:rgba(255,255,255,0.7);border:1px dashed rgba(255,255,255,0.45)"></span> True p99</span>
+                            <span class="algo-legend-item"><span class="algo-legend-dot" style="background:var(--accent-color)"></span> Estimated p99</span>
+                            <span class="algo-legend-item"><span class="algo-legend-dot" style="background:rgba(154,255,87,0.9)"></span> Estimated p50</span>
+                        </div>
+
+                        <div class="algo-breakdown-section">
+                            <div class="algo-breakdown-label">RECENT SNAPSHOTS</div>
+                            <div class="algo-breakdown-scroll">
+                                <table class="algo-breakdown-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Value</th>
+                                            <th>True p50 / p95 / p99</th>
+                                            <th>Estimated p50 / p95 / p99</th>
+                                            <th>Error</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="td-accuracy-breakdown-body">
+                                        <tr class="algo-breakdown-empty"><td colspan="4">Press Play or Step to generate comparison snapshots...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="2"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">Scale Functions</span></div></button>
+                    <button class="step-btn next" data-step="4"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">Memory Deep Dive</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <section class="step-panel section" id="step-4">
+                <div class="section-heading"><h2>Memory Deep Dive: Compression Factor &amp; Centroids</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card">
+                        <p>The main tuning knob is <strong style="color:var(--accent-color)">δ (delta)</strong>, sometimes called the compression factor. Higher δ allows more centroids, which improves accuracy but increases memory.</p>
+                    </div>
+                    <div class="note-card">
+                        <p>In practice, a digest often ends up with roughly <strong style="color:var(--accent-color)">3–5 × δ centroids</strong>. Each centroid stores a mean and a weight: <span class="inline-formula">float64 mean = 8 bytes</span> and <span class="inline-formula">int32 count = 4 bytes</span>. That is only <strong>12 bytes per centroid</strong>.</p>
+                    </div>
+                    <div class="note-card">
+                        <p>A handy rule of thumb is <span class="inline-formula">memory ≈ 5δ × 12 bytes</span>. With δ = 100, that is about <strong style="color:var(--accent-color)">6 KB</strong> — enough for precise tail latency summaries across huge streams.</p>
+                    </div>
+                </div>
+                <table class="learn-table">
+                    <thead><tr><th>δ</th><th>Approx Memory</th><th>Typical Tail Error</th><th>Comment</th></tr></thead>
+                    <tbody>
+                        <tr><td>25</td><td>1.5 KB</td><td>~3%</td><td>Very compact, good for rough dashboards</td></tr>
+                        <tr><td>50</td><td>3 KB</td><td>~1%</td><td>Solid default for many services</td></tr>
+                        <tr><td class="hi">100</td><td class="hi">6 KB</td><td class="hi">~0.5%</td><td class="hi">Excellent latency sketch</td></tr>
+                        <tr><td>200</td><td>12 KB</td><td>~0.2%</td><td>High-fidelity tail tracking</td></tr>
+                        <tr><td>300</td><td>18 KB</td><td>~0.1%</td><td>Extremely accurate, still tiny</td></tr>
+                    </tbody>
+                </table>
+                <div class="callout"><strong>Memory intuition:</strong> unlike exact percentile tracking, T-Digest stores a compact description of the shape of the data, not the raw observations themselves.</div>
+
+                <div class="hll-demo-wrap">
+                    <div class="hll-demo-bar">
+                        CENTROIDS IN MEMORY — FLOAT64 MEAN + INT32 COUNT
+                        <span class="auto-run-badge" id="td-memory-badge" style="display:none">● RUNNING</span>
+                    </div>
+                    <div class="hll-demo-body">
+                        <div class="algo-demo-controls" style="margin-bottom:18px;">
+                            <button class="stream-play-btn" id="td-memory-play-btn">
+                                <svg id="td-memory-play-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                                <svg id="td-memory-pause-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+                                <span id="td-memory-play-label">Play</span>
+                            </button>
+                            <button id="td-memory-step-btn">Step</button>
+                            <button id="td-memory-reset-btn">Reset</button>
+                            <div class="stream-speed-control">
+                                <label for="td-memory-delta">δ=<span id="td-memory-delta-label">100</span></label>
+                                <input type="range" id="td-memory-delta" min="25" max="300" value="100" />
+                            </div>
+                        </div>
+                        <div class="hash-stream-stats" style="margin-bottom:18px;">
+                            <div class="hash-card"><div class="hash-card-label">Centroids</div><div class="hash-card-value" id="td-memory-centroids">0</div></div>
+                            <div class="hash-card"><div class="hash-card-label">Approx Bytes</div><div class="hash-card-value" id="td-memory-bytes">0 B</div></div>
+                            <div class="hash-card"><div class="hash-card-label">Formula</div><div class="hash-card-value" id="td-memory-formula">5δ × 12</div></div>
+                        </div>
+                        <div class="hll-registers" id="td-memory-grid"></div>
+                        <div class="note-card" style="margin-top:18px;">
+                            <h4 style="color:var(--accent-color);margin:0 0 10px 0;font-size:0.9rem;">Selected Centroid Binary Layout</h4>
+                            <div id="td-memory-binary" style="font-family:'Courier New',Consolas,monospace;font-size:0.75rem;line-height:1.8;word-break:break-all;color:var(--text-color);">No centroid selected yet.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="3"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">Accuracy Comparison</span></div></button>
+                    <button class="step-btn next" data-step="5"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">Centroid Visualizer</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <section class="step-panel section" id="step-5">
+                <div class="section-heading"><h2>Interactive Centroid Visualizer: Step-by-Step Insertion</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card">
+                        <p>This is the insertion path for a single value. T-Digest first finds the <strong style="color:var(--accent-color)">nearest centroid</strong>, checks whether that centroid is allowed to grow, then either merges or creates a new centroid.</p>
+                    </div>
+                    <div class="note-card">
+                        <p>If a merge happens, the centroid mean updates to <span class="inline-formula">(mean × count + value) / (count + 1)</span>. That preserves the weighted average while keeping the summary compact.</p>
+                    </div>
+                </div>
+
+                <div class="hll-demo-wrap">
+                    <div class="hll-demo-bar">STEP-BY-STEP VALUE INSERTION</div>
+                    <div class="hll-demo-body">
+                        <div class="hash-input-row" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px;">
+                            <input id="td-insert-input" type="number" step="0.1" placeholder="Try 42, 120, 880..." style="flex:1;min-width:220px;padding:12px 14px;border-radius:10px;border:1px solid rgba(53,255,107,0.2);background:rgba(2,6,13,0.9);color:var(--text-color);" />
+                            <button id="td-insert-btn" class="stream-play-btn" type="button">Hash &amp; Insert</button>
+                            <button id="td-insert-auto" type="button">Auto Demo</button>
+                            <button id="td-insert-reset" type="button">Reset</button>
+                        </div>
+                        <div class="note-card" style="margin-top:0;">
+                            <strong style="color:var(--accent-color);display:block;margin-bottom:8px;">Phases</strong>
+                            <ol style="margin:0 0 0 18px;line-height:1.8;color:var(--text-color);font-size:0.9rem;">
+                                <li>New value arrives</li>
+                                <li>Find nearest centroid by mean distance</li>
+                                <li>Check scale-function weight limit</li>
+                                <li>If allowed, recompute mean and increment count</li>
+                                <li>Otherwise create a new centroid</li>
+                                <li>Compress if the centroid list grows too large</li>
+                            </ol>
+                        </div>
+                        <div id="td-insert-output" style="margin-top:18px;display:block;">
+                            <div class="note-card" id="td-insert-phase-1" style="display:none"></div>
+                            <div class="note-card" id="td-insert-phase-2" style="display:none"></div>
+                            <div class="note-card" id="td-insert-phase-3" style="display:none"></div>
+                            <div class="note-card" id="td-insert-phase-4" style="display:none"></div>
+                            <div class="note-card" id="td-insert-phase-5" style="display:none"></div>
+                            <div class="note-card" id="td-insert-phase-6" style="display:none"></div>
+                            <div class="callout" id="td-insert-summary" style="display:none"></div>
+                        </div>
+                        <div class="hll-registers" id="td-insert-grid" style="margin-top:18px;"></div>
+                    </div>
+                </div>
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="4"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">Memory Deep Dive</span></div></button>
+                    <button class="step-btn next" data-step="6"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">Live Playground</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <section class="step-panel section" id="step-6">
+                <div class="section-heading"><h2>Live Playground: Stream &amp; Query</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card">
+                        <p>This playground combines the full workflow: stream values from different distributions, inspect centroid placement, tune <strong style="color:var(--accent-color)">δ</strong>, and ask percentile queries directly.</p>
+                    </div>
+                </div>
+                <div class="hll-demo-wrap">
+                    <div class="hll-demo-bar">
+                        FULL PLAYGROUND — STREAM, COMPRESS, QUERY
+                        <span class="auto-run-badge" id="td-playground-badge" style="display:none">● RUNNING</span>
+                    </div>
+                    <div class="hll-demo-body">
+                        <div class="algo-demo-controls">
+                            <button class="stream-play-btn" id="td-playground-play-btn">
+                                <svg id="td-playground-play-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                                <svg id="td-playground-pause-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+                                <span id="td-playground-play-label">Play</span>
+                            </button>
+                            <button id="td-playground-step-btn">+10</button>
+                            <button id="td-playground-bulk-100">+100</button>
+                            <button id="td-playground-bulk-1k">+1K</button>
+                            <button id="td-playground-bulk-10k">+10K</button>
+                            <button id="td-playground-bulk-100k">+100K</button>
+                            <button id="td-playground-reset-btn">Reset</button>
+                            <div class="stream-speed-control">
+                                <label for="td-playground-speed">Speed</label>
+                                <input type="range" id="td-playground-speed" min="1" max="5" value="3" />
+                            </div>
+                            <div class="stream-speed-control">
+                                <label for="td-playground-delta">δ=<span id="td-playground-delta-label">100</span></label>
+                                <input type="range" id="td-playground-delta" min="25" max="300" value="100" />
+                            </div>
+                        </div>
+                        <div class="hash-input-row" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:18px 0;">
+                            <div class="stream-speed-control" style="margin-left:0;">
+                                <label for="td-playground-dist">Distribution</label>
+                                <select id="td-playground-dist" style="padding:8px 10px;border-radius:8px;border:1px solid rgba(53,255,107,0.2);background:rgba(2,6,13,0.9);color:var(--text-color);">
+                                    <option value="uniform">uniform</option>
+                                    <option value="normal" selected>normal</option>
+                                    <option value="exponential">exponential</option>
+                                    <option value="bimodal">bimodal</option>
+                                </select>
+                            </div>
+                            <div class="stream-speed-control" style="margin-left:0;">
+                                <label for="td-playground-query">Query percentile</label>
+                                <input id="td-playground-query" type="number" min="0" max="1" step="0.01" value="0.95" style="width:90px;padding:8px 10px;border-radius:8px;border:1px solid rgba(53,255,107,0.2);background:rgba(2,6,13,0.9);color:var(--text-color);" />
+                            </div>
+                            <button id="td-playground-query-btn" type="button">Estimate</button>
+                            <div id="td-playground-query-result" class="callout" style="margin:0;flex:1;min-width:240px;">Run the stream, then query a percentile like <strong>0.95</strong> or <strong>0.99</strong>.</div>
+                        </div>
+                        <svg id="td-playground-svg" viewBox="0 0 900 260" style="width:100%;display:block;border:1px solid rgba(53,255,107,0.14);border-radius:12px;background:linear-gradient(180deg, rgba(2,6,13,0.96), rgba(0,10,2,0.95));margin-bottom:18px;"></svg>
+                        <div class="hash-stream-stats" style="margin-bottom:18px;">
+                            <div class="hash-card"><div class="hash-card-label">Total Values</div><div class="hash-card-value" id="td-playground-total">0</div></div>
+                            <div class="hash-card"><div class="hash-card-label">Centroid Count</div><div class="hash-card-value" id="td-playground-centroids">0</div></div>
+                            <div class="hash-card"><div class="hash-card-label">Memory Usage</div><div class="hash-card-value" id="td-playground-bytes">0 B</div></div>
+                            <div class="hash-card"><div class="hash-card-label">Compression Ratio</div><div class="hash-card-value" id="td-playground-ratio">0×</div></div>
+                        </div>
+                        <div class="ll-registers-section">
+                            <div class="ll-registers-label">CENTROID GRID — mean, count, quantile range</div>
+                            <div class="hll-registers" id="td-playground-grid"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="5"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">Centroid Visualizer</span></div></button>
+                    <button class="step-btn next" data-step="7"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">Applications</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <section class="step-panel section" id="step-7">
+                <div class="section-heading"><h2>Real-World Applications &amp; Summary</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card">
+                        <h4 style="color:var(--accent-color);margin:0 0 10px 0;font-size:0.92rem;">Where T-Digest shines</h4>
+                        <ul style="margin:0 0 0 18px;line-height:1.9;">
+                            <li><strong>Latency monitoring:</strong> keep p99 and p99.9 accurate for APIs, queues, and background jobs.</li>
+                            <li><strong>Database query planning:</strong> approximate row and value distributions for optimizers.</li>
+                            <li><strong>Network monitoring:</strong> summarize packet latency, jitter, and error tail distributions.</li>
+                            <li><strong>A/B testing:</strong> compare percentile shifts, not just mean shifts, across cohorts.</li>
+                        </ul>
+                    </div>
+                    <div class="note-card">
+                        <h4 style="color:var(--accent-color);margin:0 0 10px 0;font-size:0.92rem;">Who uses it</h4>
+                        <p>Variants of T-Digest show up in systems like <strong style="color:var(--accent-color)">Apache Spark</strong>, <strong style="color:var(--accent-color)">Elasticsearch</strong>, <strong style="color:var(--accent-color)">InfluxDB</strong>, <strong style="color:var(--accent-color)">Datadog</strong>, and <strong style="color:var(--accent-color)">AWS CloudWatch</strong> because percentile queries on streams are a universal systems problem.</p>
+                    </div>
+                </div>
+
+                <div class="pseudo-block">
+                    <div class="pseudo-header">T-DIGEST — PSEUDOCODE</div>
+                    <pre class="pseudo-code"><span class="kw">class</span> <span class="fn">TDigest</span>(delta):
+    centroids = []
+    totalCount = <span class="num">0</span>
+
+    <span class="kw">function</span> <span class="fn">add</span>(x):
+        <span class="kw">if</span> centroids is empty:
+            append centroid(mean=x, count=<span class="num">1</span>)
+            totalCount += <span class="num">1</span>
+            <span class="kw">return</span>
+
+        sort centroids by mean
+        c = nearest centroid to x
+        q = cumulative quantile around c
+        limit = maxWeight(q, delta, totalCount)
+
+        <span class="kw">if</span> c.count + <span class="num">1</span> ≤ limit:
+            c.mean  = (c.mean × c.count + x) / (c.count + <span class="num">1</span>)
+            c.count = c.count + <span class="num">1</span>
+        <span class="kw">else</span>:
+            append centroid(mean=x, count=<span class="num">1</span>)
+
+        totalCount += <span class="num">1</span>
+        <span class="kw">if</span> centroid count is too large:
+            compress by greedily merging adjacent centroids
+
+    <span class="kw">function</span> <span class="fn">quantile</span>(p):
+        walk centroids in order
+        find the region containing rank p × totalCount
+        interpolate between neighboring centroid means</pre>
+                </div>
+
+                <table class="learn-table">
+                    <thead><tr><th>Question</th><th>Exact sort</th><th>Reservoir sample</th><th>T-Digest</th></tr></thead>
+                    <tbody>
+                        <tr><td>Fixed memory?</td><td>No</td><td>Yes</td><td class="hi">Yes</td></tr>
+                        <tr><td>Mergeable across machines?</td><td>Noisy / expensive</td><td>Sometimes</td><td class="hi">Yes</td></tr>
+                        <tr><td>Tail percentile accuracy</td><td>Perfect</td><td>Weak without large sample</td><td class="hi">Strong</td></tr>
+                        <tr><td>Best production fit</td><td>Offline jobs</td><td>Quick heuristics</td><td class="hi">Streaming observability</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="callout"><strong>Final takeaway:</strong> T-Digest is a practical engineering compromise done well. It throws away raw values, keeps a compact weighted shape of the distribution, and deliberately protects the percentiles humans actually alert on.</div>
+                <div class="step-nav-cards only-prev">
+                    <button class="step-btn prev" data-step="6"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">Live Playground</span></div></button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+    (function () {
+        'use strict';
+
+        function fnv1a32(str) {
+            var h = 2166136261;
+            for (var i = 0; i < str.length; i++) h = Math.imul(h ^ str.charCodeAt(i), 16777619) >>> 0;
+            return h;
+        }
+
+        function toBin(n, bits) {
+            var s = (n >>> 0).toString(2);
+            while (s.length < bits) s = '0' + s;
+            return s;
+        }
+
+        function fmtNum(n) {
+            if (!isFinite(n)) return '—';
+            if (Math.abs(n) >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+            if (Math.abs(n) >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+            if (Math.abs(n) >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+            return Math.round(n * 10) / 10 + '';
+        }
+
+        function fmtBytes(b) {
+            if (b < 1024) return Math.round(b) + ' B';
+            if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+            return (b / 1048576).toFixed(1) + ' MB';
+        }
+
+        function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+        function lerp(a, b, t) { return a + (b - a) * t; }
+        function pct(v) { return (v * 100).toFixed(1) + '%'; }
+
+        function makeRng(seed) {
+            var x = fnv1a32(seed || 'tdigest');
+            return function () {
+                x ^= (x << 13); x >>>= 0;
+                x ^= (x >>> 17); x >>>= 0;
+                x ^= (x << 5);  x >>>= 0;
+                return (x >>> 0) / 4294967296;
+            };
+        }
+
+        function gaussian(rng, mean, sd) {
+            var u = Math.max(rng(), 1e-9);
+            var v = Math.max(rng(), 1e-9);
+            var z = Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+            return mean + z * sd;
+        }
+
+        function sampleDistribution(kind, rng) {
+            var x;
+            if (kind === 'uniform') {
+                x = rng() * 1000;
+            } else if (kind === 'exponential') {
+                x = -Math.log(Math.max(1e-9, 1 - rng())) * 140;
+            } else if (kind === 'bimodal') {
+                x = rng() < 0.5 ? gaussian(rng, 260, 55) : gaussian(rng, 760, 80);
+            } else {
+                x = gaussian(rng, 520, 130);
+            }
+            return clamp(x, 0, 1000);
+        }
+
+        function exactQuantile(sorted, p) {
+            if (!sorted.length) return NaN;
+            var idx = p * (sorted.length - 1);
+            var lo = Math.floor(idx);
+            var hi = Math.ceil(idx);
+            if (lo === hi) return sorted[lo];
+            return lerp(sorted[lo], sorted[hi], idx - lo);
+        }
+
+        function binaryInsert(arr, value) {
+            var lo = 0, hi = arr.length;
+            while (lo < hi) {
+                var mid = (lo + hi) >> 1;
+                if (arr[mid] < value) lo = mid + 1; else hi = mid;
+            }
+            arr.splice(lo, 0, value);
+        }
+
+        function float64Bits(num) {
+            var buf = new ArrayBuffer(8);
+            var view = new DataView(buf);
+            view.setFloat64(0, num);
+            var out = '';
+            for (var i = 0; i < 8; i++) out += toBin(view.getUint8(i), 8) + (i < 7 ? ' ' : '');
+            return out;
+        }
+
+        function int32Bits(num) {
+            return toBin(num >>> 0, 32).replace(/(.{8})/g, '$1 ').trim();
+        }
+
+        function TDigest(delta) {
+            this.delta = delta || 100;
+            this.centroids = [];
+            this.totalCount = 0;
+            this.sorted = true;
+            this.operation = 0;
+        }
+
+        TDigest.prototype.clone = function () {
+            var d = new TDigest(this.delta);
+            d.totalCount = this.totalCount;
+            d.sorted = this.sorted;
+            for (var i = 0; i < this.centroids.length; i++) {
+                var c = this.centroids[i];
+                d.centroids.push({ mean: c.mean, count: c.count, stamp: c.stamp || 0 });
+            }
+            return d;
+        };
+
+        TDigest.prototype.sort = function () {
+            if (this.sorted) return;
+            this.centroids.sort(function (a, b) { return a.mean - b.mean; });
+            this.sorted = true;
+        };
+
+        TDigest.prototype.maxWeight = function (q) {
+            var n = Math.max(this.totalCount, 1);
+            var base = (4 * n * Math.max(q * (1 - q), 0.0001)) / Math.max(this.delta, 1);
+            return Math.max(1, Math.floor(base));
+        };
+
+        TDigest.prototype.scaleK = function (q) {
+            return (this.delta / (2 * Math.PI)) * Math.asin(clamp(2 * q - 1, -1, 1));
+        };
+
+        TDigest.prototype.quantileOfIndex = function (idx) {
+            this.sort();
+            if (!this.centroids.length || this.totalCount === 0) return 0;
+            var cum = 0;
+            for (var i = 0; i < idx; i++) cum += this.centroids[i].count;
+            return (cum + this.centroids[idx].count / 2) / this.totalCount;
+        };
+
+        TDigest.prototype.findNearestIndex = function (x) {
+            this.sort();
+            if (!this.centroids.length) return -1;
+            var best = 0;
+            var bestDist = Math.abs(this.centroids[0].mean - x);
+            for (var i = 1; i < this.centroids.length; i++) {
+                var dist = Math.abs(this.centroids[i].mean - x);
+                if (dist < bestDist) {
+                    best = i;
+                    bestDist = dist;
+                }
+            }
+            return best;
+        };
+
+        TDigest.prototype.previewAdd = function (x) {
+            this.sort();
+            if (!this.centroids.length) {
+                return {
+                    value: x,
+                    nearestIndex: -1,
+                    nearest: null,
+                    q: 0,
+                    maxWeight: 1,
+                    canMerge: false,
+                    newMean: x,
+                    newCount: 1,
+                    action: 'new'
+                };
+            }
+            var idx = this.findNearestIndex(x);
+            var c = this.centroids[idx];
+            var q = this.quantileOfIndex(idx);
+            var maxWeight = Math.max(1, this.maxWeight(q));
+            var canMerge = c.count + 1 <= maxWeight;
+            return {
+                value: x,
+                nearestIndex: idx,
+                nearest: c,
+                q: q,
+                maxWeight: maxWeight,
+                canMerge: canMerge,
+                newMean: canMerge ? ((c.mean * c.count + x) / (c.count + 1)) : x,
+                newCount: canMerge ? (c.count + 1) : 1,
+                action: canMerge ? 'merge' : 'new'
+            };
+        };
+
+        TDigest.prototype.add = function (x) {
+            this.operation++;
+            this.totalCount++;
+            if (!this.centroids.length) {
+                this.centroids.push({ mean: x, count: 1, stamp: this.operation });
+                this.sorted = true;
+                return { value: x, action: 'new', nearestIndex: -1, centroidIndex: 0, q: 0, maxWeight: 1, merged: false, newSize: 1 };
+            }
+
+            var preview = this.previewAdd(x);
+            if (preview.canMerge && preview.nearest) {
+                preview.nearest.mean = preview.newMean;
+                preview.nearest.count = preview.newCount;
+                preview.nearest.stamp = this.operation;
+                if (this.centroids.length > this.delta * 5) this.compress();
+                return {
+                    value: x,
+                    action: 'merge',
+                    nearestIndex: preview.nearestIndex,
+                    centroidIndex: preview.nearestIndex,
+                    q: preview.q,
+                    maxWeight: preview.maxWeight,
+                    merged: true,
+                    newSize: preview.newCount
+                };
+            }
+
+            this.centroids.push({ mean: x, count: 1, stamp: this.operation });
+            this.sorted = false;
+            if (this.centroids.length > this.delta * 5) this.compress();
+            return {
+                value: x,
+                action: 'new',
+                nearestIndex: preview.nearestIndex,
+                centroidIndex: this.centroids.length - 1,
+                q: preview.q,
+                maxWeight: preview.maxWeight,
+                merged: false,
+                newSize: 1
+            };
+        };
+
+        TDigest.prototype.compress = function () {
+            this.sort();
+            if (this.centroids.length < 2) return;
+            var merged = [];
+            var total = this.totalCount;
+            var cumulative = 0;
+            for (var i = 0; i < this.centroids.length; i++) {
+                var c = this.centroids[i];
+                if (!merged.length) {
+                    merged.push({ mean: c.mean, count: c.count, stamp: c.stamp || this.operation });
+                    cumulative += c.count;
+                    continue;
+                }
+                var last = merged[merged.length - 1];
+                var q = (cumulative - last.count / 2) / Math.max(total, 1);
+                var maxWeight = Math.max(1, this.maxWeight(q));
+                if (last.count + c.count <= maxWeight) {
+                    var combined = last.count + c.count;
+                    last.mean = (last.mean * last.count + c.mean * c.count) / combined;
+                    last.count = combined;
+                    last.stamp = Math.max(last.stamp || 0, c.stamp || 0);
+                } else {
+                    merged.push({ mean: c.mean, count: c.count, stamp: c.stamp || this.operation });
+                }
+                cumulative += c.count;
+            }
+            this.centroids = merged;
+            this.sorted = true;
+        };
+
+        TDigest.prototype.quantile = function (p) {
+            this.sort();
+            if (!this.centroids.length) return NaN;
+            if (this.centroids.length === 1) return this.centroids[0].mean;
+            p = clamp(p, 0, 1);
+            var rank = p * this.totalCount;
+            var cumulative = 0;
+            for (var i = 0; i < this.centroids.length; i++) {
+                var c = this.centroids[i];
+                var left = cumulative;
+                var right = cumulative + c.count;
+                if (rank <= right || i === this.centroids.length - 1) {
+                    if (i === 0) return c.mean;
+                    if (i === this.centroids.length - 1) return c.mean;
+                    var prev = this.centroids[i - 1];
+                    var next = this.centroids[i + 1];
+                    var mid = left + c.count / 2;
+                    var direction = rank < mid ? -1 : 1;
+                    var target = direction < 0 ? prev : next;
+                    var inner = (rank - mid) / Math.max(c.count / 2, 1);
+                    return c.mean + (target.mean - c.mean) * clamp(inner, -1, 1);
+                }
+                cumulative = right;
+            }
+            return this.centroids[this.centroids.length - 1].mean;
+        };
+
+        TDigest.prototype.snapshot = function () {
+            this.sort();
+            var out = [];
+            var cumulative = 0;
+            for (var i = 0; i < this.centroids.length; i++) {
+                var c = this.centroids[i];
+                var q0 = cumulative / Math.max(this.totalCount, 1);
+                cumulative += c.count;
+                var q1 = cumulative / Math.max(this.totalCount, 1);
+                out.push({ index: i, mean: c.mean, count: c.count, q0: q0, q1: q1, stamp: c.stamp || 0 });
+            }
+            return out;
+        };
+
+        TDigest.prototype.memoryBytes = function () { return this.centroids.length * 12; };
+        TDigest.prototype.compressionRatio = function () { return this.centroids.length ? this.totalCount / this.centroids.length : 0; };
+
+        function drawNumberLine(svg, digest, currentValue, options) {
+            if (!svg) return;
+            options = options || {};
+            while (svg.firstChild) svg.removeChild(svg.firstChild);
+            var ns = 'http://www.w3.org/2000/svg';
+            var W = svg.viewBox.baseVal.width || 900;
+            var H = svg.viewBox.baseVal.height || 240;
+            var padX = 48;
+            var axisY = H - 54;
+            var min = 0, max = 1000;
+            function xScale(v) { return padX + (clamp(v, min, max) - min) / (max - min) * (W - padX * 2); }
+            function el(name, attrs) {
+                var node = document.createElementNS(ns, name);
+                for (var k in attrs) if (attrs.hasOwnProperty(k)) node.setAttribute(k, attrs[k]);
+                return node;
+            }
+
+            svg.appendChild(el('line', { x1: padX, y1: axisY, x2: W - padX, y2: axisY, stroke: 'rgba(53,255,107,0.45)', 'stroke-width': '2' }));
+            for (var t = 0; t <= 10; t++) {
+                var xv = xScale(t * 100);
+                svg.appendChild(el('line', { x1: xv, y1: axisY - 6, x2: xv, y2: axisY + 6, stroke: 'rgba(53,255,107,0.18)', 'stroke-width': '1' }));
+                var txt = el('text', { x: xv, y: axisY + 22, fill: 'rgba(255,255,255,0.55)', 'font-size': '11', 'text-anchor': 'middle' });
+                txt.textContent = t * 100;
+                svg.appendChild(txt);
+            }
+
+            var snap = digest.snapshot();
+            var now = digest.operation || 0;
+            for (var i = 0; i < snap.length; i++) {
+                var c = snap[i];
+                var radius = 5 + Math.sqrt(c.count) * 2.2;
+                var freshness = clamp(1 - ((now - c.stamp) / 40), 0.18, 1);
+                var cy = axisY - 25 - Math.min(110, radius * 2 + Math.abs(c.q0 - 0.5) * 60);
+                var circle = el('circle', {
+                    cx: xScale(c.mean),
+                    cy: cy,
+                    r: radius,
+                    fill: 'rgba(53,255,107,' + (0.18 + freshness * 0.35) + ')',
+                    stroke: 'rgba(154,255,87,' + (0.25 + freshness * 0.55) + ')',
+                    'stroke-width': '1.5'
+                });
+                svg.appendChild(circle);
+
+                if (options.showLabels && c.count > 1) {
+                    var label = el('text', { x: xScale(c.mean), y: cy + 4, fill: '#02060d', 'font-size': '10', 'font-weight': '700', 'text-anchor': 'middle' });
+                    label.textContent = c.count;
+                    svg.appendChild(label);
+                }
+            }
+
+            if (typeof currentValue === 'number' && isFinite(currentValue)) {
+                svg.appendChild(el('line', {
+                    x1: xScale(currentValue), y1: 24, x2: xScale(currentValue), y2: axisY - 8,
+                    stroke: 'rgba(255,255,255,0.25)', 'stroke-width': '1', 'stroke-dasharray': '4 4'
+                }));
+                svg.appendChild(el('circle', {
+                    cx: xScale(currentValue), cy: 22, r: 7,
+                    fill: 'rgba(255,255,255,0.95)', stroke: 'var(--accent-color)', 'stroke-width': '2'
+                }));
+            }
+
+            if (options.showPercentiles && digest.totalCount > 0) {
+                var marks = [{ p: 0.5, label: 'p50' }, { p: 0.95, label: 'p95' }, { p: 0.99, label: 'p99' }];
+                for (var m = 0; m < marks.length; m++) {
+                    var qv = digest.quantile(marks[m].p);
+                    var xx = xScale(qv);
+                    svg.appendChild(el('line', { x1: xx, y1: axisY - 14, x2: xx, y2: 26, stroke: 'rgba(154,255,87,0.24)', 'stroke-width': '1' }));
+                    var tl = el('text', { x: xx, y: 16, fill: 'rgba(154,255,87,0.95)', 'font-size': '11', 'text-anchor': 'middle' });
+                    tl.textContent = marks[m].label;
+                    svg.appendChild(tl);
+                }
+            }
+        }
+
+        var STEPS = ['The Problem', 'Key Insight', 'Scale Functions', 'Accuracy Comparison', 'Memory Deep Dive', 'Centroid Visualizer', 'Live Playground', 'Applications'];
+        var currentStep = 0;
+        var indicatorEl = document.getElementById('step-indicator');
+        var stepCurEl = document.getElementById('step-cur');
+        var stepNameEl = document.getElementById('step-name-label');
+        var stepTotalEl = document.getElementById('step-total');
+        if (stepTotalEl) stepTotalEl.textContent = STEPS.length;
+
+        if (indicatorEl) {
+            STEPS.forEach(function (name, i) {
+                if (i > 0) {
+                    var conn = document.createElement('span');
+                    conn.className = 'step-conn';
+                    conn.id = 'conn-' + (i - 1);
+                    indicatorEl.appendChild(conn);
+                }
+                var dot = document.createElement('span');
+                dot.className = 'step-dot' + (i === 0 ? ' active' : '');
+                dot.id = 'dot-' + i;
+                dot.title = 'Step ' + (i + 1) + ': ' + name;
+                dot.textContent = i + 1;
+                dot.setAttribute('data-step', i);
+                dot.addEventListener('click', function () { goToStep(parseInt(this.getAttribute('data-step'), 10), null); });
+                indicatorEl.appendChild(dot);
+            });
+        }
+
+        function updateIndicator() {
+            for (var i = 0; i < STEPS.length; i++) {
+                var dot = document.getElementById('dot-' + i);
+                var conn = document.getElementById('conn-' + (i - 1));
+                if (dot) {
+                    dot.classList.toggle('active', i === currentStep);
+                    dot.classList.toggle('done', i < currentStep);
+                }
+                if (conn) conn.classList.toggle('done', i <= currentStep);
+            }
+            if (stepCurEl) stepCurEl.textContent = currentStep + 1;
+            if (stepNameEl) stepNameEl.textContent = STEPS[currentStep];
+            // Update TOC active state
+            var tocItems = document.querySelectorAll('.step-toc-item');
+            for (var j = 0; j < tocItems.length; j++) {
+                tocItems[j].classList.toggle('active', j === currentStep);
+                tocItems[j].classList.toggle('done', j < currentStep);
+            }
+        }
+
+        function goToStep(n, fromDir) {
+            if (n < 0 || n >= STEPS.length || n === currentStep) return;
+            var direction = fromDir !== null ? fromDir : (n > currentStep ? 1 : -1);
+            var oldPanel = document.getElementById('step-' + currentStep);
+            var newPanel = document.getElementById('step-' + n);
+            if (!oldPanel || !newPanel) return;
+            oldPanel.classList.remove('active', 'from-prev');
+            newPanel.classList.add('active');
+            if (direction < 0) newPanel.classList.add('from-prev');
+            setTimeout(function () { newPanel.classList.remove('from-prev'); }, 350);
+            onStepDeactivate(currentStep);
+            currentStep = n;
+            onStepActivate(n);
+            updateIndicator();
+            var wrap = document.querySelector('.step-wrap');
+            if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        document.querySelectorAll('.step-btn[data-step]').forEach(function (btn) {
+            btn.addEventListener('click', function () { goToStep(parseInt(btn.getAttribute('data-step'), 10), null); });
+        });
+
+        // Wire TOC buttons
+        document.querySelectorAll('.step-toc-item[data-step]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                goToStep(parseInt(btn.getAttribute('data-step'), 10), null);
+            });
+        });
+
+        var CentroidStream = (function () {
+            var SPEED_MAP = [850, 520, 320, 180, 70];
+            var MAX_HISTORY = 20;
+            var state = { running: false, timerId: null, digest: new TDigest(80), rng: makeRng('stream-demo'), history: [], lastValue: null, lastAction: null };
+            var dom = {};
+
+            function resolveDOM() {
+                dom.badge = document.getElementById('td-stream-badge');
+                dom.currentValue = document.getElementById('td-stream-current-value');
+                dom.currentAction = document.getElementById('td-stream-current-action');
+                dom.currentSummary = document.getElementById('td-stream-current-summary');
+                dom.svg = document.getElementById('td-stream-svg');
+                dom.total = document.getElementById('td-stream-total');
+                dom.centroids = document.getElementById('td-stream-centroids');
+                dom.delta = document.getElementById('td-stream-delta');
+                dom.playBtn = document.getElementById('td-stream-play-btn');
+                dom.playIcon = document.getElementById('td-stream-play-icon');
+                dom.pauseIcon = document.getElementById('td-stream-pause-icon');
+                dom.playLabel = document.getElementById('td-stream-play-label');
+                dom.stepBtn = document.getElementById('td-stream-step-btn');
+                dom.resetBtn = document.getElementById('td-stream-reset-btn');
+                dom.speed = document.getElementById('td-stream-speed');
+                dom.historyList = document.getElementById('td-stream-history-list');
+            }
+
+            function buildGrid() {}
+
+            function nextValue() {
+                return sampleDistribution(state.digest.totalCount % 2 ? 'normal' : 'bimodal', state.rng);
+            }
+
+            function renderHistory() {
+                if (!dom.historyList) return;
+                dom.historyList.innerHTML = '';
+                if (!state.history.length) {
+                    dom.historyList.innerHTML = '<li class="stream-history-empty">Press Play or Step to begin...</li>';
+                    return;
+                }
+                for (var i = 0; i < state.history.length; i++) {
+                    var item = state.history[i];
+                    var li = document.createElement('li');
+                    li.className = 'stream-history-item' + (i === 0 ? ' newest' : '');
+                    li.innerHTML = '<span class="history-name">' + item.value.toFixed(1) + '</span><span class="history-lz">' + item.action + '</span>';
+                    dom.historyList.appendChild(li);
+                }
+            }
+
+            function render() {
+                if (dom.total) dom.total.textContent = state.digest.totalCount.toLocaleString();
+                if (dom.centroids) dom.centroids.textContent = state.digest.centroids.length.toLocaleString();
+                if (dom.delta) dom.delta.textContent = state.digest.delta;
+                if (dom.currentValue) dom.currentValue.textContent = state.lastValue == null ? '—' : state.lastValue.toFixed(1);
+                if (dom.currentAction) dom.currentAction.textContent = state.lastAction ? state.lastAction : '↓ waiting for first value';
+                if (dom.currentSummary) {
+                    if (!state.digest.centroids.length) dom.currentSummary.textContent = 'Centroids will form as the stream starts.';
+                    else dom.currentSummary.innerHTML = 'Current compression ratio: <strong style="color:var(--accent-color)">' + state.digest.compressionRatio().toFixed(1) + '×</strong> &nbsp;|&nbsp; p95 ≈ <strong style="color:var(--warning-color)">' + fmtNum(state.digest.quantile(0.95)) + '</strong>';
+                }
+                drawNumberLine(dom.svg, state.digest, state.lastValue, { showLabels: true, showPercentiles: true });
+                renderHistory();
+            }
+
+            function step() {
+                if (state.running) pause();
+                processOne();
+            }
+
+            function processOne() {
+                var x = nextValue();
+                var result = state.digest.add(x);
+                state.lastValue = x;
+                state.lastAction = result.merged
+                    ? '↓ absorbed into centroid #' + result.centroidIndex + ' (new size ' + result.newSize + ')'
+                    : '↓ created centroid #' + result.centroidIndex;
+                state.history.unshift({ value: x, action: result.merged ? 'merge' : 'new' });
+                if (state.history.length > MAX_HISTORY) state.history.pop();
+                render();
+            }
+
+            function getInterval() {
+                var speed = dom.speed ? parseInt(dom.speed.value, 10) : 3;
+                return SPEED_MAP[Math.max(0, Math.min(SPEED_MAP.length - 1, speed - 1))];
+            }
+
+            function play() {
+                if (state.running) return;
+                state.running = true;
+                updateUI();
+                tick();
+            }
+
+            function pause() {
+                state.running = false;
+                if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; }
+                updateUI();
+            }
+
+            function toggle() { state.running ? pause() : play(); }
+            function tick() {
+                if (!state.running) return;
+                processOne();
+                state.timerId = setTimeout(tick, getInterval());
+            }
+
+            function reset() {
+                pause();
+                state.digest = new TDigest(80);
+                state.rng = makeRng('stream-demo');
+                state.history = [];
+                state.lastValue = null;
+                state.lastAction = null;
+                render();
+            }
+
+            function updateUI() {
+                if (dom.playIcon) dom.playIcon.style.display = state.running ? 'none' : '';
+                if (dom.pauseIcon) dom.pauseIcon.style.display = state.running ? '' : 'none';
+                if (dom.playLabel) dom.playLabel.textContent = state.running ? 'Pause' : 'Play';
+                if (dom.badge) dom.badge.style.display = state.running ? '' : 'none';
+            }
+
+            function activate() { play(); }
+            function deactivate() { pause(); }
+            function init() {
+                resolveDOM();
+                buildGrid();
+                if (dom.playBtn) dom.playBtn.addEventListener('click', toggle);
+                if (dom.stepBtn) dom.stepBtn.addEventListener('click', step);
+                if (dom.resetBtn) dom.resetBtn.addEventListener('click', reset);
+                if (dom.speed) dom.speed.addEventListener('input', function () { if (state.running) { clearTimeout(state.timerId); tick(); } });
+                render();
+            }
+            return { init: init, activate: activate, deactivate: deactivate };
+        })();
+
+        var ScaleDemo = (function () {
+            var SPEED_MAP = [700, 430, 250, 130, 60];
+            var state = { running: false, timerId: null, delta: 100, digest: new TDigest(100), rng: makeRng('scale-demo'), entries: [] };
+            var dom = {};
+
+            function resolveDOM() {
+                dom.badge = document.getElementById('td-scale-badge');
+                dom.playBtn = document.getElementById('td-scale-play-btn');
+                dom.playIcon = document.getElementById('td-scale-play-icon');
+                dom.pauseIcon = document.getElementById('td-scale-pause-icon');
+                dom.playLabel = document.getElementById('td-scale-play-label');
+                dom.stepBtn = document.getElementById('td-scale-step-btn');
+                dom.bulk100 = document.getElementById('td-scale-bulk-100');
+                dom.bulk1k = document.getElementById('td-scale-bulk-1k');
+                dom.bulk10k = document.getElementById('td-scale-bulk-10k');
+                dom.bulk100k = document.getElementById('td-scale-bulk-100k');
+                dom.resetBtn = document.getElementById('td-scale-reset-btn');
+                dom.speed = document.getElementById('td-scale-speed');
+                dom.delta = document.getElementById('td-scale-delta');
+                dom.deltaLabel = document.getElementById('td-scale-delta-label');
+                dom.canvas = document.getElementById('td-scale-canvas');
+                dom.grid = document.getElementById('td-scale-grid');
+                dom.breakdownBody = document.getElementById('td-scale-breakdown-body');
+            }
+
+            function buildGrid() {
+                if (!dom.grid) return;
+                dom.grid.innerHTML = '';
+                var snap = state.digest.snapshot();
+                var max = Math.max(1, snap.length, 32);
+                for (var i = 0; i < max; i++) {
+                    var cell = document.createElement('div');
+                    cell.className = 'll-reg-cell';
+                    cell.innerHTML = '<span class="ll-reg-idx">' + i + '</span><span class="ll-reg-val">0</span>';
+                    dom.grid.appendChild(cell);
+                }
+            }
+
+            function getInterval() {
+                var speed = dom.speed ? parseInt(dom.speed.value, 10) : 3;
+                return SPEED_MAP[Math.max(0, Math.min(speed - 1, SPEED_MAP.length - 1))];
+            }
+
+            function setDelta(delta) {
+                state.delta = delta;
+                state.digest = new TDigest(delta);
+                state.rng = makeRng('scale-demo-' + delta);
+                state.entries = [];
+                if (dom.deltaLabel) dom.deltaLabel.textContent = delta;
+                buildGrid();
+                render();
+            }
+
+            function quantileRegion(q) {
+                if (q < 0.1) return 'lower tail';
+                if (q > 0.9) return 'upper tail';
+                if (q < 0.3 || q > 0.7) return 'shoulder';
+                return 'center';
+            }
+
+            function addOne() {
+                var x = sampleDistribution('bimodal', state.rng);
+                var preview = state.digest.previewAdd(x);
+                var nearest = preview.nearest ? preview.nearest.mean.toFixed(1) : '—';
+                var result = state.digest.add(x);
+                state.entries.unshift({
+                    value: x,
+                    nearest: nearest,
+                    merged: result.merged,
+                    newSize: result.newSize,
+                    region: quantileRegion(preview.q)
+                });
+                if (state.entries.length > 10) state.entries.length = 10;
+            }
+
+            function addBatch(n) {
+                for (var i = 0; i < n; i++) addOne();
+                render();
+            }
+
+            function renderBreakdown() {
+                if (!dom.breakdownBody) return;
+                if (!state.entries.length) {
+                    dom.breakdownBody.innerHTML = '<tr class="algo-breakdown-empty"><td colspan="5">Press Play or Step to see capacity decisions...</td></tr>';
+                    return;
+                }
+                dom.breakdownBody.innerHTML = '';
+                for (var i = 0; i < state.entries.length; i++) {
+                    var e = state.entries[i];
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = '<td>' + e.value.toFixed(1) + '</td><td>' + e.nearest + '</td><td class="' + (e.merged ? 'bd-yes' : 'bd-no') + '">' + (e.merged ? 'Yes' : 'New centroid') + '</td><td>' + e.newSize + '</td><td>' + e.region + '</td>';
+                    dom.breakdownBody.appendChild(tr);
+                }
+            }
+
+            function renderGrid() {
+                if (!dom.grid) return;
+                var snap = state.digest.snapshot();
+                buildGrid();
+                var maxCount = 1;
+                for (var i = 0; i < snap.length; i++) maxCount = Math.max(maxCount, snap[i].count);
+                for (var j = 0; j < snap.length && j < dom.grid.children.length; j++) {
+                    var cell = dom.grid.children[j];
+                    var c = snap[j];
+                    var intensity = c.count / maxCount;
+                    cell.querySelector('.ll-reg-val').textContent = c.count;
+                    cell.title = 'μ=' + c.mean.toFixed(1) + ', q=' + pct((c.q0 + c.q1) / 2);
+                    cell.style.background = 'rgba(53,255,107,' + (0.07 + intensity * 0.35) + ')';
+                    cell.style.borderColor = 'rgba(154,255,87,' + (0.18 + intensity * 0.4) + ')';
+                }
+            }
+
+            function renderChart() {
+                if (!dom.canvas) return;
+                var ctx = dom.canvas.getContext('2d');
+                var W = dom.canvas.width, H = dom.canvas.height;
+                ctx.clearRect(0, 0, W, H);
+                ctx.fillStyle = 'rgba(255,255,255,0.65)';
+                ctx.font = '12px sans-serif';
+                ctx.fillText('x: quantile q', 16, H - 12);
+                ctx.save();
+                ctx.translate(14, 24);
+                ctx.rotate(-Math.PI / 2);
+                ctx.fillText('y: max centroid size', 0, 0);
+                ctx.restore();
+                ctx.strokeStyle = 'rgba(53,255,107,0.12)';
+                for (var g = 0; g <= 5; g++) {
+                    var gy = 20 + g * ((H - 50) / 5);
+                    ctx.beginPath();
+                    ctx.moveTo(48, gy);
+                    ctx.lineTo(W - 18, gy);
+                    ctx.stroke();
+                }
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(53,255,107,0.95)';
+                ctx.lineWidth = 2.5;
+                var n = Math.max(state.digest.totalCount, 1000);
+                for (var i = 0; i <= 100; i++) {
+                    var q = i / 100;
+                    var weight = Math.max(1, Math.floor((4 * n * Math.max(q * (1 - q), 0.0001)) / state.delta));
+                    var x = 48 + q * (W - 66);
+                    var y = H - 30 - (weight / Math.max(1, n / state.delta)) * (H - 70);
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+                ctx.fillStyle = 'rgba(154,255,87,0.95)';
+                ctx.fillText('δ = ' + state.delta + ', total values = ' + state.digest.totalCount.toLocaleString(), W - 220, 22);
+                var snap = state.digest.snapshot();
+                for (var s = 0; s < snap.length; s++) {
+                    var qq = (snap[s].q0 + snap[s].q1) / 2;
+                    var limit = Math.max(1, Math.floor((4 * Math.max(state.digest.totalCount, 1000) * Math.max(qq * (1 - qq), 0.0001)) / state.delta));
+                    var px = 48 + qq * (W - 66);
+                    var py = H - 30 - (limit / Math.max(1, n / state.delta)) * (H - 70);
+                    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+                    ctx.beginPath();
+                    ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            function render() {
+                renderChart();
+                renderGrid();
+                renderBreakdown();
+            }
+
+            function play() { if (state.running) return; state.running = true; updateUI(); tick(); }
+            function pause() { state.running = false; if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; } updateUI(); }
+            function toggle() { state.running ? pause() : play(); }
+            function tick() { if (!state.running) return; addBatch(20); state.timerId = setTimeout(tick, getInterval()); }
+            function step() { if (state.running) pause(); addBatch(10); }
+            function reset() { pause(); setDelta(state.delta); }
+            function updateUI() {
+                if (dom.playIcon) dom.playIcon.style.display = state.running ? 'none' : '';
+                if (dom.pauseIcon) dom.pauseIcon.style.display = state.running ? '' : 'none';
+                if (dom.playLabel) dom.playLabel.textContent = state.running ? 'Pause' : 'Play';
+                if (dom.badge) dom.badge.style.display = state.running ? '' : 'none';
+            }
+            function bulkAdd(n) { if (state.running) pause(); addBatch(n); }
+            function activate() { play(); }
+            function deactivate() { pause(); }
+            function init() {
+                resolveDOM();
+                buildGrid();
+                if (dom.playBtn) dom.playBtn.addEventListener('click', toggle);
+                if (dom.stepBtn) dom.stepBtn.addEventListener('click', step);
+                if (dom.bulk100) dom.bulk100.addEventListener('click', function () { bulkAdd(100); });
+                if (dom.bulk1k) dom.bulk1k.addEventListener('click', function () { bulkAdd(1000); });
+                if (dom.bulk10k) dom.bulk10k.addEventListener('click', function () { bulkAdd(10000); });
+                if (dom.bulk100k) dom.bulk100k.addEventListener('click', function () { bulkAdd(100000); });
+                if (dom.resetBtn) dom.resetBtn.addEventListener('click', reset);
+                if (dom.speed) dom.speed.addEventListener('input', function () { if (state.running) { clearTimeout(state.timerId); tick(); } });
+                if (dom.delta) dom.delta.addEventListener('input', function () { pause(); setDelta(parseInt(dom.delta.value, 10)); });
+                setDelta(state.delta);
+            }
+            return { init: init, activate: activate, deactivate: deactivate };
+        })();
+
+        var AccuracyDemo = (function () {
+            var SPEED_MAP = [720, 430, 250, 120, 55];
+            var state = { running: false, timerId: null, delta: 100, digest: new TDigest(100), rng: makeRng('accuracy-demo'), values: [], sorted: [], sortedDirty: false, history: [], snapshots: [] };
+            var dom = {};
+
+            function resolveDOM() {
+                dom.badge = document.getElementById('td-accuracy-badge');
+                dom.playBtn = document.getElementById('td-accuracy-play-btn');
+                dom.playIcon = document.getElementById('td-accuracy-play-icon');
+                dom.pauseIcon = document.getElementById('td-accuracy-pause-icon');
+                dom.playLabel = document.getElementById('td-accuracy-play-label');
+                dom.stepBtn = document.getElementById('td-accuracy-step-btn');
+                dom.bulk100 = document.getElementById('td-accuracy-bulk-100');
+                dom.bulk1k = document.getElementById('td-accuracy-bulk-1k');
+                dom.bulk10k = document.getElementById('td-accuracy-bulk-10k');
+                dom.bulk100k = document.getElementById('td-accuracy-bulk-100k');
+                dom.resetBtn = document.getElementById('td-accuracy-reset-btn');
+                dom.speed = document.getElementById('td-accuracy-speed');
+                dom.delta = document.getElementById('td-accuracy-delta');
+                dom.deltaLabel = document.getElementById('td-accuracy-delta-label');
+                dom.canvas = document.getElementById('td-accuracy-canvas');
+                dom.breakdownBody = document.getElementById('td-accuracy-breakdown-body');
+                ['50','75','90','95','99'].forEach(function (id) {
+                    dom['true' + id] = document.getElementById('td-acc-true-' + id);
+                    dom['est' + id] = document.getElementById('td-acc-est-' + id);
+                    dom['err' + id] = document.getElementById('td-acc-err-' + id);
+                });
+            }
+
+            function buildGrid() {}
+            function getInterval() { var s = dom.speed ? parseInt(dom.speed.value, 10) : 3; return SPEED_MAP[Math.max(0, Math.min(s - 1, SPEED_MAP.length - 1))]; }
+            function ensureSorted() {
+                if (!state.sortedDirty) return;
+                state.sorted = state.values.slice().sort(function (a, b) { return a - b; });
+                state.sortedDirty = false;
+            }
+            function setDelta(delta) {
+                state.delta = delta;
+                state.digest = new TDigest(delta);
+                state.rng = makeRng('accuracy-demo-' + delta);
+                state.values = [];
+                state.sorted = [];
+                state.sortedDirty = false;
+                state.history = [];
+                state.snapshots = [];
+                if (dom.deltaLabel) dom.deltaLabel.textContent = delta;
+                render();
+            }
+
+            function addValue() {
+                var x = sampleDistribution('exponential', state.rng) * 0.65 + sampleDistribution('normal', state.rng) * 0.35;
+                x = clamp(x, 0, 1000);
+                state.values.push(x);
+                state.sortedDirty = true;
+                state.digest.add(x);
+            }
+
+            function addBatch(n) {
+                for (var i = 0; i < n; i++) addValue();
+                ensureSorted();
+                if (state.sorted.length) {
+                    var true50 = exactQuantile(state.sorted, 0.5);
+                    var true95 = exactQuantile(state.sorted, 0.95);
+                    var true99 = exactQuantile(state.sorted, 0.99);
+                    var est50 = state.digest.quantile(0.5);
+                    var est95 = state.digest.quantile(0.95);
+                    var est99 = state.digest.quantile(0.99);
+                    var err99 = Math.abs(est99 - true99) / Math.max(true99, 1) * 100;
+                    var lastValue = state.values[state.values.length - 1];
+                    state.history.unshift({ value: lastValue, true50: true50, true95: true95, true99: true99, est50: est50, est95: est95, est99: est99, err99: err99 });
+                    if (state.history.length > 10) state.history.length = 10;
+                    state.snapshots.push({ n: state.sorted.length, true99: true99, est99: est99, est50: est50 });
+                    if (state.snapshots.length > 160) state.snapshots.shift();
+                }
+                render();
+            }
+
+            function renderTable() {
+                ensureSorted();
+                var ids = ['50','75','90','95','99'];
+                for (var i = 0; i < ids.length; i++) {
+                    var p = parseFloat(ids[i]) / 100;
+                    var t = state.sorted.length ? exactQuantile(state.sorted, p) : NaN;
+                    var e = state.sorted.length ? state.digest.quantile(p) : NaN;
+                    var er = (!isFinite(t) || t === 0) ? NaN : Math.abs(e - t) / t * 100;
+                    if (dom['true' + ids[i]]) dom['true' + ids[i]].textContent = isFinite(t) ? t.toFixed(1) : '—';
+                    if (dom['est' + ids[i]]) dom['est' + ids[i]].textContent = isFinite(e) ? e.toFixed(1) : '—';
+                    if (dom['err' + ids[i]]) {
+                        dom['err' + ids[i]].textContent = isFinite(er) ? er.toFixed(2) + '%' : '—';
+                        dom['err' + ids[i]].style.color = !isFinite(er) ? '' : (er < 0.5 ? '#7fffd4' : er < 1.5 ? 'var(--warning-color)' : '#ff7d7d');
+                    }
+                }
+            }
+
+            function renderBreakdown() {
+                if (!dom.breakdownBody) return;
+                if (!state.history.length) {
+                    dom.breakdownBody.innerHTML = '<tr class="algo-breakdown-empty"><td colspan="4">Press Play or Step to generate comparison snapshots...</td></tr>';
+                    return;
+                }
+                dom.breakdownBody.innerHTML = '';
+                for (var i = 0; i < state.history.length; i++) {
+                    var e = state.history[i];
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = '<td>' + e.value.toFixed(1) + '</td>' +
+                        '<td>' + e.true50.toFixed(1) + ' / ' + e.true95.toFixed(1) + ' / ' + e.true99.toFixed(1) + '</td>' +
+                        '<td>' + e.est50.toFixed(1) + ' / ' + e.est95.toFixed(1) + ' / ' + e.est99.toFixed(1) + '</td>' +
+                        '<td style="color:' + (e.err99 < 0.5 ? '#7fffd4' : e.err99 < 1.5 ? 'var(--warning-color)' : '#ff7d7d') + '">' + e.err99.toFixed(2) + '% @ p99</td>';
+                    dom.breakdownBody.appendChild(tr);
+                }
+            }
+
+            function renderChart() {
+                if (!dom.canvas) return;
+                var ctx = dom.canvas.getContext('2d');
+                var W = dom.canvas.width, H = dom.canvas.height;
+                ctx.clearRect(0, 0, W, H);
+                if (state.snapshots.length < 2) return;
+                var maxY = 1;
+                for (var i = 0; i < state.snapshots.length; i++) maxY = Math.max(maxY, state.snapshots[i].true99, state.snapshots[i].est99, state.snapshots[i].est50);
+                function draw(dataKey, color, dash) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash(dash || []);
+                    for (var i = 0; i < state.snapshots.length; i++) {
+                        var p = state.snapshots[i];
+                        var x = 32 + i / (state.snapshots.length - 1) * (W - 50);
+                        var y = H - 24 - p[dataKey] / maxY * (H - 44);
+                        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+                draw('true99', 'rgba(255,255,255,0.7)', [5, 4]);
+                draw('est99', 'rgba(53,255,107,0.95)');
+                draw('est50', 'rgba(154,255,87,0.95)');
+                ctx.fillStyle = 'rgba(255,255,255,0.65)';
+                ctx.font = '12px sans-serif';
+                ctx.fillText('stream progression →', W - 130, H - 10);
+            }
+
+            function render() { renderTable(); renderBreakdown(); renderChart(); }
+            function play() { if (state.running) return; state.running = true; updateUI(); tick(); }
+            function pause() { state.running = false; if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; } updateUI(); }
+            function toggle() { state.running ? pause() : play(); }
+            function tick() { if (!state.running) return; addBatch(20); state.timerId = setTimeout(tick, getInterval()); }
+            function step() { if (state.running) pause(); addBatch(10); }
+            function reset() { pause(); setDelta(state.delta); }
+            function updateUI() {
+                if (dom.playIcon) dom.playIcon.style.display = state.running ? 'none' : '';
+                if (dom.pauseIcon) dom.pauseIcon.style.display = state.running ? '' : 'none';
+                if (dom.playLabel) dom.playLabel.textContent = state.running ? 'Pause' : 'Play';
+                if (dom.badge) dom.badge.style.display = state.running ? '' : 'none';
+            }
+            function bulkAdd(n) { if (state.running) pause(); addBatch(n); }
+            function activate() { play(); }
+            function deactivate() { pause(); }
+            function init() {
+                resolveDOM();
+                buildGrid();
+                if (dom.playBtn) dom.playBtn.addEventListener('click', toggle);
+                if (dom.stepBtn) dom.stepBtn.addEventListener('click', step);
+                if (dom.bulk100) dom.bulk100.addEventListener('click', function () { bulkAdd(100); });
+                if (dom.bulk1k) dom.bulk1k.addEventListener('click', function () { bulkAdd(1000); });
+                if (dom.bulk10k) dom.bulk10k.addEventListener('click', function () { bulkAdd(10000); });
+                if (dom.bulk100k) dom.bulk100k.addEventListener('click', function () { bulkAdd(100000); });
+                if (dom.resetBtn) dom.resetBtn.addEventListener('click', reset);
+                if (dom.speed) dom.speed.addEventListener('input', function () { if (state.running) { clearTimeout(state.timerId); tick(); } });
+                if (dom.delta) dom.delta.addEventListener('input', function () { pause(); setDelta(parseInt(dom.delta.value, 10)); });
+                setDelta(state.delta);
+            }
+            return { init: init, activate: activate, deactivate: deactivate };
+        })();
+
+        var MemoryDemo = (function () {
+            var state = { running: false, timerId: null, delta: 100, digest: new TDigest(100), rng: makeRng('memory-demo'), activeIndex: 0 };
+            var dom = {};
+            function resolveDOM() {
+                dom.badge = document.getElementById('td-memory-badge');
+                dom.playBtn = document.getElementById('td-memory-play-btn');
+                dom.playIcon = document.getElementById('td-memory-play-icon');
+                dom.pauseIcon = document.getElementById('td-memory-pause-icon');
+                dom.playLabel = document.getElementById('td-memory-play-label');
+                dom.stepBtn = document.getElementById('td-memory-step-btn');
+                dom.resetBtn = document.getElementById('td-memory-reset-btn');
+                dom.delta = document.getElementById('td-memory-delta');
+                dom.deltaLabel = document.getElementById('td-memory-delta-label');
+                dom.grid = document.getElementById('td-memory-grid');
+                dom.binary = document.getElementById('td-memory-binary');
+                dom.centroids = document.getElementById('td-memory-centroids');
+                dom.bytes = document.getElementById('td-memory-bytes');
+                dom.formula = document.getElementById('td-memory-formula');
+            }
+            function seedDigest() { for (var i = 0; i < 320; i++) state.digest.add(sampleDistribution('bimodal', state.rng)); }
+            function buildGrid() {
+                if (!dom.grid) return;
+                dom.grid.innerHTML = '';
+                var snap = state.digest.snapshot();
+                for (var i = 0; i < Math.max(24, snap.length); i++) {
+                    var cell = document.createElement('div');
+                    cell.className = 'hll-reg';
+                    cell.innerHTML = '<span class="reg-idx">' + i + '</span><span class="reg-val">0</span>';
+                    dom.grid.appendChild(cell);
+                }
+            }
+            function renderBinary() {
+                var snap = state.digest.snapshot();
+                if (!snap.length) { dom.binary.textContent = 'No centroid selected yet.'; return; }
+                state.activeIndex = state.activeIndex % snap.length;
+                var c = snap[state.activeIndex];
+                dom.binary.innerHTML = 'Centroid #' + c.index + ' &nbsp; μ=' + c.mean.toFixed(3) + ' &nbsp; count=' + c.count + '<br>' +
+                    '<span style="color:var(--accent-color)">mean float64</span>: ' + float64Bits(c.mean) + '<br>' +
+                    '<span style="color:var(--warning-color)">count int32</span>: ' + int32Bits(c.count) + '<br>' +
+                    '<span style="color:var(--muted-text)">quantile range</span>: ' + pct(c.q0) + ' → ' + pct(c.q1);
+            }
+            function render() {
+                var snap = state.digest.snapshot();
+                buildGrid();
+                for (var i = 0; i < snap.length && i < dom.grid.children.length; i++) {
+                    var cell = dom.grid.children[i];
+                    var c = snap[i];
+                    cell.querySelector('.reg-val').textContent = c.count;
+                    cell.classList.toggle('active', i === state.activeIndex);
+                    var intensity = clamp(c.count / 32, 0.15, 1);
+                    cell.style.background = 'rgba(53,255,107,' + (0.06 + intensity * 0.2) + ')';
+                    cell.title = 'μ=' + c.mean.toFixed(1) + ', count=' + c.count;
+                }
+                if (dom.centroids) dom.centroids.textContent = snap.length.toLocaleString();
+                if (dom.bytes) dom.bytes.textContent = fmtBytes(Math.max(snap.length * 12, 1));
+                if (dom.formula) dom.formula.textContent = '≈ ' + fmtBytes(state.delta * 5 * 12);
+                renderBinary();
+            }
+            function step() {
+                if (!state.digest.centroids.length) seedDigest();
+                state.activeIndex = (state.activeIndex + 1) % Math.max(state.digest.centroids.length, 1);
+                if (state.activeIndex % 3 === 0) for (var i = 0; i < 24; i++) state.digest.add(sampleDistribution('normal', state.rng));
+                render();
+            }
+            function play() { if (state.running) return; state.running = true; updateUI(); tick(); }
+            function pause() { state.running = false; if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; } updateUI(); }
+            function toggle() { state.running ? pause() : play(); }
+            function tick() { if (!state.running) return; step(); state.timerId = setTimeout(tick, 900); }
+            function reset() { pause(); state.digest = new TDigest(state.delta); state.rng = makeRng('memory-demo-' + state.delta); state.activeIndex = 0; seedDigest(); render(); }
+            function updateUI() {
+                if (dom.playIcon) dom.playIcon.style.display = state.running ? 'none' : '';
+                if (dom.pauseIcon) dom.pauseIcon.style.display = state.running ? '' : 'none';
+                if (dom.playLabel) dom.playLabel.textContent = state.running ? 'Pause' : 'Play';
+                if (dom.badge) dom.badge.style.display = state.running ? '' : 'none';
+            }
+            function activate() { play(); }
+            function deactivate() { pause(); }
+            function init() {
+                resolveDOM();
+                if (dom.playBtn) dom.playBtn.addEventListener('click', toggle);
+                if (dom.stepBtn) dom.stepBtn.addEventListener('click', function () { if (state.running) pause(); step(); });
+                if (dom.resetBtn) dom.resetBtn.addEventListener('click', reset);
+                if (dom.delta) dom.delta.addEventListener('input', function () { pause(); state.delta = parseInt(dom.delta.value, 10); if (dom.deltaLabel) dom.deltaLabel.textContent = state.delta; reset(); });
+                reset();
+            }
+            return { init: init, activate: activate, deactivate: deactivate };
+        })();
+
+        var InsertionVisualizer = (function () {
+            var state = { digest: new TDigest(100), rng: makeRng('insert-demo'), timerId: null, running: false, activeIndex: -1 };
+            var dom = {};
+            function resolveDOM() {
+                dom.input = document.getElementById('td-insert-input');
+                dom.insertBtn = document.getElementById('td-insert-btn');
+                dom.autoBtn = document.getElementById('td-insert-auto');
+                dom.resetBtn = document.getElementById('td-insert-reset');
+                dom.grid = document.getElementById('td-insert-grid');
+                dom.summary = document.getElementById('td-insert-summary');
+                dom.phases = [1,2,3,4,5,6].map(function (i) { return document.getElementById('td-insert-phase-' + i); });
+            }
+            function buildGrid() {
+                if (!dom.grid) return;
+                dom.grid.innerHTML = '';
+                var snap = state.digest.snapshot();
+                for (var i = 0; i < Math.max(16, snap.length); i++) {
+                    var cell = document.createElement('div');
+                    cell.className = 'hll-reg';
+                    cell.innerHTML = '<span class="reg-idx">' + i + '</span><span class="reg-val">0</span>';
+                    dom.grid.appendChild(cell);
+                }
+            }
+            function renderGrid() {
+                buildGrid();
+                var snap = state.digest.snapshot();
+                for (var i = 0; i < snap.length && i < dom.grid.children.length; i++) {
+                    var cell = dom.grid.children[i];
+                    var c = snap[i];
+                    cell.querySelector('.reg-val').textContent = c.count;
+                    cell.classList.toggle('active', i === state.activeIndex);
+                    cell.style.background = 'rgba(53,255,107,' + (0.08 + Math.min(c.count / 12, 1) * 0.25) + ')';
+                    cell.title = 'μ=' + c.mean.toFixed(1) + ', count=' + c.count + ', q=' + pct(c.q0) + '→' + pct(c.q1);
+                }
+            }
+            function hidePhases() {
+                for (var i = 0; i < dom.phases.length; i++) if (dom.phases[i]) dom.phases[i].style.display = 'none';
+                if (dom.summary) dom.summary.style.display = 'none';
+            }
+            function showPhase(idx, html, delay) {
+                setTimeout(function () {
+                    if (!dom.phases[idx]) return;
+                    dom.phases[idx].innerHTML = html;
+                    dom.phases[idx].style.display = '';
+                }, delay);
+            }
+            function seedDigest() {
+                var base = [85, 92, 105, 110, 118, 131, 250, 260, 272, 490, 510, 528, 770, 790, 820, 860];
+                state.digest = new TDigest(100);
+                for (var i = 0; i < base.length; i++) state.digest.add(base[i]);
+                state.activeIndex = -1;
+                renderGrid();
+            }
+            function runInsert(value) {
+                hidePhases();
+                var x = typeof value === 'number' ? value : parseFloat(dom.input.value);
+                if (!isFinite(x)) x = sampleDistribution('bimodal', state.rng);
+                x = clamp(x, 0, 1000);
+                if (dom.input) dom.input.value = x.toFixed(1);
+                var preview = state.digest.previewAdd(x);
+                var nearestText = preview.nearest ? ('centroid #' + preview.nearestIndex + ' (μ=' + preview.nearest.mean.toFixed(1) + ', count=' + preview.nearest.count + ')') : 'none yet';
+                state.activeIndex = preview.nearestIndex;
+                renderGrid();
+                showPhase(0, '<strong style="color:var(--accent-color)">1. New value arrives</strong><br>Incoming value = <span class="inline-formula">' + x.toFixed(1) + '</span>. The digest currently has ' + state.digest.centroids.length + ' centroids.', 0);
+                showPhase(1, '<strong style="color:var(--accent-color)">2. Find nearest centroid</strong><br>The nearest centroid is <strong>' + nearestText + '</strong>. T-Digest works in value space, not hash buckets.', 450);
+                showPhase(2, '<strong style="color:var(--accent-color)">3. Check weight limit</strong><br>Local quantile ≈ <span class="inline-formula">q=' + preview.q.toFixed(3) + '</span>. Max allowed weight here is <span class="inline-formula">' + preview.maxWeight + '</span>.', 900);
+                showPhase(3, '<strong style="color:var(--accent-color)">4. Merge math</strong><br>If we merge, the new mean becomes <span class="inline-formula">(' + (preview.nearest ? preview.nearest.mean.toFixed(1) + '×' + preview.nearest.count : x.toFixed(1) + '×0') + ' + ' + x.toFixed(1) + ') / ' + preview.newCount + ' = ' + preview.newMean.toFixed(2) + '</span>.', 1350);
+                showPhase(4, '<strong style="color:var(--accent-color)">5. Decision</strong><br>' + (preview.canMerge ? 'The centroid can absorb the value, so we update the centroid mean and increment its count.' : 'The centroid is already at capacity here, so T-Digest creates a brand new centroid for this value.') , 1800);
+                setTimeout(function () {
+                    var before = state.digest.centroids.length;
+                    var result = state.digest.add(x);
+                    state.activeIndex = result.centroidIndex;
+                    renderGrid();
+                    var compressed = state.digest.centroids.length < before + 1 && !result.merged ? 'Yes' : 'No';
+                    showPhase(5, '<strong style="color:var(--accent-color)">6. Optional compression</strong><br>If centroid count grows beyond the soft limit, adjacent centroids are greedily merged. Compression triggered now? <strong>' + (state.digest.centroids.length > state.digest.delta * 5 ? 'Pending' : compressed) + '</strong>.', 0);
+                    if (dom.summary) {
+                        dom.summary.innerHTML = '<strong>Inserted ' + x.toFixed(1) + '.</strong> Final action: <span style="color:var(--accent-color)">' + (result.merged ? 'merged into centroid #' + result.centroidIndex : 'created centroid #' + result.centroidIndex) + '</span>. Digest now has <strong>' + state.digest.centroids.length + '</strong> centroids for <strong>' + state.digest.totalCount + '</strong> values.';
+                        dom.summary.style.display = '';
+                    }
+                }, 2300);
+            }
+            function play() { if (state.running) return; state.running = true; if (dom.autoBtn) dom.autoBtn.textContent = 'Stop'; tick(); }
+            function pause() { state.running = false; if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; } if (dom.autoBtn) dom.autoBtn.textContent = 'Auto Demo'; }
+            function toggle() { state.running ? pause() : play(); }
+            function step() { if (state.running) pause(); runInsert(sampleDistribution('bimodal', state.rng)); }
+            function tick() { if (!state.running) return; runInsert(sampleDistribution('bimodal', state.rng)); state.timerId = setTimeout(tick, 3200); }
+            function reset() { pause(); hidePhases(); seedDigest(); }
+            function activate() {}
+            function deactivate() { pause(); }
+            function init() {
+                resolveDOM();
+                seedDigest();
+                if (dom.insertBtn) dom.insertBtn.addEventListener('click', function () { if (state.running) pause(); runInsert(); });
+                if (dom.autoBtn) dom.autoBtn.addEventListener('click', toggle);
+                if (dom.resetBtn) dom.resetBtn.addEventListener('click', reset);
+                if (dom.input) dom.input.addEventListener('keydown', function (e) { if (e.key === 'Enter') { if (state.running) pause(); runInsert(); } });
+            }
+            return { init: init, activate: activate, deactivate: deactivate };
+        })();
+
+        var Playground = (function () {
+            var SPEED_MAP = [700, 430, 230, 110, 45];
+            var state = { running: false, timerId: null, delta: 100, distribution: 'normal', digest: new TDigest(100), rng: makeRng('playground-demo'), lastValue: null };
+            var dom = {};
+            function resolveDOM() {
+                dom.badge = document.getElementById('td-playground-badge');
+                dom.playBtn = document.getElementById('td-playground-play-btn');
+                dom.playIcon = document.getElementById('td-playground-play-icon');
+                dom.pauseIcon = document.getElementById('td-playground-pause-icon');
+                dom.playLabel = document.getElementById('td-playground-play-label');
+                dom.stepBtn = document.getElementById('td-playground-step-btn');
+                dom.bulk100 = document.getElementById('td-playground-bulk-100');
+                dom.bulk1k = document.getElementById('td-playground-bulk-1k');
+                dom.bulk10k = document.getElementById('td-playground-bulk-10k');
+                dom.bulk100k = document.getElementById('td-playground-bulk-100k');
+                dom.resetBtn = document.getElementById('td-playground-reset-btn');
+                dom.speed = document.getElementById('td-playground-speed');
+                dom.delta = document.getElementById('td-playground-delta');
+                dom.deltaLabel = document.getElementById('td-playground-delta-label');
+                dom.dist = document.getElementById('td-playground-dist');
+                dom.query = document.getElementById('td-playground-query');
+                dom.queryBtn = document.getElementById('td-playground-query-btn');
+                dom.queryResult = document.getElementById('td-playground-query-result');
+                dom.svg = document.getElementById('td-playground-svg');
+                dom.total = document.getElementById('td-playground-total');
+                dom.centroids = document.getElementById('td-playground-centroids');
+                dom.bytes = document.getElementById('td-playground-bytes');
+                dom.ratio = document.getElementById('td-playground-ratio');
+                dom.grid = document.getElementById('td-playground-grid');
+            }
+            function buildGrid() {
+                if (!dom.grid) return;
+                dom.grid.innerHTML = '';
+                var count = Math.max(24, Math.min(60, state.digest.centroids.length || 24));
+                for (var i = 0; i < count; i++) {
+                    var cell = document.createElement('div');
+                    cell.className = 'hll-reg';
+                    cell.innerHTML = '<span class="reg-idx">' + i + '</span><span class="reg-val">0</span>';
+                    dom.grid.appendChild(cell);
+                }
+            }
+            function getInterval() { var s = dom.speed ? parseInt(dom.speed.value, 10) : 3; return SPEED_MAP[Math.max(0, Math.min(s - 1, SPEED_MAP.length - 1))]; }
+            function setDelta(delta) {
+                state.delta = delta;
+                state.digest = new TDigest(delta);
+                state.rng = makeRng('playground-demo-' + delta + '-' + state.distribution);
+                state.lastValue = null;
+                if (dom.deltaLabel) dom.deltaLabel.textContent = delta;
+                render();
+            }
+            function addOne() { var x = sampleDistribution(state.distribution, state.rng); state.lastValue = x; state.digest.add(x); }
+            function addBatch(n) { for (var i = 0; i < n; i++) addOne(); render(); }
+            function renderGrid() {
+                buildGrid();
+                var snap = state.digest.snapshot();
+                for (var i = 0; i < snap.length && i < dom.grid.children.length; i++) {
+                    var cell = dom.grid.children[i];
+                    var c = snap[i];
+                    cell.querySelector('.reg-val').textContent = c.count;
+                    cell.title = 'μ=' + c.mean.toFixed(1) + ' | q=' + pct(c.q0) + '→' + pct(c.q1);
+                    cell.style.background = 'rgba(53,255,107,' + (0.06 + Math.min(c.count / 30, 1) * 0.24) + ')';
+                    cell.style.borderColor = 'rgba(154,255,87,' + (0.15 + Math.min(c.count / 30, 1) * 0.32) + ')';
+                }
+            }
+            function render() {
+                if (dom.total) dom.total.textContent = state.digest.totalCount.toLocaleString();
+                if (dom.centroids) dom.centroids.textContent = state.digest.centroids.length.toLocaleString();
+                if (dom.bytes) dom.bytes.textContent = fmtBytes(Math.max(state.digest.memoryBytes(), 1));
+                if (dom.ratio) dom.ratio.textContent = state.digest.centroids.length ? state.digest.compressionRatio().toFixed(1) + '×' : '0×';
+                drawNumberLine(dom.svg, state.digest, state.lastValue, { showLabels: true, showPercentiles: true });
+                renderGrid();
+            }
+            function runQuery() {
+                var p = dom.query ? parseFloat(dom.query.value) : 0.95;
+                p = clamp(isFinite(p) ? p : 0.95, 0, 1);
+                if (!state.digest.totalCount) {
+                    if (dom.queryResult) dom.queryResult.innerHTML = 'Add some values first. Then query a percentile like <strong>0.95</strong> or <strong>0.99</strong>.';
+                    return;
+                }
+                var value = state.digest.quantile(p);
+                if (dom.queryResult) dom.queryResult.innerHTML = 'Estimated percentile <strong style="color:var(--accent-color)">q=' + p.toFixed(2) + '</strong> → <strong style="color:var(--warning-color)">' + value.toFixed(2) + '</strong> using <strong>' + state.digest.centroids.length + '</strong> centroids for <strong>' + state.digest.totalCount.toLocaleString() + '</strong> values.';
+            }
+            function play() { if (state.running) return; state.running = true; updateUI(); tick(); }
+            function pause() { state.running = false; if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; } updateUI(); }
+            function toggle() { state.running ? pause() : play(); }
+            function tick() { if (!state.running) return; addBatch(20); state.timerId = setTimeout(tick, getInterval()); }
+            function step() { if (state.running) pause(); addBatch(10); }
+            function reset() { pause(); setDelta(state.delta); if (dom.queryResult) dom.queryResult.innerHTML = 'Run the stream, then query a percentile like <strong>0.95</strong> or <strong>0.99</strong>.'; }
+            function updateUI() {
+                if (dom.playIcon) dom.playIcon.style.display = state.running ? 'none' : '';
+                if (dom.pauseIcon) dom.pauseIcon.style.display = state.running ? '' : 'none';
+                if (dom.playLabel) dom.playLabel.textContent = state.running ? 'Pause' : 'Play';
+                if (dom.badge) dom.badge.style.display = state.running ? '' : 'none';
+            }
+            function bulkAdd(n) { if (state.running) pause(); addBatch(n); }
+            function activate() { play(); }
+            function deactivate() { pause(); }
+            function init() {
+                resolveDOM();
+                if (dom.playBtn) dom.playBtn.addEventListener('click', toggle);
+                if (dom.stepBtn) dom.stepBtn.addEventListener('click', step);
+                if (dom.bulk100) dom.bulk100.addEventListener('click', function () { bulkAdd(100); });
+                if (dom.bulk1k) dom.bulk1k.addEventListener('click', function () { bulkAdd(1000); });
+                if (dom.bulk10k) dom.bulk10k.addEventListener('click', function () { bulkAdd(10000); });
+                if (dom.bulk100k) dom.bulk100k.addEventListener('click', function () { bulkAdd(100000); });
+                if (dom.resetBtn) dom.resetBtn.addEventListener('click', reset);
+                if (dom.speed) dom.speed.addEventListener('input', function () { if (state.running) { clearTimeout(state.timerId); tick(); } });
+                if (dom.delta) dom.delta.addEventListener('input', function () { pause(); setDelta(parseInt(dom.delta.value, 10)); });
+                if (dom.dist) dom.dist.addEventListener('change', function () { pause(); state.distribution = dom.dist.value; reset(); });
+                if (dom.queryBtn) dom.queryBtn.addEventListener('click', runQuery);
+                if (dom.query) dom.query.addEventListener('keydown', function (e) { if (e.key === 'Enter') runQuery(); });
+                setDelta(state.delta);
+            }
+            return { init: init, activate: activate, deactivate: deactivate };
+        })();
+
+        function onStepActivate(n) {
+            if (n === 1) CentroidStream.activate();
+            if (n === 2) ScaleDemo.activate();
+            if (n === 3) AccuracyDemo.activate();
+            if (n === 4) MemoryDemo.activate();
+            if (n === 6) Playground.activate();
+        }
+
+        function onStepDeactivate(n) {
+            if (n === 1) CentroidStream.deactivate();
+            if (n === 2) ScaleDemo.deactivate();
+            if (n === 3) AccuracyDemo.deactivate();
+            if (n === 4) MemoryDemo.deactivate();
+            if (n === 5) InsertionVisualizer.deactivate();
+            if (n === 6) Playground.deactivate();
+        }
+
+        CentroidStream.init();
+        ScaleDemo.init();
+        AccuracyDemo.init();
+        MemoryDemo.init();
+        InsertionVisualizer.init();
+        Playground.init();
+        onStepActivate(0);
+        updateIndicator();
+    })();
+    </script>
+</body>
+</html>

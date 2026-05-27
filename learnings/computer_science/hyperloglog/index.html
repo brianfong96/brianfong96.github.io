@@ -31,6 +31,21 @@
             </div>
         </header>
         <main>
+            <!-- Step Table of Contents -->
+            <div class="step-toc" id="step-toc">
+                <div class="step-toc-header">TABLE OF CONTENTS</div>
+                <ol class="step-toc-list">
+                    <li><button class="step-toc-item active" data-step="0"><span class="step-toc-num">01</span> The Problem</button></li>
+                    <li><button class="step-toc-item" data-step="1"><span class="step-toc-num">02</span> The Key Insight</button></li>
+                    <li><button class="step-toc-item" data-step="2"><span class="step-toc-num">03</span> LogLog</button></li>
+                    <li><button class="step-toc-item" data-step="3"><span class="step-toc-num">04</span> HyperLogLog</button></li>
+                    <li><button class="step-toc-item" data-step="4"><span class="step-toc-num">05</span> Memory Deep Dive</button></li>
+                    <li><button class="step-toc-item" data-step="5"><span class="step-toc-num">06</span> Hash Visualizer</button></li>
+                    <li><button class="step-toc-item" data-step="6"><span class="step-toc-num">07</span> Live Playground</button></li>
+                    <li><button class="step-toc-item" data-step="7"><span class="step-toc-num">08</span> Applications</button></li>
+                </ol>
+            </div>
+
             <!-- Step indicator -->
             <div class="step-wrap">
                 <div class="step-indicator" id="step-indicator"></div>
@@ -896,6 +911,12 @@ M[0..m-1] = 0                   <span class="cm">// all registers start at zero<
             }
             if (stepCurEl) stepCurEl.textContent = currentStep + 1;
             if (stepNameEl) stepNameEl.textContent = STEPS[currentStep];
+            // Update TOC active state
+            var tocItems = document.querySelectorAll('.step-toc-item');
+            for (var j = 0; j < tocItems.length; j++) {
+                tocItems[j].classList.toggle('active', j === currentStep);
+                tocItems[j].classList.toggle('done', j < currentStep);
+            }
         }
 
         function goToStep(n, fromDir) {
@@ -923,6 +944,13 @@ M[0..m-1] = 0                   <span class="cm">// all registers start at zero<
 
         // Wire all step-btn buttons
         document.querySelectorAll('.step-btn[data-step]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                goToStep(parseInt(btn.getAttribute('data-step')), null);
+            });
+        });
+
+        // Wire TOC buttons
+        document.querySelectorAll('.step-toc-item[data-step]').forEach(function (btn) {
             btn.addEventListener('click', function () {
                 goToStep(parseInt(btn.getAttribute('data-step')), null);
             });
