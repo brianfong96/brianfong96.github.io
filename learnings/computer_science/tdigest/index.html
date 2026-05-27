@@ -347,6 +347,28 @@
                     </tbody>
                 </table>
                 <div class="callout"><strong>Why T-Digest matters:</strong> in monitoring, p99 is usually more important than p50. A sketch that is mediocre in the middle but sharp at the tails is often exactly what production systems need.</div>
+                <div class="blog-prose" style="margin-top:18px;">
+                    <div class="note-card">
+                        <p><strong style="color:var(--accent-color)">Key Terms</strong></p>
+                        <ul style="margin:8px 0 0 0;padding-left:20px;line-height:2;">
+                            <li><strong>Percentile (pN)</strong> — the value below which N% of observations fall. p95 = 200ms means 95% of requests finished in ≤ 200ms.</li>
+                            <li><strong>Quantile (q)</strong> — same concept expressed as a fraction 0→1 instead of 0→100. q=0.95 is p95.</li>
+                            <li><strong>Tail</strong> — the extreme ends of the distribution (p99, p99.9). This is where rare but painful events live: timeouts, spikes, slowest queries.</li>
+                            <li><strong>Sketch / Digest</strong> — a compact data structure that summarizes a stream. You can query it for approximate answers without storing every value.</li>
+                            <li><strong>δ (delta / compression)</strong> — T-Digest's tuning knob. Higher δ = more centroids = more memory but better accuracy. Typical values: 50–300.</li>
+                            <li><strong>Centroid</strong> — a (mean, count) pair representing a cluster of nearby values. The digest is just a sorted list of centroids.</li>
+                        </ul>
+                    </div>
+                    <div class="note-card">
+                        <p><strong style="color:var(--warning-color)">Real-world example: API latency monitoring</strong></p>
+                        <p style="margin-top:8px;">Your API handles 50,000 requests/second. Most respond in 5–50ms, but some hit 2,000ms+. You need to know p99 every 10 seconds for alerting.</p>
+                        <ul style="margin:8px 0 0 0;padding-left:20px;line-height:2;">
+                            <li><strong>Exact approach:</strong> store 500,000 values per window → ~4MB per metric per 10s window. With 200 endpoints that's 800MB just for one aggregation window.</li>
+                            <li><strong>T-Digest (δ=100):</strong> ~500 centroids × 12 bytes = <strong>6KB per metric</strong>. For 200 endpoints: 1.2MB total. Error at p99 is typically &lt;1%.</li>
+                            <li><strong>No upper bound needed:</strong> values can range from 0.1ms to 30,000ms. The digest doesn't care about the absolute range — it only tracks relative rank (quantile position).</li>
+                        </ul>
+                    </div>
+                </div>
                 <div class="step-nav-cards only-next">
                     <button class="step-btn next" data-step="1"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">Key Insight</span></div><span class="step-btn-arrow">→</span></button>
                 </div>
@@ -1681,6 +1703,9 @@
                 running: false,
                 timerId: null,
                 phaseTimers: [],
+                phases: null,
+                phaseIndex: -1,
+                phaseResult: null,
                 digest: new TDigest(80),
                 rng: makeRng('stream-demo'),
                 history: [],
@@ -1808,6 +1833,7 @@
             }
 
             function finishInsert(x, preview, result) {
+                if (!result) result = { merged: false, centroidIndex: 0, newSize: 1 };
                 state.lastValue = x;
                 state.lastAction = result.merged ? '↓ merged into centroid #' + result.centroidIndex : '↓ created centroid #' + result.centroidIndex;
                 state.history.unshift({ value: x, action: result.merged ? 'merge' : 'new' });
@@ -1827,22 +1853,13 @@
                 state.pendingValue = x;
                 state.previewMean = null;
                 state.visualDigest = state.digest;
+                state.phases = null;
+                state.phaseIndex = -1;
                 render();
                 if (state.running) state.timerId = setTimeout(startInsert, getPhaseDelay() * 2);
             }
 
-            function startInsert(forcedValue) {
-                if (state.phaseTimers.length) return;
-                if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; }
-                var x = typeof forcedValue === 'number' ? forcedValue : nextValue();
-                var preview = state.digest.previewAdd(x);
-                state.currentPreview = preview;
-                state.pendingValue = x;
-                state.visualDigest = state.digest;
-                state.activeIndex = -1;
-                state.previewMean = null;
-                var result = null;
-                var delay = getPhaseDelay();
+            function buildPhases(x, preview) {
                 var phases = [
                     { line: 0, fn: function () {
                         state.phaseTitle = '1. value arrives';
@@ -1855,74 +1872,125 @@
                     } },
                     { line: 2, fn: function () {
                         state.phaseTitle = '3. compute quantile q of c';
-                        state.phaseSummary = preview.nearest ? 'That centroid sits around <strong>q=' + preview.q.toFixed(3) + '</strong> of the distribution.' : 'With no centroids yet, q defaults to the left edge of the distribution.';
+                        state.phaseSummary = preview.nearest ? 'That centroid sits around <strong>q=' + preview.q.toFixed(3) + '</strong> of the distribution. This means ' + pct(preview.q) + ' of all values seen so far are ≤ this centroid\'s mean.' : 'With no centroids yet, q defaults to the left edge of the distribution.';
                     } },
                     { line: 3, fn: function () {
                         state.phaseTitle = '4. compute maxWeight(q, δ, n)';
-                        state.phaseSummary = 'At this location, the centroid can hold at most <strong>' + preview.maxWeight + '</strong> samples.';
+                        state.phaseSummary = 'The scale function says: at quantile <strong>q=' + preview.q.toFixed(3) + '</strong> with δ=' + state.digest.delta + ', a centroid can hold at most <strong>' + preview.maxWeight + '</strong> samples. Closer to the tails (q≈0 or q≈1), this limit shrinks dramatically.';
                     } },
                     { line: 4, fn: function () {
-                        state.phaseTitle = '5. test the capacity check';
-                        state.phaseSummary = preview.nearest ? ('We ask whether <strong>' + (preview.nearest.count + 1) + '</strong> ≤ <strong>' + preview.maxWeight + '</strong>.') : 'No centroid exists yet, so the merge condition fails immediately.';
+                        state.phaseTitle = '5. capacity check: can we merge?';
+                        state.phaseSummary = preview.nearest ? ('Current count is <strong>' + preview.nearest.count + '</strong>. Adding 1 gives <strong>' + (preview.nearest.count + 1) + '</strong>. Is ' + (preview.nearest.count + 1) + ' ≤ ' + preview.maxWeight + '? <strong style="color:' + (preview.canMerge ? 'var(--accent-color)' : '#ff7d7d') + '">' + (preview.canMerge ? 'YES → merge' : 'NO → new centroid') + '</strong>.') : 'No centroid exists yet, so the merge condition fails immediately — we must create a new centroid.';
                     } }
                 ];
                 if (preview.canMerge && preview.nearest) {
                     phases.push({ line: 5, fn: function () {
                         state.previewMean = preview.newMean;
                         state.phaseTitle = '6. recompute the centroid mean';
-                        state.phaseSummary = 'Weighted-average math shifts the centroid mean from <strong>' + preview.nearest.mean.toFixed(1) + '</strong> to <strong>' + preview.newMean.toFixed(2) + '</strong>.';
+                        state.phaseSummary = 'Weighted-average formula: <span class="inline-formula">newMean = (oldMean × count + value) / (count + 1)</span> = (' + preview.nearest.mean.toFixed(1) + ' × ' + preview.nearest.count + ' + ' + x.toFixed(1) + ') / ' + (preview.nearest.count + 1) + ' = <strong>' + preview.newMean.toFixed(2) + '</strong>';
                     } });
                     phases.push({ line: 6, fn: function () {
-                        result = state.digest.add(x);
+                        state.phaseResult = state.digest.add(x);
                         state.visualDigest = state.digest;
-                        state.activeIndex = result.centroidIndex;
+                        state.activeIndex = state.phaseResult.centroidIndex;
                         state.previewMean = null;
                         state.phaseTitle = '7. increment the centroid count';
-                        state.phaseSummary = 'Centroid <strong>#' + result.centroidIndex + '</strong> now has count <strong>' + result.newSize + '</strong>.';
+                        state.phaseSummary = 'Centroid <strong>#' + state.phaseResult.centroidIndex + '</strong> now has count <strong>' + state.phaseResult.newSize + '</strong>. The value has been absorbed.';
                     } });
                 } else {
                     phases.push({ line: 7, fn: function () {
-                        state.phaseTitle = '8. take the else branch';
-                        state.phaseSummary = 'There is not enough capacity here, so the algorithm skips the merge path.';
+                        state.phaseTitle = '8. else branch — no room to merge';
+                        state.phaseSummary = preview.nearest ? 'Centroid #' + preview.nearestIndex + ' already has <strong>' + preview.nearest.count + '</strong> samples and the limit is <strong>' + preview.maxWeight + '</strong>. Adding 1 more would exceed capacity.' : 'No centroids exist yet, so we must create the first one.';
                     } });
                     phases.push({ line: 8, fn: function () {
-                        result = state.digest.add(x);
+                        state.phaseResult = state.digest.add(x);
                         state.visualDigest = state.digest;
-                        state.activeIndex = result.centroidIndex;
+                        state.activeIndex = state.phaseResult.centroidIndex;
                         state.phaseTitle = '9. create a new centroid';
-                        state.phaseSummary = 'A fresh centroid is created at mean <strong>' + x.toFixed(1) + '</strong> with count <strong>1</strong>.';
+                        state.phaseSummary = 'A fresh centroid is born: <strong>mean=' + x.toFixed(1) + ', count=1</strong>. The digest now has <strong>' + state.digest.centroids.length + '</strong> centroids total.';
                     } });
                 }
                 phases.push({ line: 9, fn: function () {
-                    if (!result) result = state.digest.add(x);
+                    if (!state.phaseResult) state.phaseResult = state.digest.add(x);
                     state.visualDigest = state.digest;
-                    state.activeIndex = result.centroidIndex;
-                    state.phaseTitle = '10. check whether compression is needed';
-                    state.phaseSummary = state.digest.centroids.length > state.digest.delta * 5 ? 'The centroid list crossed the soft limit, so compression would run now.' : 'Centroid count is still below the soft limit, so no compression is needed yet.';
+                    state.activeIndex = state.phaseResult.centroidIndex;
+                    state.phaseTitle = '10. compression check';
+                    var overLimit = state.digest.centroids.length > state.digest.delta * 5;
+                    state.phaseSummary = 'Centroid count = <strong>' + state.digest.centroids.length + '</strong>, soft limit = δ×5 = <strong>' + (state.digest.delta * 5) + '</strong>. ' + (overLimit ? '<strong style="color:#ff7d7d">Over limit!</strong> Compression would merge nearby centroids to shrink the list.' : '<strong style="color:var(--accent-color)">Under limit.</strong> No compression needed yet.');
                 } });
+                state.phases = phases;
+                state.phaseIndex = -1;
+                state.phaseResult = null;
+            }
 
-                for (var i = 0; i < phases.length; i++) {
-                    (function (phase, idx) {
-                        state.phaseTimers.push(setTimeout(function () {
-                            setPseudoLines(dom.pseudoLines, phase.line);
-                            phase.fn();
-                            render();
-                            if (idx === phases.length - 1) {
-                                state.phaseTimers.push(setTimeout(function () {
-                                    state.phaseTimers = [];
-                                    finishInsert(x, preview, result);
-                                }, delay));
-                            }
-                        }, idx * delay));
-                    })(phases[i], i);
+            function prepareNextValue() {
+                var x = nextValue();
+                var preview = state.digest.previewAdd(x);
+                state.currentPreview = preview;
+                state.pendingValue = x;
+                state.visualDigest = state.digest;
+                state.activeIndex = -1;
+                state.previewMean = null;
+                buildPhases(x, preview);
+            }
+
+            function advanceOnePhase() {
+                // If no phases or finished previous value, prepare next
+                if (!state.phases || state.phaseIndex >= state.phases.length - 1) {
+                    if (state.phases && state.phaseIndex >= state.phases.length - 1) {
+                        // Previous value is done, record it
+                        finishInsert(state.pendingValue, state.currentPreview, state.phaseResult || { merged: false, centroidIndex: Math.max(0, state.activeIndex), newSize: 1 });
+                    }
+                    prepareNextValue();
                 }
+                state.phaseIndex++;
+                var phase = state.phases[state.phaseIndex];
+                setPseudoLines(dom.pseudoLines, phase.line);
+                phase.fn();
+                render();
+            }
+
+            function startInsert(forcedValue) {
+                if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; }
+                var x = typeof forcedValue === 'number' ? forcedValue : nextValue();
+                var preview = state.digest.previewAdd(x);
+                state.currentPreview = preview;
+                state.pendingValue = x;
+                state.visualDigest = state.digest;
+                state.activeIndex = -1;
+                state.previewMean = null;
+                buildPhases(x, preview);
+                autoPlayPhases();
+            }
+
+            function autoPlayPhases() {
+                var delay = getPhaseDelay();
+                function runNext() {
+                    if (!state.running) return;
+                    if (!state.phases || state.phaseIndex >= state.phases.length - 1) {
+                        // All phases done for this value
+                        finishInsert(state.pendingValue, state.currentPreview, state.phaseResult || { merged: false, centroidIndex: Math.max(0, state.activeIndex), newSize: 1 });
+                        return;
+                    }
+                    state.phaseIndex++;
+                    var phase = state.phases[state.phaseIndex];
+                    setPseudoLines(dom.pseudoLines, phase.line);
+                    phase.fn();
+                    render();
+                    state.timerId = setTimeout(runNext, delay);
+                }
+                state.timerId = setTimeout(runNext, delay);
             }
 
             function play() {
                 if (state.running) return;
                 state.running = true;
                 updateUI();
-                if (!state.phaseTimers.length) startInsert();
+                if (!state.phases || state.phaseIndex >= state.phases.length - 1) {
+                    startInsert();
+                } else {
+                    autoPlayPhases();
+                }
             }
 
             function pause() {
@@ -1932,8 +2000,11 @@
             }
 
             function cancelCurrentInsert() {
+                if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; }
                 cancelTimers(state.phaseTimers);
                 state.phaseTimers = [];
+                state.phases = null;
+                state.phaseIndex = -1;
                 clearPseudoLines(dom.pseudoLines);
                 state.previewMean = null;
                 state.activeIndex = -1;
@@ -1943,8 +2014,7 @@
 
             function step() {
                 if (state.running) pause();
-                if (state.phaseTimers.length) return;
-                startInsert();
+                advanceOnePhase();
             }
 
             function reset() {
@@ -1977,7 +2047,7 @@
                 if (dom.playBtn) dom.playBtn.addEventListener('click', toggle);
                 if (dom.stepBtn) dom.stepBtn.addEventListener('click', step);
                 if (dom.resetBtn) dom.resetBtn.addEventListener('click', reset);
-                if (dom.speed) dom.speed.addEventListener('input', function () { if (state.running && !state.phaseTimers.length) startInsert(); });
+                if (dom.speed) dom.speed.addEventListener('input', function () { /* speed change takes effect on next phase */ });
                 render();
             }
             return { init: init, activate: activate, deactivate: deactivate };
