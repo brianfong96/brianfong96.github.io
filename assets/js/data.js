@@ -11,6 +11,12 @@ const siteData = {
             url: 'learnings/computer_science/tdigest/index.html',
             description: 'A streaming data structure for accurate percentile estimation (p50, p95, p99) using bounded memory with exceptional tail accuracy.',
             category: 'Computer Science'
+        },
+        {
+            title: 'Data Cubes',
+            url: 'learnings/computer_science/datacubes/index.html',
+            description: 'Multi-dimensional pre-aggregation for fast analytics. Learn OLAP operations, how HLL and T-Digest enable approximate cube cells, and apply it with Kusto/KQL.',
+            category: 'Computer Science'
         }
     ],
     projects: [

@@ -1,0 +1,2409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="../../../assets/favicon.png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Cubes - Learnings - Brian Fong</title>
+    <link rel="stylesheet" href="../../../assets/css/style.css" />
+    <link rel="stylesheet" href="../../../assets/css/learnings.css" />
+    <style>
+        .datacube-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.9fr);
+            gap: 18px;
+            align-items: start;
+            margin: 18px 0;
+        }
+        @media (max-width: 980px) {
+            .datacube-grid { grid-template-columns: 1fr; }
+        }
+        .demo-shell,
+        .mini-panel,
+        .cube-detail,
+        .editor-shell,
+        .result-shell,
+        .stepper-mini-card,
+        .cuboid-card,
+        .op-board,
+        .playground-card {
+            background: rgba(2, 6, 13, 0.94);
+            border: 1px solid rgba(53, 255, 107, 0.14);
+            border-radius: 14px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+        }
+        .demo-shell,
+        .editor-shell,
+        .result-shell,
+        .playground-card,
+        .op-board {
+            padding: 16px;
+        }
+        .demo-bar,
+        .mini-bar {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted-text);
+            margin-bottom: 10px;
+        }
+        .demo-toolbar,
+        .control-row,
+        .inline-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin: 12px 0;
+        }
+        .stream-play-btn,
+        .tool-btn,
+        .op-btn,
+        .chip-btn,
+        .pill-toggle {
+            border: 1px solid rgba(53,255,107,0.18);
+            background: rgba(53,255,107,0.08);
+            color: var(--text-color);
+            border-radius: 999px;
+            padding: 8px 14px;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            font-size: 0.82rem;
+        }
+        .stream-play-btn:hover,
+        .tool-btn:hover,
+        .op-btn:hover,
+        .chip-btn:hover,
+        .pill-toggle:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            transform: translateY(-1px);
+        }
+        .op-btn.active,
+        .chip-btn.active,
+        .pill-toggle.active {
+            background: rgba(53,255,107,0.16);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(53,255,107,0.12);
+        }
+        .speed-wrap,
+        .select-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted-text);
+            font-size: 0.78rem;
+        }
+        .speed-wrap input[type="range"],
+        .playground-card input[type="range"] {
+            accent-color: var(--accent-color);
+        }
+        .select-wrap select,
+        .select-wrap input,
+        .playground-card select,
+        .playground-card input,
+        .editor-shell textarea {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(53,255,107,0.16);
+            color: var(--text-color);
+            border-radius: 10px;
+            padding: 8px 10px;
+            font-size: 0.82rem;
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+        @media (max-width: 900px) {
+            .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        .stat-card,
+        .stepper-mini-card {
+            padding: 12px 14px;
+        }
+        .stat-label,
+        .stepper-mini-label {
+            color: var(--muted-text);
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .stat-value,
+        .stepper-mini-value {
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .svg-wrap {
+            width: 100%;
+            border: 1px solid rgba(53,255,107,0.14);
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(3, 13, 25, 0.96), rgba(2, 6, 13, 0.96));
+            overflow: hidden;
+        }
+        .svg-wrap svg {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        .cube-detail {
+            padding: 16px;
+            position: sticky;
+            top: 90px;
+        }
+        .detail-label {
+            font-size: 0.72rem;
+            color: var(--muted-text);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .detail-title {
+            font-size: 1.05rem;
+            color: var(--accent-color);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .dimension-list {
+            display: grid;
+            gap: 8px;
+            margin: 12px 0 14px;
+        }
+        .dimension-row,
+        .centroid-popup-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(53,255,107,0.08);
+            font-size: 0.84rem;
+        }
+        .dimension-row:last-child,
+        .centroid-popup-row:last-child { border-bottom: none; }
+        .dimension-row strong,
+        .centroid-popup-value { color: var(--accent-color); }
+        .insight-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0 14px;
+        }
+        .insight-chip,
+        .merge-math-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(53,255,107,0.18);
+            background: rgba(2,6,13,0.92);
+            color: var(--text-color);
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.76rem;
+        }
+        .insight-chip strong,
+        .merge-math-chip strong { color: var(--accent-color); }
+        .growth-bar {
+            margin-top: 12px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: rgba(53,255,107,0.06);
+            border: 1px solid rgba(53,255,107,0.12);
+        }
+        .growth-value {
+            font-size: 1.1rem;
+            color: var(--warning-color);
+            font-weight: 700;
+        }
+        .cube-cell-button {
+            cursor: pointer;
+            transition: transform 0.18s ease, filter 0.18s ease, stroke 0.18s ease;
+        }
+        .cube-cell-button:hover { transform: translateY(-2px); filter: brightness(1.08); }
+        .cube-cell-button.active rect,
+        .cube-cell-button.active polygon {
+            stroke: var(--warning-color);
+            stroke-width: 3;
+        }
+        .layer-label,
+        .axis-label {
+            fill: var(--muted-text);
+            font-size: 11px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            letter-spacing: 0.08em;
+        }
+        .cell-value-tag {
+            font-size: 10px;
+            fill: rgba(255,255,255,0.82);
+            pointer-events: none;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+        }
+        .op-layout {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        @media (max-width: 900px) {
+            .op-layout { grid-template-columns: 1fr; }
+        }
+        .op-board { min-height: 300px; }
+        .op-board h3,
+        .mini-panel h3,
+        .playground-card h3,
+        .editor-shell h3,
+        .result-shell h3 {
+            margin: 0 0 10px;
+            font-size: 1rem;
+            color: var(--accent-color);
+        }
+        .mini-panel {
+            padding: 14px;
+        }
+        .cell-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 10px;
+        }
+        .cube-mini-cell {
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(53,255,107,0.12);
+            background: rgba(53,255,107,0.05);
+            font-size: 0.78rem;
+            transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+        .cube-mini-cell.highlight {
+            border-color: var(--accent-color);
+            background: rgba(53,255,107,0.14);
+            transform: translateY(-2px);
+        }
+        .cube-mini-key {
+            color: var(--warning-color);
+            display: block;
+            margin-bottom: 6px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.72rem;
+        }
+        .cube-mini-value {
+            font-weight: 700;
+            color: var(--text-color);
+        }
+        .operation-caption {
+            color: var(--muted-text);
+            font-size: 0.82rem;
+            margin-bottom: 10px;
+            min-height: 44px;
+        }
+        .region-chip-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px;
+            margin: 12px 0;
+        }
+        .region-chip {
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(53,255,107,0.14);
+            background: rgba(53,255,107,0.05);
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+        .region-chip:hover { border-color: var(--accent-color); transform: translateY(-1px); }
+        .region-chip.selected {
+            border-color: var(--accent-color);
+            background: rgba(53,255,107,0.16);
+            box-shadow: 0 0 10px rgba(53,255,107,0.14);
+        }
+        .region-chip strong {
+            display: block;
+            color: var(--accent-color);
+            margin-bottom: 4px;
+        }
+        .region-chip span {
+            display: block;
+            color: var(--muted-text);
+            font-size: 0.76rem;
+        }
+        .register-canvas,
+        .metric-canvas {
+            width: 100%;
+            height: 170px;
+            border-radius: 12px;
+            border: 1px solid rgba(53,255,107,0.12);
+            background: rgba(1, 5, 12, 0.9);
+        }
+        .code-stepper {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 18px;
+            margin-top: 20px;
+        }
+        @media (max-width: 980px) {
+            .code-stepper { grid-template-columns: 1fr; }
+        }
+        .code-stepper-pseudo {
+            background: rgba(2, 6, 13, 0.95);
+            border: 1px solid rgba(53,255,107,0.18);
+            border-radius: 12px;
+            padding: 16px 0;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.78rem;
+            line-height: 1.9;
+            overflow-x: auto;
+            position: sticky;
+            top: 80px;
+        }
+        .pseudo-line {
+            padding: 2px 18px;
+            white-space: pre;
+            color: rgba(255,255,255,0.58);
+            transition: background 0.18s ease, color 0.18s ease;
+        }
+        .pseudo-line .line-num {
+            display: inline-block;
+            width: 24px;
+            text-align: right;
+            margin-right: 12px;
+            color: rgba(255,255,255,0.25);
+        }
+        .pseudo-line.active {
+            color: var(--accent-color);
+            background: rgba(53,255,107,0.14);
+            border-left: 3px solid var(--accent-color);
+            font-weight: 700;
+        }
+        .pseudo-line.done {
+            color: rgba(53,255,107,0.46);
+        }
+        .stepper-side-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin: 14px 0;
+        }
+        @media (max-width: 760px) {
+            .stepper-side-grid { grid-template-columns: 1fr; }
+        }
+        .route-log {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+        }
+        .route-log th,
+        .route-log td {
+            border-bottom: 1px solid rgba(53,255,107,0.08);
+            padding: 8px 10px;
+            text-align: left;
+        }
+        .materialize-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+            margin: 16px 0;
+        }
+        .cuboid-card {
+            padding: 12px;
+        }
+        .cuboid-card label {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            cursor: pointer;
+        }
+        .cuboid-card strong {
+            color: var(--accent-color);
+            display: block;
+            margin-bottom: 4px;
+        }
+        .cuboid-card small {
+            color: var(--muted-text);
+            display: block;
+            line-height: 1.5;
+        }
+        .kql-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
+            gap: 16px;
+            margin-top: 18px;
+        }
+        @media (max-width: 980px) {
+            .kql-layout { grid-template-columns: 1fr; }
+        }
+        .editor-shell textarea {
+            width: 100%;
+            min-height: 180px;
+            resize: vertical;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            line-height: 1.65;
+        }
+        .code-preview,
+        .console-shell {
+            border-radius: 12px;
+            border: 1px solid rgba(53,255,107,0.12);
+            background: rgba(1,5,12,0.94);
+            padding: 14px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.78rem;
+            overflow: auto;
+        }
+        .code-preview { min-height: 180px; }
+        .console-shell { min-height: 220px; white-space: pre-wrap; }
+        .kql-kw { color: var(--warning-color); }
+        .kql-fn { color: #7fd9ff; }
+        .kql-str { color: #ffb870; }
+        .kql-com { color: rgba(255,255,255,0.38); }
+        .setup-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .setup-step {
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(53,255,107,0.12);
+            background: rgba(53,255,107,0.05);
+        }
+        .setup-step strong { color: var(--accent-color); }
+        .playground-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        @media (max-width: 980px) {
+            .playground-grid { grid-template-columns: 1fr; }
+        }
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .checkbox-grid label {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(53,255,107,0.1);
+            background: rgba(53,255,107,0.04);
+            cursor: pointer;
+        }
+        .result-table-wrap {
+            overflow: auto;
+            margin-top: 12px;
+            border: 1px solid rgba(53,255,107,0.12);
+            border-radius: 12px;
+        }
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+        .result-table th,
+        .result-table td {
+            border-bottom: 1px solid rgba(53,255,107,0.08);
+            padding: 9px 10px;
+            text-align: left;
+            white-space: nowrap;
+        }
+        .result-table th {
+            position: sticky;
+            top: 0;
+            background: rgba(2,6,13,0.98);
+            color: var(--accent-color);
+            z-index: 1;
+        }
+        .bar-row {
+            display: grid;
+            grid-template-columns: 120px 1fr auto;
+            gap: 10px;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 0.8rem;
+        }
+        .bar-track {
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.06);
+            overflow: hidden;
+        }
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, rgba(53,255,107,0.5), rgba(154,255,87,0.95));
+            border-radius: 999px;
+        }
+        .bar-fill.warn {
+            background: linear-gradient(90deg, rgba(255,140,100,0.55), rgba(255,186,84,0.95));
+        }
+        .memory-note {
+            color: var(--muted-text);
+            font-size: 0.78rem;
+            margin-top: 10px;
+        }
+        .centroid-popup {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            background: rgba(2,6,13,0.98);
+            border: 1px solid var(--accent-color);
+            border-radius: 12px;
+            padding: 16px 20px;
+            min-width: 280px;
+            max-width: 380px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(53,255,107,0.1);
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.78rem;
+            line-height: 1.8;
+            color: var(--text-color);
+        }
+        .centroid-popup.visible { display: block; }
+        .centroid-popup-header {
+            color: var(--accent-color);
+            font-weight: 700;
+            font-size: 0.82rem;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .centroid-popup-close {
+            background: none;
+            border: 1px solid rgba(53,255,107,0.3);
+            color: var(--text-color);
+            cursor: pointer;
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+        }
+        .centroid-popup-close:hover { border-color: var(--accent-color); color: var(--accent-color); }
+        .muted-copy,
+        .caption-copy {
+            color: var(--muted-text);
+            font-size: 0.82rem;
+            line-height: 1.6;
+        }
+        .callout a,
+        .note-card a { color: var(--warning-color); }
+        .bad-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(53,255,107,0.08);
+            border: 1px solid rgba(53,255,107,0.18);
+            font-size: 0.72rem;
+            color: var(--muted-text);
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a class="home-link" href="../../../index.html" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
+        <button id="sidebar-toggle" aria-label="Toggle navigation"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></button>
+    </header>
+    <nav class="sidebar" id="sidebar">
+        <ul class="nav-links">
+            <li><a href="../../../index.html">Home</a></li>
+            <li><a href="../../../about.html">About</a></li>
+            <li><a href="../../../projects.html">Projects</a></li>
+            <li><a href="../../../learnings.html">Learnings</a></li>
+        </ul>
+    </nav>
+    <div class="content">
+        <header class="hero small">
+            <div class="hero-content">
+                <p class="eyebrow">Learnings</p>
+                <h1>Data Cubes</h1>
+                <p class="hero-copy">A practical guide to multi-dimensional aggregation — how OLAP cubes power slice-and-dice analytics, why approximate sketches matter, and how the idea shows up in systems like Kusto.</p>
+                <a href="../../../learnings.html" class="back-button">&#8592; Back to Learnings</a>
+            </div>
+        </header>
+        <main>
+            <div class="step-toc" id="step-toc">
+                <div class="step-toc-header">TABLE OF CONTENTS</div>
+                <ol class="step-toc-list">
+                    <li><button class="step-toc-item active" data-step="0"><span class="step-toc-num">01</span> The Problem</button></li>
+                    <li><button class="step-toc-item" data-step="1"><span class="step-toc-num">02</span> What is a Cube?</button></li>
+                    <li><button class="step-toc-item" data-step="2"><span class="step-toc-num">03</span> Operations</button></li>
+                    <li><button class="step-toc-item" data-step="3"><span class="step-toc-num">04</span> HLL in Cubes</button></li>
+                    <li><button class="step-toc-item" data-step="4"><span class="step-toc-num">05</span> T-Digest in Cubes</button></li>
+                    <li><button class="step-toc-item" data-step="5"><span class="step-toc-num">06</span> Building the Cube</button></li>
+                    <li><button class="step-toc-item" data-step="6"><span class="step-toc-num">07</span> Kusto Application</button></li>
+                    <li><button class="step-toc-item" data-step="7"><span class="step-toc-num">08</span> Live Playground</button></li>
+                </ol>
+            </div>
+
+            <div class="step-wrap">
+                <div class="step-indicator" id="step-indicator"></div>
+                <div class="step-progress-label" id="step-progress-label">
+                    Step <span id="step-cur">1</span> of <span id="step-total">8</span> &nbsp;—&nbsp; <span class="step-name" id="step-name-label">The Problem</span>
+                </div>
+            </div>
+
+            <section class="step-panel section active" id="step-0">
+                <div class="section-heading"><h2>The Problem — Why Data Cubes?</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card"><p>Analytical systems need to answer questions like <strong style="color:var(--accent-color)">"revenue by week, category, region, and customer segment"</strong> over billions of rows. Each question mixes <strong>dimensions</strong> (time, product, geography, segment) with <strong>measures</strong> (count, revenue, latency, distinct users, percentiles).</p></div>
+                    <div class="note-card"><p>A <strong style="color:var(--accent-color)">data cube</strong> pre-organizes those aggregations so analysts can <strong>slice</strong> (fix one dimension), <strong>dice</strong> (take a sub-cube), <strong>roll-up</strong> (aggregate to a coarser level), and <strong>drill-down</strong> (expand to finer detail) without rescanning raw data every time.</p></div>
+                    <div class="note-card"><p>Picture an e-commerce dashboard with <strong style="color:var(--warning-color)">time × product × region × customer segment</strong>. Brute-force querying is flexible but expensive. Pre-aggregation is fast but can explode combinatorially. Data cube design is about finding the right compromise.</p></div>
+                </div>
+                <table class="learn-table" style="margin-top:18px">
+                    <thead>
+                        <tr><th>Approach</th><th>Storage</th><th>Query latency</th><th>When it shines</th><th>Trade-off</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Brute-force scan</td><td>Low</td><td>High</td><td>Flexible ad hoc queries</td><td>Repeatedly touches raw data</td></tr>
+                        <tr><td>Full materialization</td><td class="hi">Very high</td><td class="hi">Very low</td><td>Small cubes, repeated workloads</td><td>All cuboids stored</td></tr>
+                        <tr><td>Partial cubes</td><td>Medium</td><td>Low for hot paths</td><td>Popular dashboards</td><td>Cold paths still recompute</td></tr>
+                        <tr><td>On-demand aggregation</td><td>Low</td><td>Medium</td><td>Exploration + caching</td><td>Latency spikes on misses</td></tr>
+                        <tr><td>Approximate cubes</td><td class="hi">Low</td><td class="hi">Low</td><td>dcount / percentile analytics</td><td>Small, controlled error</td></tr>
+                    </tbody>
+                </table>
+                <div class="callout"><strong>Key mental model:</strong> a cube is not just a 3D box. It is the family of aggregations across every useful dimension combination — often a lattice of cuboids, not a single object.</div>
+                <div class="datacube-grid">
+                    <div class="mini-panel">
+                        <div class="mini-bar">REAL-WORLD EXAMPLE</div>
+                        <h3>E-commerce cube</h3>
+                        <div class="dimension-list">
+                            <div class="dimension-row"><span>Dimensions</span><strong>time × product × region × segment</strong></div>
+                            <div class="dimension-row"><span>Measures</span><strong>orders, revenue, dcount(users), p95 latency</strong></div>
+                            <div class="dimension-row"><span>Common slice</span><strong>region = EU</strong></div>
+                            <div class="dimension-row"><span>Common roll-up</span><strong>day → week → month</strong></div>
+                        </div>
+                        <p class="muted-copy">Every dashboard interaction is some combination of project → aggregate → filter → merge.</p>
+                    </div>
+                    <div class="mini-panel">
+                        <div class="mini-bar">WHY PRE-AGGREGATE?</div>
+                        <h3>Brute force vs cube</h3>
+                        <div class="bar-row"><span>Scan 1B rows</span><div class="bar-track"><div class="bar-fill warn" style="width:96%"></div></div><strong>8.0 s</strong></div>
+                        <div class="bar-row"><span>Cached cuboid</span><div class="bar-track"><div class="bar-fill" style="width:18%"></div></div><strong>120 ms</strong></div>
+                        <div class="bar-row"><span>Approx. cuboid</span><div class="bar-track"><div class="bar-fill" style="width:10%"></div></div><strong>45 ms</strong></div>
+                        <p class="memory-note">The catch: the more faces you materialize, the more storage and maintenance you pay.</p>
+                    </div>
+                </div>
+                <div class="step-nav-cards only-next">
+                    <button class="step-btn next" data-step="1"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">What is a Data Cube?</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <section class="step-panel section" id="step-1">
+                <div class="section-heading"><h2>What is a Data Cube?</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card"><p>Take a fact table of web analytics events. Put <strong style="color:var(--accent-color)">page</strong> on one axis, <strong style="color:var(--accent-color)">browser</strong> on another, and <strong style="color:var(--accent-color)">country</strong> on the third. Each cube cell stores aggregate measures like <strong>page_views</strong> and <strong>avg_latency</strong>.</p></div>
+                    <div class="note-card"><p>Click a cell in the cube below: you are selecting one intersection of dimension values. That single coordinate corresponds to a grouped aggregate over many raw events.</p></div>
+                </div>
+                <div class="demo-shell">
+                    <div class="demo-bar">INTERACTIVE — 3D CUBE MODEL</div>
+                    <div class="demo-toolbar">
+                        <button class="stream-play-btn" id="cube-play-btn">Play</button>
+                        <button class="tool-btn" id="cube-step-btn">Step</button>
+                        <button class="tool-btn" id="cube-reset-btn">Reset</button>
+                        <div class="speed-wrap"><label for="cube-speed">Speed</label><input type="range" id="cube-speed" min="1" max="5" value="3"></div>
+                        <div class="speed-wrap"><label for="cube-growth-d">d</label><input type="range" id="cube-growth-d" min="1" max="8" value="3"></div>
+                        <div class="speed-wrap"><label for="cube-growth-k">k</label><input type="range" id="cube-growth-k" min="2" max="12" value="4"></div>
+                    </div>
+                    <div class="datacube-grid">
+                        <div>
+                            <div class="svg-wrap"><svg id="cube-svg" viewBox="0 0 760 430" aria-label="Data cube visualization"></svg></div>
+                            <div class="growth-bar">Exponential growth: <span class="growth-value" id="cube-growth-value">4^3 = 64</span> cells for <strong>d</strong> dimensions with <strong>k</strong> values each.</div>
+                        </div>
+                        <aside class="cube-detail">
+                            <div class="detail-label">Selected cube cell</div>
+                            <div class="detail-title" id="cube-detail-title">Click a cell</div>
+                            <div class="dimension-list" id="cube-detail-list"></div>
+                            <div class="insight-strip">
+                                <span class="insight-chip"><strong>Axes</strong> page × browser × country</span>
+                                <span class="insight-chip"><strong>Measures</strong> page_views, avg_latency</span>
+                            </div>
+                            <p class="muted-copy" id="cube-detail-copy">Each cell is a grouped aggregate, not a single row.</p>
+                        </aside>
+                    </div>
+                </div>
+                <div class="callout"><strong>Growth problem:</strong> with k values on each dimension, a dense cube with d dimensions has <span class="inline-formula">k<sup>d</sup></span> base cells. Add hierarchies and subtotal cuboids and the total grows even faster.</div>
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="0"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">The Problem</span></div></button>
+                    <button class="step-btn next" data-step="2"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">Operations</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <section class="step-panel section" id="step-2">
+                <div class="section-heading"><h2>Operations — Slice, Dice, Roll-up, Drill-down</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card"><p>OLAP feels interactive because cube operations are predictable transformations: <strong style="color:var(--accent-color)">slice</strong> fixes one dimension, <strong style="color:var(--accent-color)">dice</strong> chooses a smaller sub-cube, <strong style="color:var(--accent-color)">roll-up</strong> aggregates upward, and <strong style="color:var(--accent-color)">drill-down</strong> expands detail.</p></div>
+                </div>
+                <div class="demo-shell">
+                    <div class="demo-bar">INTERACTIVE — OPERATION TRANSFORMS</div>
+                    <div class="demo-toolbar">
+                        <button class="stream-play-btn" id="ops-play-btn">Play</button>
+                        <button class="tool-btn" id="ops-step-btn">Step</button>
+                        <button class="tool-btn" id="ops-reset-btn">Reset</button>
+                        <div class="speed-wrap"><label for="ops-speed">Speed</label><input type="range" id="ops-speed" min="1" max="5" value="3"></div>
+                    </div>
+                    <div class="inline-controls">
+                        <button class="op-btn active" id="ops-btn-slice">Slice</button>
+                        <button class="op-btn" id="ops-btn-dice">Dice</button>
+                        <button class="op-btn" id="ops-btn-rollup">Roll-up</button>
+                        <button class="op-btn" id="ops-btn-drill">Drill-down</button>
+                    </div>
+                    <p class="operation-caption" id="ops-caption">Slice fixes one dimension: here we hold <strong>region = us-east</strong> constant and keep the remaining axes visible.</p>
+                    <div class="op-layout">
+                        <div class="op-board">
+                            <div class="mini-bar">BEFORE</div>
+                            <h3 id="ops-before-title">Month × Product × Region</h3>
+                            <div class="cell-grid" id="ops-before-grid"></div>
+                        </div>
+                        <div class="op-board">
+                            <div class="mini-bar">AFTER</div>
+                            <h3 id="ops-after-title">Sliced face</h3>
+                            <div class="cell-grid" id="ops-after-grid"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="1"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">What is a Cube?</span></div></button>
+                    <button class="step-btn next" data-step="3"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">How HyperLogLog Fits In</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <section class="step-panel section" id="step-3">
+                <div class="section-heading"><h2>How HyperLogLog Fits In</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card"><p>Distinct user counting is a classic cube pain point. Exact <strong>COUNT(DISTINCT user_id)</strong> per cell means carrying sets or repeatedly rescanning detail rows. HyperLogLog stores a tiny sketch instead.</p></div>
+                    <div class="note-card"><p>The reason HLL belongs inside cubes is that sketches are <strong style="color:var(--accent-color)">additive by merge</strong>: to roll up a dimension, keep the register-wise maximum across child cells. That makes parent cuboids cheap to build.</p></div>
+                    <div class="note-card"><p>For the full algorithm, see <a href="../hyperloglog/index.html">our HyperLogLog tutorial</a>.</p></div>
+                </div>
+                <div class="demo-shell">
+                    <div class="demo-bar">INTERACTIVE — DISTINCT USERS BY CUBE CELL</div>
+                    <div class="demo-toolbar">
+                        <button class="stream-play-btn" id="hll-play-btn">Play</button>
+                        <button class="tool-btn" id="hll-step-btn">Step</button>
+                        <button class="tool-btn" id="hll-reset-btn">Reset</button>
+                        <div class="speed-wrap"><label for="hll-speed">Speed</label><input type="range" id="hll-speed" min="1" max="5" value="3"></div>
+                        <div class="select-wrap"><label for="hll-endpoint-select">Endpoint</label><select id="hll-endpoint-select"></select></div>
+                    </div>
+                    <p class="caption-copy" id="hll-caption">Click region cells to merge them into a rolled-up parent. Exact distinct count uses sets; HLL uses only a small fixed register array.</p>
+                    <div class="region-chip-grid" id="hll-region-grid"></div>
+                    <div class="stat-grid">
+                        <div class="stat-card"><div class="stat-label">Exact distinct</div><div class="stat-value" id="hll-exact">0</div></div>
+                        <div class="stat-card"><div class="stat-label">HLL estimate</div><div class="stat-value" id="hll-estimate">0</div></div>
+                        <div class="stat-card"><div class="stat-label">Exact memory</div><div class="stat-value" id="hll-exact-memory">0 B</div></div>
+                        <div class="stat-card"><div class="stat-label">HLL memory</div><div class="stat-value" id="hll-sketch-memory">0 B</div></div>
+                    </div>
+                    <canvas class="register-canvas" id="hll-canvas" width="900" height="170"></canvas>
+                    <div class="insight-strip">
+                        <span class="merge-math-chip"><strong>Roll-up</strong> register[i] = max(child register[i])</span>
+                        <span class="merge-math-chip"><strong>Error</strong> tiny sketch, small bias, fixed memory</span>
+                    </div>
+                </div>
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="2"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">Operations</span></div></button>
+                    <button class="step-btn next" data-step="4"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">How T-Digest Fits In</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <section class="step-panel section" id="step-4">
+                <div class="section-heading"><h2>How T-Digest Fits In</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card"><p>Percentiles such as <strong>p95 latency</strong> are another non-additive measure. Averages compose, but percentiles do not. To roll up cube cells, you need a sketch that preserves distribution shape.</p></div>
+                    <div class="note-card"><p><strong style="color:var(--accent-color)">T-Digest</strong> compresses samples into centroids. Parent cells merge child centroids and recompress, giving high percentile estimates with far less memory than storing every raw value.</p></div>
+                    <div class="note-card"><p>For the full algorithm, see <a href="../tdigest/index.html">our T-Digest tutorial</a>.</p></div>
+                </div>
+                <div class="demo-shell">
+                    <div class="demo-bar">INTERACTIVE — p95 LATENCY BY CUBE CELL</div>
+                    <div class="demo-toolbar">
+                        <button class="stream-play-btn" id="td-play-btn">Play</button>
+                        <button class="tool-btn" id="td-step-btn">Step</button>
+                        <button class="tool-btn" id="td-reset-btn">Reset</button>
+                        <div class="speed-wrap"><label for="td-speed">Speed</label><input type="range" id="td-speed" min="1" max="5" value="3"></div>
+                        <div class="select-wrap"><label for="td-endpoint-select">Endpoint</label><select id="td-endpoint-select"></select></div>
+                    </div>
+                    <p class="caption-copy" id="td-caption">Merge region-level digests to estimate the endpoint-level p95. Exact percentile stores raw samples; the digest stores centroids.</p>
+                    <div class="region-chip-grid" id="td-region-grid"></div>
+                    <div class="stat-grid">
+                        <div class="stat-card"><div class="stat-label">Exact p95</div><div class="stat-value" id="td-exact">0 ms</div></div>
+                        <div class="stat-card"><div class="stat-label">T-Digest p95</div><div class="stat-value" id="td-estimate">0 ms</div></div>
+                        <div class="stat-card"><div class="stat-label">Raw memory</div><div class="stat-value" id="td-exact-memory">0 B</div></div>
+                        <div class="stat-card"><div class="stat-label">Digest memory</div><div class="stat-value" id="td-sketch-memory">0 B</div></div>
+                    </div>
+                    <canvas class="metric-canvas" id="td-canvas" width="900" height="170"></canvas>
+                    <div class="insight-strip">
+                        <span class="merge-math-chip"><strong>Roll-up</strong> parentDigest = merge(childDigests)</span>
+                        <span class="merge-math-chip"><strong>Use case</strong> p95 / p99 latency on large cubes</span>
+                    </div>
+                </div>
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="3"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">How HyperLogLog Fits In</span></div></button>
+                    <button class="step-btn next" data-step="5"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">Building a Data Cube</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <section class="step-panel section" id="step-5">
+                <div class="section-heading"><h2>Building a Data Cube — Algorithm Walkthrough</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card"><p>Building a cube is a routing problem: enumerate the cuboids you care about, project each row onto those dimension combinations, update measure state, then derive parent cuboids by merging children.</p></div>
+                    <div class="note-card"><p>In practice you rarely materialize every cuboid. Partial materialization keeps the hot faces and computes the rest on demand.</p></div>
+                </div>
+                <div class="demo-shell">
+                    <div class="demo-bar">PSEUDOCODE STEPPER — CUBE BUILD</div>
+                    <div class="demo-toolbar">
+                        <button class="stream-play-btn" id="build-play-btn">Play</button>
+                        <button class="tool-btn" id="build-step-btn">Step</button>
+                        <button class="tool-btn" id="build-reset-btn">Reset</button>
+                        <div class="speed-wrap"><label for="build-speed">Speed</label><input type="range" id="build-speed" min="1" max="5" value="3"></div>
+                    </div>
+                    <div class="code-stepper">
+                        <div class="code-stepper-pseudo" id="build-pseudo">
+                            <div class="pseudo-line"><span class="line-num">1</span>cuboids = enumerateSubsets(dimensions)</div>
+                            <div class="pseudo-line"><span class="line-num">2</span>for row in factTable:</div>
+                            <div class="pseudo-line"><span class="line-num">3</span>    for cuboid in chosenCuboids:</div>
+                            <div class="pseudo-line"><span class="line-num">4</span>        key = project(row, cuboid)</div>
+                            <div class="pseudo-line"><span class="line-num">5</span>        aggregates[key].add(row)</div>
+                            <div class="pseudo-line"><span class="line-num">6</span>parentCells = mergeChildren(aggregates)</div>
+                        </div>
+                        <div>
+                            <div class="stepper-side-grid">
+                                <div class="stepper-mini-card"><div class="stepper-mini-label">Phase</div><div class="stepper-mini-value" id="build-phase">Enumerating cuboids</div></div>
+                                <div class="stepper-mini-card"><div class="stepper-mini-label">Rows scanned</div><div class="stepper-mini-value" id="build-rows">0</div></div>
+                                <div class="stepper-mini-card"><div class="stepper-mini-label">Cells built</div><div class="stepper-mini-value" id="build-cells">0</div></div>
+                                <div class="stepper-mini-card"><div class="stepper-mini-label">Parent merges</div><div class="stepper-mini-value" id="build-merges">0</div></div>
+                            </div>
+                            <div class="mini-panel">
+                                <div class="mini-bar">LATEST ROUTES</div>
+                                <table class="route-log">
+                                    <thead><tr><th>Row</th><th>Cuboid</th><th>Projected key</th><th>Measure state</th></tr></thead>
+                                    <tbody id="build-route-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mini-panel" style="margin-top:18px">
+                    <div class="mini-bar">PARTIAL MATERIALIZATION</div>
+                    <h3>Select which cuboids to store</h3>
+                    <p class="caption-copy">Popular dashboards usually hit a subset of cuboids repeatedly. Keep those precomputed; compute the rest lazily.</p>
+                    <div class="materialize-grid" id="cuboid-grid"></div>
+                    <div class="stat-grid">
+                        <div class="stat-card"><div class="stat-label">Stored cuboids</div><div class="stat-value" id="cuboid-count">0</div></div>
+                        <div class="stat-card"><div class="stat-label">Estimated cells</div><div class="stat-value" id="cuboid-cells">0</div></div>
+                        <div class="stat-card"><div class="stat-label">Storage</div><div class="stat-value" id="cuboid-storage">0 B</div></div>
+                        <div class="stat-card"><div class="stat-label">Query hit rate</div><div class="stat-value" id="cuboid-hit-rate">0%</div></div>
+                    </div>
+                </div>
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="4"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">How T-Digest Fits In</span></div></button>
+                    <button class="step-btn next" data-step="6"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">Kusto Application</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <section class="step-panel section" id="step-6">
+                <div class="section-heading"><h2>Kusto (Azure Data Explorer) Application</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card"><p>Kusto exposes cube-like behavior through <strong style="color:var(--accent-color)">summarize</strong>, <strong>bin()</strong>, materialized views, and sketch types like <strong>hll()</strong> and <strong>tdigest()</strong>. You may not manage an explicit OLAP cube object, but the query patterns are the same.</p></div>
+                </div>
+                <div class="callout"><strong>Think in cuboids:</strong> every <code>summarize ... by dim1, dim2, dim3</code> query asks for one cube face. Materialized views are precomputed faces. HLL and T-Digest let those faces stay compact.</div>
+                <div class="insight-strip">
+                    <button class="chip-btn active" data-kql-example="summary">Hourly summary</button>
+                    <button class="chip-btn" data-kql-example="hll">HLL merge</button>
+                    <button class="chip-btn" data-kql-example="tdigest">T-Digest merge</button>
+                    <button class="chip-btn" data-kql-example="mv">Materialized view</button>
+                </div>
+                <div class="kql-layout">
+                    <div class="editor-shell">
+                        <div class="mini-bar">EDITABLE KQL</div>
+                        <textarea id="kql-editor"></textarea>
+                        <div class="demo-toolbar">
+                            <button class="stream-play-btn" id="kql-run-btn">Run simulated query</button>
+                            <button class="tool-btn" id="kql-reset-btn">Reset example</button>
+                        </div>
+                        <div class="mini-bar">SYNTAX HIGHLIGHT</div>
+                        <div class="code-preview" id="kql-preview"></div>
+                    </div>
+                    <div class="result-shell">
+                        <div class="mini-bar">SIMULATED OUTPUT</div>
+                        <div class="console-shell" id="kql-output"></div>
+                    </div>
+                </div>
+                <div class="mini-panel" style="margin-top:18px">
+                    <div class="mini-bar">GETTING STARTED</div>
+                    <div class="setup-list">
+                        <div class="setup-step"><strong>1. Create a free cluster.</strong> In the Azure portal, create an Azure Data Explorer cluster or use the community / free offering if available in your region.</div>
+                        <div class="setup-step"><strong>2. Create a database and table.</strong> Define columns like <code>timestamp:datetime</code>, <code>region:string</code>, <code>endpoint:string</code>, <code>latency:real</code>, <code>user_id:string</code>.</div>
+                        <div class="setup-step"><strong>3. Ingest sample data.</strong> Use the web UI, Kusto Explorer, or an ingestion command to load request logs.</div>
+                        <div class="setup-step"><strong>4. Start with summarize.</strong> Run grouped queries, then add <code>dcount()</code>, <code>percentile()</code>, <code>hll()</code>, and <code>tdigest()</code> when exactness is too expensive.</div>
+                        <div class="setup-step"><strong>5. Add materialized views.</strong> Promote the dashboard faces you query constantly into precomputed views.</div>
+                    </div>
+                </div>
+                <div class="step-nav-cards">
+                    <button class="step-btn prev" data-step="5"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">Building a Data Cube</span></div></button>
+                    <button class="step-btn next" data-step="7"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">Live Playground</span></div><span class="step-btn-arrow">→</span></button>
+                </div>
+            </section>
+
+            <section class="step-panel section" id="step-7">
+                <div class="section-heading"><h2>Live Playground</h2></div>
+                <div class="blog-prose">
+                    <div class="note-card"><p>Now build your own mini cube. Pick a dataset, choose dimensions and measures, apply slice / dice filters, and change time granularity to roll up or drill down.</p></div>
+                </div>
+                <div class="playground-grid">
+                    <div class="playground-card">
+                        <div class="mini-bar">CONFIGURATION</div>
+                        <div class="inline-controls">
+                            <div class="select-wrap"><label for="pg-dataset">Dataset</label><select id="pg-dataset"></select></div>
+                            <div class="select-wrap"><label for="pg-time-grain">Time grain</label><select id="pg-time-grain"></select></div>
+                        </div>
+                        <h3>Dimensions</h3>
+                        <div class="checkbox-grid" id="pg-dimensions"></div>
+                        <h3 style="margin-top:14px">Measures</h3>
+                        <div class="checkbox-grid" id="pg-measures"></div>
+                        <h3 style="margin-top:14px">Filters (slice / dice)</h3>
+                        <div class="inline-controls">
+                            <div class="select-wrap"><label for="pg-filter1-dim">Filter A</label><select id="pg-filter1-dim"></select></div>
+                            <div class="select-wrap"><label for="pg-filter1-val">Value</label><select id="pg-filter1-val"></select></div>
+                        </div>
+                        <div class="inline-controls">
+                            <div class="select-wrap"><label for="pg-filter2-dim">Filter B</label><select id="pg-filter2-dim"></select></div>
+                            <div class="select-wrap"><label for="pg-filter2-val">Value</label><select id="pg-filter2-val"></select></div>
+                        </div>
+                        <div class="demo-toolbar">
+                            <button class="stream-play-btn" id="pg-run-btn">Build cube</button>
+                            <button class="tool-btn" id="pg-reset-btn">Reset</button>
+                        </div>
+                        <p class="caption-copy">One filter behaves like a slice. Two filters form a dice. Changing the time grain from hour → day → week is a roll-up; going back down is a drill-down.</p>
+                    </div>
+                    <div class="playground-card">
+                        <div class="mini-bar">SUMMARY</div>
+                        <div class="stat-grid" style="margin-top:0">
+                            <div class="stat-card"><div class="stat-label">Cells returned</div><div class="stat-value" id="pg-cell-count">0</div></div>
+                            <div class="stat-card"><div class="stat-label">Records scanned</div><div class="stat-value" id="pg-record-count">0</div></div>
+                            <div class="stat-card"><div class="stat-label">Exact memory</div><div class="stat-value" id="pg-exact-memory">0 B</div></div>
+                            <div class="stat-card"><div class="stat-label">Approx memory</div><div class="stat-value" id="pg-approx-memory">0 B</div></div>
+                        </div>
+                        <canvas class="metric-canvas" id="pg-memory-canvas" width="900" height="170"></canvas>
+                        <div class="memory-note" id="pg-summary-note">Build a cube to compare exact vs approximate memory footprints.</div>
+                    </div>
+                </div>
+                <div class="playground-card" style="margin-top:18px">
+                    <div class="mini-bar">RESULTING CUBE CELLS</div>
+                    <div class="result-table-wrap">
+                        <table class="result-table">
+                            <thead><tr id="pg-head-row"></tr></thead>
+                            <tbody id="pg-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="step-nav-cards only-prev">
+                    <button class="step-btn prev" data-step="6"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">Kusto Application</span></div></button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+    (function () {
+        'use strict';
+
+        var STEPS = ['The Problem', 'What is a Cube?', 'Operations', 'HLL in Cubes', 'T-Digest in Cubes', 'Building the Cube', 'Kusto Application', 'Live Playground'];
+        var currentStep = 0;
+        var indicatorEl = document.getElementById('step-indicator');
+        var stepCurEl = document.getElementById('step-cur');
+        var stepNameEl = document.getElementById('step-name-label');
+        var stepTotalEl = document.getElementById('step-total');
+        if (stepTotalEl) stepTotalEl.textContent = STEPS.length;
+
+        function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+        function fmtNum(v) {
+            if (v == null || !isFinite(v)) return '—';
+            if (Math.abs(v) >= 1000) return Math.round(v).toLocaleString();
+            return (Math.round(v * 10) / 10).toString();
+        }
+        function fmtBytes(n) {
+            if (n < 1024) return n + ' B';
+            if (n < 1024 * 1024) return (n / 1024).toFixed(1) + ' KB';
+            return (n / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+        function pct(n) { return (n * 100).toFixed(1) + '%'; }
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+        function makeRng(seed) {
+            var h = 2166136261 >>> 0;
+            for (var i = 0; i < seed.length; i++) {
+                h ^= seed.charCodeAt(i);
+                h = Math.imul(h, 16777619);
+            }
+            return function () {
+                h += 0x6D2B79F5;
+                var t = Math.imul(h ^ (h >>> 15), 1 | h);
+                t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
+                return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+            };
+        }
+        function pickWeighted(rng, arr) {
+            var total = 0, i;
+            for (i = 0; i < arr.length; i++) total += arr[i].weight;
+            var target = rng() * total;
+            var sum = 0;
+            for (i = 0; i < arr.length; i++) {
+                sum += arr[i].weight;
+                if (target <= sum) return arr[i].value;
+            }
+            return arr[arr.length - 1].value;
+        }
+        function hashString(str) {
+            var h = 2166136261 >>> 0;
+            for (var i = 0; i < str.length; i++) {
+                h ^= str.charCodeAt(i);
+                h = Math.imul(h, 16777619);
+            }
+            h += h << 13; h ^= h >>> 7;
+            h += h << 3; h ^= h >>> 17;
+            h += h << 5;
+            return h >>> 0;
+        }
+        function quantile(sorted, p) {
+            if (!sorted.length) return 0;
+            var idx = clamp(Math.round((sorted.length - 1) * p), 0, sorted.length - 1);
+            return sorted[idx];
+        }
+        function sortNumeric(a, b) { return a - b; }
+        function uniqueValues(records, accessor) {
+            var out = [];
+            var seen = {};
+            for (var i = 0; i < records.length; i++) {
+                var v = accessor(records[i]);
+                if (!seen[v]) { seen[v] = true; out.push(v); }
+            }
+            return out;
+        }
+        function canvasClear(ctx, width, height) {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = '#02060d';
+            ctx.fillRect(0, 0, width, height);
+        }
+
+        function HyperLogLog(bits) {
+            this.bits = bits || 5;
+            this.m = 1 << this.bits;
+            this.registers = [];
+            for (var i = 0; i < this.m; i++) this.registers.push(0);
+        }
+        HyperLogLog.prototype.add = function (value) {
+            var h = hashString(String(value));
+            var idx = h >>> (32 - this.bits);
+            var w = (h << this.bits) >>> 0;
+            var rho = Math.clz32(w) + 1;
+            var maxRho = 32 - this.bits + 1;
+            if (rho > maxRho) rho = maxRho;
+            if (rho > this.registers[idx]) this.registers[idx] = rho;
+        };
+        HyperLogLog.prototype.merge = function (other) {
+            var merged = new HyperLogLog(this.bits);
+            for (var i = 0; i < this.m; i++) merged.registers[i] = Math.max(this.registers[i], other.registers[i]);
+            return merged;
+        };
+        HyperLogLog.prototype.clone = function () {
+            var out = new HyperLogLog(this.bits);
+            for (var i = 0; i < this.m; i++) out.registers[i] = this.registers[i];
+            return out;
+        };
+        HyperLogLog.prototype.estimate = function () {
+            var m = this.m;
+            var alpha = 0.7213 / (1 + 1.079 / m);
+            var sum = 0;
+            var zeros = 0;
+            for (var i = 0; i < m; i++) {
+                sum += Math.pow(2, -this.registers[i]);
+                if (this.registers[i] === 0) zeros++;
+            }
+            var raw = alpha * m * m / sum;
+            if (raw <= 2.5 * m && zeros) return m * Math.log(m / zeros);
+            return raw;
+        };
+        HyperLogLog.prototype.memoryBytes = function () { return this.m; };
+
+        function SimpleDigest(limit) {
+            this.limit = limit || 18;
+            this.centroids = [];
+            this.totalCount = 0;
+        }
+        SimpleDigest.prototype.addCentroid = function (mean, count) {
+            this.centroids.push({ mean: mean, count: count || 1 });
+            this.totalCount += count || 1;
+            this.centroids.sort(function (a, b) { return a.mean - b.mean; });
+            this.compress();
+        };
+        SimpleDigest.prototype.add = function (value) {
+            this.addCentroid(value, 1);
+        };
+        SimpleDigest.prototype.compress = function () {
+            while (this.centroids.length > this.limit) {
+                var best = 0;
+                var bestGap = Infinity;
+                for (var i = 0; i < this.centroids.length - 1; i++) {
+                    var gap = Math.abs(this.centroids[i + 1].mean - this.centroids[i].mean);
+                    if (gap < bestGap) { bestGap = gap; best = i; }
+                }
+                var a = this.centroids[best];
+                var b = this.centroids[best + 1];
+                var count = a.count + b.count;
+                var mean = (a.mean * a.count + b.mean * b.count) / count;
+                this.centroids.splice(best, 2, { mean: mean, count: count });
+            }
+        };
+        SimpleDigest.prototype.merge = function (other) {
+            var merged = new SimpleDigest(Math.max(this.limit, other.limit));
+            var i;
+            for (i = 0; i < this.centroids.length; i++) merged.addCentroid(this.centroids[i].mean, this.centroids[i].count);
+            for (i = 0; i < other.centroids.length; i++) merged.addCentroid(other.centroids[i].mean, other.centroids[i].count);
+            return merged;
+        };
+        SimpleDigest.prototype.quantile = function (p) {
+            if (!this.centroids.length || !this.totalCount) return 0;
+            var target = this.totalCount * p;
+            var running = 0;
+            for (var i = 0; i < this.centroids.length; i++) {
+                running += this.centroids[i].count;
+                if (running >= target) return this.centroids[i].mean;
+            }
+            return this.centroids[this.centroids.length - 1].mean;
+        };
+        SimpleDigest.prototype.memoryBytes = function () { return this.centroids.length * 16; };
+        SimpleDigest.prototype.clone = function () {
+            var d = new SimpleDigest(this.limit);
+            for (var i = 0; i < this.centroids.length; i++) d.addCentroid(this.centroids[i].mean, this.centroids[i].count);
+            return d;
+        };
+
+        function generateApiLogs() {
+            var rng = makeRng('datacubes-api');
+            var endpoints = ['/api/users', '/api/orders', '/api/search', '/api/auth', '/api/products'];
+            var regions = ['us-east', 'us-west', 'eu-west', 'ap-south'];
+            var statusPool = [
+                { value: 200, weight: 58 }, { value: 201, weight: 8 }, { value: 400, weight: 6 }, { value: 404, weight: 4 }, { value: 500, weight: 3 }
+            ];
+            var base = Date.UTC(2024, 0, 1, 0, 0, 0);
+            var rows = [];
+            for (var i = 0; i < 224; i++) {
+                var endpoint = endpoints[Math.floor(rng() * endpoints.length)];
+                var region = regions[Math.floor(rng() * regions.length)];
+                var userId = 'user_' + (1 + Math.floor(rng() * 80));
+                var hourOffset = Math.floor(rng() * (7 * 24));
+                var statusCode = pickWeighted(rng, statusPool);
+                var latency = Math.max(5, Math.round(-Math.log(1 - rng()) * 110 + rng() * 60));
+                if (rng() < 0.08) latency += Math.round(600 + rng() * 2200);
+                rows.push({
+                    timestamp: new Date(base + hourOffset * 3600000),
+                    endpoint: endpoint,
+                    region: region,
+                    status_code: statusCode,
+                    latency_ms: Math.min(latency, 3000),
+                    user_id: userId
+                });
+            }
+            return rows;
+        }
+        function generateEcommerceEvents() {
+            var rng = makeRng('datacubes-ecom');
+            var categories = ['Books', 'Electronics', 'Home', 'Beauty', 'Toys'];
+            var countries = ['US', 'CA', 'DE', 'IN'];
+            var devices = ['mobile', 'desktop', 'tablet'];
+            var rows = [];
+            var base = Date.UTC(2024, 0, 1, 0, 0, 0);
+            for (var i = 0; i < 208; i++) {
+                var revenue = Math.round((10 + Math.pow(rng(), 0.35) * 240) * 100) / 100;
+                rows.push({
+                    timestamp: new Date(base + Math.floor(rng() * (7 * 24)) * 3600000),
+                    product_category: categories[Math.floor(rng() * categories.length)],
+                    country: countries[Math.floor(rng() * countries.length)],
+                    device: devices[Math.floor(rng() * devices.length)],
+                    revenue: revenue,
+                    user_id: 'shopper_' + (1 + Math.floor(rng() * 70))
+                });
+            }
+            return rows;
+        }
+        function generateWebCube() {
+            var pages = ['Home', 'Search', 'Product'];
+            var browsers = ['Chrome', 'Safari', 'Firefox'];
+            var countries = ['US', 'DE', 'IN'];
+            var out = [];
+            for (var z = 0; z < countries.length; z++) {
+                for (var y = 0; y < browsers.length; y++) {
+                    for (var x = 0; x < pages.length; x++) {
+                        out.push({
+                            page: pages[x],
+                            browser: browsers[y],
+                            country: countries[z],
+                            page_views: 130 + x * 40 + y * 25 + z * 35,
+                            avg_latency: 55 + x * 18 + y * 12 + z * 20
+                        });
+                    }
+                }
+            }
+            return out;
+        }
+
+        var DATA = {
+            api: generateApiLogs(),
+            ecommerce: generateEcommerceEvents(),
+            web: generateWebCube()
+        };
+
+        function getApiField(row, dim, grain) {
+            if (dim === 'time') {
+                var d = row.timestamp;
+                var day = d.toISOString().slice(0, 10);
+                if (grain === 'hour') return day + ' ' + String(d.getUTCHours()).padStart(2, '0') + ':00';
+                if (grain === 'week') return 'Week 1';
+                return day;
+            }
+            if (dim === 'status_code') return String(row.status_code);
+            return row[dim];
+        }
+        function getEcomField(row, dim, grain) {
+            if (dim === 'time') {
+                var d = row.timestamp;
+                var day = d.toISOString().slice(0, 10);
+                if (grain === 'hour') return day + ' ' + String(d.getUTCHours()).padStart(2, '0') + ':00';
+                if (grain === 'week') return 'Week 1';
+                return day;
+            }
+            return row[dim];
+        }
+        function aggregateRecords(records, dims, options) {
+            options = options || {};
+            var map = {};
+            for (var i = 0; i < records.length; i++) {
+                var row = records[i];
+                var parts = [];
+                for (var j = 0; j < dims.length; j++) {
+                    var dim = dims[j];
+                    var val = options.fieldGetter(row, dim, options.timeGrain);
+                    parts.push(val);
+                }
+                var key = parts.join('¦') || 'ALL';
+                if (!map[key]) {
+                    map[key] = {
+                        key: key,
+                        dims: parts.slice(),
+                        count: 0,
+                        distinct: {},
+                        latencies: [],
+                        revenue: [],
+                        hll: new HyperLogLog(5),
+                        digest: new SimpleDigest(18)
+                    };
+                }
+                var cell = map[key];
+                cell.count++;
+                if (row.user_id != null) {
+                    cell.distinct[row.user_id] = true;
+                    cell.hll.add(row.user_id);
+                }
+                if (row.latency_ms != null) {
+                    cell.latencies.push(row.latency_ms);
+                    cell.digest.add(row.latency_ms);
+                }
+                if (row.revenue != null) {
+                    cell.revenue.push(row.revenue);
+                    cell.digest.add(row.revenue);
+                }
+            }
+            var cells = Object.keys(map).map(function (k) { return map[k]; });
+            cells.sort(function (a, b) { return a.key.localeCompare(b.key); });
+            return cells;
+        }
+        function exactDistinctFromMap(obj) {
+            return Object.keys(obj).length;
+        }
+
+        var cubePopup = {
+            el: null,
+            titleEl: null,
+            bodyEl: null,
+            closeEl: null,
+            init: function () {
+                this.el = document.getElementById('centroid-popup');
+                this.titleEl = document.getElementById('centroid-popup-title');
+                this.bodyEl = document.getElementById('centroid-popup-body');
+                this.closeEl = document.getElementById('centroid-popup-close');
+                var self = this;
+                if (this.closeEl) this.closeEl.addEventListener('click', function () { self.hide(); });
+                document.addEventListener('click', function () { self.hide(); });
+            },
+            show: function (title, rows, anchor) {
+                if (!this.el) return;
+                this.titleEl.textContent = title;
+                var html = '';
+                for (var i = 0; i < rows.length; i++) {
+                    html += '<div class="centroid-popup-row"><span>' + escapeHtml(rows[i].label) + '</span><span class="centroid-popup-value">' + escapeHtml(rows[i].value) + '</span></div>';
+                }
+                this.bodyEl.innerHTML = html;
+                var rect = anchor.getBoundingClientRect();
+                var top = Math.min(window.innerHeight - 40, rect.bottom + 10);
+                var left = Math.min(window.innerWidth - 420, rect.left + 10);
+                this.el.style.top = top + 'px';
+                this.el.style.left = left + 'px';
+                this.el.classList.add('visible');
+            },
+            hide: function () { if (this.el) this.el.classList.remove('visible'); }
+        };
+
+        function drawBars(canvas, values, accentLabel) {
+            if (!canvas) return;
+            var ctx = canvas.getContext('2d');
+            var width = canvas.width;
+            var height = canvas.height;
+            canvasClear(ctx, width, height);
+            if (!values.length) return;
+            var max = 0, i;
+            for (i = 0; i < values.length; i++) max = Math.max(max, values[i]);
+            var padding = 28;
+            var barW = (width - padding * 2) / values.length;
+            ctx.strokeStyle = 'rgba(53,255,107,0.25)';
+            ctx.beginPath();
+            ctx.moveTo(padding, height - 24);
+            ctx.lineTo(width - padding, height - 24);
+            ctx.stroke();
+            for (i = 0; i < values.length; i++) {
+                var h = max ? (values[i] / max) * (height - 60) : 0;
+                ctx.fillStyle = 'rgba(53,255,107,' + (0.25 + i / values.length * 0.55) + ')';
+                ctx.fillRect(padding + i * barW + 3, height - 24 - h, Math.max(6, barW - 6), h);
+            }
+            ctx.fillStyle = '#35ff6b';
+            ctx.font = '12px JetBrains Mono';
+            ctx.fillText(accentLabel, padding, 18);
+        }
+        function drawPercentileChart(canvas, exact, estimate, centroids) {
+            if (!canvas) return;
+            var ctx = canvas.getContext('2d');
+            var width = canvas.width;
+            var height = canvas.height;
+            canvasClear(ctx, width, height);
+            ctx.strokeStyle = 'rgba(53,255,107,0.18)';
+            ctx.beginPath();
+            ctx.moveTo(34, height - 24);
+            ctx.lineTo(width - 24, height - 24);
+            ctx.stroke();
+            var maxValue = Math.max(exact || 0, estimate || 0, 100);
+            var x = function (value) { return 34 + (value / (maxValue * 1.1)) * (width - 70); };
+            ctx.fillStyle = '#9aff57';
+            ctx.fillRect(x(exact) - 4, 36, 8, height - 72);
+            ctx.fillStyle = '#35ff6b';
+            ctx.fillRect(x(estimate) - 4, 54, 8, height - 90);
+            ctx.fillStyle = '#9aff57';
+            ctx.font = '12px JetBrains Mono';
+            ctx.fillText('exact p95', Math.min(width - 120, x(exact) + 10), 30);
+            ctx.fillStyle = '#35ff6b';
+            ctx.fillText('digest p95', Math.min(width - 120, x(estimate) + 10), 48);
+            if (centroids && centroids.length) {
+                for (var i = 0; i < centroids.length; i++) {
+                    var cx = x(centroids[i].mean);
+                    var radius = clamp(centroids[i].count * 0.8, 4, 16);
+                    ctx.fillStyle = 'rgba(127, 217, 255, 0.28)';
+                    ctx.beginPath();
+                    ctx.arc(cx, height - 38 - (i % 3) * 18, radius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+        function drawMemoryComparison(canvas, exactBytes, approxBytes) {
+            if (!canvas) return;
+            var ctx = canvas.getContext('2d');
+            var width = canvas.width;
+            var height = canvas.height;
+            canvasClear(ctx, width, height);
+            var maxValue = Math.max(exactBytes, approxBytes, 1);
+            var left = 120;
+            var barW = width - 200;
+            var rows = [
+                { label: 'exact state', value: exactBytes, color: 'rgba(255,186,84,0.9)' },
+                { label: 'approx state', value: approxBytes, color: 'rgba(53,255,107,0.9)' }
+            ];
+            for (var i = 0; i < rows.length; i++) {
+                var y = 45 + i * 56;
+                var w = (rows[i].value / maxValue) * barW;
+                ctx.fillStyle = 'rgba(255,255,255,0.06)';
+                ctx.fillRect(left, y, barW, 14);
+                ctx.fillStyle = rows[i].color;
+                ctx.fillRect(left, y, w, 14);
+                ctx.fillStyle = '#9db0bf';
+                ctx.font = '12px JetBrains Mono';
+                ctx.fillText(rows[i].label, 20, y + 11);
+                ctx.fillStyle = '#35ff6b';
+                ctx.fillText(fmtBytes(rows[i].value), left + Math.min(barW - 60, w + 10), y + 11);
+            }
+        }
+
+        if (indicatorEl) {
+            STEPS.forEach(function (name, i) {
+                if (i > 0) {
+                    var conn = document.createElement('span');
+                    conn.className = 'step-conn';
+                    conn.id = 'conn-' + (i - 1);
+                    indicatorEl.appendChild(conn);
+                }
+                var dot = document.createElement('span');
+                dot.className = 'step-dot' + (i === 0 ? ' active' : '');
+                dot.id = 'dot-' + i;
+                dot.title = 'Step ' + (i + 1) + ': ' + name;
+                dot.textContent = i + 1;
+                dot.setAttribute('data-step', i);
+                dot.addEventListener('click', function () { goToStep(parseInt(this.getAttribute('data-step'), 10), null); });
+                indicatorEl.appendChild(dot);
+            });
+        }
+        function updateIndicator() {
+            for (var i = 0; i < STEPS.length; i++) {
+                var dot = document.getElementById('dot-' + i);
+                var conn = document.getElementById('conn-' + (i - 1));
+                if (dot) {
+                    dot.classList.toggle('active', i === currentStep);
+                    dot.classList.toggle('done', i < currentStep);
+                }
+                if (conn) conn.classList.toggle('done', i <= currentStep);
+            }
+            if (stepCurEl) stepCurEl.textContent = currentStep + 1;
+            if (stepNameEl) stepNameEl.textContent = STEPS[currentStep];
+            var tocItems = document.querySelectorAll('.step-toc-item');
+            for (var j = 0; j < tocItems.length; j++) {
+                tocItems[j].classList.toggle('active', j === currentStep);
+                tocItems[j].classList.toggle('done', j < currentStep);
+            }
+        }
+        function goToStep(n, fromDir) {
+            if (n < 0 || n >= STEPS.length || n === currentStep) return;
+            var direction = fromDir !== null ? fromDir : (n > currentStep ? 1 : -1);
+            var oldPanel = document.getElementById('step-' + currentStep);
+            var newPanel = document.getElementById('step-' + n);
+            if (!oldPanel || !newPanel) return;
+            oldPanel.classList.remove('active', 'from-prev');
+            newPanel.classList.add('active');
+            if (direction < 0) newPanel.classList.add('from-prev');
+            setTimeout(function () { newPanel.classList.remove('from-prev'); }, 350);
+            onStepDeactivate(currentStep);
+            currentStep = n;
+            onStepActivate(n);
+            updateIndicator();
+            var wrap = document.querySelector('.step-wrap');
+            if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        document.querySelectorAll('.step-btn[data-step]').forEach(function (btn) {
+            btn.addEventListener('click', function () { goToStep(parseInt(btn.getAttribute('data-step'), 10), null); });
+        });
+        document.querySelectorAll('.step-toc-item[data-step]').forEach(function (btn) {
+            btn.addEventListener('click', function () { goToStep(parseInt(btn.getAttribute('data-step'), 10), null); });
+        });
+
+        var CubeIntro = (function () {
+            var state = { index: 0, running: false, timer: null };
+            var dom = {};
+            var pages = ['Home', 'Search', 'Product'];
+            var browsers = ['Chrome', 'Safari', 'Firefox'];
+            var countries = ['US', 'DE', 'IN'];
+            function resolveDOM() {
+                dom.svg = document.getElementById('cube-svg');
+                dom.play = document.getElementById('cube-play-btn');
+                dom.step = document.getElementById('cube-step-btn');
+                dom.reset = document.getElementById('cube-reset-btn');
+                dom.speed = document.getElementById('cube-speed');
+                dom.detailTitle = document.getElementById('cube-detail-title');
+                dom.detailList = document.getElementById('cube-detail-list');
+                dom.detailCopy = document.getElementById('cube-detail-copy');
+                dom.growthD = document.getElementById('cube-growth-d');
+                dom.growthK = document.getElementById('cube-growth-k');
+                dom.growthValue = document.getElementById('cube-growth-value');
+            }
+            function getDelay() { return [1800, 1300, 900, 650, 420][parseInt(dom.speed.value, 10) - 1]; }
+            function selectIndex(index, fromClick) {
+                state.index = (index + DATA.web.length) % DATA.web.length;
+                render();
+                if (!fromClick && state.running) schedule();
+            }
+            function schedule() {
+                if (state.timer) clearTimeout(state.timer);
+                state.timer = setTimeout(function () { selectIndex(state.index + 1, false); }, getDelay());
+            }
+            function render() {
+                if (!dom.svg) return;
+                var cellW = 86, cellH = 54, offsetX = 34, offsetY = 22;
+                var startX = 120, startY = 250;
+                var html = '';
+                html += '<text x="120" y="52" class="axis-label">X axis → page</text>';
+                html += '<text x="20" y="104" class="axis-label">Y axis ↓ browser</text>';
+                html += '<text x="560" y="88" class="axis-label">Z axis ↗ country layer</text>';
+                for (var z = 0; z < countries.length; z++) {
+                    html += '<text x="' + (540 + z * 22) + '" y="' + (118 - z * 18) + '" class="layer-label">' + countries[z] + '</text>';
+                    for (var y = 0; y < browsers.length; y++) {
+                        for (var x = 0; x < pages.length; x++) {
+                            var idx = z * 9 + y * 3 + x;
+                            var cell = DATA.web[idx];
+                            var isActive = idx === state.index;
+                            var px = startX + x * cellW + z * offsetX;
+                            var py = startY - y * cellH - z * offsetY;
+                            var intensity = clamp((cell.page_views - 120) / 180, 0.18, 0.95);
+                            var fill = 'rgba(53,255,107,' + intensity + ')';
+                            html += '<g class="cube-cell-button' + (isActive ? ' active' : '') + '" data-idx="' + idx + '">';
+                            html += '<polygon points="' + px + ',' + py + ' ' + (px + cellW) + ',' + py + ' ' + (px + cellW) + ',' + (py - cellH) + ' ' + px + ',' + (py - cellH) + '" fill="' + fill + '" stroke="rgba(255,255,255,0.12)" />';
+                            html += '<polygon points="' + (px + cellW) + ',' + py + ' ' + (px + cellW + offsetX) + ',' + (py - offsetY) + ' ' + (px + cellW + offsetX) + ',' + (py - cellH - offsetY) + ' ' + (px + cellW) + ',' + (py - cellH) + '" fill="rgba(154,255,87,' + (intensity * 0.55) + ')" stroke="rgba(255,255,255,0.08)" />';
+                            html += '<polygon points="' + px + ',' + (py - cellH) + ' ' + (px + cellW) + ',' + (py - cellH) + ' ' + (px + cellW + offsetX) + ',' + (py - cellH - offsetY) + ' ' + (px + offsetX) + ',' + (py - cellH - offsetY) + '" fill="rgba(127,217,255,' + (intensity * 0.25) + ')" stroke="rgba(255,255,255,0.05)" />';
+                            html += '<text x="' + (px + 12) + '" y="' + (py - 18) + '" class="cell-value-tag">' + cell.page_views + '</text>';
+                            html += '</g>';
+                            if (y === 0 && z === 0) html += '<text x="' + (px + 22) + '" y="' + (py + 24) + '" class="axis-label">' + pages[x] + '</text>';
+                            if (x === 0 && z === 0) html += '<text x="' + (px - 66) + '" y="' + (py - 22) + '" class="axis-label">' + browsers[y] + '</text>';
+                        }
+                    }
+                }
+                dom.svg.innerHTML = html;
+                var selected = DATA.web[state.index];
+                dom.detailTitle.textContent = selected.page + ' × ' + selected.browser + ' × ' + selected.country;
+                dom.detailList.innerHTML = '' +
+                    '<div class="dimension-row"><span>page</span><strong>' + selected.page + '</strong></div>' +
+                    '<div class="dimension-row"><span>browser</span><strong>' + selected.browser + '</strong></div>' +
+                    '<div class="dimension-row"><span>country</span><strong>' + selected.country + '</strong></div>' +
+                    '<div class="dimension-row"><span>page_views</span><strong>' + selected.page_views + '</strong></div>' +
+                    '<div class="dimension-row"><span>avg_latency</span><strong>' + selected.avg_latency + ' ms</strong></div>';
+                dom.detailCopy.innerHTML = 'This cell aggregates all events where <strong style="color:var(--accent-color)">page=' + selected.page + '</strong>, <strong style="color:var(--accent-color)">browser=' + selected.browser + '</strong>, and <strong style="color:var(--accent-color)">country=' + selected.country + '</strong>.';
+                dom.svg.querySelectorAll('.cube-cell-button').forEach(function (node) {
+                    node.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        var idx = parseInt(node.getAttribute('data-idx'), 10);
+                        selectIndex(idx, true);
+                        cubePopup.show('Cube cell', [
+                            { label: 'page', value: DATA.web[idx].page },
+                            { label: 'browser', value: DATA.web[idx].browser },
+                            { label: 'country', value: DATA.web[idx].country },
+                            { label: 'page_views', value: String(DATA.web[idx].page_views) },
+                            { label: 'avg_latency', value: DATA.web[idx].avg_latency + ' ms' }
+                        ], node);
+                    });
+                });
+                updateGrowth();
+                if (dom.play) dom.play.textContent = state.running ? 'Pause' : 'Play';
+            }
+            function updateGrowth() {
+                var d = parseInt(dom.growthD.value, 10);
+                var k = parseInt(dom.growthK.value, 10);
+                var total = Math.pow(k, d);
+                dom.growthValue.textContent = k + '^' + d + ' = ' + total.toLocaleString();
+            }
+            function play() { if (state.running) { pause(); return; } state.running = true; render(); schedule(); }
+            function pause() { state.running = false; if (state.timer) clearTimeout(state.timer); render(); }
+            function step() { pause(); selectIndex(state.index + 1, true); }
+            function reset() { pause(); selectIndex(0, true); }
+            function init() {
+                resolveDOM();
+                if (dom.play) dom.play.addEventListener('click', play);
+                if (dom.step) dom.step.addEventListener('click', step);
+                if (dom.reset) dom.reset.addEventListener('click', reset);
+                if (dom.growthD) dom.growthD.addEventListener('input', updateGrowth);
+                if (dom.growthK) dom.growthK.addEventListener('input', updateGrowth);
+                render();
+            }
+            function activate() { play(); }
+            function deactivate() { pause(); }
+            return { init: init, activate: activate, deactivate: deactivate };
+        })();
+
+        var CubeOps = (function () {
+            var state = { op: 'slice', running: false, timer: null };
+            var dom = {};
+            var facts = [];
+            var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+            var products = ['A', 'B', 'C'];
+            var regions = ['us-east', 'eu-west'];
+            function buildFacts() {
+                facts = [];
+                for (var m = 0; m < months.length; m++) {
+                    for (var p = 0; p < products.length; p++) {
+                        for (var r = 0; r < regions.length; r++) {
+                            facts.push({ month: months[m], quarter: m < 3 ? 'Q1' : 'Q2', product: products[p], region: regions[r], orders: 42 + m * 9 + p * 11 + r * 7 });
+                        }
+                    }
+                }
+            }
+            function resolveDOM() {
+                dom.before = document.getElementById('ops-before-grid');
+                dom.after = document.getElementById('ops-after-grid');
+                dom.caption = document.getElementById('ops-caption');
+                dom.beforeTitle = document.getElementById('ops-before-title');
+                dom.afterTitle = document.getElementById('ops-after-title');
+                dom.play = document.getElementById('ops-play-btn');
+                dom.step = document.getElementById('ops-step-btn');
+                dom.reset = document.getElementById('ops-reset-btn');
+                dom.speed = document.getElementById('ops-speed');
+            }
+            function getDelay() { return [2200, 1700, 1300, 900, 550][parseInt(dom.speed.value, 10) - 1]; }
+            function summarize(rows, labelFn) {
+                return rows.map(function (row) {
+                    return { key: labelFn(row), value: row.orders };
+                });
+            }
+            function groupBy(rows, keyFn, reduceFn) {
+                var map = {};
+                for (var i = 0; i < rows.length; i++) {
+                    var key = keyFn(rows[i]);
+                    if (!map[key]) map[key] = { key: key, rows: [] };
+                    map[key].rows.push(rows[i]);
+                }
+                return Object.keys(map).sort().map(function (k) {
+                    return { key: k, value: reduceFn(map[k].rows) };
+                });
+            }
+            function renderGrid(target, cells, highlightContains) {
+                target.innerHTML = '';
+                for (var i = 0; i < cells.length; i++) {
+                    var div = document.createElement('div');
+                    div.className = 'cube-mini-cell' + ((highlightContains && highlightContains(cells[i])) ? ' highlight' : '');
+                    div.innerHTML = '<span class="cube-mini-key">' + escapeHtml(cells[i].key) + '</span><span class="cube-mini-value">' + escapeHtml(String(cells[i].value)) + '</span>';
+                    target.appendChild(div);
+                }
+            }
+            function render() {
+                var before = summarize(facts.slice(0, 12), function (row) { return row.month + ' · ' + row.product + ' · ' + row.region; });
+                var after = [];
+                var caption = '';
+                dom.beforeTitle.textContent = 'Month × Product × Region';
+                dom.afterTitle.textContent = 'Transformed cube';
+                if (state.op === 'slice') {
+                    after = summarize(facts.filter(function (r) { return r.region === 'us-east'; }).slice(0, 9), function (row) { return row.month + ' · ' + row.product; });
+                    caption = 'Slice fixes one dimension: here we hold <strong>region = us-east</strong> constant and keep the remaining axes visible.';
+                    dom.afterTitle.textContent = 'Slice: region = us-east';
+                } else if (state.op === 'dice') {
+                    after = summarize(facts.filter(function (r) { return r.quarter === 'Q1' && (r.product === 'A' || r.product === 'B'); }).slice(0, 12), function (row) { return row.month + ' · ' + row.product + ' · ' + row.region; });
+                    caption = 'Dice selects a sub-cube: <strong>quarter = Q1</strong> and <strong>product in {A, B}</strong>.';
+                    dom.afterTitle.textContent = 'Dice: Q1 × {A,B}';
+                } else if (state.op === 'rollup') {
+                    before = summarize(facts.filter(function (r) { return r.quarter === 'Q1'; }).slice(0, 12), function (row) { return row.month + ' · ' + row.product + ' · ' + row.region; });
+                    after = groupBy(facts.filter(function (r) { return r.quarter === 'Q1'; }), function (r) { return r.quarter + ' · ' + r.product + ' · ' + r.region; }, function (rows) {
+                        return rows.reduce(function (sum, row) { return sum + row.orders; }, 0);
+                    });
+                    caption = 'Roll-up aggregates upward: the cube replaces <strong>month</strong> with <strong>quarter</strong>.';
+                    dom.beforeTitle.textContent = 'Fine grain: month';
+                    dom.afterTitle.textContent = 'Rolled up: quarter';
+                } else {
+                    before = groupBy(facts, function (r) { return '2024 · ' + r.product + ' · ' + r.region; }, function (rows) { return rows.reduce(function (sum, row) { return sum + row.orders; }, 0); });
+                    after = summarize(facts.slice(0, 12), function (row) { return row.month + ' · ' + row.product + ' · ' + row.region; });
+                    caption = 'Drill-down expands an aggregate: a yearly total can open into quarter or month-level detail.';
+                    dom.beforeTitle.textContent = 'Coarse grain: year';
+                    dom.afterTitle.textContent = 'Drilled down: month';
+                }
+                renderGrid(dom.before, before, function () { return false; });
+                renderGrid(dom.after, after, function () { return true; });
+                dom.caption.innerHTML = caption;
+                document.querySelectorAll('.op-btn').forEach(function (btn) {
+                    btn.classList.toggle('active', btn.id === 'ops-btn-' + state.op);
+                });
+                if (dom.play) dom.play.textContent = state.running ? 'Pause' : 'Play';
+            }
+            function cycle() {
+                var order = ['slice', 'dice', 'rollup', 'drill'];
+                var idx = order.indexOf(state.op);
+                state.op = order[(idx + 1) % order.length];
+                render();
+                if (state.running) state.timer = setTimeout(cycle, getDelay());
+            }
+            function play() { if (state.running) { pause(); return; } state.running = true; render(); state.timer = setTimeout(cycle, getDelay()); }
+            function pause() { state.running = false; if (state.timer) clearTimeout(state.timer); render(); }
+            function step() { pause(); cycle(); }
+            function reset() { pause(); state.op = 'slice'; render(); }
+            function init() {
+                buildFacts();
+                resolveDOM();
+                if (dom.play) dom.play.addEventListener('click', play);
+                if (dom.step) dom.step.addEventListener('click', step);
+                if (dom.reset) dom.reset.addEventListener('click', reset);
+                ['slice', 'dice', 'rollup', 'drill'].forEach(function (op) {
+                    var btn = document.getElementById('ops-btn-' + op);
+                    if (btn) btn.addEventListener('click', function () { pause(); state.op = op; render(); });
+                });
+                render();
+            }
+            function activate() { play(); }
+            function deactivate() { pause(); }
+            return { init: init, activate: activate, deactivate: deactivate };
+        })();
+
+        var HLLCubeDemo = (function () {
+            var state = { running: false, timer: null, endpointIndex: 0, selected: {} };
+            var dom = {};
+            var endpoints = uniqueValues(DATA.api, function (r) { return r.endpoint; });
+            var regions = uniqueValues(DATA.api, function (r) { return r.region; });
+            function resolveDOM() {
+                dom.play = document.getElementById('hll-play-btn');
+                dom.step = document.getElementById('hll-step-btn');
+                dom.reset = document.getElementById('hll-reset-btn');
+                dom.speed = document.getElementById('hll-speed');
+                dom.endpoint = document.getElementById('hll-endpoint-select');
+                dom.grid = document.getElementById('hll-region-grid');
+                dom.exact = document.getElementById('hll-exact');
+                dom.estimate = document.getElementById('hll-estimate');
+                dom.exactMemory = document.getElementById('hll-exact-memory');
+                dom.sketchMemory = document.getElementById('hll-sketch-memory');
+                dom.canvas = document.getElementById('hll-canvas');
+                dom.caption = document.getElementById('hll-caption');
+            }
+            function getDelay() { return [1800, 1400, 1000, 700, 420][parseInt(dom.speed.value, 10) - 1]; }
+            function endpointData(endpoint) {
+                return regions.map(function (region) {
+                    var rows = DATA.api.filter(function (row) { return row.endpoint === endpoint && row.region === region; });
+                    var exactSet = {};
+                    var hll = new HyperLogLog(5);
+                    for (var i = 0; i < rows.length; i++) {
+                        exactSet[rows[i].user_id] = true;
+                        hll.add(rows[i].user_id);
+                    }
+                    return { region: region, rows: rows, exactSet: exactSet, hll: hll };
+                });
+            }
+            function mergedData() {
+                var endpoint = endpoints[state.endpointIndex];
+                var parts = endpointData(endpoint);
+                var mergedSet = {};
+                var mergedSketch = new HyperLogLog(5);
+                var any = false;
+                for (var i = 0; i < parts.length; i++) {
+                    if (state.selected[parts[i].region]) {
+                        any = true;
+                        Object.keys(parts[i].exactSet).forEach(function (id) { mergedSet[id] = true; });
+                        mergedSketch = mergedSketch.merge(parts[i].hll);
+                    }
+                }
+                if (!any && parts[0]) {
+                    state.selected[parts[0].region] = true;
+                    return mergedData();
+                }
+                return { parts: parts, exact: Object.keys(mergedSet).length, sketch: mergedSketch, endpoint: endpoint };
+            }
+            function render() {
+                if (!dom.endpoint.options.length) {
+                    for (var i = 0; i < endpoints.length; i++) {
+                        var opt = document.createElement('option');
+                        opt.value = endpoints[i];
+                        opt.textContent = endpoints[i];
+                        dom.endpoint.appendChild(opt);
+                    }
+                }
+                dom.endpoint.value = endpoints[state.endpointIndex];
+                var data = mergedData();
+                dom.grid.innerHTML = '';
+                for (var j = 0; j < data.parts.length; j++) {
+                    (function (part) {
+                        var btn = document.createElement('div');
+                        btn.className = 'region-chip' + (state.selected[part.region] ? ' selected' : '');
+                        btn.innerHTML = '<strong>' + part.region + '</strong><span>events: ' + part.rows.length + '</span><span>exact dcount: ' + Object.keys(part.exactSet).length + '</span><span>HLL est: ' + fmtNum(part.hll.estimate()) + '</span>';
+                        btn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            state.selected[part.region] = !state.selected[part.region];
+                            render();
+                            cubePopup.show('HLL child cell', [
+                                { label: 'endpoint', value: endpoints[state.endpointIndex] },
+                                { label: 'region', value: part.region },
+                                { label: 'events', value: String(part.rows.length) },
+                                { label: 'exact dcount', value: String(Object.keys(part.exactSet).length) },
+                                { label: 'HLL estimate', value: fmtNum(part.hll.estimate()) }
+                            ], btn);
+                        });
+                        dom.grid.appendChild(btn);
+                    })(data.parts[j]);
+                }
+                dom.exact.textContent = data.exact.toLocaleString();
+                dom.estimate.textContent = fmtNum(data.sketch.estimate());
+                dom.exactMemory.textContent = fmtBytes(data.exact * 24);
+                dom.sketchMemory.textContent = fmtBytes(data.sketch.memoryBytes());
+                dom.caption.innerHTML = 'Selected child cells are merged for <strong>' + escapeHtml(data.endpoint) + '</strong>. Rolling up the region dimension only needs register-wise max, not a union of raw IDs.';
+                drawBars(dom.canvas, data.sketch.registers, 'merged HLL registers');
+                if (dom.play) dom.play.textContent = state.running ? 'Pause' : 'Play';
+            }
+            function step() {
+                var region = regions.find(function (r) { return !state.selected[r]; });
+                if (region) {
+                    state.selected[region] = true;
+                } else {
+                    state.endpointIndex = (state.endpointIndex + 1) % endpoints.length;
+                    state.selected = {};
+                    state.selected[regions[0]] = true;
+                }
+                render();
+            }
+            function tick() { if (!state.running) return; step(); state.timer = setTimeout(tick, getDelay()); }
+            function play() { if (state.running) { pause(); return; } state.running = true; render(); tick(); }
+            function pause() { state.running = false; if (state.timer) clearTimeout(state.timer); render(); }
+            function reset() { pause(); state.endpointIndex = 0; state.selected = {}; state.selected[regions[0]] = true; render(); }
+            function init() {
+                resolveDOM();
+                if (dom.play) dom.play.addEventListener('click', play);
+                if (dom.step) dom.step.addEventListener('click', function () { pause(); step(); });
+                if (dom.reset) dom.reset.addEventListener('click', reset);
+                if (dom.endpoint) dom.endpoint.addEventListener('change', function () { pause(); state.endpointIndex = endpoints.indexOf(dom.endpoint.value); state.selected = {}; state.selected[regions[0]] = true; render(); });
+                reset();
+            }
+            function activate() { play(); }
+            function deactivate() { pause(); }
+            return { init: init, activate: activate, deactivate: deactivate };
+        })();
+
+        var TDigestCubeDemo = (function () {
+            var state = { running: false, timer: null, endpointIndex: 0, selected: {} };
+            var dom = {};
+            var endpoints = uniqueValues(DATA.api, function (r) { return r.endpoint; });
+            var regions = uniqueValues(DATA.api, function (r) { return r.region; });
+            function resolveDOM() {
+                dom.play = document.getElementById('td-play-btn');
+                dom.step = document.getElementById('td-step-btn');
+                dom.reset = document.getElementById('td-reset-btn');
+                dom.speed = document.getElementById('td-speed');
+                dom.endpoint = document.getElementById('td-endpoint-select');
+                dom.grid = document.getElementById('td-region-grid');
+                dom.exact = document.getElementById('td-exact');
+                dom.estimate = document.getElementById('td-estimate');
+                dom.exactMemory = document.getElementById('td-exact-memory');
+                dom.sketchMemory = document.getElementById('td-sketch-memory');
+                dom.canvas = document.getElementById('td-canvas');
+                dom.caption = document.getElementById('td-caption');
+            }
+            function getDelay() { return [1800, 1400, 1000, 700, 420][parseInt(dom.speed.value, 10) - 1]; }
+            function endpointData(endpoint) {
+                return regions.map(function (region) {
+                    var rows = DATA.api.filter(function (row) { return row.endpoint === endpoint && row.region === region; });
+                    var values = rows.map(function (row) { return row.latency_ms; }).sort(sortNumeric);
+                    var digest = new SimpleDigest(18);
+                    for (var i = 0; i < values.length; i++) digest.add(values[i]);
+                    return { region: region, rows: rows, values: values, digest: digest };
+                });
+            }
+            function mergedData() {
+                var endpoint = endpoints[state.endpointIndex];
+                var parts = endpointData(endpoint);
+                var values = [];
+                var digest = new SimpleDigest(18);
+                var any = false;
+                for (var i = 0; i < parts.length; i++) {
+                    if (state.selected[parts[i].region]) {
+                        any = true;
+                        values = values.concat(parts[i].values);
+                        digest = digest.merge(parts[i].digest);
+                    }
+                }
+                if (!any && parts[0]) {
+                    state.selected[parts[0].region] = true;
+                    return mergedData();
+                }
+                values.sort(sortNumeric);
+                return { parts: parts, values: values, digest: digest, endpoint: endpoint };
+            }
+            function render() {
+                if (!dom.endpoint.options.length) {
+                    for (var i = 0; i < endpoints.length; i++) {
+                        var opt = document.createElement('option');
+                        opt.value = endpoints[i];
+                        opt.textContent = endpoints[i];
+                        dom.endpoint.appendChild(opt);
+                    }
+                }
+                dom.endpoint.value = endpoints[state.endpointIndex];
+                var data = mergedData();
+                dom.grid.innerHTML = '';
+                for (var j = 0; j < data.parts.length; j++) {
+                    (function (part) {
+                        var exactP95 = quantile(part.values, 0.95);
+                        var estP95 = part.digest.quantile(0.95);
+                        var btn = document.createElement('div');
+                        btn.className = 'region-chip' + (state.selected[part.region] ? ' selected' : '');
+                        btn.innerHTML = '<strong>' + part.region + '</strong><span>events: ' + part.rows.length + '</span><span>exact p95: ' + fmtNum(exactP95) + ' ms</span><span>digest p95: ' + fmtNum(estP95) + ' ms</span>';
+                        btn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            state.selected[part.region] = !state.selected[part.region];
+                            render();
+                            cubePopup.show('T-Digest child cell', [
+                                { label: 'endpoint', value: endpoints[state.endpointIndex] },
+                                { label: 'region', value: part.region },
+                                { label: 'events', value: String(part.rows.length) },
+                                { label: 'exact p95', value: fmtNum(exactP95) + ' ms' },
+                                { label: 'digest p95', value: fmtNum(estP95) + ' ms' }
+                            ], btn);
+                        });
+                        dom.grid.appendChild(btn);
+                    })(data.parts[j]);
+                }
+                var exact = quantile(data.values, 0.95);
+                var estimate = data.digest.quantile(0.95);
+                dom.exact.textContent = fmtNum(exact) + ' ms';
+                dom.estimate.textContent = fmtNum(estimate) + ' ms';
+                dom.exactMemory.textContent = fmtBytes(data.values.length * 8);
+                dom.sketchMemory.textContent = fmtBytes(data.digest.memoryBytes());
+                dom.caption.innerHTML = 'Selected child cells are merged for <strong>' + escapeHtml(data.endpoint) + '</strong>. Roll-up combines centroid summaries instead of storing every raw latency sample.';
+                drawPercentileChart(dom.canvas, exact, estimate, data.digest.centroids);
+                if (dom.play) dom.play.textContent = state.running ? 'Pause' : 'Play';
+            }
+            function step() {
+                var region = regions.find(function (r) { return !state.selected[r]; });
+                if (region) {
+                    state.selected[region] = true;
+                } else {
+                    state.endpointIndex = (state.endpointIndex + 1) % endpoints.length;
+                    state.selected = {};
+                    state.selected[regions[0]] = true;
+                }
+                render();
+            }
+            function tick() { if (!state.running) return; step(); state.timer = setTimeout(tick, getDelay()); }
+            function play() { if (state.running) { pause(); return; } state.running = true; render(); tick(); }
+            function pause() { state.running = false; if (state.timer) clearTimeout(state.timer); render(); }
+            function reset() { pause(); state.endpointIndex = 0; state.selected = {}; state.selected[regions[0]] = true; render(); }
+            function init() {
+                resolveDOM();
+                if (dom.play) dom.play.addEventListener('click', play);
+                if (dom.step) dom.step.addEventListener('click', function () { pause(); step(); });
+                if (dom.reset) dom.reset.addEventListener('click', reset);
+                if (dom.endpoint) dom.endpoint.addEventListener('change', function () { pause(); state.endpointIndex = endpoints.indexOf(dom.endpoint.value); state.selected = {}; state.selected[regions[0]] = true; render(); });
+                reset();
+            }
+            function activate() { play(); }
+            function deactivate() { pause(); }
+            return { init: init, activate: activate, deactivate: deactivate };
+        })();
+
+        var CubeBuildDemo = (function () {
+            var state = { running: false, timer: null, phase: 0, rows: 0, cells: 0, merges: 0, routeLog: [] };
+            var dom = {};
+            var phases = [
+                { name: 'Enumerating cuboids', line: 0 },
+                { name: 'Scanning facts', line: 1 },
+                { name: 'Routing to cuboids', line: 2 },
+                { name: 'Projecting keys', line: 3 },
+                { name: 'Updating aggregates', line: 4 },
+                { name: 'Merging parent cells', line: 5 }
+            ];
+            var cuboids = [
+                { id: 'endpoint', name: 'endpoint', dims: 5, popularity: 0.92, checked: true },
+                { id: 'region', name: 'region', dims: 4, popularity: 0.78, checked: true },
+                { id: 'time', name: 'time(day)', dims: 7, popularity: 0.88, checked: true },
+                { id: 'endpoint-region', name: 'endpoint × region', dims: 20, popularity: 0.97, checked: true },
+                { id: 'endpoint-time', name: 'endpoint × time(day)', dims: 35, popularity: 0.93, checked: true },
+                { id: 'region-time', name: 'region × time(day)', dims: 28, popularity: 0.81, checked: false },
+                { id: 'endpoint-region-time', name: 'endpoint × region × time(day)', dims: 140, popularity: 0.68, checked: false },
+                { id: 'status-endpoint', name: 'status × endpoint', dims: 25, popularity: 0.57, checked: false }
+            ];
+            function resolveDOM() {
+                dom.play = document.getElementById('build-play-btn');
+                dom.step = document.getElementById('build-step-btn');
+                dom.reset = document.getElementById('build-reset-btn');
+                dom.speed = document.getElementById('build-speed');
+                dom.phase = document.getElementById('build-phase');
+                dom.rows = document.getElementById('build-rows');
+                dom.cells = document.getElementById('build-cells');
+                dom.merges = document.getElementById('build-merges');
+                dom.routeBody = document.getElementById('build-route-body');
+                dom.pseudoLines = document.querySelectorAll('#build-pseudo .pseudo-line');
+                dom.cuboidGrid = document.getElementById('cuboid-grid');
+                dom.cuboidCount = document.getElementById('cuboid-count');
+                dom.cuboidCells = document.getElementById('cuboid-cells');
+                dom.cuboidStorage = document.getElementById('cuboid-storage');
+                dom.cuboidHit = document.getElementById('cuboid-hit-rate');
+            }
+            function getDelay() { return [1900, 1400, 1000, 700, 450][parseInt(dom.speed.value, 10) - 1]; }
+            function sampleRoute() {
+                var row = DATA.api[(state.rows + state.phase * 9) % DATA.api.length];
+                var cuboid = ['endpoint×region', 'endpoint×day', 'region×day', 'endpoint×region×day'][state.phase % 4];
+                return {
+                    row: row.endpoint + ' / ' + row.region,
+                    cuboid: cuboid,
+                    key: row.endpoint + ' | ' + row.region + ' | ' + row.timestamp.toISOString().slice(0, 10),
+                    state: state.phase < 4 ? 'append sketch state' : 'merge parent state'
+                };
+            }
+            function renderRouteLog() {
+                dom.routeBody.innerHTML = '';
+                if (!state.routeLog.length) {
+                    dom.routeBody.innerHTML = '<tr><td colspan="4">Press Play or Step to walk the build process.</td></tr>';
+                    return;
+                }
+                for (var i = 0; i < state.routeLog.length; i++) {
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = '<td>' + escapeHtml(state.routeLog[i].row) + '</td><td>' + escapeHtml(state.routeLog[i].cuboid) + '</td><td>' + escapeHtml(state.routeLog[i].key) + '</td><td>' + escapeHtml(state.routeLog[i].state) + '</td>';
+                    dom.routeBody.appendChild(tr);
+                }
+            }
+            function renderPseudo() {
+                for (var i = 0; i < dom.pseudoLines.length; i++) {
+                    dom.pseudoLines[i].classList.toggle('active', i === phases[state.phase].line);
+                    dom.pseudoLines[i].classList.toggle('done', i < phases[state.phase].line);
+                }
+            }
+            function renderMaterialization() {
+                dom.cuboidGrid.innerHTML = '';
+                var selected = 0, cells = 0, hit = 0;
+                for (var i = 0; i < cuboids.length; i++) {
+                    (function (cuboid) {
+                        if (cuboid.checked) { selected++; cells += cuboid.dims; hit += cuboid.popularity; }
+                        var card = document.createElement('div');
+                        card.className = 'cuboid-card';
+                        card.innerHTML = '<label><input type="checkbox" ' + (cuboid.checked ? 'checked' : '') + ' data-id="' + cuboid.id + '"><span><strong>' + cuboid.name + '</strong><small>Estimated cells: ' + cuboid.dims + '<br>Dashboard popularity: ' + Math.round(cuboid.popularity * 100) + '%</small></span></label>';
+                        card.querySelector('input').addEventListener('change', function () {
+                            cuboid.checked = !cuboid.checked;
+                            renderMaterialization();
+                        });
+                        dom.cuboidGrid.appendChild(card);
+                    })(cuboids[i]);
+                }
+                dom.cuboidCount.textContent = selected;
+                dom.cuboidCells.textContent = cells.toLocaleString();
+                dom.cuboidStorage.textContent = fmtBytes(cells * 48);
+                dom.cuboidHit.textContent = pct(selected ? hit / selected : 0);
+            }
+            function render() {
+                dom.phase.textContent = phases[state.phase].name;
+                dom.rows.textContent = state.rows.toLocaleString();
+                dom.cells.textContent = state.cells.toLocaleString();
+                dom.merges.textContent = state.merges.toLocaleString();
+                renderRouteLog();
+                renderPseudo();
+                if (dom.play) dom.play.textContent = state.running ? 'Pause' : 'Play';
+            }
+            function advance() {
+                state.phase = (state.phase + 1) % phases.length;
+                if (state.phase === 1) state.rows += 56;
+                if (state.phase === 2) state.cells += 32;
+                if (state.phase === 3) state.cells += 18;
+                if (state.phase === 4) state.cells += 26;
+                if (state.phase === 5) state.merges += 12;
+                state.routeLog.unshift(sampleRoute());
+                if (state.routeLog.length > 6) state.routeLog.pop();
+                render();
+            }
+            function tick() { if (!state.running) return; advance(); state.timer = setTimeout(tick, getDelay()); }
+            function play() { if (state.running) { pause(); return; } state.running = true; render(); tick(); }
+            function pause() { state.running = false; if (state.timer) clearTimeout(state.timer); render(); }
+            function reset() { pause(); state.phase = 0; state.rows = 0; state.cells = 0; state.merges = 0; state.routeLog = []; render(); }
+            function init() {
+                resolveDOM();
+                if (dom.play) dom.play.addEventListener('click', play);
+                if (dom.step) dom.step.addEventListener('click', function () { pause(); advance(); });
+                if (dom.reset) dom.reset.addEventListener('click', reset);
+                renderMaterialization();
+                reset();
+            }
+            function activate() { play(); }
+            function deactivate() { pause(); }
+            return { init: init, activate: activate, deactivate: deactivate };
+        })();
+
+        var KustoPlayground = (function () {
+            var dom = {};
+            var EXAMPLES = {
+                summary: 'Requests\n| summarize count(), dcount(user_id), percentile(latency_ms, 95) by bin(timestamp, 1h), region, endpoint\n| order by timestamp asc',
+                hll: 'Requests\n| summarize hll_user_id = hll(user_id) by region\n| summarize merged = hll_merge(hll_user_id)',
+                tdigest: 'Requests\n| summarize tdigest_latency = tdigest(latency_ms) by endpoint\n| summarize p95 = percentile_tdigest(tdigest_merge(tdigest_latency), 95)',
+                mv: '.create materialized-view with (backfill=true) RequestCube on table Requests\n{\n    Requests\n    | summarize count(), dcount(user_id), percentile(latency_ms, 95) by bin(timestamp, 1h), region, endpoint\n}'
+            };
+            var currentExample = 'summary';
+            function resolveDOM() {
+                dom.editor = document.getElementById('kql-editor');
+                dom.preview = document.getElementById('kql-preview');
+                dom.output = document.getElementById('kql-output');
+                dom.run = document.getElementById('kql-run-btn');
+                dom.reset = document.getElementById('kql-reset-btn');
+            }
+            function highlightKql(text) {
+                var html = escapeHtml(text);
+                html = html.replace(/(summarize|by|order by|create|materialized-view|with|on table|where|project|extend|bin)/gi, '<span class="kql-kw">$1</span>');
+                html = html.replace(/(count|dcount|percentile|hll|hll_merge|tdigest|tdigest_merge|percentile_tdigest)\s*(?=\()/gi, '<span class="kql-fn">$1</span>');
+                html = html.replace(/(\'.*?\'|\".*?\")/g, '<span class="kql-str">$1</span>');
+                return html.replace(/\n/g, '<br>');
+            }
+            function runSimulation() {
+                var text = dom.editor.value;
+                dom.preview.innerHTML = highlightKql(text);
+                var lines = [];
+                if (/hll_merge/i.test(text)) {
+                    var byRegion = aggregateRecords(DATA.api, ['region'], { fieldGetter: getApiField, timeGrain: 'day' });
+                    lines.push('region      exact_dcount    hll_estimate');
+                    for (var i = 0; i < byRegion.length; i++) lines.push((byRegion[i].dims[0] + '          ').slice(0, 12) + String(exactDistinctFromMap(byRegion[i].distinct)).padEnd(14, ' ') + fmtNum(byRegion[i].hll.estimate()));
+                    var merged = new HyperLogLog(5);
+                    for (i = 0; i < byRegion.length; i++) merged = merged.merge(byRegion[i].hll);
+                    lines.push('');
+                    lines.push('merged ≈ ' + fmtNum(merged.estimate()) + ' distinct users');
+                } else if (/tdigest/i.test(text)) {
+                    var byEndpoint = aggregateRecords(DATA.api, ['endpoint'], { fieldGetter: getApiField, timeGrain: 'day' });
+                    lines.push('endpoint              exact_p95   digest_p95   centroids');
+                    for (var j = 0; j < byEndpoint.length; j++) {
+                        var exact = quantile(byEndpoint[j].latencies.sort(sortNumeric), 0.95);
+                        lines.push((byEndpoint[j].dims[0] + '                    ').slice(0, 20) + String(Math.round(exact)).padEnd(12, ' ') + String(Math.round(byEndpoint[j].digest.quantile(0.95))).padEnd(13, ' ') + byEndpoint[j].digest.centroids.length);
+                    }
+                } else if (/materialized-view/i.test(text)) {
+                    lines.push('materialized-view RequestCube created');
+                    lines.push('refresh cadence: on ingestion');
+                    lines.push('stored face: bin(timestamp,1h) × region × endpoint');
+                    lines.push('measures: count(), dcount(user_id), percentile(latency_ms,95)');
+                } else {
+                    var rows = aggregateRecords(DATA.api, ['time', 'region', 'endpoint'], { fieldGetter: getApiField, timeGrain: 'hour' }).slice(0, 8);
+                    lines.push('timestamp            region     endpoint           count   dcount   p95');
+                    for (var k = 0; k < rows.length; k++) {
+                        var p95 = quantile(rows[k].latencies.sort(sortNumeric), 0.95);
+                        lines.push((rows[k].dims[0] + '                ').slice(0, 20) + (rows[k].dims[1] + '        ').slice(0, 11) + (rows[k].dims[2] + '                ').slice(0, 19) + String(rows[k].count).padEnd(8, ' ') + String(exactDistinctFromMap(rows[k].distinct)).padEnd(9, ' ') + Math.round(p95));
+                    }
+                }
+                dom.output.textContent = lines.join('\n');
+            }
+            function loadExample(name) {
+                currentExample = name;
+                dom.editor.value = EXAMPLES[name];
+                document.querySelectorAll('[data-kql-example]').forEach(function (btn) {
+                    btn.classList.toggle('active', btn.getAttribute('data-kql-example') === name);
+                });
+                runSimulation();
+            }
+            function init() {
+                resolveDOM();
+                if (dom.editor) dom.editor.addEventListener('input', function () { dom.preview.innerHTML = highlightKql(dom.editor.value); });
+                if (dom.run) dom.run.addEventListener('click', runSimulation);
+                if (dom.reset) dom.reset.addEventListener('click', function () { loadExample(currentExample); });
+                document.querySelectorAll('[data-kql-example]').forEach(function (btn) {
+                    btn.addEventListener('click', function () { loadExample(btn.getAttribute('data-kql-example')); });
+                });
+                loadExample('summary');
+            }
+            function activate() { runSimulation(); }
+            function deactivate() {}
+            return { init: init, activate: activate, deactivate: deactivate };
+        })();
+
+        var CubePlayground = (function () {
+            var dom = {};
+            var datasets = {
+                api: {
+                    name: 'API request logs',
+                    rows: DATA.api,
+                    dims: ['time', 'endpoint', 'region', 'status_code'],
+                    measures: ['count', 'dcount(user_id)', 'p95(latency_ms)'],
+                    fieldGetter: getApiField,
+                    defaultDims: ['time', 'region'],
+                    defaultMeasures: ['count', 'dcount(user_id)'],
+                    grains: ['hour', 'day', 'week']
+                },
+                ecommerce: {
+                    name: 'E-commerce events',
+                    rows: DATA.ecommerce,
+                    dims: ['time', 'product_category', 'country', 'device'],
+                    measures: ['count', 'dcount(user_id)', 'p95(revenue)'],
+                    fieldGetter: getEcomField,
+                    defaultDims: ['time', 'country'],
+                    defaultMeasures: ['count', 'p95(revenue)'],
+                    grains: ['hour', 'day', 'week']
+                }
+            };
+            function resolveDOM() {
+                dom.dataset = document.getElementById('pg-dataset');
+                dom.timeGrain = document.getElementById('pg-time-grain');
+                dom.dimensions = document.getElementById('pg-dimensions');
+                dom.measures = document.getElementById('pg-measures');
+                dom.filter1Dim = document.getElementById('pg-filter1-dim');
+                dom.filter1Val = document.getElementById('pg-filter1-val');
+                dom.filter2Dim = document.getElementById('pg-filter2-dim');
+                dom.filter2Val = document.getElementById('pg-filter2-val');
+                dom.run = document.getElementById('pg-run-btn');
+                dom.reset = document.getElementById('pg-reset-btn');
+                dom.cellCount = document.getElementById('pg-cell-count');
+                dom.recordCount = document.getElementById('pg-record-count');
+                dom.exactMemory = document.getElementById('pg-exact-memory');
+                dom.approxMemory = document.getElementById('pg-approx-memory');
+                dom.summaryNote = document.getElementById('pg-summary-note');
+                dom.head = document.getElementById('pg-head-row');
+                dom.body = document.getElementById('pg-body');
+                dom.canvas = document.getElementById('pg-memory-canvas');
+            }
+            function currentConfig() {
+                return datasets[dom.dataset.value || 'api'];
+            }
+            function selectedCheckboxValues(container) {
+                return Array.prototype.slice.call(container.querySelectorAll('input:checked')).map(function (el) { return el.value; });
+            }
+            function buildFilterOptions(select, dims) {
+                select.innerHTML = '<option value="">None</option>';
+                for (var i = 0; i < dims.length; i++) {
+                    var opt = document.createElement('option');
+                    opt.value = dims[i];
+                    opt.textContent = dims[i];
+                    select.appendChild(opt);
+                }
+            }
+            function refreshFilterValues(dimSelect, valueSelect) {
+                var cfg = currentConfig();
+                valueSelect.innerHTML = '<option value="">All</option>';
+                if (!dimSelect.value) return;
+                var values = uniqueValues(cfg.rows, function (row) { return cfg.fieldGetter(row, dimSelect.value, dom.timeGrain.value); }).sort();
+                for (var i = 0; i < values.length; i++) {
+                    var opt = document.createElement('option');
+                    opt.value = values[i];
+                    opt.textContent = values[i];
+                    valueSelect.appendChild(opt);
+                }
+            }
+            function renderControls() {
+                var cfg = currentConfig();
+                if (!dom.timeGrain.options.length || dom.timeGrain.dataset.dataset !== dom.dataset.value) {
+                    dom.timeGrain.innerHTML = '';
+                    for (var i = 0; i < cfg.grains.length; i++) {
+                        var opt = document.createElement('option');
+                        opt.value = cfg.grains[i];
+                        opt.textContent = cfg.grains[i];
+                        dom.timeGrain.appendChild(opt);
+                    }
+                    dom.timeGrain.value = cfg.grains[0] === 'hour' ? 'day' : cfg.grains[0];
+                    dom.timeGrain.dataset.dataset = dom.dataset.value;
+                }
+                dom.dimensions.innerHTML = '';
+                for (var j = 0; j < cfg.dims.length; j++) {
+                    var label = document.createElement('label');
+                    label.innerHTML = '<input type="checkbox" value="' + cfg.dims[j] + '" ' + (cfg.defaultDims.indexOf(cfg.dims[j]) >= 0 ? 'checked' : '') + '> <span>' + cfg.dims[j] + '</span>';
+                    dom.dimensions.appendChild(label);
+                }
+                dom.measures.innerHTML = '';
+                for (var k = 0; k < cfg.measures.length; k++) {
+                    var mlabel = document.createElement('label');
+                    mlabel.innerHTML = '<input type="checkbox" value="' + cfg.measures[k] + '" ' + (cfg.defaultMeasures.indexOf(cfg.measures[k]) >= 0 ? 'checked' : '') + '> <span>' + cfg.measures[k] + '</span>';
+                    dom.measures.appendChild(mlabel);
+                }
+                buildFilterOptions(dom.filter1Dim, cfg.dims);
+                buildFilterOptions(dom.filter2Dim, cfg.dims);
+                refreshFilterValues(dom.filter1Dim, dom.filter1Val);
+                refreshFilterValues(dom.filter2Dim, dom.filter2Val);
+            }
+            function run() {
+                var cfg = currentConfig();
+                var dims = selectedCheckboxValues(dom.dimensions);
+                if (!dims.length) dims = [cfg.dims[0]];
+                if (dims.length > 3) dims = dims.slice(0, 3);
+                var measures = selectedCheckboxValues(dom.measures);
+                if (!measures.length) measures = ['count'];
+                var filtered = cfg.rows.filter(function (row) {
+                    var pass1 = !dom.filter1Dim.value || !dom.filter1Val.value || cfg.fieldGetter(row, dom.filter1Dim.value, dom.timeGrain.value) === dom.filter1Val.value;
+                    var pass2 = !dom.filter2Dim.value || !dom.filter2Val.value || cfg.fieldGetter(row, dom.filter2Dim.value, dom.timeGrain.value) === dom.filter2Val.value;
+                    return pass1 && pass2;
+                });
+                var cells = aggregateRecords(filtered, dims, { fieldGetter: cfg.fieldGetter, timeGrain: dom.timeGrain.value });
+                dom.head.innerHTML = '';
+                dims.forEach(function (dim) { var th = document.createElement('th'); th.textContent = dim; dom.head.appendChild(th); });
+                measures.forEach(function (measure) { var th = document.createElement('th'); th.textContent = measure; dom.head.appendChild(th); });
+                dom.body.innerHTML = '';
+                var exactBytes = 0, approxBytes = 0;
+                for (var i = 0; i < Math.min(20, cells.length); i++) {
+                    var tr = document.createElement('tr');
+                    for (var d = 0; d < dims.length; d++) {
+                        var td = document.createElement('td');
+                        td.textContent = cells[i].dims[d];
+                        tr.appendChild(td);
+                    }
+                    for (var m = 0; m < measures.length; m++) {
+                        var measure = measures[m];
+                        var tdv = document.createElement('td');
+                        if (measure === 'count') tdv.textContent = cells[i].count;
+                        else if (measure === 'dcount(user_id)') tdv.textContent = fmtNum(cells[i].hll.estimate()) + ' (exact ' + exactDistinctFromMap(cells[i].distinct) + ')';
+                        else {
+                            var source = cfg.name.indexOf('API') >= 0 ? cells[i].latencies.slice() : cells[i].revenue.slice();
+                            source.sort(sortNumeric);
+                            tdv.textContent = fmtNum(cells[i].digest.quantile(0.95)) + ' (exact ' + fmtNum(quantile(source, 0.95)) + ')';
+                        }
+                        tr.appendChild(tdv);
+                    }
+                    exactBytes += exactDistinctFromMap(cells[i].distinct) * 24 + ((cells[i].latencies.length || cells[i].revenue.length) * 8);
+                    approxBytes += cells[i].hll.memoryBytes() + cells[i].digest.memoryBytes();
+                    dom.body.appendChild(tr);
+                }
+                dom.cellCount.textContent = cells.length.toLocaleString();
+                dom.recordCount.textContent = filtered.length.toLocaleString();
+                dom.exactMemory.textContent = fmtBytes(exactBytes);
+                dom.approxMemory.textContent = fmtBytes(approxBytes);
+                drawMemoryComparison(dom.canvas, exactBytes, approxBytes);
+                var ops = [];
+                if (dom.filter1Dim.value && dom.filter1Val.value) ops.push('slice');
+                if (dom.filter1Dim.value && dom.filter1Val.value && dom.filter2Dim.value && dom.filter2Val.value) ops.push('dice');
+                if (dom.timeGrain.value === 'week' || dom.timeGrain.value === 'day') ops.push('roll-up');
+                if (dom.timeGrain.value === 'hour') ops.push('drill-down');
+                dom.summaryNote.textContent = 'Applied operations: ' + (ops.length ? ops.join(', ') : 'group-by only') + '. Showing up to 20 cells.';
+            }
+            function reset() {
+                dom.dataset.value = 'api';
+                renderControls();
+                run();
+            }
+            function init() {
+                resolveDOM();
+                Object.keys(datasets).forEach(function (key) {
+                    var opt = document.createElement('option');
+                    opt.value = key;
+                    opt.textContent = datasets[key].name;
+                    dom.dataset.appendChild(opt);
+                });
+                dom.dataset.addEventListener('change', function () { renderControls(); run(); });
+                dom.timeGrain.addEventListener('change', function () { refreshFilterValues(dom.filter1Dim, dom.filter1Val); refreshFilterValues(dom.filter2Dim, dom.filter2Val); run(); });
+                dom.filter1Dim.addEventListener('change', function () { refreshFilterValues(dom.filter1Dim, dom.filter1Val); run(); });
+                dom.filter2Dim.addEventListener('change', function () { refreshFilterValues(dom.filter2Dim, dom.filter2Val); run(); });
+                dom.filter1Val.addEventListener('change', run);
+                dom.filter2Val.addEventListener('change', run);
+                dom.run.addEventListener('click', run);
+                dom.reset.addEventListener('click', reset);
+                renderControls();
+                dom.dimensions.addEventListener('change', run);
+                dom.measures.addEventListener('change', run);
+                reset();
+            }
+            function activate() { run(); }
+            function deactivate() {}
+            return { init: init, activate: activate, deactivate: deactivate };
+        })();
+
+        function onStepActivate(n) {
+            if (n === 1) CubeIntro.activate();
+            if (n === 2) CubeOps.activate();
+            if (n === 3) HLLCubeDemo.activate();
+            if (n === 4) TDigestCubeDemo.activate();
+            if (n === 5) CubeBuildDemo.activate();
+            if (n === 6) KustoPlayground.activate();
+            if (n === 7) CubePlayground.activate();
+        }
+        function onStepDeactivate(n) {
+            if (n === 1) CubeIntro.deactivate();
+            if (n === 2) CubeOps.deactivate();
+            if (n === 3) HLLCubeDemo.deactivate();
+            if (n === 4) TDigestCubeDemo.deactivate();
+            if (n === 5) CubeBuildDemo.deactivate();
+            if (n === 6) KustoPlayground.deactivate();
+            if (n === 7) CubePlayground.deactivate();
+        }
+
+        cubePopup.init();
+        CubeIntro.init();
+        CubeOps.init();
+        HLLCubeDemo.init();
+        TDigestCubeDemo.init();
+        CubeBuildDemo.init();
+        KustoPlayground.init();
+        CubePlayground.init();
+        goToStep(1, 1);
+        updateIndicator();
+    })();
+    </script>
+    <div class="centroid-popup" id="centroid-popup">
+        <div class="centroid-popup-header">
+            <span id="centroid-popup-title">Details</span>
+            <button class="centroid-popup-close" id="centroid-popup-close">✕</button>
+        </div>
+        <div id="centroid-popup-body"></div>
+    </div>
+</body>
+</html>
