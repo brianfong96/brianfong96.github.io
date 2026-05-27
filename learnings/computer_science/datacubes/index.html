@@ -651,9 +651,26 @@
             <section class="step-panel section active" id="step-0">
                 <div class="section-heading"><h2>The Problem — Why Data Cubes?</h2></div>
                 <div class="blog-prose">
-                    <div class="note-card"><p>Analytical systems need to answer questions like <strong style="color:var(--accent-color)">"revenue by week, category, region, and customer segment"</strong> over billions of rows. Each question mixes <strong>dimensions</strong> (time, product, geography, segment) with <strong>measures</strong> (count, revenue, latency, distinct users, percentiles).</p></div>
-                    <div class="note-card"><p>A <strong style="color:var(--accent-color)">data cube</strong> pre-organizes those aggregations so analysts can <strong>slice</strong> (fix one dimension), <strong>dice</strong> (take a sub-cube), <strong>roll-up</strong> (aggregate to a coarser level), and <strong>drill-down</strong> (expand to finer detail) without rescanning raw data every time.</p></div>
-                    <div class="note-card"><p>Picture an e-commerce dashboard with <strong style="color:var(--warning-color)">time × product × region × customer segment</strong>. Brute-force querying is flexible but expensive. Pre-aggregation is fast but can explode combinatorially. Data cube design is about finding the right compromise.</p></div>
+                    <div class="note-card"><p>Imagine you run a web API. Every request generates a log line: <strong style="color:var(--accent-color)">timestamp, endpoint, region, status_code, latency_ms, user_id</strong>. You get 10 million of these per day.</p></div>
+                    <div class="note-card"><p>Now your team asks: <em>"What was the p95 latency for <code>/api/orders</code> in <code>us-east</code> last Tuesday?"</em> To answer exactly, you scan all 10M rows, filter to that endpoint + region + day, sort the latencies, and pick the 95th percentile. That takes seconds and touches millions of rows for a single number.</p></div>
+                    <div class="note-card"><p>They ask 50 more questions like this every minute — different endpoints, regions, time windows. Each question is a <strong>combination of dimensions</strong> (time, endpoint, region) with a <strong>measure</strong> (count, p95, distinct users). Scanning raw data for every question doesn't scale.</p></div>
+                    <div class="note-card">
+                        <p><strong style="color:var(--accent-color)">The insight:</strong> what if we pre-computed the answers? Group all data by every useful combination of dimensions ahead of time, store the aggregated results, and just <em>look them up</em> when asked.</p>
+                        <p style="margin-top:8px;">That's a <strong>data cube</strong> — a structured set of pre-aggregated summaries organized by dimension combinations so that queries become lookups instead of scans.</p>
+                    </div>
+                    <div class="note-card">
+                        <p><strong style="color:var(--warning-color)">Why "cube"?</strong> Think of a spreadsheet pivot table. With 2 dimensions you get a 2D table. With 3 dimensions you get a 3D cube. With N dimensions it's an N-dimensional hypercube. Each "cell" holds the pre-computed aggregate for that specific combination of dimension values.</p>
+                    </div>
+                    <div class="note-card">
+                        <p><strong style="color:var(--accent-color)">Why aggregation matters:</strong></p>
+                        <ul style="margin:8px 0 0 0;padding-left:20px;line-height:2;">
+                            <li><strong>COUNT</strong> — "how many requests hit /api/orders in us-east?" Just look up the cell → instant.</li>
+                            <li><strong>SUM / AVG</strong> — "total revenue by product × region?" Pre-summed per cell.</li>
+                            <li><strong>DISTINCT COUNT (dcount)</strong> — "how many unique users?" This is hard to pre-aggregate exactly (you can't just add dcounts). <strong style="color:var(--accent-color)">HyperLogLog</strong> solves this — its sketches are mergeable.</li>
+                            <li><strong>PERCENTILES (p95, p99)</strong> — "what's the tail latency?" Also not additive. <strong style="color:var(--accent-color)">T-Digest</strong> solves this — its centroids are mergeable.</li>
+                        </ul>
+                        <p style="margin-top:8px;">Simple aggregates (count, sum) are trivially pre-computable. Complex ones (dcount, percentiles) need probabilistic sketches — that's where HLL and T-Digest make data cubes practical.</p>
+                    </div>
                 </div>
                 <table class="learn-table" style="margin-top:18px">
                     <thead>
@@ -667,18 +684,31 @@
                         <tr><td>Approximate cubes</td><td class="hi">Low</td><td class="hi">Low</td><td>dcount / percentile analytics</td><td>Small, controlled error</td></tr>
                     </tbody>
                 </table>
-                <div class="callout"><strong>Key mental model:</strong> a cube is not just a 3D box. It is the family of aggregations across every useful dimension combination — often a lattice of cuboids, not a single object.</div>
+                <div class="blog-prose" style="margin-top:18px;">
+                    <div class="note-card">
+                        <p><strong style="color:var(--accent-color)">Key Terms</strong></p>
+                        <ul style="margin:8px 0 0 0;padding-left:20px;line-height:2;">
+                            <li><strong>Dimension</strong> — a categorical axis you group by (time, endpoint, region, device). These are your "GROUP BY" columns.</li>
+                            <li><strong>Measure</strong> — a numeric value you aggregate (latency_ms, revenue, request_count). These are your "SUM(x)" or "COUNT(*)" values.</li>
+                            <li><strong>Cell</strong> — one specific combination of dimension values → its pre-computed measure. E.g., (Monday, /api/orders, us-east) → count=4521, p95=230ms.</li>
+                            <li><strong>Cuboid</strong> — a "face" of the cube. The full cube has all dimensions. A cuboid drops one or more dimensions (like a sub-GROUP BY). E.g., just (endpoint × region) without time.</li>
+                            <li><strong>Lattice</strong> — the family of all possible cuboids forms a lattice from the full cube (most detail) down to the apex (one grand total).</li>
+                            <li><strong>Materialization</strong> — actually computing and storing a cuboid's cells. "Full materialization" = store everything. "Partial" = store only popular cuboids.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="callout"><strong>Key mental model:</strong> a data cube is not just a 3D box. It is the family of aggregations across every useful dimension combination — a lattice of cuboids. Each cell holds pre-computed answers so queries are lookups, not scans.</div>
                 <div class="datacube-grid">
                     <div class="mini-panel">
-                        <div class="mini-bar">REAL-WORLD EXAMPLE</div>
-                        <h3>E-commerce cube</h3>
+                        <div class="mini-bar">CONCRETE EXAMPLE</div>
+                        <h3>API monitoring cube</h3>
                         <div class="dimension-list">
-                            <div class="dimension-row"><span>Dimensions</span><strong>time × product × region × segment</strong></div>
-                            <div class="dimension-row"><span>Measures</span><strong>orders, revenue, dcount(users), p95 latency</strong></div>
-                            <div class="dimension-row"><span>Common slice</span><strong>region = EU</strong></div>
-                            <div class="dimension-row"><span>Common roll-up</span><strong>day → week → month</strong></div>
+                            <div class="dimension-row"><span>Dimensions</span><strong>hour × endpoint × region</strong></div>
+                            <div class="dimension-row"><span>Measures</span><strong>count, dcount(user_id), p95(latency_ms)</strong></div>
+                            <div class="dimension-row"><span>Example cell</span><strong>(14:00, /api/orders, us-east) → 4521 reqs, 312 users, p95=230ms</strong></div>
+                            <div class="dimension-row"><span>Roll-up</span><strong>hour→day: merge HLL sketches for dcount, merge T-Digests for p95</strong></div>
                         </div>
-                        <p class="muted-copy">Every dashboard interaction is some combination of project → aggregate → filter → merge.</p>
+                        <p class="muted-copy">Every dashboard query is: pick dimensions, pick measures, look up cells.</p>
                     </div>
                     <div class="mini-panel">
                         <div class="mini-bar">WHY PRE-AGGREGATE?</div>
@@ -697,8 +727,46 @@
             <section class="step-panel section" id="step-1">
                 <div class="section-heading"><h2>What is a Data Cube?</h2></div>
                 <div class="blog-prose">
-                    <div class="note-card"><p>Take a fact table of web analytics events. Put <strong style="color:var(--accent-color)">page</strong> on one axis, <strong style="color:var(--accent-color)">browser</strong> on another, and <strong style="color:var(--accent-color)">country</strong> on the third. Each cube cell stores aggregate measures like <strong>page_views</strong> and <strong>avg_latency</strong>.</p></div>
-                    <div class="note-card"><p>Click a cell in the cube below: you are selecting one intersection of dimension values. That single coordinate corresponds to a grouped aggregate over many raw events.</p></div>
+                    <div class="note-card">
+                        <p><strong style="color:var(--accent-color)">Start with raw data.</strong> Imagine 1000 API request logs:</p>
+                        <table class="learn-table" style="margin-top:10px;font-size:0.82rem;">
+                            <thead><tr><th>timestamp</th><th>endpoint</th><th>region</th><th>latency_ms</th><th>user_id</th></tr></thead>
+                            <tbody>
+                                <tr><td>14:00</td><td>/api/orders</td><td>us-east</td><td>45</td><td>user_17</td></tr>
+                                <tr><td>14:00</td><td>/api/orders</td><td>us-east</td><td>230</td><td>user_42</td></tr>
+                                <tr><td>14:00</td><td>/api/search</td><td>eu-west</td><td>12</td><td>user_17</td></tr>
+                                <tr><td>14:01</td><td>/api/orders</td><td>us-west</td><td>89</td><td>user_03</td></tr>
+                                <tr><td colspan="5" style="text-align:center;color:var(--muted-text)">... 996 more rows ...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="note-card">
+                        <p><strong style="color:var(--accent-color)">Now build the cube.</strong> Choose dimensions: <strong>endpoint × region</strong>. Choose measures: <strong>count, p95(latency)</strong>. Group the raw rows by every (endpoint, region) combination:</p>
+                        <table class="learn-table" style="margin-top:10px;font-size:0.82rem;">
+                            <thead><tr><th>endpoint</th><th>region</th><th>count</th><th>p95 latency</th></tr></thead>
+                            <tbody>
+                                <tr><td>/api/orders</td><td>us-east</td><td>312</td><td>230ms</td></tr>
+                                <tr><td>/api/orders</td><td>us-west</td><td>187</td><td>195ms</td></tr>
+                                <tr><td>/api/orders</td><td>eu-west</td><td>98</td><td>310ms</td></tr>
+                                <tr><td>/api/search</td><td>us-east</td><td>201</td><td>45ms</td></tr>
+                                <tr><td>/api/search</td><td>eu-west</td><td>142</td><td>52ms</td></tr>
+                                <tr><td colspan="4" style="text-align:center;color:var(--muted-text)">... (5 endpoints × 4 regions = 20 cells) ...</td></tr>
+                            </tbody>
+                        </table>
+                        <p style="margin-top:8px;">That table IS a data cube face (a "cuboid"). Each row is a <strong>cell</strong>. You went from 1000 raw rows → 20 pre-computed cells. Now any query for "p95 latency of /api/orders in us-east" is a direct lookup: <strong>230ms</strong>. No scanning.</p>
+                    </div>
+                    <div class="note-card">
+                        <p><strong style="color:var(--warning-color)">Add a third dimension</strong> (hour) and it becomes a 3D cube: endpoint × region × hour. Now you have 20 cells × 24 hours = <strong>480 cells</strong>. Add a 4th dimension (status_code with 5 values) → <strong>2,400 cells</strong>. This is the exponential growth problem.</p>
+                    </div>
+                    <div class="note-card">
+                        <p><strong style="color:var(--accent-color)">Why this matters for aggregation:</strong></p>
+                        <ul style="margin:8px 0 0 0;padding-left:20px;line-height:2;">
+                            <li><strong>COUNT / SUM</strong> — trivially additive. To roll up from (endpoint × region × hour) to (endpoint × region), just SUM the counts across hours.</li>
+                            <li><strong>DISTINCT COUNT</strong> — NOT additive! If user_17 appears in both hour 14 and hour 15, you can't just add dcounts. You need <strong>HLL sketches</strong> that can be merged.</li>
+                            <li><strong>PERCENTILES</strong> — NOT additive! p95 of group A ≠ p95 of (A ∪ B). You need <strong>T-Digest</strong> sketches that can be merged across cells.</li>
+                        </ul>
+                        <p style="margin-top:8px;">This is exactly why HLL and T-Digest are so important for data cubes — they make non-additive measures <em>mergeable</em>, so you can roll-up and drill-down without going back to raw data.</p>
+                    </div>
                 </div>
                 <div class="demo-shell">
                     <div class="demo-bar">INTERACTIVE — 3D CUBE MODEL</div>
@@ -727,7 +795,7 @@
                         </aside>
                     </div>
                 </div>
-                <div class="callout"><strong>Growth problem:</strong> with k values on each dimension, a dense cube with d dimensions has <span class="inline-formula">k<sup>d</sup></span> base cells. Add hierarchies and subtotal cuboids and the total grows even faster.</div>
+                <div class="callout"><strong>Growth problem:</strong> with k values on each dimension, a dense cube with d dimensions has <span class="inline-formula">k<sup>d</sup></span> base cells. Add hierarchies and subtotal cuboids and the total grows even faster. Use the sliders above to see how quickly cells multiply.</div>
                 <div class="step-nav-cards">
                     <button class="step-btn prev" data-step="0"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">The Problem</span></div></button>
                     <button class="step-btn next" data-step="2"><div class="step-btn-text"><span class="step-btn-label">Next</span><span class="step-btn-name">Operations</span></div><span class="step-btn-arrow">→</span></button>
