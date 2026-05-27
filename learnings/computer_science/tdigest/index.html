@@ -7,6 +7,277 @@
     <title>T-Digest - Learnings - Brian Fong</title>
     <link rel="stylesheet" href="../../../assets/css/style.css" />
     <link rel="stylesheet" href="../../../assets/css/learnings.css" />
+    <style>
+        .code-stepper {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 18px;
+            margin: 18px 0;
+        }
+        @media (max-width: 900px) {
+            .code-stepper { grid-template-columns: 1fr; }
+        }
+        .code-stepper-pseudo {
+            background: rgba(2, 6, 13, 0.95);
+            border: 1px solid rgba(53, 255, 107, 0.18);
+            border-radius: 12px;
+            padding: 16px 0;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.78rem;
+            line-height: 1.9;
+            overflow-x: auto;
+            position: sticky;
+            top: 80px;
+            max-height: 500px;
+        }
+        .code-stepper-pseudo .pseudo-line {
+            padding: 2px 18px;
+            transition: background 0.2s, color 0.2s;
+            white-space: pre;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .code-stepper-pseudo .pseudo-line.active {
+            background: rgba(53, 255, 107, 0.15);
+            color: #35ff6b;
+            border-left: 3px solid #35ff6b;
+            font-weight: 600;
+        }
+        .code-stepper-pseudo .pseudo-line.done {
+            color: rgba(53, 255, 107, 0.45);
+        }
+        .code-stepper-pseudo .pseudo-line .line-num {
+            display: inline-block;
+            width: 24px;
+            color: rgba(255, 255, 255, 0.3);
+            text-align: right;
+            margin-right: 12px;
+            font-size: 0.7rem;
+        }
+        .code-stepper-visual {
+            flex: 1;
+            min-width: 0;
+        }
+        .code-stepper-header {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            color: var(--muted-text);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .code-stepper-side-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+        @media (max-width: 700px) {
+            .code-stepper-side-grid { grid-template-columns: 1fr; }
+        }
+        .code-stepper-footer-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.9fr);
+            gap: 18px;
+            margin-top: 18px;
+            align-items: start;
+        }
+        @media (max-width: 900px) {
+            .code-stepper-footer-grid { grid-template-columns: 1fr; }
+        }
+        .stepper-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        @media (max-width: 900px) {
+            .stepper-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        .stepper-mini-card {
+            background: rgba(2, 6, 13, 0.92);
+            border: 1px solid rgba(53,255,107,0.14);
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+        .stepper-mini-label {
+            color: var(--muted-text);
+            font-size: 0.72rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .stepper-mini-value {
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .code-stepper-summary {
+            margin-top: 16px;
+        }
+        .code-stepper-summary strong {
+            color: var(--accent-color);
+        }
+        .insert-log-table td,
+        .insert-log-table th {
+            font-size: 0.8rem;
+        }
+        .pseudo-collapse {
+            margin: 16px 0 18px;
+        }
+        .pseudo-collapse .stream-play-btn {
+            margin-bottom: 12px;
+        }
+        .pseudo-collapse-body {
+            display: none;
+        }
+        .pseudo-collapse-body.open {
+            display: block;
+        }
+        .pseudo-collapse-body .code-stepper-pseudo {
+            position: static;
+            top: auto;
+            max-height: none;
+        }
+        .merge-math-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(53,255,107,0.18);
+            background: rgba(2,6,13,0.92);
+            color: var(--text-color);
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.76rem;
+        }
+        .merge-math-chip strong {
+            color: var(--accent-color);
+        }
+        .stepper-inline-grid {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        @media (max-width: 700px) {
+            .stepper-inline-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ── Centroid Grid: fixed container + clickable cells + popup ── */
+        .centroid-grid-wrap {
+            max-height: 220px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border: 1px solid rgba(53,255,107,0.14);
+            border-radius: 12px;
+            background: rgba(2,6,13,0.92);
+            padding: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(53,255,107,0.3) transparent;
+        }
+        .centroid-grid-wrap::-webkit-scrollbar { width: 6px; }
+        .centroid-grid-wrap::-webkit-scrollbar-thumb { background: rgba(53,255,107,0.3); border-radius: 3px; }
+        .centroid-grid-wrap::-webkit-scrollbar-track { background: transparent; }
+        .centroid-grid-inner {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+            gap: 5px;
+        }
+        .centroid-cell {
+            background: rgba(53,255,107,0.06);
+            border: 1px solid rgba(53,255,107,0.15);
+            border-radius: 8px;
+            padding: 6px 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: center;
+            position: relative;
+        }
+        .centroid-cell:hover {
+            border-color: var(--accent-color);
+            background: rgba(53,255,107,0.14);
+            transform: translateY(-1px);
+        }
+        .centroid-cell.selected {
+            border-color: var(--accent-color);
+            background: rgba(53,255,107,0.18);
+            box-shadow: 0 0 8px rgba(53,255,107,0.2);
+        }
+        .centroid-cell-idx {
+            font-size: 0.6rem;
+            color: var(--muted-text);
+            display: block;
+            margin-bottom: 2px;
+        }
+        .centroid-cell-mean {
+            font-size: 0.72rem;
+            color: var(--accent-color);
+            font-weight: 600;
+            display: block;
+        }
+        .centroid-cell-count {
+            font-size: 0.62rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            display: block;
+        }
+
+        /* Centroid detail popup */
+        .centroid-popup {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            background: rgba(2,6,13,0.98);
+            border: 1px solid var(--accent-color);
+            border-radius: 12px;
+            padding: 16px 20px;
+            min-width: 280px;
+            max-width: 380px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(53,255,107,0.1);
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.78rem;
+            line-height: 1.8;
+            color: var(--text-color);
+        }
+        .centroid-popup.visible { display: block; }
+        .centroid-popup-header {
+            color: var(--accent-color);
+            font-weight: 700;
+            font-size: 0.82rem;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .centroid-popup-close {
+            background: none;
+            border: 1px solid rgba(53,255,107,0.3);
+            color: var(--text-color);
+            cursor: pointer;
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+        }
+        .centroid-popup-close:hover { border-color: var(--accent-color); color: var(--accent-color); }
+        .centroid-popup-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(53,255,107,0.08);
+        }
+        .centroid-popup-row:last-child { border-bottom: none; }
+        .centroid-popup-label { color: var(--muted-text); }
+        .centroid-popup-value { color: var(--text-color); font-weight: 600; }
+        .centroid-popup-binary {
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(53,255,107,0.15);
+            word-break: break-all;
+            font-size: 0.68rem;
+            line-height: 1.7;
+        }
+    </style>
 </head>
 <body>
     <header class="topbar">
@@ -94,22 +365,43 @@
                         <p>The trick is asymmetric compression: <strong style="color:var(--warning-color)">large centroids in the middle, tiny centroids near p0 and p100</strong>. The center can tolerate approximation. The tails cannot.</p>
                     </div>
                 </div>
-                <div class="callout"><strong>Core mental model:</strong> T-Digest keeps a compressed, weighted map of the distribution — but it spends its “precision budget” where percentile dashboards care most.</div>
+                <div class="callout"><strong>Core mental model:</strong> this demo is now a code stepper. Each click walks the pseudocode and the number line together, so you can see exactly which line changes the digest.</div>
 
-                <div class="hash-stream-wrap" style="margin-top:20px">
-                    <div class="hash-stream-bar">
-                        VALUE STREAM — POINTS → CENTROIDS
-                        <span class="auto-run-badge" id="td-stream-badge" style="display:none">● RUNNING</span>
+                <div class="code-stepper" style="margin-top:20px;">
+                    <div class="code-stepper-pseudo" id="td-stream-pseudo">
+                        <div class="code-stepper-header">CentroidStream.add(value)</div>
+                        <div class="pseudo-line"><span class="line-num">1</span>value arrives</div>
+                        <div class="pseudo-line"><span class="line-num">2</span>find nearest centroid c</div>
+                        <div class="pseudo-line"><span class="line-num">3</span>compute quantile q of c</div>
+                        <div class="pseudo-line"><span class="line-num">4</span>compute maxWeight(q, δ, n)</div>
+                        <div class="pseudo-line"><span class="line-num">5</span>if c.count + 1 ≤ maxWeight:</div>
+                        <div class="pseudo-line"><span class="line-num">6</span>    c.mean = (c.mean × c.count + value) / (c.count + 1)</div>
+                        <div class="pseudo-line"><span class="line-num">7</span>    c.count += 1</div>
+                        <div class="pseudo-line"><span class="line-num">8</span>else:</div>
+                        <div class="pseudo-line"><span class="line-num">9</span>    create new centroid(mean=value, count=1)</div>
+                        <div class="pseudo-line"><span class="line-num">10</span>if too many centroids: compress()</div>
                     </div>
-                    <div class="hash-stream-body">
-                        <p class="hash-stream-desc">Watch values arrive on a number line. Nearby observations merge into centroids, while isolated tail values remain small and precise.</p>
-                        <div class="hash-stream-layout">
-                            <div class="hash-stream-main">
-                                <div class="hash-stream-current" id="td-stream-current" style="min-height:160px;display:flex;flex-direction:column;gap:10px;justify-content:center;">
-                                    <div class="stream-current-label">CURRENT INSERT</div>
-                                    <div class="stream-current-name" id="td-stream-current-value">—</div>
-                                    <div class="stream-current-arrow" id="td-stream-current-action">↓ waiting for first value</div>
-                                    <div class="stream-current-bits" id="td-stream-current-summary" style="font-size:0.8rem;line-height:1.6;color:var(--text-color);text-align:center;">Centroids will form as the stream starts.</div>
+                    <div class="code-stepper-visual">
+                        <div class="hash-stream-wrap" style="margin-top:0;">
+                            <div class="hash-stream-bar">
+                                CODE STEPPER — VALUE STREAM → CENTROIDS
+                                <span class="auto-run-badge" id="td-stream-badge" style="display:none">● RUNNING</span>
+                            </div>
+                            <div class="hash-stream-body">
+                                <p class="hash-stream-desc">The pseudocode on the left drives the animation on the right. Watch the incoming sample, the nearest centroid glow, and the exact merge-or-create decision.</p>
+                                <div class="code-stepper-side-grid">
+                                    <div class="hash-stream-current" id="td-stream-current" style="min-height:150px;display:flex;flex-direction:column;gap:10px;justify-content:center;">
+                                        <div class="stream-current-label">CURRENT INSERT</div>
+                                        <div class="stream-current-name" id="td-stream-current-value">—</div>
+                                        <div class="stream-current-arrow" id="td-stream-current-action">↓ waiting for first value</div>
+                                        <div class="stream-current-bits" id="td-stream-current-summary" style="font-size:0.8rem;line-height:1.6;color:var(--text-color);text-align:center;">Centroids will form as the stream starts.</div>
+                                    </div>
+                                    <div class="note-card" style="margin-top:0;">
+                                        <div class="code-stepper-header">Current decision</div>
+                                        <div class="stepper-mini-card" style="margin-bottom:10px;"><div class="stepper-mini-label">Nearest centroid</div><div class="stepper-mini-value" id="td-stream-nearest">—</div></div>
+                                        <div class="stepper-mini-card" style="margin-bottom:10px;"><div class="stepper-mini-label">Quantile &amp; limit</div><div class="stepper-mini-value" id="td-stream-metrics">q=— · limit=—</div></div>
+                                        <div class="merge-math-chip" id="td-stream-math">Waiting for the first sample...</div>
+                                    </div>
                                 </div>
                                 <svg id="td-stream-svg" viewBox="0 0 760 220" style="width:100%;display:block;border:1px solid rgba(53,255,107,0.14);border-radius:12px;background:linear-gradient(180deg, rgba(2,6,13,0.96), rgba(0,10,2,0.95));margin:14px 0 18px;"></svg>
                                 <div class="hash-stream-stats">
@@ -130,12 +422,34 @@
                                         <input type="range" id="td-stream-speed" min="1" max="5" value="3" />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="hash-stream-history">
-                                <div class="stream-history-header">LAST 20 VALUES</div>
-                                <ul class="stream-history-list" id="td-stream-history-list">
-                                    <li class="stream-history-empty">Press Play or Step to begin...</li>
-                                </ul>
+                                <div class="code-stepper-footer-grid">
+                                    <div class="algo-breakdown-section">
+                                        <div class="algo-breakdown-label">INSERT BREAKDOWN — last 8 operations</div>
+                                        <div class="algo-breakdown-scroll">
+                                            <table class="algo-breakdown-table insert-log-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Value</th>
+                                                        <th>Nearest</th>
+                                                        <th>q</th>
+                                                        <th>Limit</th>
+                                                        <th>Decision</th>
+                                                        <th>Centroids</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="td-stream-breakdown-body">
+                                                    <tr class="algo-breakdown-empty"><td colspan="6">Press Play or Step to see each insertion walk the code.</td></tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="hash-stream-history">
+                                        <div class="stream-history-header">LAST 20 VALUES</div>
+                                        <ul class="stream-history-list" id="td-stream-history-list">
+                                            <li class="stream-history-empty">Press Play or Step to begin...</li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -156,58 +470,86 @@
                         <p>A common conceptual description is <span class="inline-formula">k(q) = δ / 2π × arcsin(2q - 1)</span>. You do not need the exact derivation to use it. The important idea is simple: <strong style="color:var(--accent-color)">tails map to tighter capacity limits</strong>.</p>
                     </div>
                 </div>
-                <div class="callout"><strong>Interpretation:</strong> the scale function is how T-Digest “bends space.” Quantiles near the tails get expanded, so the digest spends more centroids there.</div>
+                <div class="callout"><strong>Interpretation:</strong> the left panel shows the logic, while the right side visualizes why center centroids can get heavy and tail centroids must stay light.</div>
 
-                <div class="algo-demo-wrap">
-                    <div class="algo-demo-bar">
-                        INTERACTIVE — SCALE FUNCTION &amp; CENTROID CAPACITY
-                        <span class="auto-run-badge" id="td-scale-badge" style="display:none">● RUNNING</span>
+                <div class="code-stepper" style="margin-top:20px;">
+                    <div class="code-stepper-pseudo" id="td-scale-pseudo">
+                        <div class="code-stepper-header">ScaleDemo capacity logic</div>
+                        <div class="pseudo-line"><span class="line-num">1</span>q = quantile position of centroid</div>
+                        <div class="pseudo-line"><span class="line-num">2</span>k(q) = (δ/2π) × arcsin(2q - 1)</div>
+                        <div class="pseudo-line"><span class="line-num">3</span>maxWeight = 4n × q(1-q) / δ</div>
+                        <div class="pseudo-line"><span class="line-num">4</span>// at q=0.5: maxWeight is LARGE (center)</div>
+                        <div class="pseudo-line"><span class="line-num">5</span>// at q=0.01: maxWeight is TINY (tail)</div>
                     </div>
-                    <div class="algo-demo-body">
-                        <p class="algo-demo-desc">The curve below shows how maximum centroid size changes across the distribution. Stream values in and watch centroids stay small in the tails while the middle compresses aggressively.</p>
-                        <div class="algo-demo-controls">
-                            <button class="stream-play-btn" id="td-scale-play-btn">
-                                <svg id="td-scale-play-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
-                                <svg id="td-scale-pause-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
-                                <span id="td-scale-play-label">Play</span>
-                            </button>
-                            <button id="td-scale-step-btn">+10</button>
-                            <button id="td-scale-bulk-100">+100</button>
-                            <button id="td-scale-bulk-1k">+1K</button>
-                            <button id="td-scale-bulk-10k">+10K</button>
-                            <button id="td-scale-bulk-100k">+100K</button>
-                            <button id="td-scale-reset-btn">Reset</button>
-                            <div class="stream-speed-control">
-                                <label for="td-scale-speed">Speed</label>
-                                <input type="range" id="td-scale-speed" min="1" max="5" value="3" />
+                    <div class="code-stepper-visual">
+                        <div class="algo-demo-wrap" style="margin-top:0;">
+                            <div class="algo-demo-bar">
+                                INTERACTIVE — SCALE FUNCTION &amp; CENTROID CAPACITY
+                                <span class="auto-run-badge" id="td-scale-badge" style="display:none">● RUNNING</span>
                             </div>
-                            <div class="stream-speed-control">
-                                <label for="td-scale-delta">δ=<span id="td-scale-delta-label">100</span></label>
-                                <input type="range" id="td-scale-delta" min="25" max="300" value="100" />
-                            </div>
-                        </div>
-                        <canvas id="td-scale-canvas" width="860" height="230" style="width:100%;display:block;border:1px solid rgba(53,255,107,0.14);border-radius:12px;background:rgba(2,6,13,0.92);margin:18px 0 16px;"></canvas>
-                        <div class="ll-registers-section">
-                            <div class="ll-registers-label">CENTROID SIZE GRID — larger cells mean heavier centroids</div>
-                            <div class="ll-registers-grid" id="td-scale-grid"></div>
-                        </div>
-                        <div class="algo-breakdown-section">
-                            <div class="algo-breakdown-label">INSERT BREAKDOWN — last 10 processed</div>
-                            <div class="algo-breakdown-scroll">
-                                <table class="algo-breakdown-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Value</th>
-                                            <th>Nearest Centroid</th>
-                                            <th>Merged?</th>
-                                            <th>New Size</th>
-                                            <th>Quantile Region</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="td-scale-breakdown-body">
-                                        <tr class="algo-breakdown-empty"><td colspan="5">Press Play or Step to see capacity decisions...</td></tr>
-                                    </tbody>
-                                </table>
+                            <div class="algo-demo-body">
+                                <p class="algo-demo-desc">Each batch updates the chart, grid, and the pseudocode highlight. The final flash tells you whether the digest was operating in the roomy center or the tightly constrained tails.</p>
+                                <div class="algo-demo-controls">
+                                    <button class="stream-play-btn" id="td-scale-play-btn">
+                                        <svg id="td-scale-play-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                                        <svg id="td-scale-pause-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+                                        <span id="td-scale-play-label">Play</span>
+                                    </button>
+                                    <button id="td-scale-step-btn">+10</button>
+                                    <button id="td-scale-bulk-100">+100</button>
+                                    <button id="td-scale-bulk-1k">+1K</button>
+                                    <button id="td-scale-bulk-10k">+10K</button>
+                                    <button id="td-scale-bulk-100k">+100K</button>
+                                    <button id="td-scale-reset-btn">Reset</button>
+                                    <div class="stream-speed-control">
+                                        <label for="td-scale-speed">Speed</label>
+                                        <input type="range" id="td-scale-speed" min="1" max="5" value="3" />
+                                    </div>
+                                    <div class="stream-speed-control">
+                                        <label for="td-scale-delta">δ=<span id="td-scale-delta-label">100</span></label>
+                                        <input type="range" id="td-scale-delta" min="25" max="300" value="100" />
+                                    </div>
+                                </div>
+                                <div class="stepper-stat-grid">
+                                    <div class="stepper-mini-card"><div class="stepper-mini-label">Latest value</div><div class="stepper-mini-value" id="td-scale-current-value">—</div></div>
+                                    <div class="stepper-mini-card"><div class="stepper-mini-label">Quantile q</div><div class="stepper-mini-value" id="td-scale-current-q">—</div></div>
+                                    <div class="stepper-mini-card"><div class="stepper-mini-label">k(q)</div><div class="stepper-mini-value" id="td-scale-current-k">—</div></div>
+                                    <div class="stepper-mini-card"><div class="stepper-mini-label">maxWeight</div><div class="stepper-mini-value" id="td-scale-current-max">—</div></div>
+                                </div>
+                                <div class="note-card" style="margin-top:0;">
+                                    <div class="stepper-inline-grid">
+                                        <div>
+                                            <div class="code-stepper-header">Why this matters</div>
+                                            <div id="td-scale-current-note" style="color:var(--text-color);line-height:1.7;">Run the stream to see center and tail capacity decisions.</div>
+                                        </div>
+                                        <div class="merge-math-chip" id="td-scale-current-region">region: —</div>
+                                    </div>
+                                </div>
+                                <canvas id="td-scale-canvas" width="860" height="230" style="width:100%;display:block;border:1px solid rgba(53,255,107,0.14);border-radius:12px;background:rgba(2,6,13,0.92);margin:18px 0 16px;"></canvas>
+                                <div class="ll-registers-section">
+                                    <div class="ll-registers-label">CENTROID SIZE GRID — larger cells mean heavier centroids</div>
+                                    <div class="centroid-grid-wrap"><div class="centroid-grid-inner" id="td-scale-grid"></div></div>
+                                </div>
+                                <div class="algo-breakdown-section">
+                                    <div class="algo-breakdown-label">INSERT BREAKDOWN — last 10 processed</div>
+                                    <div class="algo-breakdown-scroll">
+                                        <table class="algo-breakdown-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Value</th>
+                                                    <th>q</th>
+                                                    <th>k(q)</th>
+                                                    <th>maxWeight</th>
+                                                    <th>Region</th>
+                                                    <th>Decision</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="td-scale-breakdown-body">
+                                                <tr class="algo-breakdown-empty"><td colspan="6">Press Play or Step to see capacity decisions...</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -354,7 +696,7 @@
                             <div class="hash-card"><div class="hash-card-label">Approx Bytes</div><div class="hash-card-value" id="td-memory-bytes">0 B</div></div>
                             <div class="hash-card"><div class="hash-card-label">Formula</div><div class="hash-card-value" id="td-memory-formula">5δ × 12</div></div>
                         </div>
-                        <div class="hll-registers" id="td-memory-grid"></div>
+                        <div class="centroid-grid-wrap"><div class="centroid-grid-inner" id="td-memory-grid"></div></div>
                         <div class="note-card" style="margin-top:18px;">
                             <h4 style="color:var(--accent-color);margin:0 0 10px 0;font-size:0.9rem;">Selected Centroid Binary Layout</h4>
                             <div id="td-memory-binary" style="font-family:'Courier New',Consolas,monospace;font-size:0.75rem;line-height:1.8;word-break:break-all;color:var(--text-color);">No centroid selected yet.</div>
@@ -379,35 +721,70 @@
                 </div>
 
                 <div class="hll-demo-wrap">
-                    <div class="hll-demo-bar">STEP-BY-STEP VALUE INSERTION</div>
+                    <div class="hll-demo-bar">CODE STEPPER — SINGLE VALUE INSERTION</div>
                     <div class="hll-demo-body">
                         <div class="hash-input-row" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px;">
                             <input id="td-insert-input" type="number" step="0.1" placeholder="Try 42, 120, 880..." style="flex:1;min-width:220px;padding:12px 14px;border-radius:10px;border:1px solid rgba(53,255,107,0.2);background:rgba(2,6,13,0.9);color:var(--text-color);" />
-                            <button id="td-insert-btn" class="stream-play-btn" type="button">Hash &amp; Insert</button>
+                            <button id="td-insert-btn" class="stream-play-btn" type="button">Insert &amp; Step</button>
                             <button id="td-insert-auto" type="button">Auto Demo</button>
                             <button id="td-insert-reset" type="button">Reset</button>
+                            <div class="stream-speed-control" style="margin-left:0;">
+                                <label for="td-insert-speed">Speed</label>
+                                <input type="range" id="td-insert-speed" min="1" max="5" value="3" />
+                            </div>
                         </div>
-                        <div class="note-card" style="margin-top:0;">
-                            <strong style="color:var(--accent-color);display:block;margin-bottom:8px;">Phases</strong>
-                            <ol style="margin:0 0 0 18px;line-height:1.8;color:var(--text-color);font-size:0.9rem;">
-                                <li>New value arrives</li>
-                                <li>Find nearest centroid by mean distance</li>
-                                <li>Check scale-function weight limit</li>
-                                <li>If allowed, recompute mean and increment count</li>
-                                <li>Otherwise create a new centroid</li>
-                                <li>Compress if the centroid list grows too large</li>
-                            </ol>
+                        <div class="code-stepper">
+                            <div class="code-stepper-pseudo" id="td-insert-pseudo">
+                                <div class="code-stepper-header">TDigest.add(x)</div>
+                                <div class="pseudo-line"><span class="line-num">1</span>x arrives</div>
+                                <div class="pseudo-line"><span class="line-num">2</span>sort centroids by mean</div>
+                                <div class="pseudo-line"><span class="line-num">3</span>locate nearest centroid c</div>
+                                <div class="pseudo-line"><span class="line-num">4</span>distance = |x - c.mean|</div>
+                                <div class="pseudo-line"><span class="line-num">5</span>q = quantile around c</div>
+                                <div class="pseudo-line"><span class="line-num">6</span>limit = maxWeight(q, δ, n)</div>
+                                <div class="pseudo-line"><span class="line-num">7</span>if c.count + 1 ≤ limit</div>
+                                <div class="pseudo-line"><span class="line-num">8</span>    mergedMean = (c.mean × c.count + x) / (c.count + 1)</div>
+                                <div class="pseudo-line"><span class="line-num">9</span>    c.mean ← mergedMean</div>
+                                <div class="pseudo-line"><span class="line-num">10</span>    c.count += 1</div>
+                                <div class="pseudo-line"><span class="line-num">11</span>else create new centroid(mean=x, count=1)</div>
+                                <div class="pseudo-line"><span class="line-num">12</span>if centroid count > 5δ: compress()</div>
+                            </div>
+                            <div class="code-stepper-visual">
+                                <div class="code-stepper-header">Visualization + merge math</div>
+                                <svg id="td-insert-viz" viewBox="0 0 920 420" style="width:100%;display:block;border:1px solid rgba(53,255,107,0.14);border-radius:12px;background:linear-gradient(180deg, rgba(2,6,13,0.96), rgba(0,10,2,0.95));margin-bottom:16px;"></svg>
+                                <div class="stepper-stat-grid">
+                                    <div class="stepper-mini-card"><div class="stepper-mini-label">Incoming</div><div class="stepper-mini-value" id="td-insert-current-value">—</div></div>
+                                    <div class="stepper-mini-card"><div class="stepper-mini-label">Nearest centroid</div><div class="stepper-mini-value" id="td-insert-nearest">—</div></div>
+                                    <div class="stepper-mini-card"><div class="stepper-mini-label">Limit @ q</div><div class="stepper-mini-value" id="td-insert-limit">—</div></div>
+                                    <div class="stepper-mini-card"><div class="stepper-mini-label">Decision</div><div class="stepper-mini-value" id="td-insert-decision">waiting</div></div>
+                                </div>
+                                <div class="note-card" style="margin-top:0;">
+                                    <div class="code-stepper-header">Current explanation</div>
+                                    <div id="td-insert-explainer" style="color:var(--text-color);line-height:1.7;">Seeded centroids are ready. Insert a value to walk the code path.</div>
+                                </div>
+                                <div class="callout code-stepper-summary" id="td-insert-summary">The digest is seeded with a few clusters so you can focus on the insertion logic instead of the empty-start edge case.</div>
+                                <div class="algo-breakdown-section" style="margin-top:18px;">
+                                    <div class="algo-breakdown-label">LAST 8 INSERTIONS</div>
+                                    <div class="algo-breakdown-scroll">
+                                        <table class="algo-breakdown-table insert-log-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Value</th>
+                                                    <th>Nearest</th>
+                                                    <th>Distance</th>
+                                                    <th>Limit</th>
+                                                    <th>Action</th>
+                                                    <th>Centroids</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="td-insert-log-body">
+                                                <tr class="algo-breakdown-empty"><td colspan="6">Insert a value to create an operation log.</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div id="td-insert-output" style="margin-top:18px;display:block;">
-                            <div class="note-card" id="td-insert-phase-1" style="display:none"></div>
-                            <div class="note-card" id="td-insert-phase-2" style="display:none"></div>
-                            <div class="note-card" id="td-insert-phase-3" style="display:none"></div>
-                            <div class="note-card" id="td-insert-phase-4" style="display:none"></div>
-                            <div class="note-card" id="td-insert-phase-5" style="display:none"></div>
-                            <div class="note-card" id="td-insert-phase-6" style="display:none"></div>
-                            <div class="callout" id="td-insert-summary" style="display:none"></div>
-                        </div>
-                        <div class="hll-registers" id="td-insert-grid" style="margin-top:18px;"></div>
                     </div>
                 </div>
                 <div class="step-nav-cards">
@@ -421,6 +798,18 @@
                 <div class="blog-prose">
                     <div class="note-card">
                         <p>This playground combines the full workflow: stream values from different distributions, inspect centroid placement, tune <strong style="color:var(--accent-color)">δ</strong>, and ask percentile queries directly.</p>
+                    </div>
+                </div>
+                <div class="pseudo-collapse">
+                    <button id="td-playground-pseudo-toggle" class="stream-play-btn" type="button">Show pseudocode reference</button>
+                    <div class="pseudo-collapse-body" id="td-playground-pseudo-panel">
+                        <div class="code-stepper-pseudo" id="td-playground-pseudo">
+                            <div class="code-stepper-header">Playground reference</div>
+                            <div class="pseudo-line"><span class="line-num">1</span>x = sample(distribution)</div>
+                            <div class="pseudo-line"><span class="line-num">2</span>digest.add(x)</div>
+                            <div class="pseudo-line"><span class="line-num">3</span>if centroid count grows too large: compress()</div>
+                            <div class="pseudo-line"><span class="line-num">4</span>estimate quantile(p) from centroids</div>
+                        </div>
                     </div>
                 </div>
                 <div class="hll-demo-wrap">
@@ -476,7 +865,7 @@
                         </div>
                         <div class="ll-registers-section">
                             <div class="ll-registers-label">CENTROID GRID — mean, count, quantile range</div>
-                            <div class="hll-registers" id="td-playground-grid"></div>
+                            <div class="centroid-grid-wrap"><div class="centroid-grid-inner" id="td-playground-grid"></div></div>
                         </div>
                     </div>
                 </div>
@@ -886,36 +1275,58 @@
 
             var snap = digest.snapshot();
             var now = digest.operation || 0;
+            var activeIndex = typeof options.activeIndex === 'number' ? options.activeIndex : -1;
             for (var i = 0; i < snap.length; i++) {
                 var c = snap[i];
                 var radius = 5 + Math.sqrt(c.count) * 2.2;
                 var freshness = clamp(1 - ((now - c.stamp) / 40), 0.18, 1);
                 var cy = axisY - 25 - Math.min(110, radius * 2 + Math.abs(c.q0 - 0.5) * 60);
+                if (i === activeIndex) {
+                    svg.appendChild(el('circle', {
+                        cx: xScale(c.mean), cy: cy, r: radius + 7,
+                        fill: 'rgba(255,255,255,0.08)', stroke: 'rgba(255,255,255,0.45)', 'stroke-width': '1.2'
+                    }));
+                }
                 var circle = el('circle', {
                     cx: xScale(c.mean),
                     cy: cy,
                     r: radius,
-                    fill: 'rgba(53,255,107,' + (0.18 + freshness * 0.35) + ')',
-                    stroke: 'rgba(154,255,87,' + (0.25 + freshness * 0.55) + ')',
-                    'stroke-width': '1.5'
+                    fill: i === activeIndex ? 'rgba(255,255,255,0.92)' : 'rgba(53,255,107,' + (0.18 + freshness * 0.35) + ')',
+                    stroke: i === activeIndex ? 'rgba(53,255,107,0.95)' : 'rgba(154,255,87,' + (0.25 + freshness * 0.55) + ')',
+                    'stroke-width': i === activeIndex ? '2.5' : '1.5'
                 });
                 svg.appendChild(circle);
 
                 if (options.showLabels && c.count > 1) {
-                    var label = el('text', { x: xScale(c.mean), y: cy + 4, fill: '#02060d', 'font-size': '10', 'font-weight': '700', 'text-anchor': 'middle' });
+                    var label = el('text', { x: xScale(c.mean), y: cy + 4, fill: i === activeIndex ? '#02060d' : '#02060d', 'font-size': '10', 'font-weight': '700', 'text-anchor': 'middle' });
                     label.textContent = c.count;
                     svg.appendChild(label);
                 }
             }
 
             if (typeof currentValue === 'number' && isFinite(currentValue)) {
+                var currentX = xScale(currentValue);
                 svg.appendChild(el('line', {
-                    x1: xScale(currentValue), y1: 24, x2: xScale(currentValue), y2: axisY - 8,
+                    x1: currentX, y1: 24, x2: currentX, y2: axisY - 8,
                     stroke: 'rgba(255,255,255,0.25)', 'stroke-width': '1', 'stroke-dasharray': '4 4'
                 }));
                 svg.appendChild(el('circle', {
-                    cx: xScale(currentValue), cy: 22, r: 7,
+                    cx: currentX, cy: 22, r: 7,
                     fill: 'rgba(255,255,255,0.95)', stroke: 'var(--accent-color)', 'stroke-width': '2'
+                }));
+            }
+
+            if (typeof options.previewMean === 'number' && isFinite(options.previewMean) && activeIndex >= 0 && snap[activeIndex]) {
+                var fromX = xScale(snap[activeIndex].mean);
+                var toX = xScale(options.previewMean);
+                var arrowY = 36;
+                svg.appendChild(el('line', {
+                    x1: fromX, y1: arrowY, x2: toX, y2: arrowY,
+                    stroke: 'rgba(154,255,87,0.95)', 'stroke-width': '3', 'stroke-linecap': 'round'
+                }));
+                svg.appendChild(el('polygon', {
+                    points: (toX + ',' + arrowY) + ' ' + (toX - 8) + ',' + (arrowY - 5) + ' ' + (toX - 8) + ',' + (arrowY + 5),
+                    fill: 'rgba(154,255,87,0.95)'
                 }));
             }
 
@@ -929,6 +1340,252 @@
                     tl.textContent = marks[m].label;
                     svg.appendChild(tl);
                 }
+            }
+
+            if (options.annotation) {
+                var note = el('text', { x: padX, y: 22, fill: 'rgba(255,255,255,0.8)', 'font-size': '12' });
+                note.textContent = options.annotation;
+                svg.appendChild(note);
+            }
+        }
+
+        function setPseudoLines(lines, activeIndex) {
+            if (!lines) return;
+            for (var i = 0; i < lines.length; i++) {
+                lines[i].classList.toggle('active', i === activeIndex);
+                lines[i].classList.toggle('done', activeIndex >= 0 && i < activeIndex);
+            }
+        }
+
+        function clearPseudoLines(lines) {
+            if (!lines) return;
+            for (var i = 0; i < lines.length; i++) {
+                lines[i].classList.remove('active');
+                lines[i].classList.remove('done');
+            }
+        }
+
+        function cancelTimers(timerList) {
+            if (!timerList) return;
+            while (timerList.length) clearTimeout(timerList.pop());
+        }
+
+        function drawInsertionVisualizer(svg, digest, meta) {
+            if (!svg) return;
+            meta = meta || {};
+            while (svg.firstChild) svg.removeChild(svg.firstChild);
+            var ns = 'http://www.w3.org/2000/svg';
+            var W = svg.viewBox.baseVal.width || 920;
+            var H = svg.viewBox.baseVal.height || 420;
+            var padLeft = 66;
+            var padRight = 36;
+            var axisY = 102;
+            var chartTop = 178;
+            var chartBottom = H - 30;
+            var snap = digest.snapshot();
+            var activeIndex = typeof meta.activeIndex === 'number' ? meta.activeIndex : -1;
+            var maxCount = 1;
+            for (var i = 0; i < snap.length; i++) maxCount = Math.max(maxCount, snap[i].count);
+            function xScale(v) { return padLeft + clamp(v, 0, 1000) / 1000 * (W - padLeft - padRight); }
+            function el(name, attrs) {
+                var node = document.createElementNS(ns, name);
+                for (var key in attrs) if (attrs.hasOwnProperty(key)) node.setAttribute(key, attrs[key]);
+                return node;
+            }
+
+            svg.appendChild(el('text', { x: padLeft, y: 26, fill: 'rgba(255,255,255,0.78)', 'font-size': '14', 'font-weight': '700' }));
+            svg.lastChild.textContent = 'Top: value axis + nearest centroid   |   Bottom: centroid counts';
+            svg.appendChild(el('line', { x1: padLeft, y1: axisY, x2: W - padRight, y2: axisY, stroke: 'rgba(53,255,107,0.42)', 'stroke-width': '2' }));
+            for (var t = 0; t <= 10; t++) {
+                var xv = xScale(t * 100);
+                svg.appendChild(el('line', { x1: xv, y1: axisY - 5, x2: xv, y2: axisY + 5, stroke: 'rgba(255,255,255,0.18)', 'stroke-width': '1' }));
+                var tick = el('text', { x: xv, y: axisY + 18, fill: 'rgba(255,255,255,0.55)', 'font-size': '10', 'text-anchor': 'middle' });
+                tick.textContent = t * 100;
+                svg.appendChild(tick);
+            }
+
+            for (var j = 0; j < snap.length; j++) {
+                var c = snap[j];
+                var cx = xScale(c.mean);
+                var cy = axisY - 26 - Math.min(34, Math.sqrt(c.count) * 3);
+                if (j === activeIndex) {
+                    svg.appendChild(el('circle', { cx: cx, cy: cy, r: 18, fill: 'rgba(255,255,255,0.08)', stroke: 'rgba(255,255,255,0.45)', 'stroke-width': '1.4' }));
+                }
+                svg.appendChild(el('circle', {
+                    cx: cx,
+                    cy: cy,
+                    r: 6 + Math.sqrt(c.count) * 1.6,
+                    fill: j === activeIndex ? 'rgba(255,255,255,0.92)' : 'rgba(53,255,107,0.28)',
+                    stroke: j === activeIndex ? 'rgba(53,255,107,0.95)' : 'rgba(154,255,87,0.6)',
+                    'stroke-width': j === activeIndex ? '2.2' : '1.3'
+                }));
+                var centroidLabel = el('text', { x: cx, y: cy + 3, fill: '#02060d', 'font-size': '10', 'font-weight': '700', 'text-anchor': 'middle' });
+                centroidLabel.textContent = c.count;
+                svg.appendChild(centroidLabel);
+            }
+
+            if (typeof meta.value === 'number' && isFinite(meta.value)) {
+                var currentX = xScale(meta.value);
+                svg.appendChild(el('line', { x1: currentX, y1: 34, x2: currentX, y2: axisY + 4, stroke: 'rgba(255,255,255,0.35)', 'stroke-width': '1.5', 'stroke-dasharray': '4 4' }));
+                svg.appendChild(el('circle', { cx: currentX, cy: 30, r: 8, fill: 'rgba(255,255,255,0.95)', stroke: 'var(--accent-color)', 'stroke-width': '2' }));
+                var incomingLabel = el('text', { x: currentX, y: 16, fill: 'rgba(255,255,255,0.9)', 'font-size': '11', 'text-anchor': 'middle' });
+                incomingLabel.textContent = 'x=' + meta.value.toFixed(1);
+                svg.appendChild(incomingLabel);
+            }
+
+            if (typeof meta.oldMean === 'number' && typeof meta.previewMean === 'number' && activeIndex >= 0) {
+                var fromX = xScale(meta.oldMean);
+                var toX = xScale(meta.previewMean);
+                var arrowY = 58;
+                svg.appendChild(el('line', { x1: fromX, y1: arrowY, x2: toX, y2: arrowY, stroke: 'rgba(154,255,87,0.95)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+                svg.appendChild(el('polygon', { points: (toX + ',' + arrowY) + ' ' + (toX - 9) + ',' + (arrowY - 5) + ' ' + (toX - 9) + ',' + (arrowY + 5), fill: 'rgba(154,255,87,0.95)' }));
+                var mathLabel = el('text', { x: (fromX + toX) / 2, y: arrowY - 10, fill: 'rgba(154,255,87,0.95)', 'font-size': '11', 'text-anchor': 'middle' });
+                mathLabel.textContent = meta.oldMean.toFixed(1) + ' → ' + meta.previewMean.toFixed(1);
+                svg.appendChild(mathLabel);
+            }
+
+            if (meta.ghostNew && typeof meta.value === 'number') {
+                var ghostX = xScale(meta.value);
+                svg.appendChild(el('circle', { cx: ghostX, cy: axisY - 26, r: 11, fill: 'rgba(255,255,255,0.06)', stroke: 'rgba(255,255,255,0.72)', 'stroke-width': '1.5', 'stroke-dasharray': '4 4' }));
+            }
+
+            var rowCount = Math.max(snap.length, meta.ghostNew ? activeIndex + 1 : 0);
+            rowCount = Math.max(rowCount, 1);
+            var rowHeight = Math.min(20, Math.max(12, (chartBottom - chartTop) / rowCount));
+            for (var r = 0; r < rowCount; r++) {
+                var y = chartTop + r * rowHeight;
+                svg.appendChild(el('line', { x1: padLeft, y1: y + rowHeight - 2, x2: W - padRight, y2: y + rowHeight - 2, stroke: 'rgba(255,255,255,0.05)', 'stroke-width': '1' }));
+                var item = snap[r];
+                var label = el('text', { x: padLeft, y: y + rowHeight / 2 + 4, fill: 'rgba(255,255,255,0.72)', 'font-size': '11' });
+                if (item) label.textContent = '#' + r + '  μ=' + item.mean.toFixed(1);
+                else if (meta.ghostNew && r === activeIndex) label.textContent = '#' + r + '  μ=' + meta.value.toFixed(1);
+                else label.textContent = '#' + r;
+                svg.appendChild(label);
+                if (item) {
+                    var barW = (item.count / maxCount) * 220;
+                    svg.appendChild(el('rect', {
+                        x: padLeft + 118,
+                        y: y + 3,
+                        width: Math.max(8, barW),
+                        height: Math.max(8, rowHeight - 6),
+                        rx: 6,
+                        fill: r === activeIndex ? 'rgba(255,255,255,0.82)' : 'rgba(53,255,107,0.24)',
+                        stroke: r === activeIndex ? 'rgba(53,255,107,0.9)' : 'rgba(154,255,87,0.28)',
+                        'stroke-width': r === activeIndex ? '1.5' : '1'
+                    }));
+                    var barLabel = el('text', { x: padLeft + 126 + Math.max(8, barW), y: y + rowHeight / 2 + 4, fill: 'rgba(255,255,255,0.82)', 'font-size': '11' });
+                    barLabel.textContent = 'count=' + item.count;
+                    svg.appendChild(barLabel);
+                } else if (meta.ghostNew && r === activeIndex) {
+                    svg.appendChild(el('rect', {
+                        x: padLeft + 118,
+                        y: y + 3,
+                        width: 24,
+                        height: Math.max(8, rowHeight - 6),
+                        rx: 6,
+                        fill: 'rgba(255,255,255,0.08)',
+                        stroke: 'rgba(255,255,255,0.72)',
+                        'stroke-width': '1.5',
+                        'stroke-dasharray': '4 4'
+                    }));
+                }
+            }
+
+            if (meta.message) {
+                var note = el('text', { x: padLeft, y: H - 8, fill: 'rgba(255,255,255,0.8)', 'font-size': '12' });
+                note.textContent = meta.message;
+                svg.appendChild(note);
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           SHARED CENTROID GRID UTILITIES
+           Renders clickable centroid cells with popup detail view
+        ══════════════════════════════════════════════════════════ */
+
+        var centroidPopup = {
+            el: null,
+            titleEl: null,
+            bodyEl: null,
+            closeEl: null,
+            visible: false,
+            init: function () {
+                this.el = document.getElementById('centroid-popup');
+                this.titleEl = document.getElementById('centroid-popup-title');
+                this.bodyEl = document.getElementById('centroid-popup-body');
+                this.closeEl = document.getElementById('centroid-popup-close');
+                var self = this;
+                if (this.closeEl) this.closeEl.addEventListener('click', function () { self.hide(); });
+                document.addEventListener('click', function (e) {
+                    if (self.visible && self.el && !self.el.contains(e.target) && !e.target.closest('.centroid-cell')) {
+                        self.hide();
+                    }
+                });
+            },
+            show: function (centroid, cellEl) {
+                if (!this.el || !this.bodyEl) return;
+                this.titleEl.textContent = 'Centroid #' + centroid.index;
+                var rows = [
+                    { label: 'Mean (μ)', value: centroid.mean.toFixed(4) },
+                    { label: 'Count', value: centroid.count.toLocaleString() },
+                    { label: 'Quantile range', value: pct(centroid.q0) + ' → ' + pct(centroid.q1) },
+                    { label: 'Quantile center', value: pct((centroid.q0 + centroid.q1) / 2) },
+                    { label: 'Memory', value: '12 bytes (8 float64 + 4 int32)' }
+                ];
+                var html = '';
+                for (var i = 0; i < rows.length; i++) {
+                    html += '<div class="centroid-popup-row"><span class="centroid-popup-label">' + rows[i].label + '</span><span class="centroid-popup-value">' + rows[i].value + '</span></div>';
+                }
+                html += '<div class="centroid-popup-binary">';
+                html += '<span style="color:var(--accent-color)">mean float64:</span> ' + float64Bits(centroid.mean) + '<br>';
+                html += '<span style="color:var(--warning-color)">count int32:</span> ' + int32Bits(centroid.count);
+                html += '</div>';
+                this.bodyEl.innerHTML = html;
+                // Position near the cell
+                var rect = cellEl.getBoundingClientRect();
+                var popW = 320;
+                var left = Math.min(rect.left, window.innerWidth - popW - 20);
+                var top = rect.bottom + 8;
+                if (top + 300 > window.innerHeight) top = rect.top - 280;
+                this.el.style.left = Math.max(10, left) + 'px';
+                this.el.style.top = Math.max(10, top) + 'px';
+                this.el.classList.add('visible');
+                this.visible = true;
+            },
+            hide: function () {
+                if (this.el) this.el.classList.remove('visible');
+                this.visible = false;
+            }
+        };
+
+        function renderCentroidGrid(gridEl, digest, selectedIdx) {
+            if (!gridEl) return;
+            gridEl.innerHTML = '';
+            var snap = digest.snapshot();
+            for (var i = 0; i < snap.length; i++) {
+                var c = snap[i];
+                var cell = document.createElement('div');
+                cell.className = 'centroid-cell' + (i === selectedIdx ? ' selected' : '');
+                cell.setAttribute('data-idx', i);
+                cell.innerHTML =
+                    '<span class="centroid-cell-idx">#' + i + '</span>' +
+                    '<span class="centroid-cell-mean">' + c.mean.toFixed(1) + '</span>' +
+                    '<span class="centroid-cell-count">n=' + c.count + '</span>';
+                // Color intensity by count
+                var intensity = clamp(c.count / 30, 0.08, 0.5);
+                cell.style.background = 'rgba(53,255,107,' + intensity + ')';
+                cell.style.borderColor = 'rgba(154,255,87,' + (0.15 + intensity) + ')';
+                (function (centroidData, cellEl) {
+                    cellEl.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        centroidPopup.show(centroidData, cellEl);
+                        // Highlight selected
+                        var siblings = gridEl.querySelectorAll('.centroid-cell');
+                        for (var s = 0; s < siblings.length; s++) siblings[s].classList.remove('selected');
+                        cellEl.classList.add('selected');
+                    });
+                })(c, cell);
+                gridEl.appendChild(cell);
             }
         }
 
@@ -1009,9 +1666,26 @@
         });
 
         var CentroidStream = (function () {
-            var SPEED_MAP = [850, 520, 320, 180, 70];
+            var PHASE_DELAY = [440, 340, 260, 190, 130];
             var MAX_HISTORY = 20;
-            var state = { running: false, timerId: null, digest: new TDigest(80), rng: makeRng('stream-demo'), history: [], lastValue: null, lastAction: null };
+            var state = {
+                running: false,
+                timerId: null,
+                phaseTimers: [],
+                digest: new TDigest(80),
+                rng: makeRng('stream-demo'),
+                history: [],
+                breakdown: [],
+                lastValue: null,
+                lastAction: null,
+                activeIndex: -1,
+                pendingValue: null,
+                previewMean: null,
+                visualDigest: null,
+                phaseTitle: '',
+                phaseSummary: '',
+                currentPreview: null
+            };
             var dom = {};
 
             function resolveDOM() {
@@ -1019,6 +1693,9 @@
                 dom.currentValue = document.getElementById('td-stream-current-value');
                 dom.currentAction = document.getElementById('td-stream-current-action');
                 dom.currentSummary = document.getElementById('td-stream-current-summary');
+                dom.nearest = document.getElementById('td-stream-nearest');
+                dom.metrics = document.getElementById('td-stream-metrics');
+                dom.math = document.getElementById('td-stream-math');
                 dom.svg = document.getElementById('td-stream-svg');
                 dom.total = document.getElementById('td-stream-total');
                 dom.centroids = document.getElementById('td-stream-centroids');
@@ -1031,12 +1708,22 @@
                 dom.resetBtn = document.getElementById('td-stream-reset-btn');
                 dom.speed = document.getElementById('td-stream-speed');
                 dom.historyList = document.getElementById('td-stream-history-list');
+                dom.breakdownBody = document.getElementById('td-stream-breakdown-body');
+                dom.pseudo = document.getElementById('td-stream-pseudo');
+                dom.pseudoLines = dom.pseudo ? dom.pseudo.querySelectorAll('.pseudo-line') : [];
             }
-
-            function buildGrid() {}
 
             function nextValue() {
                 return sampleDistribution(state.digest.totalCount % 2 ? 'normal' : 'bimodal', state.rng);
+            }
+
+            function getPhaseDelay() {
+                var speed = dom.speed ? parseInt(dom.speed.value, 10) : 3;
+                return PHASE_DELAY[Math.max(0, Math.min(PHASE_DELAY.length - 1, speed - 1))];
+            }
+
+            function currentDisplayValue() {
+                return state.pendingValue == null ? state.lastValue : state.pendingValue;
             }
 
             function renderHistory() {
@@ -1055,47 +1742,178 @@
                 }
             }
 
+            function renderBreakdown() {
+                if (!dom.breakdownBody) return;
+                if (!state.breakdown.length) {
+                    dom.breakdownBody.innerHTML = '<tr class="algo-breakdown-empty"><td colspan="6">Press Play or Step to see each insertion walk the code.</td></tr>';
+                    return;
+                }
+                dom.breakdownBody.innerHTML = '';
+                for (var i = 0; i < state.breakdown.length; i++) {
+                    var row = state.breakdown[i];
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = '<td>' + row.value.toFixed(1) + '</td>' +
+                        '<td>' + row.nearest + '</td>' +
+                        '<td>' + row.q + '</td>' +
+                        '<td>' + row.limit + '</td>' +
+                        '<td class="' + (row.action === 'merge' ? 'bd-yes' : 'bd-no') + '">' + row.label + '</td>' +
+                        '<td>' + row.centroids + '</td>';
+                    dom.breakdownBody.appendChild(tr);
+                }
+            }
+
             function render() {
                 if (dom.total) dom.total.textContent = state.digest.totalCount.toLocaleString();
                 if (dom.centroids) dom.centroids.textContent = state.digest.centroids.length.toLocaleString();
                 if (dom.delta) dom.delta.textContent = state.digest.delta;
-                if (dom.currentValue) dom.currentValue.textContent = state.lastValue == null ? '—' : state.lastValue.toFixed(1);
-                if (dom.currentAction) dom.currentAction.textContent = state.lastAction ? state.lastAction : '↓ waiting for first value';
+                if (dom.currentValue) dom.currentValue.textContent = currentDisplayValue() == null ? '—' : currentDisplayValue().toFixed(1);
+                if (dom.currentAction) dom.currentAction.textContent = state.phaseTitle || state.lastAction || '↓ waiting for first value';
                 if (dom.currentSummary) {
-                    if (!state.digest.centroids.length) dom.currentSummary.textContent = 'Centroids will form as the stream starts.';
+                    if (state.phaseSummary) dom.currentSummary.innerHTML = state.phaseSummary;
+                    else if (!state.digest.centroids.length) dom.currentSummary.textContent = 'Centroids will form as the stream starts.';
                     else dom.currentSummary.innerHTML = 'Current compression ratio: <strong style="color:var(--accent-color)">' + state.digest.compressionRatio().toFixed(1) + '×</strong> &nbsp;|&nbsp; p95 ≈ <strong style="color:var(--warning-color)">' + fmtNum(state.digest.quantile(0.95)) + '</strong>';
                 }
-                drawNumberLine(dom.svg, state.digest, state.lastValue, { showLabels: true, showPercentiles: true });
+                if (dom.nearest) {
+                    var preview = state.currentPreview;
+                    dom.nearest.textContent = preview && preview.nearest ? ('#' + preview.nearestIndex + ' · μ=' + preview.nearest.mean.toFixed(1)) : '—';
+                }
+                if (dom.metrics) {
+                    var info = state.currentPreview;
+                    dom.metrics.textContent = info && info.nearest ? ('q=' + info.q.toFixed(3) + ' · limit=' + info.maxWeight) : 'q=— · limit=—';
+                }
+                if (dom.math) {
+                    var preview = state.currentPreview;
+                    if (!preview) dom.math.textContent = 'Waiting for the first sample...';
+                    else if (preview.canMerge && preview.nearest) dom.math.innerHTML = '<strong>' + preview.nearest.mean.toFixed(1) + '</strong> → ' + preview.newMean.toFixed(1) + ' (count ' + preview.nearest.count + '→' + preview.newCount + ')';
+                    else dom.math.textContent = 'No room to merge here — create a fresh centroid.';
+                }
+                drawNumberLine(dom.svg, state.visualDigest || state.digest, currentDisplayValue(), {
+                    showLabels: true,
+                    showPercentiles: true,
+                    activeIndex: state.activeIndex,
+                    previewMean: state.previewMean,
+                    annotation: state.phaseTitle || 'Incoming values are mapped onto centroids.'
+                });
                 renderHistory();
+                renderBreakdown();
             }
 
-            function step() {
-                if (state.running) pause();
-                processOne();
-            }
-
-            function processOne() {
-                var x = nextValue();
-                var result = state.digest.add(x);
+            function finishInsert(x, preview, result) {
                 state.lastValue = x;
-                state.lastAction = result.merged
-                    ? '↓ absorbed into centroid #' + result.centroidIndex + ' (new size ' + result.newSize + ')'
-                    : '↓ created centroid #' + result.centroidIndex;
+                state.lastAction = result.merged ? '↓ merged into centroid #' + result.centroidIndex : '↓ created centroid #' + result.centroidIndex;
                 state.history.unshift({ value: x, action: result.merged ? 'merge' : 'new' });
                 if (state.history.length > MAX_HISTORY) state.history.pop();
+                state.breakdown.unshift({
+                    value: x,
+                    nearest: preview.nearest ? ('#' + preview.nearestIndex) : '—',
+                    q: preview.nearest ? preview.q.toFixed(3) : '—',
+                    limit: preview.nearest ? preview.maxWeight + '' : '—',
+                    action: result.merged ? 'merge' : 'new',
+                    label: result.merged ? 'merged' : 'new centroid',
+                    centroids: state.digest.centroids.length
+                });
+                if (state.breakdown.length > 8) state.breakdown.length = 8;
+                state.phaseTitle = state.lastAction;
+                state.phaseSummary = 'Result: <strong>' + (result.merged ? 'line 6-7 merged into centroid #' + result.centroidIndex : 'line 9 created centroid #' + result.centroidIndex) + '</strong>. The digest now tracks <strong>' + state.digest.centroids.length + '</strong> centroids for <strong>' + state.digest.totalCount + '</strong> values.';
+                state.pendingValue = x;
+                state.previewMean = null;
+                state.visualDigest = state.digest;
                 render();
+                if (state.running) state.timerId = setTimeout(startInsert, getPhaseDelay() * 2);
             }
 
-            function getInterval() {
-                var speed = dom.speed ? parseInt(dom.speed.value, 10) : 3;
-                return SPEED_MAP[Math.max(0, Math.min(SPEED_MAP.length - 1, speed - 1))];
+            function startInsert(forcedValue) {
+                if (state.phaseTimers.length) return;
+                if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; }
+                var x = typeof forcedValue === 'number' ? forcedValue : nextValue();
+                var preview = state.digest.previewAdd(x);
+                state.currentPreview = preview;
+                state.pendingValue = x;
+                state.visualDigest = state.digest;
+                state.activeIndex = -1;
+                state.previewMean = null;
+                var result = null;
+                var delay = getPhaseDelay();
+                var phases = [
+                    { line: 0, fn: function () {
+                        state.phaseTitle = '1. value arrives';
+                        state.phaseSummary = 'Incoming sample <strong>' + x.toFixed(1) + '</strong> is placed on the number line before any centroid changes.';
+                    } },
+                    { line: 1, fn: function () {
+                        state.activeIndex = preview.nearestIndex;
+                        state.phaseTitle = '2. find nearest centroid c';
+                        state.phaseSummary = preview.nearest ? 'Nearest centroid is <strong>#' + preview.nearestIndex + '</strong> at mean <strong>' + preview.nearest.mean.toFixed(1) + '</strong>.' : 'The digest is empty, so there is no centroid to compare against yet.';
+                    } },
+                    { line: 2, fn: function () {
+                        state.phaseTitle = '3. compute quantile q of c';
+                        state.phaseSummary = preview.nearest ? 'That centroid sits around <strong>q=' + preview.q.toFixed(3) + '</strong> of the distribution.' : 'With no centroids yet, q defaults to the left edge of the distribution.';
+                    } },
+                    { line: 3, fn: function () {
+                        state.phaseTitle = '4. compute maxWeight(q, δ, n)';
+                        state.phaseSummary = 'At this location, the centroid can hold at most <strong>' + preview.maxWeight + '</strong> samples.';
+                    } },
+                    { line: 4, fn: function () {
+                        state.phaseTitle = '5. test the capacity check';
+                        state.phaseSummary = preview.nearest ? ('We ask whether <strong>' + (preview.nearest.count + 1) + '</strong> ≤ <strong>' + preview.maxWeight + '</strong>.') : 'No centroid exists yet, so the merge condition fails immediately.';
+                    } }
+                ];
+                if (preview.canMerge && preview.nearest) {
+                    phases.push({ line: 5, fn: function () {
+                        state.previewMean = preview.newMean;
+                        state.phaseTitle = '6. recompute the centroid mean';
+                        state.phaseSummary = 'Weighted-average math shifts the centroid mean from <strong>' + preview.nearest.mean.toFixed(1) + '</strong> to <strong>' + preview.newMean.toFixed(2) + '</strong>.';
+                    } });
+                    phases.push({ line: 6, fn: function () {
+                        result = state.digest.add(x);
+                        state.visualDigest = state.digest;
+                        state.activeIndex = result.centroidIndex;
+                        state.previewMean = null;
+                        state.phaseTitle = '7. increment the centroid count';
+                        state.phaseSummary = 'Centroid <strong>#' + result.centroidIndex + '</strong> now has count <strong>' + result.newSize + '</strong>.';
+                    } });
+                } else {
+                    phases.push({ line: 7, fn: function () {
+                        state.phaseTitle = '8. take the else branch';
+                        state.phaseSummary = 'There is not enough capacity here, so the algorithm skips the merge path.';
+                    } });
+                    phases.push({ line: 8, fn: function () {
+                        result = state.digest.add(x);
+                        state.visualDigest = state.digest;
+                        state.activeIndex = result.centroidIndex;
+                        state.phaseTitle = '9. create a new centroid';
+                        state.phaseSummary = 'A fresh centroid is created at mean <strong>' + x.toFixed(1) + '</strong> with count <strong>1</strong>.';
+                    } });
+                }
+                phases.push({ line: 9, fn: function () {
+                    if (!result) result = state.digest.add(x);
+                    state.visualDigest = state.digest;
+                    state.activeIndex = result.centroidIndex;
+                    state.phaseTitle = '10. check whether compression is needed';
+                    state.phaseSummary = state.digest.centroids.length > state.digest.delta * 5 ? 'The centroid list crossed the soft limit, so compression would run now.' : 'Centroid count is still below the soft limit, so no compression is needed yet.';
+                } });
+
+                for (var i = 0; i < phases.length; i++) {
+                    (function (phase, idx) {
+                        state.phaseTimers.push(setTimeout(function () {
+                            setPseudoLines(dom.pseudoLines, phase.line);
+                            phase.fn();
+                            render();
+                            if (idx === phases.length - 1) {
+                                state.phaseTimers.push(setTimeout(function () {
+                                    state.phaseTimers = [];
+                                    finishInsert(x, preview, result);
+                                }, delay));
+                            }
+                        }, idx * delay));
+                    })(phases[i], i);
+                }
             }
 
             function play() {
                 if (state.running) return;
                 state.running = true;
                 updateUI();
-                tick();
+                if (!state.phaseTimers.length) startInsert();
             }
 
             function pause() {
@@ -1104,20 +1922,34 @@
                 updateUI();
             }
 
-            function toggle() { state.running ? pause() : play(); }
-            function tick() {
-                if (!state.running) return;
-                processOne();
-                state.timerId = setTimeout(tick, getInterval());
+            function cancelCurrentInsert() {
+                cancelTimers(state.phaseTimers);
+                state.phaseTimers = [];
+                clearPseudoLines(dom.pseudoLines);
+                state.previewMean = null;
+                state.activeIndex = -1;
+                state.pendingValue = state.lastValue;
+                state.visualDigest = state.digest;
+            }
+
+            function step() {
+                if (state.running) pause();
+                if (state.phaseTimers.length) return;
+                startInsert();
             }
 
             function reset() {
                 pause();
+                cancelCurrentInsert();
                 state.digest = new TDigest(80);
                 state.rng = makeRng('stream-demo');
                 state.history = [];
+                state.breakdown = [];
                 state.lastValue = null;
                 state.lastAction = null;
+                state.phaseTitle = '';
+                state.phaseSummary = '';
+                state.currentPreview = null;
                 render();
             }
 
@@ -1128,23 +1960,33 @@
                 if (dom.badge) dom.badge.style.display = state.running ? '' : 'none';
             }
 
+            function toggle() { state.running ? pause() : play(); }
             function activate() { play(); }
-            function deactivate() { pause(); }
+            function deactivate() { pause(); cancelCurrentInsert(); }
             function init() {
                 resolveDOM();
-                buildGrid();
                 if (dom.playBtn) dom.playBtn.addEventListener('click', toggle);
                 if (dom.stepBtn) dom.stepBtn.addEventListener('click', step);
                 if (dom.resetBtn) dom.resetBtn.addEventListener('click', reset);
-                if (dom.speed) dom.speed.addEventListener('input', function () { if (state.running) { clearTimeout(state.timerId); tick(); } });
+                if (dom.speed) dom.speed.addEventListener('input', function () { if (state.running && !state.phaseTimers.length) startInsert(); });
                 render();
             }
             return { init: init, activate: activate, deactivate: deactivate };
         })();
 
         var ScaleDemo = (function () {
-            var SPEED_MAP = [700, 430, 250, 130, 60];
-            var state = { running: false, timerId: null, delta: 100, digest: new TDigest(100), rng: makeRng('scale-demo'), entries: [] };
+            var SPEED_MAP = [760, 520, 340, 210, 120];
+            var FLASH_DELAY = [320, 250, 200, 150, 110];
+            var state = {
+                running: false,
+                timerId: null,
+                pseudoTimers: [],
+                delta: 100,
+                digest: new TDigest(100),
+                rng: makeRng('scale-demo'),
+                entries: [],
+                latest: null
+            };
             var dom = {};
 
             function resolveDOM() {
@@ -1165,19 +2007,18 @@
                 dom.canvas = document.getElementById('td-scale-canvas');
                 dom.grid = document.getElementById('td-scale-grid');
                 dom.breakdownBody = document.getElementById('td-scale-breakdown-body');
+                dom.currentValue = document.getElementById('td-scale-current-value');
+                dom.currentQ = document.getElementById('td-scale-current-q');
+                dom.currentK = document.getElementById('td-scale-current-k');
+                dom.currentMax = document.getElementById('td-scale-current-max');
+                dom.currentRegion = document.getElementById('td-scale-current-region');
+                dom.currentNote = document.getElementById('td-scale-current-note');
+                dom.pseudo = document.getElementById('td-scale-pseudo');
+                dom.pseudoLines = dom.pseudo ? dom.pseudo.querySelectorAll('.pseudo-line') : [];
             }
 
             function buildGrid() {
-                if (!dom.grid) return;
-                dom.grid.innerHTML = '';
-                var snap = state.digest.snapshot();
-                var max = Math.max(1, snap.length, 32);
-                for (var i = 0; i < max; i++) {
-                    var cell = document.createElement('div');
-                    cell.className = 'll-reg-cell';
-                    cell.innerHTML = '<span class="ll-reg-idx">' + i + '</span><span class="ll-reg-val">0</span>';
-                    dom.grid.appendChild(cell);
-                }
+                renderCentroidGrid(dom.grid, state.digest, -1);
             }
 
             function getInterval() {
@@ -1185,11 +2026,19 @@
                 return SPEED_MAP[Math.max(0, Math.min(speed - 1, SPEED_MAP.length - 1))];
             }
 
+            function getFlashDelay() {
+                var speed = dom.speed ? parseInt(dom.speed.value, 10) : 3;
+                return FLASH_DELAY[Math.max(0, Math.min(speed - 1, FLASH_DELAY.length - 1))];
+            }
+
             function setDelta(delta) {
+                cancelTimers(state.pseudoTimers);
+                clearPseudoLines(dom.pseudoLines);
                 state.delta = delta;
                 state.digest = new TDigest(delta);
                 state.rng = makeRng('scale-demo-' + delta);
                 state.entries = [];
+                state.latest = null;
                 if (dom.deltaLabel) dom.deltaLabel.textContent = delta;
                 buildGrid();
                 render();
@@ -1202,56 +2051,64 @@
                 return 'center';
             }
 
-            function addOne() {
+            function addOne(trackLatest) {
                 var x = sampleDistribution('bimodal', state.rng);
                 var preview = state.digest.previewAdd(x);
-                var nearest = preview.nearest ? preview.nearest.mean.toFixed(1) : '—';
                 var result = state.digest.add(x);
-                state.entries.unshift({
+                var kValue = state.digest.scaleK(preview.q);
+                var region = quantileRegion(preview.q);
+                var entry = {
                     value: x,
-                    nearest: nearest,
+                    q: preview.q,
+                    k: kValue,
+                    maxWeight: preview.maxWeight,
+                    region: region,
                     merged: result.merged,
-                    newSize: result.newSize,
-                    region: quantileRegion(preview.q)
-                });
+                    action: result.merged ? 'merged' : 'new centroid'
+                };
+                state.entries.unshift(entry);
                 if (state.entries.length > 10) state.entries.length = 10;
+                if (trackLatest) state.latest = entry;
             }
 
-            function addBatch(n) {
-                for (var i = 0; i < n; i++) addOne();
+            function flashPseudo(entry) {
+                if (!entry) return;
+                cancelTimers(state.pseudoTimers);
+                clearPseudoLines(dom.pseudoLines);
+                var sequence = [0, 1, 2, entry.region === 'center' ? 3 : 4];
+                var delay = getFlashDelay();
+                for (var i = 0; i < sequence.length; i++) {
+                    (function (line, idx) {
+                        state.pseudoTimers.push(setTimeout(function () {
+                            setPseudoLines(dom.pseudoLines, line);
+                        }, idx * delay));
+                    })(sequence[i], i);
+                }
+            }
+
+            function addBatch(n, shouldFlash) {
+                for (var i = 0; i < n; i++) addOne(i === n - 1);
                 render();
+                if (shouldFlash) flashPseudo(state.latest);
             }
 
             function renderBreakdown() {
                 if (!dom.breakdownBody) return;
                 if (!state.entries.length) {
-                    dom.breakdownBody.innerHTML = '<tr class="algo-breakdown-empty"><td colspan="5">Press Play or Step to see capacity decisions...</td></tr>';
+                    dom.breakdownBody.innerHTML = '<tr class="algo-breakdown-empty"><td colspan="6">Press Play or Step to see capacity decisions...</td></tr>';
                     return;
                 }
                 dom.breakdownBody.innerHTML = '';
                 for (var i = 0; i < state.entries.length; i++) {
                     var e = state.entries[i];
                     var tr = document.createElement('tr');
-                    tr.innerHTML = '<td>' + e.value.toFixed(1) + '</td><td>' + e.nearest + '</td><td class="' + (e.merged ? 'bd-yes' : 'bd-no') + '">' + (e.merged ? 'Yes' : 'New centroid') + '</td><td>' + e.newSize + '</td><td>' + e.region + '</td>';
+                    tr.innerHTML = '<td>' + e.value.toFixed(1) + '</td><td>' + e.q.toFixed(3) + '</td><td>' + e.k.toFixed(2) + '</td><td>' + e.maxWeight + '</td><td>' + e.region + '</td><td class="' + (e.merged ? 'bd-yes' : 'bd-no') + '">' + e.action + '</td>';
                     dom.breakdownBody.appendChild(tr);
                 }
             }
 
             function renderGrid() {
-                if (!dom.grid) return;
-                var snap = state.digest.snapshot();
-                buildGrid();
-                var maxCount = 1;
-                for (var i = 0; i < snap.length; i++) maxCount = Math.max(maxCount, snap[i].count);
-                for (var j = 0; j < snap.length && j < dom.grid.children.length; j++) {
-                    var cell = dom.grid.children[j];
-                    var c = snap[j];
-                    var intensity = c.count / maxCount;
-                    cell.querySelector('.ll-reg-val').textContent = c.count;
-                    cell.title = 'μ=' + c.mean.toFixed(1) + ', q=' + pct((c.q0 + c.q1) / 2);
-                    cell.style.background = 'rgba(53,255,107,' + (0.07 + intensity * 0.35) + ')';
-                    cell.style.borderColor = 'rgba(154,255,87,' + (0.18 + intensity * 0.4) + ')';
-                }
+                renderCentroidGrid(dom.grid, state.digest, -1);
             }
 
             function renderChart() {
@@ -1300,19 +2157,47 @@
                     ctx.arc(px, py, 2.5, 0, Math.PI * 2);
                     ctx.fill();
                 }
+                if (state.latest) {
+                    var dotX = 48 + state.latest.q * (W - 66);
+                    var dotY = H - 30 - (state.latest.maxWeight / Math.max(1, n / state.delta)) * (H - 70);
+                    ctx.fillStyle = 'rgba(255,255,255,0.98)';
+                    ctx.beginPath();
+                    ctx.arc(dotX, dotY, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+                    ctx.fillText('latest insert', dotX + 8, dotY - 8);
+                }
+            }
+
+            function renderStatus() {
+                if (dom.currentValue) dom.currentValue.textContent = state.latest ? state.latest.value.toFixed(1) : '—';
+                if (dom.currentQ) dom.currentQ.textContent = state.latest ? state.latest.q.toFixed(3) : '—';
+                if (dom.currentK) dom.currentK.textContent = state.latest ? state.latest.k.toFixed(2) : '—';
+                if (dom.currentMax) dom.currentMax.textContent = state.latest ? state.latest.maxWeight + '' : '—';
+                if (dom.currentRegion) dom.currentRegion.textContent = 'region: ' + (state.latest ? state.latest.region : '—');
+                if (dom.currentNote) {
+                    if (!state.latest) dom.currentNote.textContent = 'Run the stream to see center and tail capacity decisions.';
+                    else if (state.latest.region === 'center') dom.currentNote.innerHTML = 'This centroid lives near the <strong style="color:var(--accent-color)">center</strong>, so <strong>' + state.latest.maxWeight + '</strong> points can be packed together before T-Digest needs another centroid.';
+                    else dom.currentNote.innerHTML = 'This centroid sits in the <strong style="color:var(--warning-color)">tail</strong>, so the allowed weight shrinks to <strong>' + state.latest.maxWeight + '</strong>. That keeps p95/p99 detail crisp.';
+                }
             }
 
             function render() {
                 renderChart();
                 renderGrid();
                 renderBreakdown();
+                renderStatus();
             }
 
             function play() { if (state.running) return; state.running = true; updateUI(); tick(); }
             function pause() { state.running = false; if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; } updateUI(); }
             function toggle() { state.running ? pause() : play(); }
-            function tick() { if (!state.running) return; addBatch(20); state.timerId = setTimeout(tick, getInterval()); }
-            function step() { if (state.running) pause(); addBatch(10); }
+            function tick() {
+                if (!state.running) return;
+                addBatch(20, true);
+                state.timerId = setTimeout(tick, Math.max(getInterval(), getFlashDelay() * 4 + 80));
+            }
+            function step() { if (state.running) pause(); addBatch(10, true); }
             function reset() { pause(); setDelta(state.delta); }
             function updateUI() {
                 if (dom.playIcon) dom.playIcon.style.display = state.running ? 'none' : '';
@@ -1320,9 +2205,9 @@
                 if (dom.playLabel) dom.playLabel.textContent = state.running ? 'Pause' : 'Play';
                 if (dom.badge) dom.badge.style.display = state.running ? '' : 'none';
             }
-            function bulkAdd(n) { if (state.running) pause(); addBatch(n); }
+            function bulkAdd(n) { if (state.running) pause(); addBatch(n, true); }
             function activate() { play(); }
-            function deactivate() { pause(); }
+            function deactivate() { pause(); cancelTimers(state.pseudoTimers); clearPseudoLines(dom.pseudoLines); }
             function init() {
                 resolveDOM();
                 buildGrid();
@@ -1536,38 +2421,21 @@
             }
             function seedDigest() { for (var i = 0; i < 320; i++) state.digest.add(sampleDistribution('bimodal', state.rng)); }
             function buildGrid() {
-                if (!dom.grid) return;
-                dom.grid.innerHTML = '';
-                var snap = state.digest.snapshot();
-                for (var i = 0; i < Math.max(24, snap.length); i++) {
-                    var cell = document.createElement('div');
-                    cell.className = 'hll-reg';
-                    cell.innerHTML = '<span class="reg-idx">' + i + '</span><span class="reg-val">0</span>';
-                    dom.grid.appendChild(cell);
-                }
+                renderCentroidGrid(dom.grid, state.digest, state.activeIndex);
             }
             function renderBinary() {
                 var snap = state.digest.snapshot();
-                if (!snap.length) { dom.binary.textContent = 'No centroid selected yet.'; return; }
+                if (!snap.length) { if (dom.binary) dom.binary.textContent = 'No centroid selected yet.'; return; }
                 state.activeIndex = state.activeIndex % snap.length;
                 var c = snap[state.activeIndex];
-                dom.binary.innerHTML = 'Centroid #' + c.index + ' &nbsp; μ=' + c.mean.toFixed(3) + ' &nbsp; count=' + c.count + '<br>' +
+                if (dom.binary) dom.binary.innerHTML = 'Centroid #' + c.index + ' &nbsp; μ=' + c.mean.toFixed(3) + ' &nbsp; count=' + c.count + '<br>' +
                     '<span style="color:var(--accent-color)">mean float64</span>: ' + float64Bits(c.mean) + '<br>' +
                     '<span style="color:var(--warning-color)">count int32</span>: ' + int32Bits(c.count) + '<br>' +
                     '<span style="color:var(--muted-text)">quantile range</span>: ' + pct(c.q0) + ' → ' + pct(c.q1);
             }
             function render() {
                 var snap = state.digest.snapshot();
-                buildGrid();
-                for (var i = 0; i < snap.length && i < dom.grid.children.length; i++) {
-                    var cell = dom.grid.children[i];
-                    var c = snap[i];
-                    cell.querySelector('.reg-val').textContent = c.count;
-                    cell.classList.toggle('active', i === state.activeIndex);
-                    var intensity = clamp(c.count / 32, 0.15, 1);
-                    cell.style.background = 'rgba(53,255,107,' + (0.06 + intensity * 0.2) + ')';
-                    cell.title = 'μ=' + c.mean.toFixed(1) + ', count=' + c.count;
-                }
+                renderCentroidGrid(dom.grid, state.digest, state.activeIndex);
                 if (dom.centroids) dom.centroids.textContent = snap.length.toLocaleString();
                 if (dom.bytes) dom.bytes.textContent = fmtBytes(Math.max(snap.length * 12, 1));
                 if (dom.formula) dom.formula.textContent = '≈ ' + fmtBytes(state.delta * 5 * 12);
@@ -1604,94 +2472,234 @@
         })();
 
         var InsertionVisualizer = (function () {
-            var state = { digest: new TDigest(100), rng: makeRng('insert-demo'), timerId: null, running: false, activeIndex: -1 };
+            var SPEED_MAP = [460, 340, 260, 180, 120];
+            var state = {
+                digest: new TDigest(100),
+                rng: makeRng('insert-demo'),
+                timerId: null,
+                running: false,
+                phaseTimers: [],
+                activeIndex: -1,
+                pendingValue: null,
+                previewMean: null,
+                oldMean: null,
+                ghostNew: false,
+                explainer: 'Seeded centroids are ready. Insert a value to walk the code path.',
+                decisionLabel: 'waiting',
+                visualDigest: null,
+                currentPreview: null,
+                log: []
+            };
             var dom = {};
+
             function resolveDOM() {
                 dom.input = document.getElementById('td-insert-input');
                 dom.insertBtn = document.getElementById('td-insert-btn');
                 dom.autoBtn = document.getElementById('td-insert-auto');
                 dom.resetBtn = document.getElementById('td-insert-reset');
-                dom.grid = document.getElementById('td-insert-grid');
+                dom.speed = document.getElementById('td-insert-speed');
+                dom.svg = document.getElementById('td-insert-viz');
                 dom.summary = document.getElementById('td-insert-summary');
-                dom.phases = [1,2,3,4,5,6].map(function (i) { return document.getElementById('td-insert-phase-' + i); });
+                dom.currentValue = document.getElementById('td-insert-current-value');
+                dom.nearest = document.getElementById('td-insert-nearest');
+                dom.limit = document.getElementById('td-insert-limit');
+                dom.decision = document.getElementById('td-insert-decision');
+                dom.explainer = document.getElementById('td-insert-explainer');
+                dom.logBody = document.getElementById('td-insert-log-body');
+                dom.pseudo = document.getElementById('td-insert-pseudo');
+                dom.pseudoLines = dom.pseudo ? dom.pseudo.querySelectorAll('.pseudo-line') : [];
             }
-            function buildGrid() {
-                if (!dom.grid) return;
-                dom.grid.innerHTML = '';
-                var snap = state.digest.snapshot();
-                for (var i = 0; i < Math.max(16, snap.length); i++) {
-                    var cell = document.createElement('div');
-                    cell.className = 'hll-reg';
-                    cell.innerHTML = '<span class="reg-idx">' + i + '</span><span class="reg-val">0</span>';
-                    dom.grid.appendChild(cell);
-                }
+
+            function getPhaseDelay() {
+                var speed = dom.speed ? parseInt(dom.speed.value, 10) : 3;
+                return SPEED_MAP[Math.max(0, Math.min(SPEED_MAP.length - 1, speed - 1))];
             }
-            function renderGrid() {
-                buildGrid();
-                var snap = state.digest.snapshot();
-                for (var i = 0; i < snap.length && i < dom.grid.children.length; i++) {
-                    var cell = dom.grid.children[i];
-                    var c = snap[i];
-                    cell.querySelector('.reg-val').textContent = c.count;
-                    cell.classList.toggle('active', i === state.activeIndex);
-                    cell.style.background = 'rgba(53,255,107,' + (0.08 + Math.min(c.count / 12, 1) * 0.25) + ')';
-                    cell.title = 'μ=' + c.mean.toFixed(1) + ', count=' + c.count + ', q=' + pct(c.q0) + '→' + pct(c.q1);
-                }
-            }
-            function hidePhases() {
-                for (var i = 0; i < dom.phases.length; i++) if (dom.phases[i]) dom.phases[i].style.display = 'none';
-                if (dom.summary) dom.summary.style.display = 'none';
-            }
-            function showPhase(idx, html, delay) {
-                setTimeout(function () {
-                    if (!dom.phases[idx]) return;
-                    dom.phases[idx].innerHTML = html;
-                    dom.phases[idx].style.display = '';
-                }, delay);
-            }
+
             function seedDigest() {
                 var base = [85, 92, 105, 110, 118, 131, 250, 260, 272, 490, 510, 528, 770, 790, 820, 860];
                 state.digest = new TDigest(100);
                 for (var i = 0; i < base.length; i++) state.digest.add(base[i]);
                 state.activeIndex = -1;
-                renderGrid();
+                state.pendingValue = null;
+                state.previewMean = null;
+                state.oldMean = null;
+                state.ghostNew = false;
+                state.visualDigest = state.digest;
+                state.currentPreview = null;
+                state.decisionLabel = 'waiting';
+                state.explainer = 'Seeded centroids are ready. Insert a value to walk the code path.';
+                if (dom.summary) dom.summary.innerHTML = 'The digest is seeded with a few clusters so you can focus on the insertion logic instead of the empty-start edge case.';
+                render();
             }
+
+            function cancelAnimation() {
+                cancelTimers(state.phaseTimers);
+                state.phaseTimers = [];
+                clearPseudoLines(dom.pseudoLines);
+            }
+
+            function renderLog() {
+                if (!dom.logBody) return;
+                if (!state.log.length) {
+                    dom.logBody.innerHTML = '<tr class="algo-breakdown-empty"><td colspan="6">Insert a value to create an operation log.</td></tr>';
+                    return;
+                }
+                dom.logBody.innerHTML = '';
+                for (var i = 0; i < state.log.length; i++) {
+                    var entry = state.log[i];
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = '<td>' + entry.value.toFixed(1) + '</td><td>' + entry.nearest + '</td><td>' + entry.distance + '</td><td>' + entry.limit + '</td><td class="' + (entry.action === 'merge' ? 'bd-yes' : 'bd-no') + '">' + entry.label + '</td><td>' + entry.centroids + '</td>';
+                    dom.logBody.appendChild(tr);
+                }
+            }
+
+            function render() {
+                if (dom.currentValue) dom.currentValue.textContent = state.pendingValue == null ? '—' : state.pendingValue.toFixed(1);
+                if (dom.nearest) {
+                    var preview = state.currentPreview;
+                    dom.nearest.textContent = preview && preview.nearest ? ('#' + preview.nearestIndex + ' · μ=' + preview.nearest.mean.toFixed(1)) : '—';
+                }
+                if (dom.limit) {
+                    var info = state.currentPreview;
+                    dom.limit.textContent = info && info.nearest ? ('q=' + info.q.toFixed(3) + ' · ' + info.maxWeight) : '—';
+                }
+                if (dom.decision) dom.decision.textContent = state.decisionLabel;
+                if (dom.explainer) dom.explainer.innerHTML = state.explainer;
+                drawInsertionVisualizer(dom.svg, state.visualDigest || state.digest, {
+                    value: state.pendingValue,
+                    activeIndex: state.activeIndex,
+                    previewMean: state.previewMean,
+                    oldMean: state.oldMean,
+                    ghostNew: state.ghostNew,
+                    message: state.explainer.replace(/<[^>]+>/g, '')
+                });
+                renderLog();
+            }
+
+            function finishInsert(x, preview, result) {
+                state.decisionLabel = result.merged ? 'merged' : 'new centroid';
+                state.explainer = result.merged
+                    ? 'Summary: lines <strong>8-10</strong> merged the sample into centroid <strong>#' + result.centroidIndex + '</strong>. The centroid mean shifted just enough to preserve the weighted average.'
+                    : 'Summary: line <strong>11</strong> created centroid <strong>#' + result.centroidIndex + '</strong> because the nearby centroid had no spare capacity.';
+                if (dom.summary) {
+                    dom.summary.innerHTML = '<strong>Inserted ' + x.toFixed(1) + '.</strong> Final action: <span style="color:var(--accent-color)">' + (result.merged ? 'merged into centroid #' + result.centroidIndex : 'created centroid #' + result.centroidIndex) + '</span>. Digest now has <strong>' + state.digest.centroids.length + '</strong> centroids for <strong>' + state.digest.totalCount + '</strong> values.';
+                }
+                state.log.unshift({
+                    value: x,
+                    nearest: preview.nearest ? ('#' + preview.nearestIndex) : '—',
+                    distance: preview.nearest ? Math.abs(x - preview.nearest.mean).toFixed(1) : '—',
+                    limit: preview.maxWeight + '',
+                    action: result.merged ? 'merge' : 'new',
+                    label: result.merged ? 'merged' : 'new centroid',
+                    centroids: state.digest.centroids.length
+                });
+                if (state.log.length > 8) state.log.length = 8;
+                render();
+                if (state.running) state.timerId = setTimeout(function () { runInsert(sampleDistribution('bimodal', state.rng)); }, getPhaseDelay() * 2.4);
+            }
+
             function runInsert(value) {
-                hidePhases();
+                cancelAnimation();
+                if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; }
                 var x = typeof value === 'number' ? value : parseFloat(dom.input.value);
                 if (!isFinite(x)) x = sampleDistribution('bimodal', state.rng);
                 x = clamp(x, 0, 1000);
                 if (dom.input) dom.input.value = x.toFixed(1);
                 var preview = state.digest.previewAdd(x);
-                var nearestText = preview.nearest ? ('centroid #' + preview.nearestIndex + ' (μ=' + preview.nearest.mean.toFixed(1) + ', count=' + preview.nearest.count + ')') : 'none yet';
-                state.activeIndex = preview.nearestIndex;
-                renderGrid();
-                showPhase(0, '<strong style="color:var(--accent-color)">1. New value arrives</strong><br>Incoming value = <span class="inline-formula">' + x.toFixed(1) + '</span>. The digest currently has ' + state.digest.centroids.length + ' centroids.', 0);
-                showPhase(1, '<strong style="color:var(--accent-color)">2. Find nearest centroid</strong><br>The nearest centroid is <strong>' + nearestText + '</strong>. T-Digest works in value space, not hash buckets.', 450);
-                showPhase(2, '<strong style="color:var(--accent-color)">3. Check weight limit</strong><br>Local quantile ≈ <span class="inline-formula">q=' + preview.q.toFixed(3) + '</span>. Max allowed weight here is <span class="inline-formula">' + preview.maxWeight + '</span>.', 900);
-                showPhase(3, '<strong style="color:var(--accent-color)">4. Merge math</strong><br>If we merge, the new mean becomes <span class="inline-formula">(' + (preview.nearest ? preview.nearest.mean.toFixed(1) + '×' + preview.nearest.count : x.toFixed(1) + '×0') + ' + ' + x.toFixed(1) + ') / ' + preview.newCount + ' = ' + preview.newMean.toFixed(2) + '</span>.', 1350);
-                showPhase(4, '<strong style="color:var(--accent-color)">5. Decision</strong><br>' + (preview.canMerge ? 'The centroid can absorb the value, so we update the centroid mean and increment its count.' : 'The centroid is already at capacity here, so T-Digest creates a brand new centroid for this value.') , 1800);
-                setTimeout(function () {
-                    var before = state.digest.centroids.length;
-                    var result = state.digest.add(x);
+                var distance = preview.nearest ? Math.abs(x - preview.nearest.mean) : 0;
+                state.currentPreview = preview;
+                state.pendingValue = x;
+                state.visualDigest = state.digest;
+                state.activeIndex = -1;
+                state.previewMean = null;
+                state.oldMean = null;
+                state.ghostNew = false;
+                state.decisionLabel = preview.canMerge ? 'merge candidate' : 'new centroid candidate';
+                var delay = getPhaseDelay();
+                var result = null;
+                var phases = [
+                    { line: 0, fn: function () {
+                        state.explainer = 'Line <strong>1</strong>: value <strong>' + x.toFixed(1) + '</strong> arrives and becomes the bright marker on the value axis.';
+                    } },
+                    { line: 1, fn: function () {
+                        state.explainer = 'Line <strong>2</strong>: centroids stay sorted by mean so nearest-neighbor lookup is meaningful.';
+                    } },
+                    { line: 2, fn: function () {
+                        state.activeIndex = preview.nearestIndex;
+                        state.explainer = preview.nearest ? 'Line <strong>3</strong>: centroid <strong>#' + preview.nearestIndex + '</strong> is closest to the incoming value.' : 'Line <strong>3</strong>: there is no centroid yet, so the value will start a new one.';
+                    } },
+                    { line: 3, fn: function () {
+                        state.explainer = preview.nearest ? 'Line <strong>4</strong>: the distance is <strong>' + distance.toFixed(1) + '</strong> units from the centroid mean.' : 'Line <strong>4</strong>: with no centroid present, there is no distance to measure.';
+                    } },
+                    { line: 4, fn: function () {
+                        state.explainer = 'Line <strong>5</strong>: the centroid sits around quantile <strong>q=' + preview.q.toFixed(3) + '</strong>.';
+                    } },
+                    { line: 5, fn: function () {
+                        state.explainer = 'Line <strong>6</strong>: maxWeight at this quantile is <strong>' + preview.maxWeight + '</strong>.';
+                    } },
+                    { line: 6, fn: function () {
+                        state.explainer = preview.nearest ? 'Line <strong>7</strong>: we test whether <strong>' + (preview.nearest.count + 1) + '</strong> ≤ <strong>' + preview.maxWeight + '</strong>.' : 'Line <strong>7</strong>: the condition fails because there is no centroid to merge into.';
+                    } }
+                ];
+                if (preview.canMerge && preview.nearest) {
+                    phases.push({ line: 7, fn: function () {
+                        state.oldMean = preview.nearest.mean;
+                        state.previewMean = preview.newMean;
+                        state.explainer = 'Line <strong>8</strong>: weighted-average math proposes <strong>' + preview.newMean.toFixed(2) + '</strong> as the new centroid mean.';
+                    } });
+                    phases.push({ line: 8, fn: function () {
+                        state.explainer = 'Line <strong>9</strong>: the nearest centroid slides from <strong>' + preview.nearest.mean.toFixed(1) + '</strong> to <strong>' + preview.newMean.toFixed(2) + '</strong>.';
+                    } });
+                    phases.push({ line: 9, fn: function () {
+                        result = state.digest.add(x);
+                        state.visualDigest = state.digest;
+                        state.activeIndex = result.centroidIndex;
+                        state.previewMean = null;
+                        state.oldMean = null;
+                        state.explainer = 'Line <strong>10</strong>: centroid <strong>#' + result.centroidIndex + '</strong> increments its count to <strong>' + result.newSize + '</strong>.';
+                    } });
+                } else {
+                    phases.push({ line: 10, fn: function () {
+                        result = state.digest.add(x);
+                        state.visualDigest = state.digest;
+                        state.activeIndex = result.centroidIndex;
+                        state.ghostNew = false;
+                        state.explainer = 'Line <strong>11</strong>: capacity is exhausted, so T-Digest creates centroid <strong>#' + result.centroidIndex + '</strong> at <strong>' + x.toFixed(1) + '</strong>.';
+                    } });
+                }
+                phases.push({ line: 11, fn: function () {
+                    if (!result) result = state.digest.add(x);
+                    state.visualDigest = state.digest;
                     state.activeIndex = result.centroidIndex;
-                    renderGrid();
-                    var compressed = state.digest.centroids.length < before + 1 && !result.merged ? 'Yes' : 'No';
-                    showPhase(5, '<strong style="color:var(--accent-color)">6. Optional compression</strong><br>If centroid count grows beyond the soft limit, adjacent centroids are greedily merged. Compression triggered now? <strong>' + (state.digest.centroids.length > state.digest.delta * 5 ? 'Pending' : compressed) + '</strong>.', 0);
-                    if (dom.summary) {
-                        dom.summary.innerHTML = '<strong>Inserted ' + x.toFixed(1) + '.</strong> Final action: <span style="color:var(--accent-color)">' + (result.merged ? 'merged into centroid #' + result.centroidIndex : 'created centroid #' + result.centroidIndex) + '</span>. Digest now has <strong>' + state.digest.centroids.length + '</strong> centroids for <strong>' + state.digest.totalCount + '</strong> values.';
-                        dom.summary.style.display = '';
-                    }
-                }, 2300);
+                    state.ghostNew = false;
+                    state.explainer = state.digest.centroids.length > state.digest.delta * 5
+                        ? 'Line <strong>12</strong>: centroid count crossed the soft limit, so compression would run now.'
+                        : 'Line <strong>12</strong>: centroid count is still below <strong>5δ</strong>, so no compression is needed.';
+                } });
+
+                for (var i = 0; i < phases.length; i++) {
+                    (function (phase, idx) {
+                        state.phaseTimers.push(setTimeout(function () {
+                            setPseudoLines(dom.pseudoLines, phase.line);
+                            phase.fn();
+                            render();
+                            if (idx === phases.length - 1) {
+                                state.phaseTimers.push(setTimeout(function () {
+                                    state.phaseTimers = [];
+                                    finishInsert(x, preview, result);
+                                }, delay));
+                            }
+                        }, idx * delay));
+                    })(phases[i], i);
+                }
             }
-            function play() { if (state.running) return; state.running = true; if (dom.autoBtn) dom.autoBtn.textContent = 'Stop'; tick(); }
+
+            function play() { if (state.running) return; state.running = true; if (dom.autoBtn) dom.autoBtn.textContent = 'Stop'; runInsert(sampleDistribution('bimodal', state.rng)); }
             function pause() { state.running = false; if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; } if (dom.autoBtn) dom.autoBtn.textContent = 'Auto Demo'; }
             function toggle() { state.running ? pause() : play(); }
-            function step() { if (state.running) pause(); runInsert(sampleDistribution('bimodal', state.rng)); }
-            function tick() { if (!state.running) return; runInsert(sampleDistribution('bimodal', state.rng)); state.timerId = setTimeout(tick, 3200); }
-            function reset() { pause(); hidePhases(); seedDigest(); }
+            function reset() { pause(); cancelAnimation(); state.log = []; seedDigest(); }
             function activate() {}
-            function deactivate() { pause(); }
+            function deactivate() { pause(); cancelAnimation(); }
             function init() {
                 resolveDOM();
                 seedDigest();
@@ -1705,7 +2713,8 @@
 
         var Playground = (function () {
             var SPEED_MAP = [700, 430, 230, 110, 45];
-            var state = { running: false, timerId: null, delta: 100, distribution: 'normal', digest: new TDigest(100), rng: makeRng('playground-demo'), lastValue: null };
+            var FLASH_MAP = [260, 210, 170, 130, 90];
+            var state = { running: false, timerId: null, pseudoTimers: [], delta: 100, distribution: 'normal', digest: new TDigest(100), rng: makeRng('playground-demo'), lastValue: null, pseudoOpen: false };
             var dom = {};
             function resolveDOM() {
                 dom.badge = document.getElementById('td-playground-badge');
@@ -1732,19 +2741,33 @@
                 dom.bytes = document.getElementById('td-playground-bytes');
                 dom.ratio = document.getElementById('td-playground-ratio');
                 dom.grid = document.getElementById('td-playground-grid');
+                dom.pseudoToggle = document.getElementById('td-playground-pseudo-toggle');
+                dom.pseudoPanel = document.getElementById('td-playground-pseudo-panel');
+                dom.pseudo = document.getElementById('td-playground-pseudo');
+                dom.pseudoLines = dom.pseudo ? dom.pseudo.querySelectorAll('.pseudo-line') : [];
             }
             function buildGrid() {
-                if (!dom.grid) return;
-                dom.grid.innerHTML = '';
-                var count = Math.max(24, Math.min(60, state.digest.centroids.length || 24));
-                for (var i = 0; i < count; i++) {
-                    var cell = document.createElement('div');
-                    cell.className = 'hll-reg';
-                    cell.innerHTML = '<span class="reg-idx">' + i + '</span><span class="reg-val">0</span>';
-                    dom.grid.appendChild(cell);
-                }
+                renderCentroidGrid(dom.grid, state.digest, -1);
             }
             function getInterval() { var s = dom.speed ? parseInt(dom.speed.value, 10) : 3; return SPEED_MAP[Math.max(0, Math.min(s - 1, SPEED_MAP.length - 1))]; }
+            function getFlashDelay() { var s = dom.speed ? parseInt(dom.speed.value, 10) : 3; return FLASH_MAP[Math.max(0, Math.min(s - 1, FLASH_MAP.length - 1))]; }
+            function setPseudoOpen(open) {
+                state.pseudoOpen = !!open;
+                if (dom.pseudoPanel) dom.pseudoPanel.classList.toggle('open', state.pseudoOpen);
+                if (dom.pseudoToggle) dom.pseudoToggle.textContent = state.pseudoOpen ? 'Hide pseudocode reference' : 'Show pseudocode reference';
+            }
+            function flashPseudo(indices) {
+                cancelTimers(state.pseudoTimers);
+                clearPseudoLines(dom.pseudoLines);
+                var delay = getFlashDelay();
+                for (var i = 0; i < indices.length; i++) {
+                    (function (line, idx) {
+                        state.pseudoTimers.push(setTimeout(function () {
+                            setPseudoLines(dom.pseudoLines, line);
+                        }, idx * delay));
+                    })(indices[i], i);
+                }
+            }
             function setDelta(delta) {
                 state.delta = delta;
                 state.digest = new TDigest(delta);
@@ -1754,18 +2777,9 @@
                 render();
             }
             function addOne() { var x = sampleDistribution(state.distribution, state.rng); state.lastValue = x; state.digest.add(x); }
-            function addBatch(n) { for (var i = 0; i < n; i++) addOne(); render(); }
+            function addBatch(n, flash) { for (var i = 0; i < n; i++) addOne(); render(); if (flash) flashPseudo([0, 1, 2]); }
             function renderGrid() {
-                buildGrid();
-                var snap = state.digest.snapshot();
-                for (var i = 0; i < snap.length && i < dom.grid.children.length; i++) {
-                    var cell = dom.grid.children[i];
-                    var c = snap[i];
-                    cell.querySelector('.reg-val').textContent = c.count;
-                    cell.title = 'μ=' + c.mean.toFixed(1) + ' | q=' + pct(c.q0) + '→' + pct(c.q1);
-                    cell.style.background = 'rgba(53,255,107,' + (0.06 + Math.min(c.count / 30, 1) * 0.24) + ')';
-                    cell.style.borderColor = 'rgba(154,255,87,' + (0.15 + Math.min(c.count / 30, 1) * 0.32) + ')';
-                }
+                renderCentroidGrid(dom.grid, state.digest, -1);
             }
             function render() {
                 if (dom.total) dom.total.textContent = state.digest.totalCount.toLocaleString();
@@ -1776,6 +2790,7 @@
                 renderGrid();
             }
             function runQuery() {
+                flashPseudo([3]);
                 var p = dom.query ? parseFloat(dom.query.value) : 0.95;
                 p = clamp(isFinite(p) ? p : 0.95, 0, 1);
                 if (!state.digest.totalCount) {
@@ -1788,18 +2803,18 @@
             function play() { if (state.running) return; state.running = true; updateUI(); tick(); }
             function pause() { state.running = false; if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; } updateUI(); }
             function toggle() { state.running ? pause() : play(); }
-            function tick() { if (!state.running) return; addBatch(20); state.timerId = setTimeout(tick, getInterval()); }
-            function step() { if (state.running) pause(); addBatch(10); }
-            function reset() { pause(); setDelta(state.delta); if (dom.queryResult) dom.queryResult.innerHTML = 'Run the stream, then query a percentile like <strong>0.95</strong> or <strong>0.99</strong>.'; }
+            function tick() { if (!state.running) return; addBatch(20, true); state.timerId = setTimeout(tick, Math.max(getInterval(), getFlashDelay() * 3 + 60)); }
+            function step() { if (state.running) pause(); addBatch(10, true); }
+            function reset() { pause(); setDelta(state.delta); if (dom.queryResult) dom.queryResult.innerHTML = 'Run the stream, then query a percentile like <strong>0.95</strong> or <strong>0.99</strong>.'; clearPseudoLines(dom.pseudoLines); }
             function updateUI() {
                 if (dom.playIcon) dom.playIcon.style.display = state.running ? 'none' : '';
                 if (dom.pauseIcon) dom.pauseIcon.style.display = state.running ? '' : 'none';
                 if (dom.playLabel) dom.playLabel.textContent = state.running ? 'Pause' : 'Play';
                 if (dom.badge) dom.badge.style.display = state.running ? '' : 'none';
             }
-            function bulkAdd(n) { if (state.running) pause(); addBatch(n); }
+            function bulkAdd(n) { if (state.running) pause(); addBatch(n, true); }
             function activate() { play(); }
-            function deactivate() { pause(); }
+            function deactivate() { pause(); cancelTimers(state.pseudoTimers); clearPseudoLines(dom.pseudoLines); }
             function init() {
                 resolveDOM();
                 if (dom.playBtn) dom.playBtn.addEventListener('click', toggle);
@@ -1814,7 +2829,9 @@
                 if (dom.dist) dom.dist.addEventListener('change', function () { pause(); state.distribution = dom.dist.value; reset(); });
                 if (dom.queryBtn) dom.queryBtn.addEventListener('click', runQuery);
                 if (dom.query) dom.query.addEventListener('keydown', function (e) { if (e.key === 'Enter') runQuery(); });
+                if (dom.pseudoToggle) dom.pseudoToggle.addEventListener('click', function () { setPseudoOpen(!state.pseudoOpen); });
                 setDelta(state.delta);
+                setPseudoOpen(false);
             }
             return { init: init, activate: activate, deactivate: deactivate };
         })();
@@ -1836,6 +2853,7 @@
             if (n === 6) Playground.deactivate();
         }
 
+        centroidPopup.init();
         CentroidStream.init();
         ScaleDemo.init();
         AccuracyDemo.init();
@@ -1846,5 +2864,12 @@
         updateIndicator();
     })();
     </script>
+    <div class="centroid-popup" id="centroid-popup">
+        <div class="centroid-popup-header">
+           <span id="centroid-popup-title">Centroid #0</span>
+           <button class="centroid-popup-close" id="centroid-popup-close">✕</button>
+        </div>
+        <div id="centroid-popup-body"></div>
+    </div>
 </body>
 </html>
