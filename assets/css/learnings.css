@@ -1,6 +1,70 @@
 /* ── Learnings / Tutorial styles ── */
 
 /* ─────────────────────────────────────────────────────────────────
+   GLOSSARY TERM TOOLTIPS (shared across all tutorials)
+───────────────────────────────────────────────────────────────── */
+
+.term, .term-link {
+    color: var(--accent-color);
+    border-bottom: 1px dashed rgba(53, 255, 107, 0.4);
+    cursor: help;
+    transition: border-color 0.15s;
+}
+.term:hover, .term-link:hover {
+    border-bottom-color: var(--accent-color);
+    text-decoration: none;
+}
+.glossary-tooltip {
+    display: none;
+    position: absolute;
+    z-index: 9999;
+    max-width: 420px;
+    padding: 18px;
+    background: rgba(2, 6, 13, 0.98);
+    border: 1px solid rgba(53, 255, 107, 0.35);
+    border-radius: 14px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    font-size: 0.84rem;
+    line-height: 1.7;
+    color: var(--text-color);
+    animation: glossaryFadeIn 0.15s ease;
+}
+@keyframes glossaryFadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.glossary-tooltip-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--accent-color);
+    margin-bottom: 6px;
+}
+.glossary-tooltip-short {
+    color: var(--text-color);
+    margin-bottom: 8px;
+}
+.glossary-tooltip-detail {
+    color: var(--muted-text);
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+}
+.glossary-tooltip-example {
+    font-size: 0.78rem;
+    padding: 6px 10px;
+    background: rgba(53, 255, 107, 0.05);
+    border-left: 2px solid var(--accent-color);
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 8px;
+}
+.glossary-tooltip-footer {
+    font-size: 0.75rem;
+    color: var(--muted-text);
+}
+.glossary-see-also {
+    color: var(--accent-color);
+    cursor: pointer;
+    border-bottom: 1px dashed rgba(53, 255, 107, 0.3);
+}
+.glossary-see-also:hover { border-bottom-color: var(--accent-color); }
+
+/* ─────────────────────────────────────────────────────────────────
    LEARNINGS TABLE OF CONTENTS (Directory Tree)
 ───────────────────────────────────────────────────────────────── */
 

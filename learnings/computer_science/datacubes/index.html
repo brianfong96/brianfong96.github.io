@@ -688,10 +688,10 @@
                     <div class="note-card">
                         <p><strong style="color:var(--accent-color)">Key Terms</strong></p>
                         <ul style="margin:8px 0 0 0;padding-left:20px;line-height:2;">
-                            <li><strong>Dimension</strong> — a categorical axis you group by (time, endpoint, region, device). These are your "GROUP BY" columns.</li>
-                            <li><strong>Measure</strong> — a numeric value you aggregate (latency_ms, revenue, request_count). These are your "SUM(x)" or "COUNT(*)" values.</li>
-                            <li><strong>Cell</strong> — one specific combination of dimension values → its pre-computed measure. E.g., (Monday, /api/orders, us-east) → count=4521, p95=230ms.</li>
-                            <li><strong>Cuboid</strong> — a "face" of the cube. The full cube has all dimensions. A cuboid drops one or more dimensions (like a sub-GROUP BY). E.g., just (endpoint × region) without time.</li>
+                            <li><span class="term" data-term="dimension"><strong>Dimension</strong></span> — a categorical axis you group by (time, endpoint, region, device). These are your "GROUP BY" columns.</li>
+                            <li><span class="term" data-term="measure"><strong>Measure</strong></span> — a numeric value you aggregate (<span class="term" data-term="latency">latency_ms</span>, revenue, request_count). These are your "SUM(x)" or "COUNT(*)" values.</li>
+                            <li><strong>Cell</strong> — one specific combination of dimension values → its pre-computed measure. E.g., (Monday, /api/orders, us-east) → count=4521, <span class="term" data-term="p95">p95</span>=230ms.</li>
+                            <li><span class="term" data-term="cuboid"><strong>Cuboid</strong></span> — a "face" of the cube. The full cube has all dimensions. A cuboid drops one or more dimensions (like a sub-GROUP BY). E.g., just (endpoint × region) without time.</li>
                             <li><strong>Lattice</strong> — the family of all possible cuboids forms a lattice from the full cube (most detail) down to the apex (one grand total).</li>
                             <li><strong>Materialization</strong> — actually computing and storing a cuboid's cells. "Full materialization" = store everything. "Partial" = store only popular cuboids.</li>
                         </ul>
@@ -1074,9 +1074,11 @@
         </main>
     </div>
 
+    <script src="../terms/glossary.js"></script>
     <script>
     (function () {
         'use strict';
+        Glossary.init();
 
         var STEPS = ['The Problem', 'What is a Cube?', 'Operations', 'HLL in Cubes', 'T-Digest in Cubes', 'Building the Cube', 'Kusto Application', 'Live Playground'];
         var currentStep = 0;

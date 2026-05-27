@@ -351,12 +351,12 @@
                     <div class="note-card">
                         <p><strong style="color:var(--accent-color)">Key Terms</strong></p>
                         <ul style="margin:8px 0 0 0;padding-left:20px;line-height:2;">
-                            <li><strong>Percentile (pN)</strong> — the value below which N% of observations fall. p95 = 200ms means 95% of requests finished in ≤ 200ms.</li>
-                            <li><strong>Quantile (q)</strong> — same concept expressed as a fraction 0→1 instead of 0→100. q=0.95 is p95.</li>
-                            <li><strong>Tail</strong> — the extreme ends of the distribution (p99, p99.9). This is where rare but painful events live: timeouts, spikes, slowest queries.</li>
-                            <li><strong>Sketch / Digest</strong> — a compact data structure that summarizes a stream. You can query it for approximate answers without storing every value.</li>
-                            <li><strong>δ (delta / compression)</strong> — T-Digest's tuning knob. Higher δ = more centroids = more memory but better accuracy. Typical values: 50–300.</li>
-                            <li><strong>Centroid</strong> — a (mean, count) pair representing a cluster of nearby values. The digest is just a sorted list of centroids.</li>
+                            <li><span class="term" data-term="percentile"><strong>Percentile (pN)</strong></span> — the value below which N% of observations fall. <span class="term" data-term="p95">p95</span> = 200ms means 95% of requests finished in ≤ 200ms.</li>
+                            <li><span class="term" data-term="quantile"><strong>Quantile (q)</strong></span> — same concept expressed as a fraction 0→1 instead of 0→100. q=0.95 is p95.</li>
+                            <li><span class="term" data-term="tail-latency"><strong>Tail</strong></span> — the extreme ends of the distribution (<span class="term" data-term="p99">p99</span>, <span class="term" data-term="p999">p99.9</span>). This is where rare but painful events live: timeouts, spikes, slowest queries.</li>
+                            <li><span class="term" data-term="sketch"><strong>Sketch / Digest</strong></span> — a compact data structure that summarizes a stream. You can query it for approximate answers without storing every value.</li>
+                            <li><span class="term" data-term="delta"><strong>δ (delta / compression)</strong></span> — T-Digest's tuning knob. Higher δ = more centroids = more memory but better accuracy. Typical values: 50–300.</li>
+                            <li><span class="term" data-term="centroid"><strong>Centroid</strong></span> — a (mean, count) pair representing a cluster of nearby values. The digest is just a sorted list of centroids.</li>
                         </ul>
                     </div>
                     <div class="note-card">
@@ -975,9 +975,11 @@
         </main>
     </div>
 
+    <script src="../terms/glossary.js"></script>
     <script>
     (function () {
         'use strict';
+        Glossary.init();
 
         function fnv1a32(str) {
             var h = 2166136261;

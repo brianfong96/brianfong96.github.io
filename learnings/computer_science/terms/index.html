@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="../../../assets/favicon.png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Terms &amp; Glossary - Learnings - Brian Fong</title>
+    <link rel="stylesheet" href="../../../assets/css/style.css" />
+    <link rel="stylesheet" href="../../../assets/css/learnings.css" />
+    <style>
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+        .term-card {
+            background: rgba(2, 6, 13, 0.94);
+            border: 1px solid rgba(53, 255, 107, 0.14);
+            border-radius: 14px;
+            padding: 18px;
+            cursor: pointer;
+            transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+        }
+        .term-card:hover {
+            border-color: rgba(53, 255, 107, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(53, 255, 107, 0.08);
+        }
+        .term-card-title {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 6px;
+        }
+        .term-card-short {
+            font-size: 0.85rem;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        .term-card-tags {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .term-tag {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(53, 255, 107, 0.08);
+            border: 1px solid rgba(53, 255, 107, 0.2);
+            color: var(--muted-text);
+        }
+        .terms-search {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(53, 255, 107, 0.25);
+            background: rgba(2, 6, 13, 0.9);
+            color: var(--text-color);
+            font-size: 0.9rem;
+            margin-bottom: 18px;
+        }
+        .terms-search::placeholder { color: var(--muted-text); }
+        .terms-search:focus { outline: none; border-color: var(--accent-color); }
+        .category-header {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--muted-text);
+            margin: 28px 0 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(53, 255, 107, 0.1);
+        }
+        .term-detail-panel {
+            display: none;
+            background: rgba(2, 6, 13, 0.97);
+            border: 1px solid rgba(53, 255, 107, 0.3);
+            border-radius: 16px;
+            padding: 28px;
+            margin: 18px 0;
+            animation: fadeIn 0.2s ease;
+        }
+        .term-detail-panel.open { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        .term-detail-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 12px;
+        }
+        .term-detail-section {
+            margin: 14px 0;
+            line-height: 1.8;
+        }
+        .term-detail-section strong {
+            color: var(--warning-color);
+            display: block;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+        .term-detail-formula {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.82rem;
+            padding: 8px 14px;
+            background: rgba(53, 255, 107, 0.05);
+            border-left: 3px solid var(--accent-color);
+            border-radius: 0 8px 8px 0;
+            margin: 8px 0;
+        }
+        .see-also-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .see-also-link {
+            padding: 4px 12px;
+            border-radius: 10px;
+            background: rgba(53, 255, 107, 0.08);
+            border: 1px solid rgba(53, 255, 107, 0.25);
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.15s;
+            text-decoration: none;
+        }
+        .see-also-link:hover { background: rgba(53, 255, 107, 0.18); }
+        .term-close-btn {
+            float: right;
+            background: none;
+            border: 1px solid rgba(53, 255, 107, 0.3);
+            color: var(--accent-color);
+            border-radius: 8px;
+            padding: 4px 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .usage-note {
+            margin-top: 30px;
+            padding: 18px;
+            border-radius: 12px;
+            background: rgba(53, 255, 107, 0.04);
+            border: 1px solid rgba(53, 255, 107, 0.12);
+        }
+        .usage-note code {
+            background: rgba(53, 255, 107, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.82rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav-header">
+            <a href="../../../index.html" class="nav-name glyph-target" data-glyph="BRIAN FONG">BRIAN FONG</a>
+        </nav>
+        <div class="content">
+            <div class="section-heading"><h1>Terms &amp; Glossary</h1></div>
+            <p style="color:var(--muted-text);margin-bottom:18px;">A reference of key concepts used across the learnings tutorials. Click any term for a full breakdown. These terms are also available as hover tooltips throughout the HyperLogLog, T-Digest, and Data Cubes tutorials.</p>
+
+            <input type="text" class="terms-search" id="terms-search" placeholder="Search terms..." />
+
+            <div class="term-detail-panel" id="term-detail-panel">
+                <button class="term-close-btn" id="term-close-btn">✕ Close</button>
+                <div class="term-detail-title" id="term-detail-title"></div>
+                <div class="term-detail-section" id="term-detail-short"></div>
+                <div class="term-detail-section"><strong>In depth</strong><span id="term-detail-detail"></span></div>
+                <div class="term-detail-section"><strong>Formula / Pattern</strong><div class="term-detail-formula" id="term-detail-formula"></div></div>
+                <div class="term-detail-section"><strong>Example</strong><span id="term-detail-example"></span></div>
+                <div class="term-detail-section"><strong>See also</strong><div class="see-also-links" id="term-detail-see-also"></div></div>
+            </div>
+
+            <div id="terms-container"></div>
+
+            <div class="usage-note">
+                <strong style="color:var(--accent-color);">Using term tooltips in other tutorials</strong>
+                <p style="margin-top:8px;">Any learning page can include the glossary script and get automatic hover/click tooltips:</p>
+                <pre style="margin:10px 0;"><code>&lt;script src="../terms/glossary.js"&gt;&lt;/script&gt;
+&lt;script&gt;Glossary.init();&lt;/script&gt;
+
+&lt;!-- Then mark terms: --&gt;
+&lt;span class="term" data-term="p95"&gt;p95&lt;/span&gt;
+&lt;span class="term" data-term="latency"&gt;latency&lt;/span&gt;</code></pre>
+                <p>Hovering or clicking a marked term shows the full definition inline.</p>
+            </div>
+        </div>
+    </div>
+    <script src="../../../assets/js/main.js"></script>
+    <script src="glossary.js"></script>
+    <script>
+    (function () {
+        var terms = Glossary.getAll();
+        var container = document.getElementById('terms-container');
+        var panel = document.getElementById('term-detail-panel');
+        var searchInput = document.getElementById('terms-search');
+        var closeBtn = document.getElementById('term-close-btn');
+
+        var categories = {
+            'Percentiles & Statistics': ['p50', 'p95', 'p99', 'p999', 'percentile', 'quantile'],
+            'Performance & Systems': ['latency', 'tail-latency', 'throughput', 'qps', 'slo'],
+            'Data Structures & Sketches': ['hll', 'tdigest', 'sketch', 'centroid', 'delta', 'dcount', 'cardinality'],
+            'Data Cubes & OLAP': ['dimension', 'measure', 'cuboid', 'rollup', 'drilldown', 'slice', 'dice']
+        };
+
+        function renderCards(filter) {
+            container.innerHTML = '';
+            var filterLower = (filter || '').toLowerCase();
+            Object.keys(categories).forEach(function (cat) {
+                var catTerms = categories[cat].filter(function (key) {
+                    if (!terms[key]) return false;
+                    if (!filterLower) return true;
+                    var t = terms[key];
+                    return key.indexOf(filterLower) >= 0 || t.title.toLowerCase().indexOf(filterLower) >= 0 || t.short.toLowerCase().indexOf(filterLower) >= 0;
+                });
+                if (!catTerms.length) return;
+                var header = document.createElement('div');
+                header.className = 'category-header';
+                header.textContent = cat;
+                container.appendChild(header);
+                var grid = document.createElement('div');
+                grid.className = 'terms-grid';
+                catTerms.forEach(function (key) {
+                    var t = terms[key];
+                    var card = document.createElement('div');
+                    card.className = 'term-card';
+                    card.setAttribute('data-term-key', key);
+                    card.innerHTML = '<div class="term-card-title">' + t.title + '</div>' +
+                        '<div class="term-card-short">' + t.short + '</div>' +
+                        '<div class="term-card-tags">' + (t.seeAlso || []).slice(0, 4).map(function (s) { return '<span class="term-tag">' + s + '</span>'; }).join('') + '</div>';
+                    card.addEventListener('click', function () { openDetail(key); });
+                    grid.appendChild(card);
+                });
+                container.appendChild(grid);
+            });
+        }
+
+        function openDetail(key) {
+            var t = terms[key];
+            if (!t) return;
+            document.getElementById('term-detail-title').textContent = t.title;
+            document.getElementById('term-detail-short').textContent = t.short;
+            document.getElementById('term-detail-detail').textContent = t.detail;
+            document.getElementById('term-detail-formula').textContent = t.formula;
+            document.getElementById('term-detail-example').textContent = t.example;
+            var seeAlso = document.getElementById('term-detail-see-also');
+            seeAlso.innerHTML = (t.seeAlso || []).map(function (s) {
+                return '<span class="see-also-link" data-term-key="' + s + '">' + (terms[s] ? terms[s].title : s) + '</span>';
+            }).join('');
+            seeAlso.querySelectorAll('.see-also-link').forEach(function (el) {
+                el.addEventListener('click', function () { openDetail(el.getAttribute('data-term-key')); });
+            });
+            panel.classList.add('open');
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        closeBtn.addEventListener('click', function () { panel.classList.remove('open'); });
+        searchInput.addEventListener('input', function () { renderCards(searchInput.value); });
+
+        // Handle hash links: #term-key
+        function checkHash() {
+            var hash = window.location.hash.replace('#', '');
+            if (hash && terms[hash]) openDetail(hash);
+        }
+
+        renderCards('');
+        checkHash();
+        window.addEventListener('hashchange', checkHash);
+    })();
+    </script>
+</body>
+</html>

@@ -17,6 +17,12 @@ const siteData = {
             url: 'learnings/computer_science/datacubes/index.html',
             description: 'Multi-dimensional pre-aggregation for fast analytics. Learn OLAP operations, how HLL and T-Digest enable approximate cube cells, and apply it with Kusto/KQL.',
             category: 'Computer Science'
+        },
+        {
+            title: 'Terms & Glossary',
+            url: 'learnings/computer_science/terms/index.html',
+            description: 'Reference of key concepts (p95, latency, quantile, HLL, T-Digest, dimensions, measures) with full definitions, formulas, and examples. Hover tooltips available across all tutorials.',
+            category: 'Computer Science'
         }
     ],
     projects: [
