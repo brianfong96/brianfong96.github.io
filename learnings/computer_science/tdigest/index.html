@@ -2197,7 +2197,7 @@
                 addBatch(20, true);
                 state.timerId = setTimeout(tick, Math.max(getInterval(), getFlashDelay() * 4 + 80));
             }
-            function step() { if (state.running) pause(); addBatch(10, true); }
+            function step() { if (state.running) pause(); addBatch(50, true); }
             function reset() { pause(); setDelta(state.delta); }
             function updateUI() {
                 if (dom.playIcon) dom.playIcon.style.display = state.running ? 'none' : '';
@@ -2372,7 +2372,7 @@
             function pause() { state.running = false; if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; } updateUI(); }
             function toggle() { state.running ? pause() : play(); }
             function tick() { if (!state.running) return; addBatch(20); state.timerId = setTimeout(tick, getInterval()); }
-            function step() { if (state.running) pause(); addBatch(10); }
+            function step() { if (state.running) pause(); addBatch(50); }
             function reset() { pause(); setDelta(state.delta); }
             function updateUI() {
                 if (dom.playIcon) dom.playIcon.style.display = state.running ? 'none' : '';
@@ -2443,8 +2443,9 @@
             }
             function step() {
                 if (!state.digest.centroids.length) seedDigest();
-                state.activeIndex = (state.activeIndex + 1) % Math.max(state.digest.centroids.length, 1);
-                if (state.activeIndex % 3 === 0) for (var i = 0; i < 24; i++) state.digest.add(sampleDistribution('normal', state.rng));
+                // Add a full batch of values and cycle through several centroids
+                for (var i = 0; i < 50; i++) state.digest.add(sampleDistribution('normal', state.rng));
+                state.activeIndex = (state.activeIndex + 5) % Math.max(state.digest.centroids.length, 1);
                 render();
             }
             function play() { if (state.running) return; state.running = true; updateUI(); tick(); }
@@ -2698,7 +2699,7 @@
             function pause() { state.running = false; if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; } if (dom.autoBtn) dom.autoBtn.textContent = 'Auto Demo'; }
             function toggle() { state.running ? pause() : play(); }
             function reset() { pause(); cancelAnimation(); state.log = []; seedDigest(); }
-            function activate() {}
+            function activate() { play(); }
             function deactivate() { pause(); cancelAnimation(); }
             function init() {
                 resolveDOM();
@@ -2804,7 +2805,7 @@
             function pause() { state.running = false; if (state.timerId) { clearTimeout(state.timerId); state.timerId = null; } updateUI(); }
             function toggle() { state.running ? pause() : play(); }
             function tick() { if (!state.running) return; addBatch(20, true); state.timerId = setTimeout(tick, Math.max(getInterval(), getFlashDelay() * 3 + 60)); }
-            function step() { if (state.running) pause(); addBatch(10, true); }
+            function step() { if (state.running) pause(); addBatch(50, true); }
             function reset() { pause(); setDelta(state.delta); if (dom.queryResult) dom.queryResult.innerHTML = 'Run the stream, then query a percentile like <strong>0.95</strong> or <strong>0.99</strong>.'; clearPseudoLines(dom.pseudoLines); }
             function updateUI() {
                 if (dom.playIcon) dom.playIcon.style.display = state.running ? 'none' : '';
@@ -2841,6 +2842,7 @@
             if (n === 2) ScaleDemo.activate();
             if (n === 3) AccuracyDemo.activate();
             if (n === 4) MemoryDemo.activate();
+            if (n === 5) InsertionVisualizer.activate();
             if (n === 6) Playground.activate();
         }
 
@@ -2860,7 +2862,8 @@
         MemoryDemo.init();
         InsertionVisualizer.init();
         Playground.init();
-        onStepActivate(0);
+        // Start on step 1 (first demo) already playing
+        goToStep(1, 1);
         updateIndicator();
     })();
     </script>
