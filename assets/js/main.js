@@ -295,12 +295,9 @@
         // Populate lists if data script elements exist
         if (typeof siteData !== 'undefined') {
             populateList('projects-list', siteData.projects || []);
-            populateList('recipes-list', siteData.recipes || []);
-            populateList('blogs-list', siteData.blogs || []);
             populateList('learnings-list', siteData.learnings || []);
             populateLearningsToc();
-            var all = [].concat(siteData.projects || [], siteData.recipes || [],
-                siteData.pages || [], siteData.music || [], siteData.blogs || [], siteData.learnings || []);
+            var all = [].concat(siteData.projects || [], siteData.learnings || []);
             populateList('toc-list', all);
         }
 
@@ -502,12 +499,9 @@
     // ── Populate dynamic lists ──
     if (typeof siteData !== 'undefined') {
         populateList('projects-list', siteData.projects || []);
-        populateList('recipes-list', siteData.recipes || []);
-        populateList('blogs-list', siteData.blogs || []);
         populateList('learnings-list', siteData.learnings || []);
         populateLearningsToc();
-        var all = [].concat(siteData.projects || [], siteData.recipes || [],
-            siteData.pages || [], siteData.music || [], siteData.blogs || [], siteData.learnings || []);
+        var all = [].concat(siteData.projects || [], siteData.learnings || []);
         populateList('toc-list', all);
     }
 
