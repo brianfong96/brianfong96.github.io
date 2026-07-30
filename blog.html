@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Blog - Brian Fong</title>
     <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/blog.css" />
 </head>
-<body>
+<body class="blog-index">
     <header class="topbar">
         <a class="home-link" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
         <button id="sidebar-toggle" aria-label="Toggle navigation"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></button>
@@ -18,20 +19,39 @@
             <li><a href="about.html">About</a></li>
             <li><a href="projects.html">Projects</a></li>
             <li><a href="learnings.html">Learnings</a></li>
+            <li><a href="blog.html">Blog</a></li>
         </ul>
     </nav>
     <div class="content">
         <header class="hero small">
             <div class="hero-content">
-                <p class="eyebrow">Blog</p>
                 <h1>Blog</h1>
-                <p class="hero-copy">I'll be posting engineering notes, project write-ups, and other things worth sharing here.</p>
+                <p class="hero-copy">A record of the questions and interests I want to understand better—researched, connected, and visualized so the underlying ideas become easier to see.</p>
             </div>
         </header>
         <main>
+            <section class="section blog-topic-section">
+                <div class="section-heading">
+                    <h2>Interests, made visible</h2>
+                    <p>Finance and technology are the starting points. Each topic combines source material, interpretation, and visual models rather than treating the post as a text archive.</p>
+                </div>
+                <nav class="topic-index" aria-label="Blog topics">
+                    <a href="#finance" id="finance">
+                        <span>Finance</span>
+                        <strong>Companies, capital, and market expectations</strong>
+                        <small>Compare operating performance, cash flows, valuation, and what changes the quality of reported earnings.</small>
+                    </a>
+                    <a href="#technology" id="technology">
+                        <span>Technology</span>
+                        <strong>Systems, AI, and their human consequences</strong>
+                        <small>Explore how technical shifts work, where their limits sit, and what they mean beyond the implementation.</small>
+                    </a>
+                </nav>
+            </section>
             <section class="section">
                 <div class="section-heading">
-                    <h2>Posts</h2>
+                    <h2>Latest posts</h2>
+                    <p>Long-form thinking with primary sources, interactive explanations, and visual evidence that makes the key comparison legible.</p>
                 </div>
                 <ul id="blogs-list" data-empty-message="No posts yet — check back soon."></ul>
             </section>
@@ -44,4 +64,3 @@
     <script src="assets/js/main.js?v=8304231"></script>
 </body>
 </html>
-

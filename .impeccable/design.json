@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-30T22:52:07.147Z",
+  "title": "Design System: Brian Fong",
+  "extensions": {
+    "colorMeta": {
+      "void": { "role": "neutral", "displayName": "Void", "canonical": "#02060d", "tonalRamp": ["#02060d", "#07111f", "#14283a", "#2e4658", "#586f80", "#8899a6", "#bbc5cc", "#eef2f4"] },
+      "signal-green": { "role": "primary", "displayName": "Signal Green", "canonical": "#35ff6b", "tonalRamp": ["#00310d", "#005c1c", "#008d2c", "#00bd3c", "#19e553", "#60ff83", "#a6ffb9", "#ecfff0"] },
+      "signal-green-muted": { "role": "secondary", "displayName": "Muted Signal Green", "canonical": "#68c77d", "tonalRamp": ["#15351d", "#24552f", "#367844", "#4e9c5b", "#68c77d", "#8dda9d", "#b9eac2", "#e9f8ec"] },
+      "phosphor-text": { "role": "neutral", "displayName": "Phosphor Text", "canonical": "#c9ffd7", "tonalRamp": ["#17341f", "#285338", "#3d7650", "#599b6c", "#79c288", "#9de3aa", "#c9ffd7", "#f0fff4"] }
+      ,"editorial-paper": { "role": "neutral", "displayName": "Research Paper", "canonical": "#f4f1ea", "tonalRamp": ["#26231f", "#46423b", "#68635a", "#8d877d", "#b3ada3", "#d5d0c7", "#f4f1ea", "#fffefa"] }
+      ,"editorial-blue": { "role": "primary", "displayName": "Analytical Blue", "canonical": "#24599a", "tonalRamp": ["#101e31", "#17345a", "#1d4a80", "#24599a", "#4778b0", "#779bc5", "#b4c9de", "#edf4fa"] }
+      ,"editorial-positive": { "role": "secondary", "displayName": "Positive Green", "canonical": "#247a4d", "tonalRamp": ["#10261a", "#17442b", "#1e633e", "#247a4d", "#459468", "#77b290", "#b4d5c3", "#edf7f1"] }
+      ,"editorial-negative": { "role": "tertiary", "displayName": "Negative Red", "canonical": "#b43a3f", "tonalRamp": ["#321517", "#5b2023", "#842b30", "#b43a3f", "#ca6064", "#dd8d90", "#edbfc1", "#fbeff0"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Page thesis and primary title." },
+      "body": { "displayName": "Body", "purpose": "Readable prose, explanations, and annotations." },
+      "label": { "displayName": "Label", "purpose": "Controls, status, dates, and measurements." },
+      "editorialDisplay": { "displayName": "Editorial Display", "purpose": "Blog and finance page thesis." },
+      "editorialBody": { "displayName": "Editorial Body", "purpose": "Blog prose, financial analysis, and annotations." },
+      "editorialLabel": { "displayName": "Editorial Label", "purpose": "Finance controls, dates, and data labels." }
+    },
+    "shadows": [
+      { "name": "panel-depth", "value": "0 8px 24px rgba(0, 0, 0, 0.34)", "purpose": "Structural separation for layered panels." },
+      { "name": "live-signal", "value": "0 6px 22px rgba(53, 255, 107, 0.16)", "purpose": "Focus, selection, and live data." }
+    ],
+    "motion": [
+      { "name": "state", "value": "250ms ease-out", "purpose": "Hover and focus state changes." },
+      { "name": "arrival", "value": "550ms ease-out", "purpose": "Section and page arrival." }
+    ],
+    "breakpoints": [
+      { "name": "compact", "value": "700px" },
+      { "name": "wide", "value": "900px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "A signal action for the page's primary control.",
+      "html": "<button class=\"ds-btn-primary\">COMPARE</button>",
+      "css": ".ds-btn-primary { border: 1px solid var(--accent-color, #35ff6b); border-radius: 10px; padding: 11px 18px; background: #010803; color: #35ff6b; font: 700 0.88rem/1.2 'Courier New', Consolas, monospace; letter-spacing: .12em; text-transform: uppercase; transition: transform .25s ease-out, box-shadow .25s ease-out; } .ds-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(53,255,107,.16); } .ds-btn-primary:focus-visible { outline: 2px solid #c9ffd7; outline-offset: 3px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "description": "A quiet action that does not compete with the live signal.",
+      "html": "<button class=\"ds-btn-secondary\">METHODOLOGY</button>",
+      "css": ".ds-btn-secondary { border: 1px solid rgba(53,255,107,.28); border-radius: 10px; padding: 11px 18px; background: rgba(53,255,107,.06); color: #c9ffd7; font: 700 .88rem/1.2 'Courier New', Consolas, monospace; letter-spacing: .12em; text-transform: uppercase; } .ds-btn-secondary:hover { border-color: #35ff6b; } .ds-btn-secondary:focus-visible { outline: 2px solid #35ff6b; outline-offset: 3px; }"
+    },
+    {
+      "name": "Panel",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "A layered console surface for grouped information.",
+      "html": "<section class=\"ds-panel\"><strong>OPERATING CASH FLOW</strong><p>$55.44B</p></section>",
+      "css": ".ds-panel { border: 1px solid rgba(53,255,107,.32); border-radius: 14px; padding: 24px; background: #010803; color: #c9ffd7; box-shadow: 0 8px 24px rgba(0,0,0,.34); font-family: 'Courier New', Consolas, monospace; } .ds-panel strong { color: #68c77d; letter-spacing: .1em; } .ds-panel p { margin: 8px 0 0; color: #35ff6b; font-size: 2rem; }"
+    },
+    {
+      "name": "Signal Chip",
+      "kind": "chip",
+      "description": "Compact metadata or selected metric state.",
+      "html": "<span class=\"ds-chip\">FREE CASH FLOW</span>",
+      "css": ".ds-chip { display: inline-flex; border: 1px solid rgba(53,255,107,.3); border-radius: 999px; padding: 5px 12px; background: rgba(53,255,107,.08); color: #68c77d; font: 700 .78rem/1.2 'Courier New', Consolas, monospace; letter-spacing: .1em; }"
+    },
+    {
+      "name": "Console Input",
+      "kind": "input",
+      "description": "A recessed search or filter field.",
+      "html": "<input class=\"ds-input\" value=\"cash flow\" aria-label=\"Filter metrics\">",
+      "css": ".ds-input { width: 100%; border: 1px solid rgba(53,255,107,.32); border-radius: 10px; padding: 12px 14px; background: #010402; color: #c9ffd7; font: 400 1rem/1.4 'Courier New', Consolas, monospace; } .ds-input:focus-visible { outline: 2px solid #35ff6b; outline-offset: 2px; border-color: #35ff6b; }"
+    },
+    {
+      "name": "Console Navigation",
+      "kind": "nav",
+      "description": "Compact dark navigation with active signal state.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\">ANALYSIS</a><a class=\"active\" href=\"#\">FINANCE</a></nav>",
+      "css": ".ds-nav { display: flex; gap: 10px; padding: 12px; border: 1px solid rgba(53,255,107,.24); border-radius: 10px; background: #010402; } .ds-nav a { padding: 8px 10px; color: #68c77d; font: 700 .82rem/1.2 'Courier New', Consolas, monospace; letter-spacing: .1em; text-decoration: none; } .ds-nav a.active, .ds-nav a:hover { color: #35ff6b; background: rgba(53,255,107,.08); } .ds-nav a:focus-visible { outline: 2px solid #35ff6b; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Signal Intelligence Console",
+    "overview": "A personal analysis terminal with dark layered surfaces, precise phosphor-green signals, measured motion, and visible system state. Dense information remains legible through alignment, hierarchy, and interaction.",
+    "keyCharacteristics": ["Near-black layered surfaces", "Phosphor-green live signals", "Monospaced analytical voice", "Scanning and tracing motion"],
+    "rules": [
+      { "name": "The Live Signal Rule", "body": "Brightness and glow identify activity or hierarchy.", "section": "colors" },
+      { "name": "The Restrained Glow Rule", "body": "Glow supports tonal or offset depth and never substitutes for structure.", "section": "elevation" }
+    ],
+    "dos": ["Use brightness to encode state.", "Align financial values with tabular numerals.", "Provide static equivalents for interactive explanations."],
+    "donts": ["Do not cover every panel in equal glow.", "Do not sacrifice body-copy measure for terminal styling.", "Do not add colors without a semantic data role."]
+  }
+}

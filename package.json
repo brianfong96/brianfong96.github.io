@@ -4,7 +4,8 @@
   "description": "🔗 **Live site:** [https://brianfong96.github.io](https://brianfong96.github.io)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests/finance-blog-test.js",
+    "test:finance": "node tests/finance-blog-test.js"
   },
   "repository": {
     "type": "git",
