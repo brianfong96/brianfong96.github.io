@@ -201,6 +201,7 @@
 
     function syncBlogHomeLink(className) {
         var topbar = document.querySelector('.topbar');
+        document.documentElement.classList.toggle('editorial-scrollbars', isEditorialPage(className));
         if (!topbar) return;
         var link = topbar.querySelector('.blog-home-link');
         var shouldShow = /(^|\s)(blog-article|finance-page)(\s|$)/.test(className || '');

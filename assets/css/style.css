@@ -54,6 +54,21 @@ body {
     background: linear-gradient(180deg, rgba(25, 148, 54, 0.9), rgba(53, 255, 107, 0.95));
     box-shadow: 0 0 14px rgba(53, 255, 107, 0.2);
 }
+
+html.editorial-scrollbars {
+    scrollbar-color: #9fb2c7 #e7e3da;
+}
+
+html.editorial-scrollbars::-webkit-scrollbar-track {
+    background: #e7e3da;
+}
+
+html.editorial-scrollbars::-webkit-scrollbar-thumb {
+    border-color: #e7e3da;
+    background: #9fb2c7;
+    box-shadow: none;
+}
+
 body::before,
 body::after {
     content: "";
