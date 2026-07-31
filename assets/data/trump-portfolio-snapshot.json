@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "meta": {
+    "title": "Trump 2026 OGE disclosure static portfolio extract",
+    "filer": "Donald J. Trump",
+    "reportingYear": 2025,
+    "ogeReceived": "2026-06-29",
+    "certified": "2026-06-30",
+    "marketDataAsOf": "2026-07-10",
+    "generatedAt": "2026-07-11T23:09:55Z",
+    "methodologyVersion": "2.0.0",
+    "sourcePages": 927,
+    "sourceSha256": "84b5987e4c8a418188600bea1e1ba6b44e0d5735cdd757cee5aba551977ca402",
+    "extractScope": "Curated aggregate extract of substantive Part 6 stock, preferred stock, and equity ETF positions plus matched Part 7 activity."
+  },
+  "summary": {
+    "securities": 1371,
+    "stocks": 1336,
+    "equityEtfs": 34,
+    "preferredStocks": 1,
+    "yearEndValueMinimum": 375153681,
+    "yearEndValueMaximum": 1387850000,
+    "publishedEvents": 19407,
+    "purchaseEvents": 14357,
+    "saleEvents": 5050,
+    "purchaseAmountMinimum": 403591357,
+    "purchaseAmountMaximum": 1251655000,
+    "saleAmountMinimum": 114676050,
+    "saleAmountMaximum": 338390000
+  },
+  "ytd": {
+    "definition": "Price return from the final 2025 close through 2026-07-10, excluding dividends.",
+    "coveredSecurities": 1352,
+    "unavailableSecurities": 19,
+    "medianPercent": 9.49,
+    "positive": 888,
+    "negative": 454,
+    "flat": 10,
+    "minimumPercent": -91.26,
+    "maximumPercent": 707.11
+  },
+  "sectors": [
+    { "name": "Technology", "minimumValue": 90718647 },
+    { "name": "Financial Services", "minimumValue": 48235564 },
+    { "name": "Consumer Cyclical", "minimumValue": 39190405 },
+    { "name": "Diversified Equity", "minimumValue": 37501024 },
+    { "name": "Communication Services", "minimumValue": 35865166 },
+    { "name": "Healthcare", "minimumValue": 34980431 },
+    { "name": "Industrials", "minimumValue": 29978498 },
+    { "name": "Consumer Defensive", "minimumValue": 19391227 },
+    { "name": "Energy", "minimumValue": 12353180 },
+    { "name": "Utilities", "minimumValue": 10160200 },
+    { "name": "Basic Materials", "minimumValue": 9034147 },
+    { "name": "Real Estate", "minimumValue": 7745192 }
+  ],
+  "topHoldings": [
+    { "symbol": "AAPL", "company": "Apple", "minimumValue": 14000009 },
+    { "symbol": "NVDA", "company": "NVIDIA", "minimumValue": 12500007 },
+    { "symbol": "AVGO", "company": "Broadcom", "minimumValue": 9950011 },
+    { "symbol": "MSFT", "company": "Microsoft", "minimumValue": 9100008 },
+    { "symbol": "GOOGL", "company": "Alphabet Class A", "minimumValue": 8700009 },
+    { "symbol": "AMZN", "company": "Amazon", "minimumValue": 8700008 },
+    { "symbol": "META", "company": "Meta Platforms", "minimumValue": 7500009 },
+    { "symbol": "GOOG", "company": "Alphabet Class C", "minimumValue": 7200007 },
+    { "symbol": "TSLA", "company": "Tesla", "minimumValue": 6951008 },
+    { "symbol": "VIGI", "company": "Vanguard International Dividend Appreciation ETF", "minimumValue": 6000002 }
+  ],
+  "monthlyTransactions": [
+    { "month": "Jan", "purchases": 928, "sales": 66 },
+    { "month": "Feb", "purchases": 1871, "sales": 226 },
+    { "month": "Mar", "purchases": 1120, "sales": 487 },
+    { "month": "Apr", "purchases": 1422, "sales": 641 },
+    { "month": "May", "purchases": 1815, "sales": 448 },
+    { "month": "Jun", "purchases": 556, "sales": 248 },
+    { "month": "Jul", "purchases": 855, "sales": 299 },
+    { "month": "Aug", "purchases": 1277, "sales": 233 },
+    { "month": "Sep", "purchases": 1347, "sales": 467 },
+    { "month": "Oct", "purchases": 1240, "sales": 755 },
+    { "month": "Nov", "purchases": 966, "sales": 712 },
+    { "month": "Dec", "purchases": 960, "sales": 468 }
+  ],
+  "ytdDistribution": [
+    { "label": "Below -20%", "count": 163, "side": "negative" },
+    { "label": "-20% to -10%", "count": 109, "side": "negative" },
+    { "label": "-10% to 0%", "count": 182, "side": "negative" },
+    { "label": "0% to 10%", "count": 233, "side": "positive" },
+    { "label": "10% to 20%", "count": 234, "side": "positive" },
+    { "label": "Above 20%", "count": 431, "side": "positive" },
+    { "label": "N/A", "count": 19, "side": "neutral" }
+  ],
+  "validation": {
+    "part7RowsParsed": 21285,
+    "matchedRows": 19417,
+    "unmatchedRows": 1868,
+    "publishedEvents": 19407,
+    "note": "The checked-in source does not explain the 10-row difference between matched rows and published events."
+  },
+  "limitations": [
+    "Position values and transaction amounts are statutory ranges, not exact dollar values.",
+    "The filing does not provide exact share counts or execution prices.",
+    "Bond, commodity, cash, mutual-fund, corporate-debt, income-only, and de minimis rows at or below $1,001 are outside this extract.",
+    "Market closes are reference prices, not execution prices.",
+    "YTD results exclude dividends and can be unavailable for delisted or noncontinuous tickers."
+  ],
+  "sources": {
+    "ogePdf": "https://oge.box.com/shared/static/zycb5i2ny8kssm51uzqm8ygyq2zkpkqq.pdf",
+    "marketData": "https://finance.yahoo.com/"
+  }
+}

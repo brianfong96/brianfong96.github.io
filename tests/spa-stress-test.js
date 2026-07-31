@@ -4,19 +4,27 @@
  * Then waits and verifies final state is clean.
  */
 const puppeteer = require('puppeteer');
+const fs = require('node:fs');
 
-const BASE = 'http://localhost:8000';
+const BASE = process.env.BASE_URL || 'http://localhost:8000';
+const browserExecutable = [
+    process.env.PUPPETEER_EXECUTABLE_PATH,
+    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+    'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+].find((candidate) => candidate && fs.existsSync(candidate));
 const GLYPHS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴΞΨΩΦΣΛΠΔ';
 
 const PAGES = [
     '/index.html', '/about.html', '/projects.html', '/blog.html',
+    '/blog/ai-capex-reckoning/index.html',
+    '/blog/trump-portfolio-disclosure/index.html',
     '/recipes.html', '/music.html',
     '/recipes/cumin-mega-hamburg-steaks/index.html',
     '/recipes/cantonese-soy-ginger-chicken/index.html',
 ];
 
 async function run() {
-    const browser = await puppeteer.launch({ headless: 'new', args: ['--no-sandbox'] });
+    const browser = await puppeteer.launch({ headless: 'new', executablePath: browserExecutable, args: ['--no-sandbox'] });
     const page = await browser.newPage();
     let errors = [];
     page.on('pageerror', err => errors.push(err.message));
@@ -148,7 +156,7 @@ async function run() {
     console.log(`${'='.repeat(50)}`);
 
     await browser.close();
-    process.exit(failed > 0 || result.errors.length > 0 ? 1 : 0);
+    process.exit(failed > 0 || result.errors.length > 0 || errors.length > 0 ? 1 : 0);
 }
 
 run().catch(err => { console.error('Crashed:', err); process.exit(1); });

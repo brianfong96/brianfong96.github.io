@@ -1,0 +1,354 @@
+<!--
+THESIS: A capital allocation scanner makes four companies comparable before declaring a winner; it rejects the static earnings-table article.
+OWN-WORLD: Warm paper, navy ink, blue analytical structure, green positive flows, red negative flows, and crisp research-desk rules.
+STORY: Scan the quarter, expand any metric across all four companies, trace operating cash into capex, then inspect adjustments and sources.
+FIRST VIEWPORT: A compact thesis and verdict lead directly into a wide comparison matrix whose selected row expands into four visual tracks.
+FORM: Capital allocation scanner, fourth grounded structure, Composition C staging, seed d3c06688.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A visual Q2 2026 comparison of Microsoft, Meta, Alphabet, and Amazon across growth, cloud, capital spending, and free cash flow.">
+    <title>The AI Capex Reckoning - Brian Fong</title>
+    <link rel="icon" type="image/png" href="../../assets/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/finance.css">
+</head>
+<body class="finance-page">
+    <header class="topbar">
+        <a class="home-link" href="../../index.html" aria-label="Home">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </a>
+        <a class="blog-home-link" href="../../blog.html">All blogs</a>
+        <button id="sidebar-toggle" aria-label="Toggle navigation">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg>
+        </button>
+    </header>
+
+    <nav class="sidebar" id="sidebar" aria-label="Primary navigation">
+        <ul class="nav-links">
+            <li><a href="../../index.html">Home</a></li>
+            <li><a href="../../about.html">About</a></li>
+            <li><a href="../../projects.html">Projects</a></li>
+            <li><a href="../../learnings.html">Learnings</a></li>
+            <li><a href="../../blog.html">Blog</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <article class="finance-article">
+            <header class="finance-hero">
+                <div class="finance-meta">
+                    <a href="../../blog.html" class="finance-back">← Blog</a>
+                    <span>July 30, 2026</span>
+                    <span>Quarter ended June 30, 2026</span>
+                </div>
+                <div class="finance-title-grid">
+                    <div>
+                        <h1>The AI capex reckoning</h1>
+                        <p class="finance-deck">Microsoft, Meta, Alphabet, and Amazon generated <strong>$171.76B</strong> in operating cash this quarter—then directed <strong>$164.88B</strong> into infrastructure. The similarity ends there.</p>
+                    </div>
+                    <div class="finance-verdict">
+                        <span>Highest-quality quarter</span>
+                        <strong>Microsoft</strong>
+                        <p>45.1% operating margin and $19.64B of quarterly free cash flow after a 110% capex increase.</p>
+                    </div>
+                </div>
+                <div class="finance-signal-strip" aria-label="Quarter summary">
+                    <span><b>4</b> companies</span>
+                    <span><b>$471.22B</b> combined revenue</span>
+                    <span><b>2</b> positive-FCF quarters</span>
+                    <span><b>$164.88B</b> combined capex</span>
+                </div>
+            </header>
+
+            <div class="finance-layout">
+                <aside class="finance-rail" aria-label="Article sections">
+                    <span class="finance-rail-label">Navigate</span>
+                    <a href="#scanner" class="is-active">Quarter scanner</a>
+                    <a href="#cash-flow">Cash flow</a>
+                    <a href="#earnings-quality">Earnings quality</a>
+                    <a href="#cloud">Cloud race</a>
+                    <a href="#market-lens">Market lens</a>
+                    <a href="#verdict">Verdict</a>
+                    <a href="#methodology">Methodology</a>
+                    <a href="#sources">Sources</a>
+                </aside>
+
+                <main class="finance-body">
+                    <section class="finance-section scanner-section" id="scanner">
+                        <div class="finance-section-heading">
+                            <h2>Scan the quarter</h2>
+                            <p>Select a row to expand the same metric across all four companies. Hover or focus any visual mark for its exact value and context.</p>
+                        </div>
+
+                        <div class="scanner-table-wrap">
+                            <table class="scanner-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Metric</th>
+                                        <th scope="col">Microsoft</th>
+                                        <th scope="col">Meta</th>
+                                        <th scope="col">Alphabet</th>
+                                        <th scope="col">Amazon</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row"><button type="button" data-metric="revenue">Revenue</button></th>
+                                        <td>$90.01B</td><td>$60.80B <span class="rank-badge is-low">Low</span></td><td>$119.80B</td><td>$200.61B <span class="rank-badge">High</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><button type="button" data-metric="revenueGrowth">Revenue growth</button></th>
+                                        <td>+17.7% <span class="rank-badge is-low">Low</span></td><td>+28.0% <span class="rank-badge">High</span></td><td>+24.2%</td><td>+19.6%</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><button type="button" data-metric="operatingMargin">Operating margin</button></th>
+                                        <td>45.1% <span class="rank-badge">High</span></td><td>30.9%</td><td>34.0%</td><td>13.7% <span class="rank-badge is-low">Low</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><button type="button" data-metric="cloudGrowth">Cloud growth</button></th>
+                                        <td>+43%</td><td>N/A</td><td>+81.8% <span class="rank-badge">High</span></td><td>+36.8% <span class="rank-badge is-low">Low*</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><button type="button" data-metric="operatingCash">Operating cash flow</button></th>
+                                        <td>$55.44B <span class="rank-badge">High</span></td><td>$31.86B <span class="rank-badge is-low">Low</span></td><td>$39.07B</td><td>$45.39B</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><button type="button" data-metric="capex">Capex used for FCF</button></th>
+                                        <td>$35.80B</td><td>$31.08B <span class="rank-badge is-low">Low</span></td><td>$44.92B</td><td>$53.08B <span class="rank-badge">High</span></td>
+                                    </tr>
+                                    <tr class="is-selected">
+                                        <th scope="row"><button type="button" data-metric="freeCashFlow" aria-pressed="true">Quarterly free cash flow</button></th>
+                                        <td class="metric-positive">+$19.64B <span class="rank-badge">High</span></td><td class="metric-positive">+$0.78B</td><td class="metric-negative">−$5.86B</td><td class="metric-negative">−$7.69B <span class="rank-badge is-low">Low</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><button type="button" data-metric="marketMove">Post-earnings move</button></th>
+                                        <td class="metric-positive">+15.5% <span class="rank-badge">High</span></td><td class="metric-negative">−8.0% <span class="rank-badge is-low">Low</span></td><td class="metric-negative">−7.1%</td><td>Pending</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><button type="button" data-metric="trailingPe">Trailing P/E</button></th>
+                                        <td>25.1× <span class="rank-badge">High</span></td><td>21.3×</td><td>15.9× <span class="rank-badge is-low">Low</span></td><td>Pending</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p class="scanner-rank-note">High and low identify range endpoints, not investment quality. *Cloud low excludes Meta, which does not report an external cloud business.</p>
+                        </div>
+
+                        <div class="scanner-expanded" id="scanner-expanded" aria-live="polite">
+                            <div class="scanner-beam" aria-hidden="true"></div>
+                            <div class="expanded-heading">
+                                <div>
+                                    <span class="expanded-label">Selected metric</span>
+                                    <h3 id="expanded-title">Quarterly free cash flow</h3>
+                                </div>
+                                <p id="expanded-summary">Microsoft retained material cash after capex. Meta barely stayed positive; Alphabet and Amazon spent more than quarterly operating cash flow.</p>
+                            </div>
+                            <div class="company-tracks" id="company-tracks">
+                                <div class="company-track"><span class="company-name">Microsoft</span><div class="track-shell"><span class="track-bar" style="--track-size:100%"></span></div><button class="value-mark" type="button">+$19.64B<span class="metric-tooltip">21.8% of revenue remained as free cash flow.</span></button></div>
+                                <div class="company-track"><span class="company-name">Meta</span><div class="track-shell"><span class="track-bar" style="--track-size:4%"></span></div><button class="value-mark" type="button">+$0.78B<span class="metric-tooltip">Only 1.3% of revenue remained after infrastructure spending.</span></button></div>
+                                <div class="company-track"><span class="company-name">Alphabet</span><div class="track-shell"><span class="track-bar is-negative" style="--track-size:30%"></span></div><button class="value-mark is-negative" type="button">−$5.86B<span class="metric-tooltip">Quarterly capex exceeded operating cash flow by $5.86B.</span></button></div>
+                                <div class="company-track"><span class="company-name">Amazon</span><div class="track-shell"><span class="track-bar is-negative" style="--track-size:39%"></span></div><button class="value-mark is-negative" type="button">−$7.69B<span class="metric-tooltip">Quarterly and trailing-12-month free cash flow were negative.</span></button></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="finance-section" id="cash-flow">
+                        <div class="finance-section-heading">
+                            <h2>Where the operating cash went</h2>
+                            <p>All four businesses generated positive operating cash flow. The dividing line is how completely infrastructure spending consumed it.</p>
+                        </div>
+                        <div class="cash-flow-legend" aria-label="Cash flow legend">
+                            <span><i class="legend-solid"></i> Operating cash absorbed by capex</span>
+                            <span><i class="legend-residual"></i> Positive FCF retained</span>
+                            <span><i class="legend-gap"></i> Capex above operating cash</span>
+                        </div>
+                        <div class="cash-flow-map" id="cash-flow-map" aria-label="Interactive operating cash flow to capital expenditure comparison"></div>
+                        <div class="cash-flow-fallback">
+                            <table>
+                                <thead><tr><th>Company</th><th>Operating cash flow</th><th>Capex</th><th>Quarterly FCF</th><th>Capex / OCF</th></tr></thead>
+                                <tbody>
+                                    <tr><th>Microsoft</th><td>$55.44B</td><td>$35.80B</td><td>+$19.64B</td><td>64.6%</td></tr>
+                                    <tr><th>Meta</th><td>$31.86B</td><td>$31.08B</td><td>+$0.78B</td><td>97.6%</td></tr>
+                                    <tr><th>Alphabet</th><td>$39.07B</td><td>$44.92B</td><td>−$5.86B</td><td>115.0%</td></tr>
+                                    <tr><th>Amazon</th><td>$45.39B</td><td>$53.08B</td><td>−$7.69B</td><td>116.9%</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="analysis-callout">
+                            <strong>Microsoft is in a separate cash-flow category.</strong>
+                            <p>Its operating cash covered capex 1.55 times. Meta invested nearly every dollar it generated, while Alphabet and Amazon crossed into negative quarterly FCF.</p>
+                        </div>
+                    </section>
+
+                    <section class="finance-section" id="earnings-quality">
+                        <div class="finance-section-heading">
+                            <h2>Reported profit is not underlying profit</h2>
+                            <p>Alphabet and Amazon recorded large investment-related gains. Microsoft had a smaller benefit; Meta moved in the opposite direction with legal and severance costs.</p>
+                        </div>
+                        <div class="adjustment-list">
+                            <article class="adjustment-row">
+                                <div><h3>Alphabet</h3><p>$99.0B equity-security gain inflated the headline.</p></div>
+                                <div class="profit-bridge" role="img" aria-label="Alphabet reported 112.11 billion dollars of net income, composed of approximately 35 billion dollars of underlying net income and an estimated 77.11 billion dollar after-tax contribution from the equity-security gain.">
+                                    <div class="bridge-total"><span>Reported net income</span><strong>$112.11B</strong></div>
+                                    <div class="bridge-bar">
+                                        <span class="bridge-segment is-underlying" style="--segment:31.2%"></span>
+                                        <span class="bridge-segment is-gain" style="--segment:68.8%"></span>
+                                    </div>
+                                    <div class="bridge-key"><span><i class="is-underlying"></i>Approx. underlying <b>$35.0B</b></span><span><i class="is-gain"></i>Equity gain, after-tax estimate <b>+$77.11B</b></span></div>
+                                    <p class="bridge-caveat">The company disclosed a $99.0B pre-tax gain; the after-tax segment is the residual needed to bridge to reported net income.</p>
+                                </div>
+                            </article>
+                            <article class="adjustment-row">
+                                <div><h3>Amazon</h3><p>$53.4B of non-operating pretax income, primarily tied to Anthropic investments.</p></div>
+                                <div class="profit-bridge" role="img" aria-label="Amazon reported 62.65 billion dollars of net income, composed of approximately 21 billion dollars of normalized net income and an estimated 41.65 billion dollar after-tax contribution from non-operating income.">
+                                    <div class="bridge-total"><span>Reported net income</span><strong>$62.65B</strong></div>
+                                    <div class="bridge-bar">
+                                        <span class="bridge-segment is-underlying" style="--segment:33.5%"></span>
+                                        <span class="bridge-segment is-gain" style="--segment:66.5%"></span>
+                                    </div>
+                                    <div class="bridge-key"><span><i class="is-underlying"></i>Approx. normalized <b>$21.0B</b></span><span><i class="is-gain"></i>Non-operating income, after-tax estimate <b>+$41.65B</b></span></div>
+                                    <p class="bridge-caveat">The company disclosed $53.4B of pre-tax non-operating income; the after-tax segment is an analytical residual.</p>
+                                </div>
+                            </article>
+                            <article class="adjustment-row">
+                                <div><h3>Microsoft</h3><p>Discrete items, including an Anthropic gain, added about $0.27 to EPS.</p></div>
+                                <div class="profit-bridge" role="img" aria-label="Microsoft reported 4 dollars and 81 cents of diluted earnings per share, composed of approximately 4 dollars and 54 cents of underlying earnings and 27 cents from discrete items.">
+                                    <div class="bridge-total"><span>Reported diluted EPS</span><strong>$4.81</strong></div>
+                                    <div class="bridge-bar">
+                                        <span class="bridge-segment is-underlying" style="--segment:94.4%"></span>
+                                        <span class="bridge-segment is-gain" style="--segment:5.6%"></span>
+                                    </div>
+                                    <div class="bridge-key"><span><i class="is-underlying"></i>Approx. underlying <b>$4.54</b></span><span><i class="is-gain"></i>Discrete benefit <b>+$0.27</b></span></div>
+                                </div>
+                            </article>
+                            <article class="adjustment-row">
+                                <div><h3>Meta</h3><p>$2.4B of legal charges and $1.18B of severance reduced operating income.</p></div>
+                                <div class="profit-bridge" role="img" aria-label="Meta reported 18.78 billion dollars of operating income. Adding back 2.4 billion dollars of legal charges and 1.18 billion dollars of severance gives 22.36 billion dollars before the highlighted charges.">
+                                    <div class="bridge-total"><span>Before highlighted charges</span><strong>$22.36B</strong></div>
+                                    <div class="bridge-bar">
+                                        <span class="bridge-segment is-underlying" style="--segment:84%"></span>
+                                        <span class="bridge-segment is-cost" style="--segment:10.7%"></span>
+                                        <span class="bridge-segment is-severance" style="--segment:5.3%"></span>
+                                    </div>
+                                    <div class="bridge-key"><span><i class="is-underlying"></i>Reported operating income <b>$18.78B</b></span><span><i class="is-cost"></i>Legal charges <b>$2.40B</b></span><span><i class="is-severance"></i>Severance <b>$1.18B</b></span></div>
+                                    <p class="bridge-caveat">The red segments are actual costs added back only to show the quarter's operating-income bridge.</p>
+                                </div>
+                            </article>
+                        </div>
+                        <p class="method-note">Adjusted values are analytical approximations, not company-reported GAAP replacements. The unusual items remain real gains or costs.</p>
+                    </section>
+
+                    <section class="finance-section" id="cloud">
+                        <div class="finance-section-heading">
+                            <h2>The cloud race is accelerating</h2>
+                            <p>Google Cloud grew fastest. AWS remained the largest pure cloud business. Microsoft's exact Azure revenue is not disclosed, so growth is the cleanest direct comparison.</p>
+                        </div>
+                        <div class="cloud-race">
+                            <article class="cloud-line">
+                                <div><h3>Google Cloud</h3><span>$24.77B revenue · $8.81B operating profit</span></div>
+                                <div class="cloud-track"><button type="button" class="cloud-mark" style="--cloud-size:100%">+81.8%<span class="metric-tooltip">Added $11.14B of revenue; operating profit increased 212%.</span></button></div>
+                            </article>
+                            <article class="cloud-line">
+                                <div><h3>Azure & cloud services</h3><span>Exact Azure revenue not disclosed</span></div>
+                                <div class="cloud-track"><button type="button" class="cloud-mark" style="--cloud-size:53%">+43%<span class="metric-tooltip">Microsoft Intelligent Cloud revenue was $39.31B, but includes more than Azure.</span></button></div>
+                            </article>
+                            <article class="cloud-line">
+                                <div><h3>AWS</h3><span>$42.23B revenue · $16.62B operating profit</span></div>
+                                <div class="cloud-track"><button type="button" class="cloud-mark" style="--cloud-size:45%">+36.8%<span class="metric-tooltip">Largest disclosed pure cloud business and operating profit.</span></button></div>
+                            </article>
+                            <article class="cloud-line is-not-applicable">
+                                <div><h3>Meta</h3><span>No external public-cloud business reported</span></div>
+                                <div class="cloud-track"><span class="cloud-na">Internal AI infrastructure</span></div>
+                            </article>
+                        </div>
+                    </section>
+
+                    <section class="finance-section" id="market-lens">
+                        <div class="finance-section-heading">
+                            <h2>What the market paid—and rewarded</h2>
+                            <p>Each row uses its own event window: the regular-session close immediately before earnings and the next regular-session close. Multiples use the next-session price and reported trailing results.</p>
+                        </div>
+                        <div class="market-table-wrap">
+                            <table class="market-table">
+                                <thead><tr><th>Company / release</th><th>Pre-release close</th><th>Next-session close</th><th>Response</th><th>Trailing P/E</th><th>Trailing P/FCF</th></tr></thead>
+                                <tbody>
+                                    <tr><th>Microsoft <span>MSFT · Jul 29, after close</span></th><td><span class="market-date">Jul 29</span>$390.54</td><td><span class="market-date">Jul 30</span>$451.10</td><td class="metric-positive">+15.5% <span class="rank-badge">High</span></td><td>25.1×</td><td>50.0×</td></tr>
+                                    <tr><th>Meta <span>META · Jul 29, after close</span></th><td><span class="market-date">Jul 29</span>$585.61</td><td><span class="market-date">Jul 30</span>$539.03</td><td class="metric-negative">−8.0% <span class="rank-badge is-low">Low</span></td><td>21.3×</td><td>33.1×</td></tr>
+                                    <tr><th>Alphabet <span>GOOGL · Jul 22, after close</span></th><td><span class="market-date">Jul 22</span>$342.09</td><td><span class="market-date">Jul 23</span>$317.69</td><td class="metric-negative">−7.1%</td><td>15.9×<sup>†</sup></td><td>72.9×</td></tr>
+                                    <tr><th>Amazon <span>AMZN · Jul 30, after close</span></th><td><span class="market-date">Jul 30</span>$235.50</td><td><span class="market-date">Jul 31</span>Pending</td><td>Pending</td><td>Pending</td><td>N/M<sup>‡</sup></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="market-readthrough">
+                            <strong>The multiple needs the earnings-quality bridge.</strong>
+                            <p><sup>†</sup> Alphabet and Amazon's reported trailing P/E includes investment gains that are unlikely to repeat at the same scale. <sup>‡</sup> Amazon's trailing P/FCF is not meaningful because trailing free cash flow was negative. These are valuation context, not buy or sell signals.</p>
+                        </div>
+                    </section>
+
+                    <section class="finance-section" id="verdict">
+                        <div class="finance-section-heading">
+                            <h2>What each company proved</h2>
+                            <p>The ranking changes depending on whether the question is financial quality, growth, cloud acceleration, or revenue momentum.</p>
+                        </div>
+                        <ol class="verdict-list">
+                            <li><span class="verdict-rank">Financial quality</span><h3>Microsoft</h3><p>Highest operating margin, highest operating cash flow, and by far the strongest quarterly FCF.</p></li>
+                            <li><span class="verdict-rank">Growth + economics</span><h3>Alphabet</h3><p>24% revenue growth, 82% Google Cloud growth, and cloud profit more than tripling—tempered by a doubled capex bill.</p></li>
+                            <li><span class="verdict-rank">Cloud profit acceleration</span><h3>Amazon</h3><p>AWS operating income grew 64%, but negative quarterly and trailing FCF raise the burden of proof.</p></li>
+                            <li><span class="verdict-rank">Revenue momentum</span><h3>Meta</h3><p>Fastest consolidated growth at 28%, but infrastructure absorbed almost all operating cash generation.</p></li>
+                        </ol>
+                    </section>
+
+                    <section class="finance-section evidence-section" id="methodology">
+                        <div class="finance-section-heading">
+                            <h2>Methodology</h2>
+                        </div>
+                        <details open>
+                            <summary>How free cash flow was compared</summary>
+                            <p>Quarterly FCF is operating cash flow minus the capex measure each company uses in its own FCF presentation. Meta includes finance-lease principal payments. Amazon deducts property purchases net of sales and incentives. Microsoft and Alphabet use cash purchases of property and equipment.</p>
+                        </details>
+                        <details>
+                            <summary>Why cloud revenue is not perfectly comparable</summary>
+                            <p>AWS and Google Cloud disclose direct segment revenue. Microsoft's Intelligent Cloud segment includes server products and enterprise services, while the broader Microsoft Cloud measure includes products outside Azure. Azure growth is therefore shown without an invented revenue estimate.</p>
+                        </details>
+                        <details>
+                            <summary>How unusual items were handled</summary>
+                            <p>Alphabet and Amazon underlying-profit figures are approximations based on disclosed investment gains and reported tax information. Microsoft's adjusted EPS subtracts the disclosed $0.27 benefit. Meta's add-back illustrates the effect of legal and severance charges but does not erase those costs.</p>
+                        </details>
+                        <details>
+                            <summary>How market moves and valuation multiples were calculated</summary>
+                            <p>For each company, the event return compares the close on its earnings-release date with the next regular-session close because all four releases occurred after hours. Alphabet uses July 22–23; Microsoft and Meta use July 29–30. Amazon released after the July 30 close, so its July 31 response and post-release multiples remain pending. P/E divides the next-session close by reported trailing diluted EPS; P/FCF uses trailing free cash flow per share.</p>
+                        </details>
+                    </section>
+
+                    <section class="finance-section sources-section" id="sources">
+                        <div class="finance-section-heading">
+                            <h2>Primary sources</h2>
+                            <p>All figures cover the quarter ending June 30, 2026. Microsoft labels it fiscal Q4 2026; the others label it Q2 2026.</p>
+                        </div>
+                        <ol class="source-list">
+                            <li><a href="https://s206.q4cdn.com/479360582/files/doc_financials/2026/q2/2026q2-alphabet-earnings-release.pdf" target="_blank" rel="noopener noreferrer">Alphabet Q2 2026 earnings release <span>PDF ↗</span></a></li>
+                            <li><a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx" target="_blank" rel="noopener noreferrer">Meta Q2 2026 earnings release <span>Investor Relations ↗</span></a></li>
+                            <li><a href="https://www.microsoft.com/en-us/Investor/earnings/FY-2026-Q4/press-release-webcast" target="_blank" rel="noopener noreferrer">Microsoft FY2026 Q4 earnings release <span>Investor Relations ↗</span></a></li>
+                            <li><a href="https://ir.aboutamazon.com/news-release/news-release-details/2026/Amazon-com-Announces-Second-Quarter-Results/" target="_blank" rel="noopener noreferrer">Amazon Q2 2026 earnings release <span>Investor Relations ↗</span></a></li>
+                            <li><a href="https://finance.yahoo.com/quotes/MSFT,META,GOOGL,AMZN/" target="_blank" rel="noopener noreferrer">Company-specific pre-release and next-session closing prices <span>Yahoo Finance ↗</span></a></li>
+                            <li><a href="https://stockanalysis.com/stocks/msft/statistics/" target="_blank" rel="noopener noreferrer">Trailing EPS, free cash flow, and valuation inputs <span>Stock Analysis ↗</span></a></li>
+                        </ol>
+                    </section>
+                </main>
+            </div>
+        </article>
+
+        <footer class="footer">
+            <p>&copy; <span id="year"></span> Brian Fong. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <script src="../../assets/js/data.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/finance.js"></script>
+    <script>window.initFinanceArticle && window.initFinanceArticle();</script>
+</body>
+</html>

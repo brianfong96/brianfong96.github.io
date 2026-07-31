@@ -6,8 +6,14 @@
  * 3. Pages with graphs (about, recipes) have proper graph elements
  */
 const puppeteer = require('puppeteer');
+const fs = require('node:fs');
 
-const BASE = 'http://localhost:8000';
+const BASE = process.env.BASE_URL || 'http://localhost:8000';
+const browserExecutable = [
+    process.env.PUPPETEER_EXECUTABLE_PATH,
+    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+    'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+].find((candidate) => candidate && fs.existsSync(candidate));
 const GLYPHS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴΞΨΩΦΣΛΠΔ';
 
 const PAGES = [
@@ -15,6 +21,8 @@ const PAGES = [
     { path: '/about.html', name: 'About', hasGraph: true },
     { path: '/projects.html', name: 'Projects' },
     { path: '/blog.html', name: 'Blog' },
+    { path: '/blog/ai-capex-reckoning/index.html', name: 'Finance Blog', hasFinance: true },
+    { path: '/blog/trump-portfolio-disclosure/index.html', name: 'Disclosure Blog', hasDisclosure: true },
     { path: '/recipes.html', name: 'Recipes' },
     { path: '/music.html', name: 'Music' },
     { path: '/recipes/cumin-mega-hamburg-steaks/index.html', name: 'Hamburg Recipe', hasGraph: true },
@@ -25,12 +33,16 @@ const TOTAL_TRANSITIONS = 30;
 const TRANSITION_SETTLE_MS = 2500;
 
 async function run() {
-    const browser = await puppeteer.launch({ headless: 'new', args: ['--no-sandbox'] });
+    const browser = await puppeteer.launch({ headless: 'new', executablePath: browserExecutable, args: ['--no-sandbox'] });
     const page = await browser.newPage();
+    const pageErrors = [];
     page.on('console', msg => {
         if (msg.type() === 'error') console.log(`  [browser error] ${msg.text()}`);
     });
-    page.on('pageerror', err => console.log(`  [page error] ${err.message}`));
+    page.on('pageerror', err => {
+        pageErrors.push(err.message);
+        console.log(`  [page error] ${err.message}`);
+    });
 
     await page.goto(BASE + '/index.html', { waitUntil: 'networkidle0' });
     await page.waitForSelector('.content', { timeout: 5000 });
@@ -79,7 +91,7 @@ async function run() {
             await new Promise(r => setTimeout(r, TRANSITION_SETTLE_MS));
 
             // Run all checks
-            const results = await page.evaluate((glyphs, targetPath, hasGraph) => {
+            const results = await page.evaluate((glyphs, targetPath, hasGraph, hasFinance, hasDisclosure) => {
                 var errors = [];
 
                 // 1. Hamburger menu
@@ -134,6 +146,7 @@ async function run() {
                         var nodes = document.querySelectorAll('.graph-node');
                         if (nodes.length < 2) errors.push('About graph: only ' + nodes.length + ' nodes found');
                     }
+
                     if (targetPath.includes('recipes/')) {
                         var recipeNodes = document.querySelectorAll('.recipe-node');
                         if (recipeNodes.length < 2) errors.push('Recipe: only ' + recipeNodes.length + ' recipe-node elements');
@@ -142,13 +155,31 @@ async function run() {
                     }
                 }
 
+                if (hasFinance) {
+                    if (document.body.className !== 'finance-page') errors.push('Finance page body class missing');
+                    if (document.querySelectorAll('.company-track').length !== 4) errors.push('Finance metric tracks missing');
+                    if (document.querySelectorAll('.cash-flow-map .flow-group').length !== 4) errors.push('Finance cash-flow groups missing');
+                    if (document.querySelectorAll('.profit-bridge').length !== 4) errors.push('Finance profit bridges missing');
+                    if (document.querySelectorAll('.market-table tbody tr').length !== 4) errors.push('Finance market data missing');
+                }
+
+                if (hasDisclosure) {
+                    if (!document.body.classList.contains('finance-page')) errors.push('Disclosure finance body class missing');
+                    if (document.querySelectorAll('#sector-chart .sector-row').length !== 12) errors.push('Disclosure sector data missing');
+                    if (document.querySelectorAll('#activity-chart .activity-month').length !== 12) errors.push('Disclosure activity data missing');
+                    var disclosure = document.getElementById('trump-disclosure');
+                    if (!disclosure || disclosure.dataset.holdingsState !== 'ready') errors.push('Complete disclosure holdings data not ready');
+                    if (document.querySelectorAll('.holdings-table tbody tr').length !== 50) errors.push('Disclosure holdings page missing');
+                    if (!document.querySelector('.blog-home-link')) errors.push('Disclosure All blogs link missing');
+                }
+
                 // 4. Title check
                 if (!document.title || document.title.indexOf('Brian Fong') === -1) {
                     errors.push('Bad title: "' + document.title + '"');
                 }
 
                 return { errors: errors, title: document.title, url: window.location.href };
-            }, GLYPHS, target.path, target.hasGraph);
+            }, GLYPHS, target.path, target.hasGraph, target.hasFinance, target.hasDisclosure);
 
             if (results.errors.length > 0) {
                 console.log(`❌ ${label} FAILED:`);
@@ -178,7 +209,7 @@ async function run() {
     console.log(`${'='.repeat(50)}`);
 
     await browser.close();
-    process.exit(failed > 0 ? 1 : 0);
+    process.exit(failed > 0 || pageErrors.length > 0 ? 1 : 0);
 }
 
 run().catch(err => {

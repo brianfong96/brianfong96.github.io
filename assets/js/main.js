@@ -9,8 +9,29 @@
     var sidebar = document.getElementById('sidebar');
     var toggleBtn = document.getElementById('sidebar-toggle');
     var contentEl = document.querySelector('.content');
+    var rebootRunId = 0;
+    var rebootOverlay = document.createElement('div');
+    rebootOverlay.className = 'editorial-reboot';
+    rebootOverlay.setAttribute('aria-hidden', 'true');
+    rebootOverlay.innerHTML = '<span class="editorial-reboot-line"></span><span class="editorial-reboot-status">Switching to research desk</span>';
+    body.appendChild(rebootOverlay);
 
     var GLYPHS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴΞΨΩΦΣΛΠΔ0123456789@#$%&*<>{}[];:';
+
+    function assetIdentity(src, pageUrl) {
+        var url = new URL(src, pageUrl);
+        return url.origin + url.pathname;
+    }
+
+    document.querySelectorAll('script[src], link[rel="stylesheet"][href]').forEach(function (resource) {
+        resource.setAttribute('data-spa-identity', assetIdentity(
+            resource.getAttribute(resource.tagName === 'SCRIPT' ? 'src' : 'href'),
+            window.location.href
+        ));
+    });
+    document.querySelectorAll('link[rel~="icon"][href]').forEach(function (icon) {
+        icon.href = new URL(icon.getAttribute('href'), window.location.href).href;
+    });
 
     // ── Collect every visible text node under a root ──
     function collectTextNodes(root) {
@@ -130,7 +151,70 @@
             });
             lastOriginalItems = null;
         }
+        resetEditorialReboot();
         isTransitioning = false;
+    }
+
+    function isEditorialPage(className) {
+        return /(^|\s)(blog-index|blog-article|finance-page)(\s|$)/.test(className || '');
+    }
+
+    function isEditorialUrl(href) {
+        try {
+            var path = new URL(href, window.location.href).pathname;
+            return /(^|\/)blog(?:\.html|\/)/.test(path);
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function resetEditorialReboot() {
+        rebootRunId++;
+        rebootOverlay.className = 'editorial-reboot';
+        rebootOverlay.setAttribute('aria-hidden', 'true');
+    }
+
+    function runEditorialRebootPhase(className, duration, signal) {
+        var runId = ++rebootRunId;
+        rebootOverlay.className = 'editorial-reboot is-active ' + className;
+        rebootOverlay.setAttribute('aria-hidden', 'false');
+        return new Promise(function (resolve) {
+            setTimeout(function () {
+                if (runId !== rebootRunId || (signal && signal.aborted)) {
+                    resolve();
+                    return;
+                }
+                resolve();
+            }, duration);
+        });
+    }
+
+    function beginEditorialReboot(signal) {
+        return runEditorialRebootPhase('is-closing', 340, signal);
+    }
+
+    function revealEditorialPage(signal) {
+        return runEditorialRebootPhase('is-opening', 540, signal).then(function () {
+            if (!signal.aborted) resetEditorialReboot();
+        });
+    }
+
+    function syncBlogHomeLink(className) {
+        var topbar = document.querySelector('.topbar');
+        document.documentElement.classList.toggle('editorial-scrollbars', isEditorialPage(className));
+        if (!topbar) return;
+        var link = topbar.querySelector('.blog-home-link');
+        var shouldShow = /(^|\s)(blog-article|finance-page)(\s|$)/.test(className || '');
+        if (shouldShow && !link) {
+            link = document.createElement('a');
+            link.className = 'blog-home-link';
+            link.href = '/blog.html';
+            link.textContent = 'All blogs';
+            topbar.insertBefore(link, toggleBtn);
+            attachLinkHandlers(link.parentElement);
+        } else if (!shouldShow && link) {
+            link.remove();
+        }
     }
 
     function doPageTransition(href, skipPushState) {
@@ -141,6 +225,8 @@
         isTransitioning = true;
         var myId = ++currentScrambleId;
         var signal = { aborted: false };
+        var skipIncomingScramble = false;
+        var useEditorialReboot = !isEditorialPage(body.className) && isEditorialUrl(href);
         currentAbortSignal = signal;
 
         var oldItems = collectTextNodes(contentEl);
@@ -149,8 +235,11 @@
         // Start fetching in parallel with scramble-out
         var fetchPromise = fetch(href).then(function (r) { return r.text(); });
 
-        // Scramble out the current page
-        scrambleOut(oldItems, signal).then(function () {
+        // Enter the editorial branch with a bounded CRT reboot instead of scrambled copy.
+        var exitPromise = useEditorialReboot
+            ? beginEditorialReboot(signal)
+            : (isEditorialPage(body.className) ? Promise.resolve() : scrambleOut(oldItems, signal));
+        exitPromise.then(function () {
             if (myId !== currentScrambleId) return; // cancelled
             return fetchPromise;
         }).then(function (html) {
@@ -171,15 +260,17 @@
             // Inject page-specific <link> stylesheets not present in current page
             var currentSheets = new Set(
                 Array.from(document.querySelectorAll('link[rel="stylesheet"]:not([data-spa-injected])'))
-                    .map(function (l) { return new URL(l.getAttribute('href'), window.location.href).href; })
+                    .map(function (l) { return l.getAttribute('data-spa-identity'); })
             );
             newDoc.querySelectorAll('link[rel="stylesheet"]').forEach(function (l) {
                 var resolvedHref = new URL(l.getAttribute('href'), baseUrl).href;
-                if (!currentSheets.has(resolvedHref)) {
+                var identity = assetIdentity(resolvedHref, baseUrl);
+                if (!currentSheets.has(identity)) {
                     var link = document.createElement('link');
                     link.rel = 'stylesheet';
                     link.href = resolvedHref;
                     link.setAttribute('data-spa-injected', 'true');
+                    link.setAttribute('data-spa-identity', identity);
                     document.head.appendChild(link);
                 }
             });
@@ -195,12 +286,12 @@
             // Collect page-specific external scripts to load after content swap
             var currentScripts = new Set(
                 Array.from(document.querySelectorAll('script[src]:not([data-spa-injected])'))
-                    .map(function (s) { return new URL(s.getAttribute('src'), window.location.href).href; })
+                    .map(function (s) { return s.getAttribute('data-spa-identity'); })
             );
             var scriptsToLoad = [];
             newDoc.querySelectorAll('script[src]').forEach(function (s) {
                 var resolvedSrc = new URL(s.getAttribute('src'), baseUrl).href;
-                if (!currentScripts.has(resolvedSrc)) {
+                if (!currentScripts.has(assetIdentity(resolvedSrc, baseUrl))) {
                     scriptsToLoad.push(resolvedSrc);
                 }
             });
@@ -209,6 +300,7 @@
             var newBody = newDoc.querySelector('body');
             var inlineScripts = [];
             if (newBody) {
+                skipIncomingScramble = isEditorialPage(newBody.className);
                 newBody.querySelectorAll('script:not([src])').forEach(function (s) {
                     inlineScripts.push(s.textContent);
                 });
@@ -219,6 +311,10 @@
 
             if (newContent) {
                 contentEl.innerHTML = newContent.innerHTML;
+            }
+            if (newBody) {
+                body.className = newBody.className;
+                syncBlogHomeLink(newBody.className);
             }
             if (newTitle) {
                 document.title = newTitle.textContent;
@@ -236,6 +332,7 @@
                     var script = document.createElement('script');
                     script.src = srcs[i];
                     script.setAttribute('data-spa-injected', 'true');
+                    script.setAttribute('data-spa-identity', assetIdentity(srcs[i], window.location.href));
                     script.onload = resolve;
                     script.onerror = resolve;
                     document.body.appendChild(script);
@@ -259,7 +356,10 @@
                 });
             }).then(function () {
                 if (myId !== currentScrambleId) return; // cancelled
-                // SPA scrambleIn with the clean pre-collected text
+                if (skipIncomingScramble) {
+                    newItems.forEach(function (item) { item.node.textContent = item.original; });
+                    return useEditorialReboot ? revealEditorialPage(signal) : Promise.resolve();
+                }
                 return scrambleIn(newItems, signal);
             }).then(function () {
                 window.__spaTransition = false;
@@ -271,6 +371,7 @@
                 currentAbortSignal = null;
             }
         }).catch(function () {
+            resetEditorialReboot();
             if (myId === currentScrambleId) {
                 isTransitioning = false;
                 lastOriginalItems = null;
@@ -296,10 +397,13 @@
         if (typeof siteData !== 'undefined') {
             populateList('projects-list', siteData.projects || []);
             populateList('learnings-list', siteData.learnings || []);
+            populateList('blogs-list', siteData.blogs || []);
             populateLearningsToc();
             var all = [].concat(siteData.projects || [], siteData.learnings || []);
             populateList('toc-list', all);
         }
+        if (typeof window.initFinanceArticle === 'function') window.initFinanceArticle();
+        if (typeof window.initTrumpDisclosure === 'function') window.initTrumpDisclosure();
 
         // Re-highlight current nav
         var currentPath = window.location.pathname;
@@ -340,35 +444,22 @@
     body.appendChild(scrim);
 
     // ── Sidebar ──
-    var sidebarBusy = false;
-
     function openSidebar() {
         if (!sidebar || !toggleBtn) return;
         body.classList.add('sidebar-open');
         sidebar.classList.add('open');
         toggleBtn.setAttribute('aria-expanded', 'true');
+        toggleBtn.setAttribute('aria-label', 'Close navigation');
         scrim.hidden = false;
         requestAnimationFrame(function () { scrim.classList.add('visible'); });
-
-        if (!sidebarBusy) {
-            sidebarBusy = true;
-            scrambleIn(collectTextNodes(sidebar)).then(function () { sidebarBusy = false; });
-        }
     }
 
     function closeSidebar() {
         if (!sidebar || !toggleBtn) return;
-        if (!sidebarBusy) {
-            sidebarBusy = true;
-            var items = collectTextNodes(sidebar);
-            scrambleOut(items).then(function () {
-                items.forEach(function (t) { t.node.textContent = t.original; });
-                sidebarBusy = false;
-            });
-        }
         body.classList.remove('sidebar-open');
         sidebar.classList.remove('open');
         toggleBtn.setAttribute('aria-expanded', 'false');
+        toggleBtn.setAttribute('aria-label', 'Open navigation');
         scrim.classList.remove('visible');
         setTimeout(function () {
             if (!body.classList.contains('sidebar-open')) scrim.hidden = true;
@@ -377,6 +468,7 @@
 
     if (sidebar && toggleBtn) {
         toggleBtn.setAttribute('aria-expanded', 'false');
+        toggleBtn.setAttribute('aria-label', 'Open navigation');
         toggleBtn.addEventListener('click', function () {
             body.classList.contains('sidebar-open') ? closeSidebar() : openSidebar();
         });
@@ -425,8 +517,33 @@
             var a = document.createElement('a');
             var title = document.createElement('strong');
             a.href = item.url;
-            title.textContent = item.section ? (item.title + ' | ' + item.section) : item.title;
+            title.textContent = item.title;
             a.appendChild(title);
+            if (item.category || item.date) {
+                var meta = document.createElement('span');
+                meta.className = 'item-meta';
+                if (item.category) {
+                    var category = document.createElement('span');
+                    category.textContent = item.category;
+                    meta.appendChild(category);
+                }
+                if (item.date) {
+                    var date = document.createElement('time');
+                    date.dateTime = item.date;
+                    date.textContent = new Date(item.date + 'T00:00:00').toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    meta.appendChild(date);
+                }
+                a.appendChild(meta);
+            } else if (item.section) {
+                var section = document.createElement('span');
+                section.className = 'item-meta';
+                section.textContent = item.section;
+                a.appendChild(section);
+            }
             if (item.description) {
                 var desc = document.createElement('p');
                 desc.className = 'item-desc';
@@ -466,6 +583,18 @@
     });
 
     // ── Attach link handlers ──
+    function ensureBlogNavigation() {
+        if (!sidebar || sidebar.querySelector('a[href$="blog.html"]')) return;
+        var list = sidebar.querySelector('.nav-links');
+        if (!list) return;
+        var item = document.createElement('li');
+        var link = document.createElement('a');
+        link.href = '/blog.html';
+        link.textContent = 'Blog';
+        item.appendChild(link);
+        list.appendChild(item);
+    }
+
     function shouldAnimate(link, url) {
         var href = link.getAttribute('href');
         if (!href || href.startsWith('#')) return false;
@@ -494,12 +623,15 @@
         });
     }
 
+    ensureBlogNavigation();
+    syncBlogHomeLink(body.className);
     attachLinkHandlers();
 
     // ── Populate dynamic lists ──
     if (typeof siteData !== 'undefined') {
         populateList('projects-list', siteData.projects || []);
         populateList('learnings-list', siteData.learnings || []);
+        populateList('blogs-list', siteData.blogs || []);
         populateLearningsToc();
         var all = [].concat(siteData.projects || [], siteData.learnings || []);
         populateList('toc-list', all);

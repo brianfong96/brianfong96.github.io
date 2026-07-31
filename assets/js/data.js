@@ -49,11 +49,20 @@ const siteData = {
     ],
     blogs: [
         {
-            title: 'Will AI Take Over?',
-            url: 'blog/will-ai-take-over/index.html',
-            description: 'A reflection on AI\'s reach, human ego, and why the throne won\'t be surrendered easily.',
+            title: 'What Trump\'s 2026 Financial Disclosure Reveals',
+            url: 'blog/trump-portfolio-disclosure/index.html',
+            description: 'A static, source-backed view of 1,371 disclosed securities, the portfolio\'s statutory value range, 2025 transaction cadence, sector concentration, and frozen 2026 market context.',
             section: 'Blog',
-            date: '2026-03-22'
+            category: 'Finance',
+            date: '2026-07-30'
+        },
+        {
+            title: 'The AI Capex Reckoning',
+            url: 'blog/ai-capex-reckoning/index.html',
+            description: 'A visual Q2 2026 comparison of Microsoft, Meta, Alphabet, and Amazon across growth, cloud economics, capital spending, and free cash flow.',
+            section: 'Blog',
+            category: 'Finance',
+            date: '2026-07-30'
         }
     ],
     pages: [
@@ -66,7 +75,7 @@ const siteData = {
         {
             title: 'Blog',
             url: 'blog.html',
-            description: 'Engineering notes, project write-ups, and other things worth sharing.',
+            description: 'Finance and technology interests researched and visualized to make the underlying ideas easier to understand.',
             section: 'Pages'
         },
         {
