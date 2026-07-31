@@ -66,6 +66,16 @@
     color: var(--accent-color);
 }
 
+.blog-article .blog-home-link {
+    border-color: #9fb2c7;
+    background: #ffffff;
+    box-shadow: 0 3px 10px rgba(22, 38, 58, 0.08);
+    color: var(--accent-color);
+    font-family: "Segoe UI", Arial, sans-serif;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
 .blog-index .sidebar,
 .blog-article .sidebar {
     background: #ffffff;

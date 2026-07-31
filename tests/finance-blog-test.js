@@ -13,6 +13,7 @@ const browserExecutable = [
 const mimeTypes = {
     '.css': 'text/css',
     '.html': 'text/html',
+    '.json': 'application/json',
     '.js': 'text/javascript',
     '.png': 'image/png',
     '.svg': 'image/svg+xml'
@@ -65,21 +66,83 @@ async function run() {
 
         await page.goto(`${origin}/blog.html`, { waitUntil: 'networkidle0' });
         await page.waitForSelector('#blogs-list a[href*="ai-capex-reckoning"]');
+        await page.waitForSelector('#blogs-list a[href*="trump-portfolio-disclosure"]');
 
         const blogEntry = await page.$eval('#blogs-list a[href*="ai-capex-reckoning"]', (link) => link.innerText);
         assert.match(blogEntry, /finance/i);
         assert.match(blogEntry, /july 30, 2026/i);
+        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 2);
+        assert.equal(await page.$$eval('#blogs-list a[href*="will-ai-take-over"]', (nodes) => nodes.length), 0);
         assert.equal(await page.$$eval('.topic-index a', (nodes) => nodes.length), 2);
         assert.match(await page.$eval('.hero-copy', (node) => node.textContent), /interests i want to understand better/i);
 
         assert.equal(await page.$eval('#sidebar-toggle', (button) => button.getAttribute('aria-label')), 'Open navigation');
-        await page.click('#sidebar-toggle');
-        assert.equal(await page.$eval('#sidebar-toggle', (button) => button.getAttribute('aria-expanded')), 'true');
-        assert.equal(await page.$eval('#sidebar-toggle', (button) => button.getAttribute('aria-label')), 'Close navigation');
-        assert.equal(await page.$eval('#sidebar', (nav) => getComputedStyle(nav).pointerEvents), 'auto');
-        assert.equal(await page.$$eval('#sidebar a', (nodes) => nodes.some((node) => /blog/i.test(node.textContent))), true);
-        await page.click('#sidebar-toggle');
+        const stableNavLabels = await page.$$eval('#sidebar a', (nodes) => nodes.map((node) => node.textContent.trim()));
+        for (let i = 0; i < 8; i++) {
+            await page.click('#sidebar-toggle');
+            await new Promise((resolve) => setTimeout(resolve, 45));
+        }
         assert.equal(await page.$eval('#sidebar-toggle', (button) => button.getAttribute('aria-expanded')), 'false');
+        assert.deepEqual(await page.$$eval('#sidebar a', (nodes) => nodes.map((node) => node.textContent.trim())), stableNavLabels);
+        assert.equal(await page.$$eval('#sidebar a', (nodes) => nodes.some((node) => /blog/i.test(node.textContent))), true);
+
+        await page.goto(`${origin}/index.html`, { waitUntil: 'networkidle0' });
+        const terminalNavLabels = await page.$$eval('#sidebar a', (nodes) => nodes.map((node) => node.textContent.trim()));
+        for (let i = 0; i < 8; i++) {
+            await page.click('#sidebar-toggle');
+            await new Promise((resolve) => setTimeout(resolve, 45));
+        }
+        assert.deepEqual(await page.$$eval('#sidebar a', (nodes) => nodes.map((node) => node.textContent.trim())), terminalNavLabels);
+        assert.equal(await page.$eval('#sidebar-toggle', (button) => button.getAttribute('aria-expanded')), 'false');
+
+        await page.$eval('a[href="blog.html"]', (link) => link.click());
+        await page.waitForFunction(() => document.querySelector('.editorial-reboot.is-active'));
+        await page.waitForFunction(() => document.body.classList.contains('blog-index') && !document.querySelector('.editorial-reboot.is-active'));
+        await page.waitForSelector('#blogs-list a[href*="trump-portfolio-disclosure"]');
+
+        await page.click('#blogs-list a[href*="trump-portfolio-disclosure"]');
+        await page.waitForFunction(() => window.location.pathname.includes('/blog/trump-portfolio-disclosure/'));
+        await page.waitForFunction(() => document.getElementById('trump-disclosure').dataset.snapshotState === 'ready');
+
+        assert.equal(await page.$$eval('#sector-chart .sector-row', (nodes) => nodes.length), 12);
+        assert.equal(await page.$$eval('#activity-chart .activity-month', (nodes) => nodes.length), 12);
+        assert.equal(await page.$$eval('#distribution-chart .distribution-row', (nodes) => nodes.length), 7);
+        assert.equal(await page.$$eval('.holdings-table tbody tr', (nodes) => nodes.length), 10);
+        assert.equal(await page.$eval('.finance-signal-strip span:first-child', (node) => /1,371/.test(node.textContent)), true);
+        assert.equal(await page.$eval('.blog-home-link', (node) => node.getBoundingClientRect().width > 0), true);
+
+        await page.click('[data-activity-series="sales"]');
+        assert.equal(await page.$eval('[data-activity-series="sales"]', (button) => button.getAttribute('aria-pressed')), 'true');
+        assert.equal(await page.$$eval('#activity-chart .activity-bar.is-purchase', (nodes) => nodes.every((node) => node.style.getPropertyValue('--bar-scale') === '0')), true);
+
+        const staticSnapshot = await page.evaluate(async () => {
+            const response = await fetch('../../assets/data/trump-portfolio-snapshot.json');
+            const data = await response.json();
+            return {
+                ok: response.ok,
+                securities: data.summary.securities,
+                events: data.summary.publishedEvents,
+                sha: data.meta.sourceSha256
+            };
+        });
+        assert.equal(staticSnapshot.ok, true);
+        assert.equal(staticSnapshot.securities, 1371);
+        assert.equal(staticSnapshot.events, 19407);
+        assert.equal(staticSnapshot.sha.length, 64);
+
+        await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 });
+        const disclosureDimensions = await page.evaluate(() => ({
+            clientWidth: document.documentElement.clientWidth,
+            scrollWidth: document.documentElement.scrollWidth,
+            titleColumns: getComputedStyle(document.querySelector('.finance-title-grid')).gridTemplateColumns.split(' ').length
+        }));
+        assert.ok(disclosureDimensions.scrollWidth <= disclosureDimensions.clientWidth, `Disclosure mobile overflow: ${disclosureDimensions.scrollWidth}px > ${disclosureDimensions.clientWidth}px`);
+        assert.equal(disclosureDimensions.titleColumns, 1);
+        await page.setViewport({ width: 1280, height: 900, deviceScaleFactor: 1 });
+
+        await page.click('.blog-home-link');
+        await page.waitForFunction(() => window.location.pathname.endsWith('/blog.html'));
+        await page.waitForSelector('#blogs-list a[href*="ai-capex-reckoning"]');
 
         await page.click('#blogs-list a[href*="ai-capex-reckoning"]');
         await page.waitForFunction(() => window.location.pathname.includes('/blog/ai-capex-reckoning/'));
@@ -102,7 +165,9 @@ async function run() {
         await page.click('[data-metric="marketMove"]');
         await page.waitForFunction(() => document.getElementById('expanded-title').textContent === 'Post-earnings stock move');
         const marketMoves = await page.$$eval('.value-mark', (nodes) => nodes.map((node) => node.childNodes[0].textContent));
-        assert.deepEqual(marketMoves, ['+15.5%', '−8.0%', '−0.9%', '+3.9%']);
+        assert.deepEqual(marketMoves, ['+15.5%', '−8.0%', '−7.1%', 'Pending']);
+        assert.match(await page.$eval('.market-table tbody tr:nth-child(3)', (node) => node.textContent), /jul 22/i);
+        assert.match(await page.$eval('.market-table tbody tr:nth-child(4)', (node) => node.textContent), /pending/i);
 
         await page.click('[data-metric="freeCashFlow"]');
         const signedDirection = await page.evaluate(() => {

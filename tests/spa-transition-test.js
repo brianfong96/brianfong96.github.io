@@ -22,6 +22,7 @@ const PAGES = [
     { path: '/projects.html', name: 'Projects' },
     { path: '/blog.html', name: 'Blog' },
     { path: '/blog/ai-capex-reckoning/index.html', name: 'Finance Blog', hasFinance: true },
+    { path: '/blog/trump-portfolio-disclosure/index.html', name: 'Disclosure Blog', hasDisclosure: true },
     { path: '/recipes.html', name: 'Recipes' },
     { path: '/music.html', name: 'Music' },
     { path: '/recipes/cumin-mega-hamburg-steaks/index.html', name: 'Hamburg Recipe', hasGraph: true },
@@ -90,7 +91,7 @@ async function run() {
             await new Promise(r => setTimeout(r, TRANSITION_SETTLE_MS));
 
             // Run all checks
-            const results = await page.evaluate((glyphs, targetPath, hasGraph, hasFinance) => {
+            const results = await page.evaluate((glyphs, targetPath, hasGraph, hasFinance, hasDisclosure) => {
                 var errors = [];
 
                 // 1. Hamburger menu
@@ -162,13 +163,21 @@ async function run() {
                     if (document.querySelectorAll('.market-table tbody tr').length !== 4) errors.push('Finance market data missing');
                 }
 
+                if (hasDisclosure) {
+                    if (!document.body.classList.contains('finance-page')) errors.push('Disclosure finance body class missing');
+                    if (document.querySelectorAll('#sector-chart .sector-row').length !== 12) errors.push('Disclosure sector data missing');
+                    if (document.querySelectorAll('#activity-chart .activity-month').length !== 12) errors.push('Disclosure activity data missing');
+                    if (document.querySelectorAll('.holdings-table tbody tr').length !== 10) errors.push('Disclosure holdings data missing');
+                    if (!document.querySelector('.blog-home-link')) errors.push('Disclosure All blogs link missing');
+                }
+
                 // 4. Title check
                 if (!document.title || document.title.indexOf('Brian Fong') === -1) {
                     errors.push('Bad title: "' + document.title + '"');
                 }
 
                 return { errors: errors, title: document.title, url: window.location.href };
-            }, GLYPHS, target.path, target.hasGraph, target.hasFinance);
+            }, GLYPHS, target.path, target.hasGraph, target.hasFinance, target.hasDisclosure);
 
             if (results.errors.length > 0) {
                 console.log(`❌ ${label} FAILED:`);

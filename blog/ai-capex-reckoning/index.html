@@ -21,6 +21,7 @@ FORM: Capital allocation scanner, fourth grounded structure, Composition C stagi
         <a class="home-link" href="../../index.html" aria-label="Home">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
         </a>
+        <a class="blog-home-link" href="../../blog.html">All blogs</a>
         <button id="sidebar-toggle" aria-label="Toggle navigation">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg>
         </button>
@@ -125,11 +126,11 @@ FORM: Capital allocation scanner, fourth grounded structure, Composition C stagi
                                     </tr>
                                     <tr>
                                         <th scope="row"><button type="button" data-metric="marketMove">Post-earnings move</button></th>
-                                        <td class="metric-positive">+15.5% <span class="rank-badge">High</span></td><td class="metric-negative">−8.0% <span class="rank-badge is-low">Low</span></td><td class="metric-negative">−0.9%</td><td class="metric-positive">+3.9%</td>
+                                        <td class="metric-positive">+15.5% <span class="rank-badge">High</span></td><td class="metric-negative">−8.0% <span class="rank-badge is-low">Low</span></td><td class="metric-negative">−7.1%</td><td>Pending</td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><button type="button" data-metric="trailingPe">Trailing P/E</button></th>
-                                        <td>25.1× <span class="rank-badge">High</span></td><td>21.3×</td><td>16.7× <span class="rank-badge is-low">Low</span></td><td>18.9×</td>
+                                        <td>25.1× <span class="rank-badge">High</span></td><td>21.3×</td><td>15.9× <span class="rank-badge is-low">Low</span></td><td>Pending</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -268,16 +269,16 @@ FORM: Capital allocation scanner, fourth grounded structure, Composition C stagi
                     <section class="finance-section" id="market-lens">
                         <div class="finance-section-heading">
                             <h2>What the market paid—and rewarded</h2>
-                            <p>Closing prices compare July 30 with the July 29 pre-release close. Multiples use reported trailing earnings and cash flow, so the same unusual gains above can make P/E look deceptively inexpensive.</p>
+                            <p>Each row uses its own event window: the regular-session close immediately before earnings and the next regular-session close. Multiples use the next-session price and reported trailing results.</p>
                         </div>
                         <div class="market-table-wrap">
                             <table class="market-table">
-                                <thead><tr><th>Company</th><th>Jul 29 close</th><th>Jul 30 close</th><th>Post-earnings</th><th>Trailing P/E</th><th>Trailing P/FCF</th></tr></thead>
+                                <thead><tr><th>Company / release</th><th>Pre-release close</th><th>Next-session close</th><th>Response</th><th>Trailing P/E</th><th>Trailing P/FCF</th></tr></thead>
                                 <tbody>
-                                    <tr><th>Microsoft <span>MSFT</span></th><td>$390.54</td><td>$451.10</td><td class="metric-positive">+15.5% <span class="rank-badge">High</span></td><td>25.1×</td><td>50.0×</td></tr>
-                                    <tr><th>Meta <span>META</span></th><td>$585.61</td><td>$539.03</td><td class="metric-negative">−8.0% <span class="rank-badge is-low">Low</span></td><td>21.3×</td><td>33.1×</td></tr>
-                                    <tr><th>Alphabet <span>GOOGL</span></th><td>$336.71</td><td>$333.66</td><td class="metric-negative">−0.9%</td><td>16.7×<sup>†</sup></td><td>76.5×</td></tr>
-                                    <tr><th>Amazon <span>AMZN</span></th><td>$226.65</td><td>$235.50</td><td class="metric-positive">+3.9%</td><td>18.9×<sup>†</sup></td><td>N/M<sup>‡</sup></td></tr>
+                                    <tr><th>Microsoft <span>MSFT · Jul 29, after close</span></th><td><span class="market-date">Jul 29</span>$390.54</td><td><span class="market-date">Jul 30</span>$451.10</td><td class="metric-positive">+15.5% <span class="rank-badge">High</span></td><td>25.1×</td><td>50.0×</td></tr>
+                                    <tr><th>Meta <span>META · Jul 29, after close</span></th><td><span class="market-date">Jul 29</span>$585.61</td><td><span class="market-date">Jul 30</span>$539.03</td><td class="metric-negative">−8.0% <span class="rank-badge is-low">Low</span></td><td>21.3×</td><td>33.1×</td></tr>
+                                    <tr><th>Alphabet <span>GOOGL · Jul 22, after close</span></th><td><span class="market-date">Jul 22</span>$342.09</td><td><span class="market-date">Jul 23</span>$317.69</td><td class="metric-negative">−7.1%</td><td>15.9×<sup>†</sup></td><td>72.9×</td></tr>
+                                    <tr><th>Amazon <span>AMZN · Jul 30, after close</span></th><td><span class="market-date">Jul 30</span>$235.50</td><td><span class="market-date">Jul 31</span>Pending</td><td>Pending</td><td>Pending</td><td>N/M<sup>‡</sup></td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -318,7 +319,7 @@ FORM: Capital allocation scanner, fourth grounded structure, Composition C stagi
                         </details>
                         <details>
                             <summary>How market moves and valuation multiples were calculated</summary>
-                            <p>Post-earnings moves compare the July 30, 2026 regular-session close with July 29. Trailing P/E divides the July 30 close by reported trailing diluted EPS. P/FCF uses trailing free cash flow per share. Values are rounded to one decimal place and will differ from live quote services after the snapshot date.</p>
+                            <p>For each company, the event return compares the close on its earnings-release date with the next regular-session close because all four releases occurred after hours. Alphabet uses July 22–23; Microsoft and Meta use July 29–30. Amazon released after the July 30 close, so its July 31 response and post-release multiples remain pending. P/E divides the next-session close by reported trailing diluted EPS; P/FCF uses trailing free cash flow per share.</p>
                         </details>
                     </section>
 
@@ -332,7 +333,7 @@ FORM: Capital allocation scanner, fourth grounded structure, Composition C stagi
                             <li><a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx" target="_blank" rel="noopener noreferrer">Meta Q2 2026 earnings release <span>Investor Relations ↗</span></a></li>
                             <li><a href="https://www.microsoft.com/en-us/Investor/earnings/FY-2026-Q4/press-release-webcast" target="_blank" rel="noopener noreferrer">Microsoft FY2026 Q4 earnings release <span>Investor Relations ↗</span></a></li>
                             <li><a href="https://ir.aboutamazon.com/news-release/news-release-details/2026/Amazon-com-Announces-Second-Quarter-Results/" target="_blank" rel="noopener noreferrer">Amazon Q2 2026 earnings release <span>Investor Relations ↗</span></a></li>
-                            <li><a href="https://finance.yahoo.com/quotes/MSFT,META,GOOGL,AMZN/" target="_blank" rel="noopener noreferrer">July 29–30 closing prices and market ranges <span>Yahoo Finance ↗</span></a></li>
+                            <li><a href="https://finance.yahoo.com/quotes/MSFT,META,GOOGL,AMZN/" target="_blank" rel="noopener noreferrer">Company-specific pre-release and next-session closing prices <span>Yahoo Finance ↗</span></a></li>
                             <li><a href="https://stockanalysis.com/stocks/msft/statistics/" target="_blank" rel="noopener noreferrer">Trailing EPS, free cash flow, and valuation inputs <span>Stock Analysis ↗</span></a></li>
                         </ol>
                     </section>

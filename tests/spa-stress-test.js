@@ -17,6 +17,7 @@ const GLYPHS = 'アイウエオカキクケコサシスセソタチツテトナ�
 const PAGES = [
     '/index.html', '/about.html', '/projects.html', '/blog.html',
     '/blog/ai-capex-reckoning/index.html',
+    '/blog/trump-portfolio-disclosure/index.html',
     '/recipes.html', '/music.html',
     '/recipes/cumin-mega-hamburg-steaks/index.html',
     '/recipes/cantonese-soy-ginger-chicken/index.html',

@@ -95,26 +95,26 @@
         },
         marketMove: {
             title: 'Post-earnings stock move',
-            summary: 'Microsoft received the strongest response. Meta sold off despite leading revenue growth, showing that market expectations and the reported quarter are different questions.',
-            values: [15.5, -8.0, -0.9, 3.9],
-            displays: ['+15.5%', '−8.0%', '−0.9%', '+3.9%'],
+            summary: 'Microsoft received the strongest response. Meta and Alphabet sold off, while Amazon\'s next-session response remains pending.',
+            values: [15.5, -8.0, -7.1, null],
+            displays: ['+15.5%', '−8.0%', '−7.1%', 'Pending'],
             notes: [
                 'July 30 close of $451.10 versus $390.54 on July 29.',
                 'July 30 close of $539.03 versus $585.61 on July 29.',
-                'July 30 close of $333.66 versus $336.71 on July 29.',
-                'July 30 close of $235.50 versus $226.65 on July 29.'
+                'July 23 close of $317.69 versus $342.09 on July 22.',
+                'Amazon released after the July 30 close; the July 31 response is not yet available.'
             ]
         },
         trailingPe: {
             title: 'Trailing price-to-earnings ratio',
-            summary: 'Microsoft carried the highest reported P/E. Alphabet and Amazon look cheaper on reported earnings, but their denominators include large investment gains.',
-            values: [25.1, 21.3, 16.7, 18.9],
-            displays: ['25.1×', '21.3×', '16.7×', '18.9×'],
+            summary: 'Microsoft carried the highest reported P/E. Alphabet looked cheaper on reported earnings, but its denominator includes a large investment gain; Amazon remains pending.',
+            values: [25.1, 21.3, 15.9, null],
+            displays: ['25.1×', '21.3×', '15.9×', 'Pending'],
             notes: [
                 'July 30 price divided by $17.95 of reported trailing EPS.',
                 'Reported trailing P/E as of July 30.',
-                'July 30 price divided by $19.93 of reported trailing EPS; the $99B pre-tax equity gain lowers this multiple.',
-                'July 30 price divided by $12.44 of reported trailing EPS; Anthropic-related gains lower this multiple.'
+                'July 23 price divided by $19.93 of reported trailing EPS; the $99B pre-tax equity gain lowers this multiple.',
+                'Amazon\'s post-release price and trailing P/E remain pending.'
             ]
         }
     };
