@@ -1150,7 +1150,7 @@
 .finance-page .footer {
     background: #e7e3da;
     border-top-color: var(--border-color);
-    color: var(--muted-text);
+    color: var(--text-color);
     letter-spacing: 0;
     text-shadow: none;
 }

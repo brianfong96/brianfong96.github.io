@@ -70,7 +70,7 @@ FORM: Disclosure field map, an established Financial Research Desk extension; no
                     <span class="finance-rail-label">Navigate</span>
                     <a href="#overview" class="is-active">Overview</a>
                     <a href="#composition">Composition</a>
-                    <a href="#holdings">Top holdings</a>
+                    <a href="#holdings">All holdings</a>
                     <a href="#activity">Activity</a>
                     <a href="#market-context">Market context</a>
                     <a href="#methodology">Methodology</a>
@@ -103,25 +103,101 @@ FORM: Disclosure field map, an established Financial Research Desk extension; no
 
                     <section class="finance-section" id="holdings">
                         <div class="finance-section-heading">
-                            <h2>The largest disclosed lower bounds</h2>
-                            <p>These rankings use minimum statutory values, not market values or exact position sizes. GOOG and GOOGL remain separate because the filing reports distinct Alphabet share classes.</p>
+                            <h2>Search all 1,371 disclosed securities</h2>
+                            <p>The complete static table starts with the largest minimum values. Search by ticker, company, or industry; combine filters; and select any column heading to change the sort.</p>
                         </div>
-                        <div class="holdings-table-wrap">
-                            <table class="holdings-table">
-                                <thead><tr><th>Security</th><th>Company</th><th>Minimum disclosed value</th></tr></thead>
-                                <tbody>
-                                    <tr><th>AAPL</th><td>Apple</td><td>$14,000,009</td></tr>
-                                    <tr><th>NVDA</th><td>NVIDIA</td><td>$12,500,007</td></tr>
-                                    <tr><th>AVGO</th><td>Broadcom</td><td>$9,950,011</td></tr>
-                                    <tr><th>MSFT</th><td>Microsoft</td><td>$9,100,008</td></tr>
-                                    <tr><th>GOOGL</th><td>Alphabet Class A</td><td>$8,700,009</td></tr>
-                                    <tr><th>AMZN</th><td>Amazon</td><td>$8,700,008</td></tr>
-                                    <tr><th>META</th><td>Meta Platforms</td><td>$7,500,009</td></tr>
-                                    <tr><th>GOOG</th><td>Alphabet Class C</td><td>$7,200,007</td></tr>
-                                    <tr><th>TSLA</th><td>Tesla</td><td>$6,951,008</td></tr>
-                                    <tr><th>VIGI</th><td>Vanguard International Dividend Appreciation ETF</td><td>$6,000,002</td></tr>
-                                </tbody>
-                            </table>
+                        <div class="holdings-explorer" id="holdings-explorer" data-state="loading">
+                            <div class="holdings-controls">
+                                <label class="holdings-search">
+                                    <span>Search securities</span>
+                                    <input id="holdings-search" type="search" placeholder="Ticker, company, or industry" autocomplete="off">
+                                </label>
+                                <label>
+                                    <span>Asset type</span>
+                                    <select id="holdings-type">
+                                        <option value="all">All types</option>
+                                        <option value="stock">Stocks</option>
+                                        <option value="etf">Equity ETFs</option>
+                                        <option value="preferred_stock">Preferred stock</option>
+                                    </select>
+                                </label>
+                                <label>
+                                    <span>Sector</span>
+                                    <select id="holdings-sector"><option value="all">All sectors</option></select>
+                                </label>
+                                <label>
+                                    <span>2026 YTD</span>
+                                    <select id="holdings-performance">
+                                        <option value="all">Any return</option>
+                                        <option value="positive">Positive</option>
+                                        <option value="negative">Negative</option>
+                                        <option value="flat">Flat</option>
+                                        <option value="unavailable">Unavailable</option>
+                                    </select>
+                                </label>
+                                <label>
+                                    <span>Account</span>
+                                    <select id="holdings-account"><option value="all">All accounts</option></select>
+                                </label>
+                                <label>
+                                    <span>Minimum value</span>
+                                    <select id="holdings-minimum">
+                                        <option value="0">Any disclosed value</option>
+                                        <option value="100000">$100K+</option>
+                                        <option value="500000">$500K+</option>
+                                        <option value="1000000">$1M+</option>
+                                        <option value="5000000">$5M+</option>
+                                    </select>
+                                </label>
+                                <button type="button" class="holdings-reset" id="holdings-reset">Reset filters</button>
+                            </div>
+                            <div class="holdings-status" aria-live="polite">
+                                <div>
+                                    <strong id="holdings-count">Loading all securities...</strong>
+                                    <span id="holdings-summary">The compact static dataset is about 700 KB.</span>
+                                </div>
+                                <div class="holdings-downloads">
+                                    <a href="../../assets/data/trump-stock-holdings.csv" download>CSV</a>
+                                    <a href="../../assets/data/trump-stock-holdings.json" download>JSON</a>
+                                </div>
+                            </div>
+                            <div class="holdings-table-wrap">
+                                <table class="holdings-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" data-sort-column="symbol"><button type="button" data-sort="symbol">Security <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                                            <th scope="col" data-sort-column="company"><button type="button" data-sort="company">Company <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                                            <th scope="col" data-sort-column="assetType"><button type="button" data-sort="assetType">Type <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                                            <th scope="col" data-sort-column="sector"><button type="button" data-sort="sector">Sector <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                                            <th scope="col" class="is-numeric" data-sort-column="valueMin" aria-sort="descending"><button type="button" data-sort="valueMin">Minimum <span class="sort-indicator" aria-hidden="true">&#8595;</span></button></th>
+                                            <th scope="col" class="is-numeric" data-sort-column="valueMax"><button type="button" data-sort="valueMax">Maximum <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                                            <th scope="col" class="is-numeric" data-sort-column="ytdPercent"><button type="button" data-sort="ytdPercent">2026 YTD <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                                            <th scope="col" class="is-numeric" data-sort-column="purchaseCount"><button type="button" data-sort="purchaseCount">Purchases <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                                            <th scope="col" class="is-numeric" data-sort-column="saleCount"><button type="button" data-sort="saleCount">Sales <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="holdings-body">
+                                        <tr><td colspan="9" class="holdings-empty">Loading the complete static holdings table...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="holdings-pagination">
+                                <label>Rows per page
+                                    <select id="holdings-page-size">
+                                        <option value="25">25</option>
+                                        <option value="50" selected>50</option>
+                                        <option value="100">100</option>
+                                        <option value="250">250</option>
+                                        <option value="all">All</option>
+                                    </select>
+                                </label>
+                                <div>
+                                    <button type="button" id="holdings-previous">Previous</button>
+                                    <span id="holdings-page-status">Page 1 of 1</span>
+                                    <button type="button" id="holdings-next">Next</button>
+                                </div>
+                            </div>
+                            <p class="method-note">Rows are paginated for speed; choose <strong>All</strong> to render every security. Values remain statutory bounds, not exact position sizes.</p>
                         </div>
                     </section>
 
@@ -182,7 +258,11 @@ FORM: Disclosure field map, an established Financial Research Desk extension; no
                             <summary>What changes over time</summary>
                             <p>Filing ranges, dates, pages, rows, and accounts are fixed to this source snapshot. Prices, returns, reference closes, and history coverage are generated market context frozen through July 10, 2026.</p>
                         </details>
-                        <a class="data-download" href="../../assets/data/trump-portfolio-snapshot.json" download>Download the static JSON extract</a>
+                        <div class="data-downloads">
+                            <a class="data-download" href="../../assets/data/trump-portfolio-snapshot.json" download>Aggregate snapshot</a>
+                            <a class="data-download" href="../../assets/data/trump-stock-holdings.csv" download>All holdings CSV</a>
+                            <a class="data-download" href="../../assets/data/trump-stock-holdings.json" download>All holdings JSON</a>
+                        </div>
                     </section>
 
                     <section class="finance-section sources-section" id="sources">
@@ -194,6 +274,7 @@ FORM: Disclosure field map, an established Financial Research Desk extension; no
                             <li><a href="https://oge.box.com/shared/static/zycb5i2ny8kssm51uzqm8ygyq2zkpkqq.pdf" target="_blank" rel="noopener noreferrer">2026 OGE annual financial disclosure <span>927-page PDF &nearr;</span></a></li>
                             <li><a href="https://finance.yahoo.com/" target="_blank" rel="noopener noreferrer">Reference closing-price source <span>Yahoo Finance &nearr;</span></a></li>
                             <li><a href="../../assets/data/trump-portfolio-snapshot.json">Static aggregate data used by this post <span>JSON &nearr;</span></a></li>
+                            <li><a href="../../assets/data/trump-stock-holdings.json">Complete static holdings table <span>1,371 securities &nearr;</span></a></li>
                         </ol>
                         <p class="method-note">Source PDF SHA-256: <code>84b5987e4c8a418188600bea1e1ba6b44e0d5735cdd757cee5aba551977ca402</code>. Market snapshot generated July 11, 2026 using data through July 10, 2026.</p>
                     </section>

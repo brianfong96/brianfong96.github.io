@@ -12,6 +12,6 @@ Job: Understand the filing's value envelope, concentration, transaction cadence,
 Proof: The 927-page OGE filing, captured aggregate data, validation totals, frozen reference closes, and explicit methodology.
 Constraints: Static GitHub Pages; no server API, live quote dependency, chart library, partisan framing, or claims beyond the filing scope.
 Direction: Disclosure field map within the established Financial Research Desk identity.
-Memorable moment: A three-state activity control separates purchases, sales, and total published events across the 2025 calendar.
-Required views: Filing envelope, sector minimums, top holdings, monthly activity, frozen YTD distribution, methodology, static-data download, and sources.
+Memorable moment: The full 1,371-security filing can be searched, combined across filters, and re-sorted without a server request.
+Required views: Filing envelope, sector minimums, complete holdings explorer, monthly activity, frozen YTD distribution, methodology, static-data downloads, and sources.
 Unresolved decisions: None.

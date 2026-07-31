@@ -167,7 +167,9 @@ async function run() {
                     if (!document.body.classList.contains('finance-page')) errors.push('Disclosure finance body class missing');
                     if (document.querySelectorAll('#sector-chart .sector-row').length !== 12) errors.push('Disclosure sector data missing');
                     if (document.querySelectorAll('#activity-chart .activity-month').length !== 12) errors.push('Disclosure activity data missing');
-                    if (document.querySelectorAll('.holdings-table tbody tr').length !== 10) errors.push('Disclosure holdings data missing');
+                    var disclosure = document.getElementById('trump-disclosure');
+                    if (!disclosure || disclosure.dataset.holdingsState !== 'ready') errors.push('Complete disclosure holdings data not ready');
+                    if (document.querySelectorAll('.holdings-table tbody tr').length !== 50) errors.push('Disclosure holdings page missing');
                     if (!document.querySelector('.blog-home-link')) errors.push('Disclosure All blogs link missing');
                 }
 

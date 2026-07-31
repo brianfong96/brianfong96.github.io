@@ -12,6 +12,7 @@ const browserExecutable = [
 ].find((candidate) => candidate && fs.existsSync(candidate));
 const mimeTypes = {
     '.css': 'text/css',
+    '.csv': 'text/csv',
     '.html': 'text/html',
     '.json': 'application/json',
     '.js': 'text/javascript',
@@ -103,30 +104,66 @@ async function run() {
         await page.click('#blogs-list a[href*="trump-portfolio-disclosure"]');
         await page.waitForFunction(() => window.location.pathname.includes('/blog/trump-portfolio-disclosure/'));
         await page.waitForFunction(() => document.getElementById('trump-disclosure').dataset.snapshotState === 'ready');
+        await page.waitForFunction(() => document.getElementById('trump-disclosure').dataset.holdingsState === 'ready');
 
         assert.equal(await page.$$eval('#sector-chart .sector-row', (nodes) => nodes.length), 12);
         assert.equal(await page.$$eval('#activity-chart .activity-month', (nodes) => nodes.length), 12);
         assert.equal(await page.$$eval('#distribution-chart .distribution-row', (nodes) => nodes.length), 7);
-        assert.equal(await page.$$eval('.holdings-table tbody tr', (nodes) => nodes.length), 10);
+        assert.equal(await page.$$eval('.holdings-table tbody tr', (nodes) => nodes.length), 50);
+        assert.equal(await page.$eval('#holdings-count', (node) => node.textContent.trim()), '1,371 securities');
+        assert.equal(await page.$eval('#holdings-body tr:first-child th', (node) => node.textContent.trim()), 'AAPL');
+        assert.equal(await page.$eval('[data-sort-column="valueMin"]', (node) => node.getAttribute('aria-sort')), 'descending');
         assert.equal(await page.$eval('.finance-signal-strip span:first-child', (node) => /1,371/.test(node.textContent)), true);
         assert.equal(await page.$eval('.blog-home-link', (node) => node.getBoundingClientRect().width > 0), true);
+        assert.equal(await page.$eval('.holdings-downloads a[href$=".csv"]', (link) => link.hasAttribute('download')), true);
+
+        await page.type('#holdings-search', 'AAPL');
+        await page.waitForFunction(() => document.getElementById('holdings-count').textContent.trim() === '1 security');
+        assert.equal(await page.$$eval('#holdings-body tr', (nodes) => nodes.length), 1);
+        assert.equal(await page.$eval('#holdings-body tr:first-child th', (node) => node.textContent.trim()), 'AAPL');
+
+        await page.click('#holdings-reset');
+        await page.waitForFunction(() => document.getElementById('holdings-count').textContent.trim() === '1,371 securities');
+        await page.select('#holdings-type', 'etf');
+        await page.waitForFunction(() => document.getElementById('holdings-count').textContent.trim() === '34 securities');
+        assert.equal(await page.$$eval('#holdings-body tr', (nodes) => nodes.length), 34);
+
+        await page.click('#holdings-reset');
+        await page.click('[data-sort="symbol"]');
+        const sortedSymbols = await page.$$eval('#holdings-body tr th', (nodes) => nodes.map((node) => node.textContent.trim()));
+        const expectedSymbols = [...sortedSymbols].sort((left, right) => left.localeCompare(right, 'en-US', { numeric: true, sensitivity: 'base' }));
+        assert.deepEqual(sortedSymbols, expectedSymbols);
+        assert.equal(await page.$eval('[data-sort-column="symbol"]', (node) => node.getAttribute('aria-sort')), 'ascending');
+
+        await page.click('#holdings-next');
+        assert.equal(await page.$eval('#holdings-page-status', (node) => node.textContent.trim()), 'Page 2 of 28');
+        await page.select('#holdings-page-size', 'all');
+        await page.waitForFunction(() => document.querySelectorAll('#holdings-body tr').length === 1371);
+        assert.equal(await page.$eval('#holdings-page-status', (node) => node.textContent.trim()), 'Page 1 of 1');
+        await page.click('#holdings-reset');
+        await page.waitForFunction(() => document.querySelectorAll('#holdings-body tr').length === 50);
 
         await page.click('[data-activity-series="sales"]');
         assert.equal(await page.$eval('[data-activity-series="sales"]', (button) => button.getAttribute('aria-pressed')), 'true');
         assert.equal(await page.$$eval('#activity-chart .activity-bar.is-purchase', (nodes) => nodes.every((node) => node.style.getPropertyValue('--bar-scale') === '0')), true);
 
         const staticSnapshot = await page.evaluate(async () => {
-            const response = await fetch('../../assets/data/trump-portfolio-snapshot.json');
-            const data = await response.json();
+            const [aggregateResponse, holdingsResponse] = await Promise.all([
+                fetch('../../assets/data/trump-portfolio-snapshot.json'),
+                fetch('../../assets/data/trump-stock-holdings.json')
+            ]);
+            const [data, holdings] = await Promise.all([aggregateResponse.json(), holdingsResponse.json()]);
             return {
-                ok: response.ok,
+                ok: aggregateResponse.ok && holdingsResponse.ok,
                 securities: data.summary.securities,
+                holdings: holdings.holdings.length,
                 events: data.summary.publishedEvents,
                 sha: data.meta.sourceSha256
             };
         });
         assert.equal(staticSnapshot.ok, true);
         assert.equal(staticSnapshot.securities, 1371);
+        assert.equal(staticSnapshot.holdings, 1371);
         assert.equal(staticSnapshot.events, 19407);
         assert.equal(staticSnapshot.sha.length, 64);
 
