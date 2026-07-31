@@ -32,6 +32,23 @@
     letter-spacing: 0;
 }
 
+.finance-page,
+.finance-page * {
+    scrollbar-color: #9fb2c7 #e7e3da;
+}
+
+.finance-page::-webkit-scrollbar-track,
+.finance-page *::-webkit-scrollbar-track {
+    background: #e7e3da;
+}
+
+.finance-page::-webkit-scrollbar-thumb,
+.finance-page *::-webkit-scrollbar-thumb {
+    border-color: #e7e3da;
+    background: #9fb2c7;
+    box-shadow: none;
+}
+
 .finance-page::before,
 .finance-page::after,
 .finance-page .content::before,

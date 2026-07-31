@@ -19,6 +19,29 @@
     letter-spacing: 0;
 }
 
+.blog-index,
+.blog-index *,
+.blog-article,
+.blog-article * {
+    scrollbar-color: #9fb2c7 #e7e3da;
+}
+
+.blog-index::-webkit-scrollbar-track,
+.blog-index *::-webkit-scrollbar-track,
+.blog-article::-webkit-scrollbar-track,
+.blog-article *::-webkit-scrollbar-track {
+    background: #e7e3da;
+}
+
+.blog-index::-webkit-scrollbar-thumb,
+.blog-index *::-webkit-scrollbar-thumb,
+.blog-article::-webkit-scrollbar-thumb,
+.blog-article *::-webkit-scrollbar-thumb {
+    border-color: #e7e3da;
+    background: #9fb2c7;
+    box-shadow: none;
+}
+
 .blog-index::before,
 .blog-index::after,
 .blog-article::before,
