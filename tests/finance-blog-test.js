@@ -122,29 +122,14 @@ async function run() {
         await page.waitForFunction(() => window.location.pathname.includes('/blog/expertise-is-a-system/'));
         await page.waitForSelector('.practice-loop');
         await assertNoClippedHeadings('Personal Systems desktop');
-        assert.equal(await page.$$eval('.expertise-equation i', (nodes) => nodes.length), 0);
-        assert.equal(await page.$$eval('.expertise-equation span', (nodes) => nodes.length), 4);
-        assert.match(await page.$eval('.expertise-equation strong', (node) => node.textContent), /all four work together/i);
-        assert.equal(await page.$$eval('.systems-roadmap a', (nodes) => nodes.length), 4);
+        assert.equal(await page.$$eval('.expertise-equation, .systems-roadmap', (nodes) => nodes.length), 0);
+        assert.ok(await page.$eval('.systems-hero', (hero) => hero.getBoundingClientRect().height >= window.innerHeight - 80));
         assert.equal(await page.$$eval('.loop-condition', (nodes) => nodes.length), 4);
-        const loopLayout = await page.evaluate(() => {
-            const conditions = [...document.querySelectorAll('.loop-condition')];
-            const cycle = document.querySelector('.loop-cycle');
-            return {
-                cycleTag: cycle.tagName,
-                cyclePosition: getComputedStyle(cycle).position,
-                cycleTop: cycle.getBoundingClientRect().top,
-                conditionBottom: Math.max(...conditions.map((node) => node.getBoundingClientRect().bottom)),
-                rightAlignment: [conditions[1], conditions[3]].map((node) => getComputedStyle(node).textAlign)
-            };
-        });
-        assert.equal(loopLayout.cycleTag, 'DIV');
-        assert.equal(loopLayout.cyclePosition, 'static');
-        assert.ok(loopLayout.cycleTop >= loopLayout.conditionBottom - 1);
-        assert.deepEqual(loopLayout.rightAlignment, ['right', 'right']);
-        assert.equal(await page.$$eval('.loop-core', (nodes) => nodes.length), 0);
+        assert.equal(await page.$eval('.practice-loop', (node) => node.tagName), 'OL');
+        assert.equal(await page.$$eval('.loop-cycle, .loop-core', (nodes) => nodes.length), 0);
         assert.equal(await page.$$eval('.failure-table tbody tr', (nodes) => nodes.length), 4);
         assert.equal(await page.$$eval('.practice-protocol li', (nodes) => nodes.length), 5);
+        assert.equal(await page.$eval('.system-audit', (node) => node.closest('section').id), 'audit');
         assert.equal(await page.$eval('.video-credit', (link) => link.href), 'https://www.youtube.com/watch?v=5eW6Eagr9XA');
         assert.match(await page.$eval('.video-credit', (link) => link.textContent), /the expert myth/i);
         assert.match(await page.$eval('.video-credit', (link) => link.textContent), /veritasium/i);
@@ -155,10 +140,10 @@ async function run() {
         const systemsDimensions = await page.evaluate(() => ({
             clientWidth: document.documentElement.clientWidth,
             scrollWidth: document.documentElement.scrollWidth,
-            loopColumns: getComputedStyle(document.querySelector('.practice-loop')).gridTemplateColumns.split(' ').length
+            railDisplay: getComputedStyle(document.querySelector('.systems-rail')).display
         }));
         assert.ok(systemsDimensions.scrollWidth <= systemsDimensions.clientWidth, `Personal Systems mobile overflow: ${systemsDimensions.scrollWidth}px > ${systemsDimensions.clientWidth}px`);
-        assert.equal(systemsDimensions.loopColumns, 1);
+        assert.equal(systemsDimensions.railDisplay, 'none');
         await assertNoClippedHeadings('Personal Systems mobile');
         await page.setViewport({ width: 1280, height: 900, deviceScaleFactor: 1 });
 
