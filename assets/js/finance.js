@@ -95,26 +95,26 @@
         },
         marketMove: {
             title: 'Post-earnings stock move',
-            summary: 'Microsoft received the strongest response. Meta and Alphabet sold off, while Amazon\'s next-session response remains pending.',
-            values: [15.5, -8.0, -7.1, null],
-            displays: ['+15.5%', '−8.0%', '−7.1%', 'Pending'],
+            summary: 'Microsoft and Amazon received similarly strong responses, while Meta and Alphabet sold off.',
+            values: [15.5, -8.0, -7.1, 15.3],
+            displays: ['+15.5%', '−8.0%', '−7.1%', '+15.3%'],
             notes: [
                 'July 30 close of $451.10 versus $390.54 on July 29.',
                 'July 30 close of $539.03 versus $585.61 on July 29.',
                 'July 23 close of $317.69 versus $342.09 on July 22.',
-                'Amazon released after the July 30 close; the July 31 response is not yet available.'
+                'July 31 close of $271.58 versus $235.50 on July 30.'
             ]
         },
         trailingPe: {
             title: 'Trailing price-to-earnings ratio',
-            summary: 'Microsoft carried the highest reported P/E. Alphabet looked cheaper on reported earnings, but its denominator includes a large investment gain; Amazon remains pending.',
-            values: [25.1, 21.3, 15.9, null],
-            displays: ['25.1×', '21.3×', '15.9×', 'Pending'],
+            summary: 'Microsoft carried the highest reported P/E. Alphabet looked cheaper on reported earnings, but both Alphabet and Amazon include large investment gains in the denominator.',
+            values: [25.1, 21.3, 15.9, 21.8],
+            displays: ['25.1×', '21.3×', '15.9×', '21.8×'],
             notes: [
                 'July 30 price divided by $17.95 of reported trailing EPS.',
                 'Reported trailing P/E as of July 30.',
                 'July 23 price divided by $19.93 of reported trailing EPS; the $99B pre-tax equity gain lowers this multiple.',
-                'Amazon\'s post-release price and trailing P/E remain pending.'
+                'July 31 price divided by $12.44 of reported trailing EPS; the $79.8B trailing non-operating gain lowers this multiple.'
             ]
         }
     };
