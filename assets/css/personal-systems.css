@@ -80,34 +80,67 @@
 
 .expertise-equation {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    counter-reset: condition;
     border-top: 1px solid var(--systems-ink);
     color: var(--systems-ink);
 }
 
+.expertise-equation::before {
+    grid-column: 1 / -1;
+    padding: 12px 0 10px;
+    border-bottom: 1px solid var(--systems-line);
+    color: var(--systems-blue);
+    content: "The expertise system";
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
 .expertise-equation span {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    padding: 12px 0;
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr);
+    gap: 8px;
+    align-items: baseline;
+    padding: 14px 12px 14px 0;
     border-bottom: 1px solid var(--systems-line);
     font-size: 0.86rem;
     font-weight: 700;
 }
 
+.expertise-equation span:nth-of-type(even) {
+    padding-right: 0;
+    padding-left: 12px;
+    border-left: 1px solid var(--systems-line);
+}
+
 .expertise-equation span::before {
-    width: 6px;
-    height: 6px;
-    flex: 0 0 6px;
-    background: var(--systems-blue);
-    content: "";
+    color: var(--systems-blue);
+    content: counter(condition, decimal-leading-zero);
+    counter-increment: condition;
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+}
+
+.expertise-equation i {
+    display: none;
 }
 
 .expertise-equation strong {
-    padding-top: 18px;
+    grid-column: 1 / -1;
+    padding-top: 16px;
+    color: var(--systems-muted);
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.5;
+    text-align: left;
+}
+
+.expertise-equation strong em {
     color: var(--systems-green);
-    font-size: 1.25rem;
-    text-align: right;
+    font-size: 1.05rem;
+    font-style: normal;
 }
 
 .systems-layout {

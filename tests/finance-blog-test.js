@@ -123,6 +123,8 @@ async function run() {
         await page.waitForSelector('.practice-loop');
         await assertNoClippedHeadings('Personal Systems desktop');
         assert.equal(await page.$$eval('.expertise-equation i', (nodes) => nodes.length), 0);
+        assert.equal(await page.$$eval('.expertise-equation span', (nodes) => nodes.length), 4);
+        assert.match(await page.$eval('.expertise-equation strong', (node) => node.textContent), /all four work together/i);
         assert.equal(await page.$$eval('.systems-roadmap a', (nodes) => nodes.length), 4);
         assert.equal(await page.$$eval('.loop-condition', (nodes) => nodes.length), 4);
         const loopLayout = await page.evaluate(() => {
