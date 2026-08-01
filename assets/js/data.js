@@ -49,6 +49,14 @@ const siteData = {
     ],
     blogs: [
         {
+            title: 'Expertise Is a System, Not a Trait',
+            url: 'blog/expertise-is-a-system/index.html',
+            description: 'Why time and repetition are not enough—and how valid patterns, tight feedback, and deliberate strain turn practice into real expertise.',
+            section: 'Blog',
+            category: 'Personal Systems',
+            date: '2026-08-01'
+        },
+        {
             title: 'What Trump\'s 2026 Financial Disclosure Reveals',
             url: 'blog/trump-portfolio-disclosure/index.html',
             description: 'A static, source-backed view of 1,371 disclosed securities, the portfolio\'s statutory value range, 2025 transaction cadence, sector concentration, and frozen 2026 market context.',
@@ -75,7 +83,7 @@ const siteData = {
         {
             title: 'Blog',
             url: 'blog.html',
-            description: 'Finance and technology interests researched and visualized to make the underlying ideas easier to understand.',
+            description: 'Finance, technology, and personal systems researched and visualized to make the underlying ideas easier to understand.',
             section: 'Pages'
         },
         {

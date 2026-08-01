@@ -21,6 +21,7 @@ const PAGES = [
     { path: '/about.html', name: 'About', hasGraph: true },
     { path: '/projects.html', name: 'Projects' },
     { path: '/blog.html', name: 'Blog' },
+    { path: '/blog/expertise-is-a-system/index.html', name: 'Personal Systems Blog' },
     { path: '/blog/ai-capex-reckoning/index.html', name: 'Finance Blog', hasFinance: true },
     { path: '/blog/trump-portfolio-disclosure/index.html', name: 'Disclosure Blog', hasDisclosure: true },
     { path: '/recipes.html', name: 'Recipes' },

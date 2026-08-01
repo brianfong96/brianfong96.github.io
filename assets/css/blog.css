@@ -155,8 +155,10 @@
     margin-bottom: 18px;
     color: var(--text-color);
     font-size: clamp(3.4rem, 8vw, 6rem);
-    line-height: 0.92;
-    letter-spacing: -0.055em;
+    line-height: 1.04;
+    letter-spacing: -0.04em;
+    padding-block: 0.14em;
+    text-wrap: balance;
 }
 
 .blog-index .hero-copy {
@@ -196,7 +198,7 @@
 
 .topic-index {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     border-top: 1px solid var(--text-color);
     border-bottom: 1px solid var(--text-color);
 }
@@ -228,7 +230,7 @@
 }
 
 .topic-index strong {
-    max-width: 25ch;
+    max-width: 22ch;
     font-size: 1.2rem;
     letter-spacing: -0.02em;
     line-height: 1.2;
