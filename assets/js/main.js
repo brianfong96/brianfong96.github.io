@@ -397,7 +397,7 @@
         if (typeof siteData !== 'undefined') {
             populateList('projects-list', siteData.projects || []);
             populateList('learnings-list', siteData.learnings || []);
-            populateList('blogs-list', siteData.blogs || []);
+            initBlogTopicFilter();
             populateLearningsToc();
             var all = [].concat(siteData.projects || [], siteData.learnings || []);
             populateList('toc-list', all);
@@ -555,6 +555,51 @@
         });
     }
 
+    function initBlogTopicFilter() {
+        var selector = document.getElementById('blog-topic-select');
+        var blogs = siteData.blogs || [];
+        if (!selector) {
+            populateList('blogs-list', blogs);
+            return;
+        }
+
+        var hashTopic = decodeURIComponent(window.location.hash.slice(1)).replace(/-/g, ' ').toLowerCase();
+        var matchingOption = Array.from(selector.options).find(function (option) {
+            return option.value.toLowerCase() === hashTopic;
+        });
+        selector.value = matchingOption ? matchingOption.value : 'all';
+
+        function applyTopic() {
+            var topic = selector.value;
+            var selectedOption = selector.options[selector.selectedIndex];
+            var filtered = topic === 'all' ? blogs : blogs.filter(function (item) {
+                return item.category === topic;
+            });
+            var list = document.getElementById('blogs-list');
+            var heading = document.getElementById('posts-heading');
+            var summary = document.getElementById('topic-summary');
+
+            if (list) {
+                list.dataset.emptyMessage = topic === 'all'
+                    ? 'No posts yet — check back soon.'
+                    : 'No ' + topic.toLowerCase() + ' posts yet — check back soon.';
+            }
+            if (heading) heading.textContent = topic === 'all' ? 'Latest posts' : 'Latest ' + topic + ' posts';
+            if (summary) summary.textContent = selectedOption.dataset.description || '';
+            populateList('blogs-list', filtered);
+        }
+
+        if (!selector._topicHandled) {
+            selector._topicHandled = true;
+            selector.addEventListener('change', function () {
+                var slug = selector.value === 'all' ? '' : '#' + selector.value.toLowerCase().replace(/\s+/g, '-');
+                window.history.replaceState(null, '', window.location.pathname + window.location.search + slug);
+                applyTopic();
+            });
+        }
+        applyTopic();
+    }
+
     function populateLearningsToc() {
         var container = document.getElementById('toc-cs');
         if (!container || typeof siteData === 'undefined') return;
@@ -631,7 +676,7 @@
     if (typeof siteData !== 'undefined') {
         populateList('projects-list', siteData.projects || []);
         populateList('learnings-list', siteData.learnings || []);
-        populateList('blogs-list', siteData.blogs || []);
+        initBlogTopicFilter();
         populateLearningsToc();
         var all = [].concat(siteData.projects || [], siteData.learnings || []);
         populateList('toc-list', all);
