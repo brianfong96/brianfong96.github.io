@@ -107,6 +107,22 @@ async function run() {
         await assertNoClippedHeadings('Personal Systems desktop');
         assert.equal(await page.$$eval('.systems-roadmap a', (nodes) => nodes.length), 4);
         assert.equal(await page.$$eval('.loop-condition', (nodes) => nodes.length), 4);
+        const loopLayout = await page.evaluate(() => {
+            const conditions = [...document.querySelectorAll('.loop-condition')];
+            const cycle = document.querySelector('.loop-cycle');
+            return {
+                cycleTag: cycle.tagName,
+                cyclePosition: getComputedStyle(cycle).position,
+                cycleTop: cycle.getBoundingClientRect().top,
+                conditionBottom: Math.max(...conditions.map((node) => node.getBoundingClientRect().bottom)),
+                rightAlignment: [conditions[1], conditions[3]].map((node) => getComputedStyle(node).textAlign)
+            };
+        });
+        assert.equal(loopLayout.cycleTag, 'DIV');
+        assert.equal(loopLayout.cyclePosition, 'static');
+        assert.ok(loopLayout.cycleTop >= loopLayout.conditionBottom - 1);
+        assert.deepEqual(loopLayout.rightAlignment, ['right', 'right']);
+        assert.equal(await page.$$eval('.loop-core', (nodes) => nodes.length), 0);
         assert.equal(await page.$$eval('.failure-table tbody tr', (nodes) => nodes.length), 4);
         assert.equal(await page.$$eval('.practice-protocol li', (nodes) => nodes.length), 5);
         assert.match(await page.$eval('.systems-deck', (node) => node.textContent), /feedback system/i);
