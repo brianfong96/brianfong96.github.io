@@ -51,19 +51,19 @@ typography:
     fontFamily: "Segoe UI, Arial, sans-serif"
     fontSize: "clamp(3.2rem, 7.5vw, 6rem)"
     fontWeight: 700
-    lineHeight: 0.92
+    lineHeight: 1.04
     letterSpacing: "-0.04em"
   editorialHeadline:
     fontFamily: "Segoe UI, Arial, sans-serif"
     fontSize: "clamp(2rem, 4vw, 3.4rem)"
     fontWeight: 700
-    lineHeight: 0.98
+    lineHeight: 1.1
     letterSpacing: "-0.035em"
   editorialDisplayCompact:
     fontFamily: "Segoe UI, Arial, sans-serif"
     fontSize: "clamp(2.6rem, 14vw, 4.4rem)"
     fontWeight: 700
-    lineHeight: 0.92
+    lineHeight: 1.04
     letterSpacing: "-0.04em"
   editorialBody:
     fontFamily: "Segoe UI, Arial, sans-serif"
@@ -126,7 +126,7 @@ typography:
     fontFamily: "Segoe UI, Arial, sans-serif"
     fontSize: "clamp(1.6rem, 3vw, 2.35rem)"
     fontWeight: 700
-    lineHeight: 1
+    lineHeight: 1.12
   editorialDeck:
     fontFamily: "Segoe UI, Arial, sans-serif"
     fontSize: "clamp(1rem, 1.4vw, 1.16rem)"
@@ -136,7 +136,7 @@ typography:
     fontFamily: "Segoe UI, Arial, sans-serif"
     fontSize: "clamp(2rem, 4vw, 3rem)"
     fontWeight: 700
-    lineHeight: 0.98
+    lineHeight: 1.1
   editorialBlogCompact:
     fontFamily: "Segoe UI, Arial, sans-serif"
     fontSize: "clamp(3rem, 16vw, 4.6rem)"
@@ -232,6 +232,8 @@ The palette uses near-black green surfaces with phosphor text and increasingly b
 **The Data Alignment Rule.** Financial values use tabular numerals and consistent units so scale can be compared before copy is read.
 
 **The Editorial Separation Rule.** Blog pages never inherit terminal glyph motion, neon glow, or monospaced body copy.
+
+**The Editorial Line-Box Rule.** Display and section headings reserve `0.12em` of block padding so Segoe UI glyphs never overrun their measured line boxes.
 
 ## Layout
 

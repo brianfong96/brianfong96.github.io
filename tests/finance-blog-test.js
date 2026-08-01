@@ -65,16 +65,30 @@ async function run() {
             if (message.type() === 'error') browserErrors.push(message.text());
         });
 
+        async function assertNoClippedHeadings(label) {
+            const clipped = await page.$$eval('h1, h2', (nodes) => nodes
+                .filter((node) => node.scrollHeight > node.clientHeight + 1 || node.scrollWidth > node.clientWidth + 1)
+                .map((node) => ({
+                    text: node.textContent.trim(),
+                    client: [node.clientWidth, node.clientHeight],
+                    scroll: [node.scrollWidth, node.scrollHeight]
+                })));
+            assert.deepEqual(clipped, [], `${label} has clipped headings: ${JSON.stringify(clipped)}`);
+        }
+
         await page.goto(`${origin}/blog.html`, { waitUntil: 'networkidle0' });
+        await page.waitForSelector('#blogs-list a[href*="expertise-is-a-system"]');
         await page.waitForSelector('#blogs-list a[href*="ai-capex-reckoning"]');
         await page.waitForSelector('#blogs-list a[href*="trump-portfolio-disclosure"]');
 
         const blogEntry = await page.$eval('#blogs-list a[href*="ai-capex-reckoning"]', (link) => link.innerText);
         assert.match(blogEntry, /finance/i);
         assert.match(blogEntry, /july 30, 2026/i);
-        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 2);
+        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 3);
         assert.equal(await page.$$eval('#blogs-list a[href*="will-ai-take-over"]', (nodes) => nodes.length), 0);
-        assert.equal(await page.$$eval('.topic-index a', (nodes) => nodes.length), 2);
+        assert.equal(await page.$$eval('.topic-index a', (nodes) => nodes.length), 3);
+        assert.match(await page.$eval('#blogs-list a[href*="expertise-is-a-system"]', (link) => link.innerText), /personal systems/i);
+        assert.match(await page.$eval('#blogs-list a[href*="expertise-is-a-system"]', (link) => link.innerText), /august 1, 2026/i);
         assert.match(await page.$eval('.hero-copy', (node) => node.textContent), /interests i want to understand better/i);
 
         assert.equal(await page.$eval('#sidebar-toggle', (button) => button.getAttribute('aria-label')), 'Open navigation');
@@ -86,6 +100,32 @@ async function run() {
         assert.equal(await page.$eval('#sidebar-toggle', (button) => button.getAttribute('aria-expanded')), 'false');
         assert.deepEqual(await page.$$eval('#sidebar a', (nodes) => nodes.map((node) => node.textContent.trim())), stableNavLabels);
         assert.equal(await page.$$eval('#sidebar a', (nodes) => nodes.some((node) => /blog/i.test(node.textContent))), true);
+
+        await page.click('#blogs-list a[href*="expertise-is-a-system"]');
+        await page.waitForFunction(() => window.location.pathname.includes('/blog/expertise-is-a-system/'));
+        await page.waitForSelector('.practice-loop');
+        await assertNoClippedHeadings('Personal Systems desktop');
+        assert.equal(await page.$$eval('.systems-roadmap a', (nodes) => nodes.length), 4);
+        assert.equal(await page.$$eval('.loop-condition', (nodes) => nodes.length), 4);
+        assert.equal(await page.$$eval('.failure-table tbody tr', (nodes) => nodes.length), 4);
+        assert.equal(await page.$$eval('.practice-protocol li', (nodes) => nodes.length), 5);
+        assert.match(await page.$eval('.systems-deck', (node) => node.textContent), /feedback system/i);
+        assert.equal(await page.$eval('.blog-home-link', (node) => node.getBoundingClientRect().width > 0), true);
+
+        await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 });
+        const systemsDimensions = await page.evaluate(() => ({
+            clientWidth: document.documentElement.clientWidth,
+            scrollWidth: document.documentElement.scrollWidth,
+            loopColumns: getComputedStyle(document.querySelector('.practice-loop')).gridTemplateColumns.split(' ').length
+        }));
+        assert.ok(systemsDimensions.scrollWidth <= systemsDimensions.clientWidth, `Personal Systems mobile overflow: ${systemsDimensions.scrollWidth}px > ${systemsDimensions.clientWidth}px`);
+        assert.equal(systemsDimensions.loopColumns, 1);
+        await assertNoClippedHeadings('Personal Systems mobile');
+        await page.setViewport({ width: 1280, height: 900, deviceScaleFactor: 1 });
+
+        await page.click('.blog-home-link');
+        await page.waitForFunction(() => window.location.pathname.endsWith('/blog.html'));
+        await page.waitForSelector('#blogs-list a[href*="expertise-is-a-system"]');
 
         await page.goto(`${origin}/index.html`, { waitUntil: 'networkidle0' });
         const terminalNavLabels = await page.$$eval('#sidebar a', (nodes) => nodes.map((node) => node.textContent.trim()));
@@ -105,6 +145,7 @@ async function run() {
         await page.waitForFunction(() => window.location.pathname.includes('/blog/trump-portfolio-disclosure/'));
         await page.waitForFunction(() => document.getElementById('trump-disclosure').dataset.snapshotState === 'ready');
         await page.waitForFunction(() => document.getElementById('trump-disclosure').dataset.holdingsState === 'ready');
+        await assertNoClippedHeadings('Disclosure desktop');
 
         assert.equal(await page.$$eval('#sector-chart .sector-row', (nodes) => nodes.length), 12);
         assert.equal(await page.$$eval('#activity-chart .activity-month', (nodes) => nodes.length), 12);
@@ -175,6 +216,7 @@ async function run() {
         }));
         assert.ok(disclosureDimensions.scrollWidth <= disclosureDimensions.clientWidth, `Disclosure mobile overflow: ${disclosureDimensions.scrollWidth}px > ${disclosureDimensions.clientWidth}px`);
         assert.equal(disclosureDimensions.titleColumns, 1);
+        await assertNoClippedHeadings('Disclosure mobile');
         await page.setViewport({ width: 1280, height: 900, deviceScaleFactor: 1 });
 
         await page.click('.blog-home-link');
@@ -184,6 +226,8 @@ async function run() {
         await page.click('#blogs-list a[href*="ai-capex-reckoning"]');
         await page.waitForFunction(() => window.location.pathname.includes('/blog/ai-capex-reckoning/'));
         await page.waitForSelector('#company-tracks .company-track');
+        await page.waitForSelector('#cash-flow-map .flow-group');
+        await assertNoClippedHeadings('Finance desktop');
 
         assert.equal(await page.$$eval('#company-tracks .company-track', (nodes) => nodes.length), 4);
         assert.equal(await page.$$eval('#cash-flow-map .flow-group', (nodes) => nodes.length), 4);
@@ -234,6 +278,12 @@ async function run() {
             scrollWidth: document.documentElement.scrollWidth
         }));
         assert.ok(dimensions.scrollWidth <= dimensions.clientWidth, `Mobile overflow: ${dimensions.scrollWidth}px > ${dimensions.clientWidth}px`);
+        await assertNoClippedHeadings('Finance mobile');
+
+        await page.goto(`${origin}/blog/will-ai-take-over/index.html`, { waitUntil: 'networkidle0' });
+        await assertNoClippedHeadings('AI essay mobile');
+        await page.setViewport({ width: 1280, height: 900, deviceScaleFactor: 1 });
+        await assertNoClippedHeadings('AI essay desktop');
         assert.deepEqual(browserErrors, []);
     } finally {
         if (browser) await browser.close();

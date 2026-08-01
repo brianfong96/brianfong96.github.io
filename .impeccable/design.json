@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-07-30T22:52:07.147Z",
+  "generatedAt": "2026-08-01T19:35:00.000Z",
   "title": "Design System: Brian Fong",
   "extensions": {
     "colorMeta": {
@@ -17,7 +17,9 @@
       "display": { "displayName": "Display", "purpose": "Page thesis and primary title." },
       "body": { "displayName": "Body", "purpose": "Readable prose, explanations, and annotations." },
       "label": { "displayName": "Label", "purpose": "Controls, status, dates, and measurements." },
-      "editorialDisplay": { "displayName": "Editorial Display", "purpose": "Blog and finance page thesis." },
+      "editorialDisplay": { "displayName": "Editorial Display", "purpose": "Blog and finance page thesis with protected glyph extents." },
+      "editorialHeadline": { "displayName": "Editorial Headline", "purpose": "Readable article section headings with descender-safe line boxes." },
+      "editorialSection": { "displayName": "Editorial Section", "purpose": "Compact editorial section markers and reading-path anchors." },
       "editorialBody": { "displayName": "Editorial Body", "purpose": "Blog prose, financial analysis, and annotations." },
       "editorialLabel": { "displayName": "Editorial Label", "purpose": "Finance controls, dates, and data labels." }
     },
@@ -82,11 +84,13 @@
   ],
   "narrative": {
     "northStar": "Signal Intelligence Console",
-    "overview": "A personal analysis terminal with dark layered surfaces, precise phosphor-green signals, measured motion, and visible system state. Dense information remains legible through alignment, hierarchy, and interaction.",
-    "keyCharacteristics": ["Near-black layered surfaces", "Phosphor-green live signals", "Monospaced analytical voice", "Scanning and tracing motion"],
+    "overview": "A personal analysis terminal with dark layered surfaces, precise phosphor-green signals, measured motion, and visible system state. A distinct light editorial research desk uses warm paper, navy ink, and analytical blue for long-form reading. Dense information remains legible through alignment, hierarchy, and interaction.",
+    "keyCharacteristics": ["Near-black layered surfaces", "Phosphor-green live signals", "Monospaced analytical voice", "Light editorial research-desk branch", "Scanning and tracing motion"],
     "rules": [
       { "name": "The Live Signal Rule", "body": "Brightness and glow identify activity or hierarchy.", "section": "colors" },
-      { "name": "The Restrained Glow Rule", "body": "Glow supports tonal or offset depth and never substitutes for structure.", "section": "elevation" }
+      { "name": "The Restrained Glow Rule", "body": "Glow supports tonal or offset depth and never substitutes for structure.", "section": "elevation" },
+      { "name": "The Editorial Separation Rule", "body": "Blog pages use the light editorial branch without terminal glyph motion, neon glow, or monospaced body copy.", "section": "typography" },
+      { "name": "The Editorial Line-Box Rule", "body": "Display and section headings reserve block padding so Segoe UI glyphs never overrun their measured line boxes.", "section": "typography" }
     ],
     "dos": ["Use brightness to encode state.", "Align financial values with tabular numerals.", "Provide static equivalents for interactive explanations."],
     "donts": ["Do not cover every panel in equal glow.", "Do not sacrifice body-copy measure for terminal styling.", "Do not add colors without a semantic data role."]

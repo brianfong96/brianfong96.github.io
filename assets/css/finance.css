@@ -173,8 +173,9 @@
     margin-bottom: 20px;
     color: var(--accent-color);
     font-size: clamp(3.2rem, 7.5vw, 6rem);
-    line-height: 0.92;
+    line-height: 1.04;
     letter-spacing: -0.04em;
+    padding-block: 0.12em;
     text-wrap: balance;
 }
 
@@ -210,8 +211,9 @@
     margin-bottom: 10px;
     color: var(--accent-color);
     font-size: clamp(1.6rem, 3vw, 2.35rem);
-    line-height: 1;
+    line-height: 1.12;
     letter-spacing: 0.04em;
+    padding-block: 0.12em;
 }
 
 .finance-verdict p {
@@ -336,8 +338,9 @@
     margin-bottom: 0;
     color: var(--accent-color);
     font-size: clamp(2rem, 4vw, 3.4rem);
-    line-height: 0.98;
+    line-height: 1.1;
     letter-spacing: -0.035em;
+    padding-block: 0.12em;
     text-transform: none;
     text-wrap: balance;
 }

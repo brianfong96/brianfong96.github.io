@@ -9,6 +9,7 @@
 .disclosure-page .finance-title-grid h1 {
     max-width: 13ch;
     font-size: clamp(3.2rem, 7.5vw, 6rem);
+    padding-block: 0.14em;
 }
 
 .disclosure-page .finance-verdict strong {
