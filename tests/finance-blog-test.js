@@ -270,9 +270,12 @@ async function run() {
         await page.click('[data-metric="marketMove"]');
         await page.waitForFunction(() => document.getElementById('expanded-title').textContent === 'Post-earnings stock move');
         const marketMoves = await page.$$eval('.value-mark', (nodes) => nodes.map((node) => node.childNodes[0].textContent));
-        assert.deepEqual(marketMoves, ['+15.5%', '−8.0%', '−7.1%', 'Pending']);
+        assert.deepEqual(marketMoves, ['+15.5%', '−8.0%', '−7.1%', '+15.3%']);
         assert.match(await page.$eval('.market-table tbody tr:nth-child(3)', (node) => node.textContent), /jul 22/i);
-        assert.match(await page.$eval('.market-table tbody tr:nth-child(4)', (node) => node.textContent), /pending/i);
+        const amazonMarketRow = await page.$eval('.market-table tbody tr:nth-child(4)', (node) => node.textContent);
+        assert.match(amazonMarketRow, /\$271\.58/);
+        assert.match(amazonMarketRow, /\+15\.3%/);
+        assert.match(amazonMarketRow, /21\.8×/);
 
         await page.click('[data-metric="freeCashFlow"]');
         const signedDirection = await page.evaluate(() => {
