@@ -125,6 +125,9 @@ async function run() {
         assert.equal(await page.$$eval('.loop-core', (nodes) => nodes.length), 0);
         assert.equal(await page.$$eval('.failure-table tbody tr', (nodes) => nodes.length), 4);
         assert.equal(await page.$$eval('.practice-protocol li', (nodes) => nodes.length), 5);
+        assert.equal(await page.$eval('.video-credit', (link) => link.href), 'https://www.youtube.com/watch?v=5eW6Eagr9XA');
+        assert.match(await page.$eval('.video-credit', (link) => link.textContent), /the expert myth/i);
+        assert.match(await page.$eval('.video-credit', (link) => link.textContent), /veritasium/i);
         assert.match(await page.$eval('.systems-deck', (node) => node.textContent), /feedback system/i);
         assert.equal(await page.$eval('.blog-home-link', (node) => node.getBoundingClientRect().width > 0), true);
 
