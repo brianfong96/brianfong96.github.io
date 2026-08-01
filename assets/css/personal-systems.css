@@ -80,30 +80,30 @@
 
 .expertise-equation {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr;
     border-top: 1px solid var(--systems-ink);
     color: var(--systems-ink);
 }
 
-.expertise-equation span,
-.expertise-equation i {
+.expertise-equation span {
+    display: flex;
+    gap: 12px;
+    align-items: center;
     padding: 12px 0;
     border-bottom: 1px solid var(--systems-line);
-}
-
-.expertise-equation span {
     font-size: 0.86rem;
     font-weight: 700;
 }
 
-.expertise-equation i {
-    color: var(--systems-blue);
-    font-style: normal;
-    font-weight: 700;
+.expertise-equation span::before {
+    width: 6px;
+    height: 6px;
+    flex: 0 0 6px;
+    background: var(--systems-blue);
+    content: "";
 }
 
 .expertise-equation strong {
-    grid-column: 1 / -1;
     padding-top: 18px;
     color: var(--systems-green);
     font-size: 1.25rem;

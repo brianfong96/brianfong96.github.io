@@ -32,30 +32,25 @@
         <main>
             <section class="section blog-topic-section">
                 <div class="section-heading">
-                    <h2>Interests, made visible</h2>
-                    <p>Finance, technology, and personal systems are the starting points. Each topic combines source material, interpretation, and visual models rather than treating the post as a text archive.</p>
+                    <h2>Explore by topic</h2>
+                    <p>Choose an area to narrow the latest posts. Each topic combines source material, interpretation, and visual models.</p>
                 </div>
-                <nav class="topic-index" aria-label="Blog topics">
-                    <a href="#finance" id="finance">
-                        <span>Finance</span>
-                        <strong>Companies, capital, and market expectations</strong>
-                        <small>Compare operating performance, cash flows, valuation, and what changes the quality of reported earnings.</small>
-                    </a>
-                    <a href="#technology" id="technology">
-                        <span>Technology</span>
-                        <strong>Systems, AI, and their human consequences</strong>
-                        <small>Explore how technical shifts work, where their limits sit, and what they mean beyond the implementation.</small>
-                    </a>
-                    <a href="#personal-systems" id="personal-systems">
-                        <span>Personal Systems</span>
-                        <strong>Practice, judgment, and sustainable growth</strong>
-                        <small>Turn research about how people learn and decide into systems that can survive real life.</small>
-                    </a>
-                </nav>
+                <div class="topic-picker">
+                    <label for="blog-topic-select">Topic area</label>
+                    <div class="topic-select-wrap">
+                        <select id="blog-topic-select" aria-describedby="topic-summary">
+                            <option value="all" data-description="Finance, technology, and personal systems in one chronological view.">All topics</option>
+                            <option value="Finance" data-description="Companies, capital, market expectations, and the quality of reported earnings.">Finance</option>
+                            <option value="Technology" data-description="Systems, AI, their limits, and their human consequences.">Technology</option>
+                            <option value="Personal Systems" data-description="Practice, judgment, learning, and sustainable growth.">Personal Systems</option>
+                        </select>
+                    </div>
+                    <p id="topic-summary" aria-live="polite">Finance, technology, and personal systems in one chronological view.</p>
+                </div>
             </section>
             <section class="section">
                 <div class="section-heading">
-                    <h2>Latest posts</h2>
+                    <h2 id="posts-heading">Latest posts</h2>
                     <p>Long-form thinking with primary sources, interactive explanations, and visual evidence that makes the key comparison legible.</p>
                 </div>
                 <ul id="blogs-list" data-empty-message="No posts yet — check back soon."></ul>
@@ -66,6 +61,6 @@
         </footer>
     </div>
     <script src="assets/js/data.js?v=8304231"></script>
-    <script src="assets/js/main.js?v=8304231"></script>
+    <script src="assets/js/main.js?v=8304232"></script>
 </body>
 </html>

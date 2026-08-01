@@ -196,32 +196,17 @@
     padding-bottom: 28px;
 }
 
-.topic-index {
+.topic-picker {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 130px minmax(240px, 0.75fr) minmax(280px, 1.25fr);
+    gap: 24px;
+    align-items: center;
+    padding: 24px 4px;
     border-top: 1px solid var(--text-color);
     border-bottom: 1px solid var(--text-color);
 }
 
-.topic-index a {
-    display: grid;
-    gap: 7px;
-    padding: 26px 24px 28px 4px;
-    color: var(--text-color);
-    text-decoration: none;
-}
-
-.topic-index a + a {
-    padding-left: 28px;
-    border-left: 1px solid var(--border-color);
-}
-
-.topic-index a:hover,
-.topic-index a:focus-visible {
-    background: #ffffff;
-}
-
-.topic-index span {
+.topic-picker label {
     color: var(--accent-color);
     font-size: 0.76rem;
     font-weight: 700;
@@ -229,18 +214,51 @@
     text-transform: uppercase;
 }
 
-.topic-index strong {
-    max-width: 22ch;
-    font-size: 1.2rem;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
+.topic-select-wrap {
+    position: relative;
 }
 
-.topic-index small {
-    max-width: 52ch;
+.topic-select-wrap::after {
+    position: absolute;
+    top: 50%;
+    right: 18px;
+    width: 9px;
+    height: 9px;
+    border-right: 2px solid var(--accent-color);
+    border-bottom: 2px solid var(--accent-color);
+    content: "";
+    pointer-events: none;
+    transform: translateY(-70%) rotate(45deg);
+}
+
+.topic-picker select {
+    width: 100%;
+    min-height: 52px;
+    padding: 0 48px 0 16px;
+    border: 1px solid #9fb2c7;
+    border-radius: 6px;
+    appearance: none;
+    background: #ffffff;
+    color: var(--text-color);
+    cursor: pointer;
+    font: 700 1rem/1.2 "Segoe UI", Arial, sans-serif;
+}
+
+.topic-picker select:hover {
+    border-color: var(--accent-color);
+}
+
+.topic-picker select:focus-visible {
+    border-color: var(--accent-color);
+    outline: 3px solid rgba(36, 89, 154, 0.2);
+    outline-offset: 2px;
+}
+
+.topic-picker p {
+    margin: 0;
     color: var(--muted-text);
-    font-size: 0.82rem;
-    line-height: 1.55;
+    font-size: 0.9rem;
+    line-height: 1.6;
 }
 
 .blog-index .list-buttons li {
@@ -377,8 +395,7 @@
     }
 
     .blog-index .section-heading,
-    .blog-index .list-buttons a,
-    .topic-index {
+    .blog-index .list-buttons a {
         grid-template-columns: 1fr;
     }
 
@@ -388,10 +405,10 @@
         grid-row: auto;
     }
 
-    .topic-index a + a {
-        padding-left: 4px;
-        border-top: 1px solid var(--border-color);
-        border-left: 0;
+    .topic-picker {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 20px 4px;
     }
 }
 

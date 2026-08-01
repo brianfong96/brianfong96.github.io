@@ -86,10 +86,27 @@ async function run() {
         assert.match(blogEntry, /july 30, 2026/i);
         assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 3);
         assert.equal(await page.$$eval('#blogs-list a[href*="will-ai-take-over"]', (nodes) => nodes.length), 0);
-        assert.equal(await page.$$eval('.topic-index a', (nodes) => nodes.length), 3);
+        assert.equal(await page.$$eval('#blog-topic-select option', (nodes) => nodes.length), 4);
         assert.match(await page.$eval('#blogs-list a[href*="expertise-is-a-system"]', (link) => link.innerText), /personal systems/i);
         assert.match(await page.$eval('#blogs-list a[href*="expertise-is-a-system"]', (link) => link.innerText), /august 1, 2026/i);
         assert.match(await page.$eval('.hero-copy', (node) => node.textContent), /interests i want to understand better/i);
+
+        await page.select('#blog-topic-select', 'Finance');
+        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 2);
+        assert.equal(await page.$$eval('#blogs-list a[href*="expertise-is-a-system"]', (nodes) => nodes.length), 0);
+        assert.equal(await page.$eval('#posts-heading', (node) => node.textContent), 'Latest Finance posts');
+        assert.equal(await page.evaluate(() => window.location.hash), '#finance');
+
+        await page.select('#blog-topic-select', 'Personal Systems');
+        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 1);
+        assert.equal(await page.$$eval('#blogs-list a[href*="expertise-is-a-system"]', (nodes) => nodes.length), 1);
+        assert.equal(await page.$eval('#posts-heading', (node) => node.textContent), 'Latest Personal Systems posts');
+
+        await page.select('#blog-topic-select', 'Technology');
+        assert.match(await page.$eval('#blogs-list', (node) => node.textContent), /no technology posts yet/i);
+
+        await page.select('#blog-topic-select', 'all');
+        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 3);
 
         assert.equal(await page.$eval('#sidebar-toggle', (button) => button.getAttribute('aria-label')), 'Open navigation');
         const stableNavLabels = await page.$$eval('#sidebar a', (nodes) => nodes.map((node) => node.textContent.trim()));
@@ -105,6 +122,7 @@ async function run() {
         await page.waitForFunction(() => window.location.pathname.includes('/blog/expertise-is-a-system/'));
         await page.waitForSelector('.practice-loop');
         await assertNoClippedHeadings('Personal Systems desktop');
+        assert.equal(await page.$$eval('.expertise-equation i', (nodes) => nodes.length), 0);
         assert.equal(await page.$$eval('.systems-roadmap a', (nodes) => nodes.length), 4);
         assert.equal(await page.$$eval('.loop-condition', (nodes) => nodes.length), 4);
         const loopLayout = await page.evaluate(() => {
