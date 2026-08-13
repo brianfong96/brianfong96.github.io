@@ -49,6 +49,14 @@ const siteData = {
     ],
     blogs: [
         {
+            title: 'Your Fiber Is a Shared Beam',
+            url: 'blog/fiber-to-the-home/index.html',
+            description: 'How GPON sends one downstream optical stream to multiple homes, what modified ONU hardware can capture, what encryption still protects, and where the largest risks actually sit.',
+            section: 'Blog',
+            category: 'Technology',
+            date: '2026-08-13'
+        },
+        {
             title: 'Expertise Is a System, Not a Trait',
             url: 'blog/expertise-is-a-system/index.html',
             description: 'Why time and repetition are not enough—and how valid patterns, tight feedback, and deliberate strain turn practice into real expertise.',

@@ -21,6 +21,7 @@ const PAGES = [
     { path: '/about.html', name: 'About', hasGraph: true },
     { path: '/projects.html', name: 'Projects' },
     { path: '/blog.html', name: 'Blog' },
+    { path: '/blog/fiber-to-the-home/index.html', name: 'Fiber Security Blog', hasFiber: true },
     { path: '/blog/expertise-is-a-system/index.html', name: 'Personal Systems Blog' },
     { path: '/blog/ai-capex-reckoning/index.html', name: 'Finance Blog', hasFinance: true },
     { path: '/blog/trump-portfolio-disclosure/index.html', name: 'Disclosure Blog', hasDisclosure: true },
@@ -92,7 +93,7 @@ async function run() {
             await new Promise(r => setTimeout(r, TRANSITION_SETTLE_MS));
 
             // Run all checks
-            const results = await page.evaluate((glyphs, targetPath, hasGraph, hasFinance, hasDisclosure) => {
+            const results = await page.evaluate((glyphs, targetPath, hasGraph, hasFinance, hasDisclosure, hasFiber) => {
                 var errors = [];
 
                 // 1. Hamburger menu
@@ -174,13 +175,20 @@ async function run() {
                     if (!document.querySelector('.blog-home-link')) errors.push('Disclosure All blogs link missing');
                 }
 
+                if (hasFiber) {
+                    if (!document.body.classList.contains('fiber-page')) errors.push('Fiber page body class missing');
+                    if (!document.querySelector('.fiber-topology')) errors.push('Fiber topology missing');
+                    if (document.querySelectorAll('[data-scenario]').length !== 4) errors.push('Fiber exposure scenarios missing');
+                    if (!document.querySelector('.term[data-term="gpon"]')) errors.push('Fiber glossary terms missing');
+                }
+
                 // 4. Title check
                 if (!document.title || document.title.indexOf('Brian Fong') === -1) {
                     errors.push('Bad title: "' + document.title + '"');
                 }
 
                 return { errors: errors, title: document.title, url: window.location.href };
-            }, GLYPHS, target.path, target.hasGraph, target.hasFinance, target.hasDisclosure);
+            }, GLYPHS, target.path, target.hasGraph, target.hasFinance, target.hasDisclosure, target.hasFiber);
 
             if (results.errors.length > 0) {
                 console.log(`❌ ${label} FAILED:`);
