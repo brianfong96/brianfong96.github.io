@@ -16,6 +16,7 @@ const GLYPHS = 'アイウエオカキクケコサシスセソタチツテトナ�
 
 const PAGES = [
     '/index.html', '/about.html', '/projects.html', '/blog.html',
+    '/blog/fiber-to-the-home/index.html',
     '/blog/ai-capex-reckoning/index.html',
     '/blog/trump-portfolio-disclosure/index.html',
     '/recipes.html', '/music.html',
@@ -27,7 +28,7 @@ async function run() {
     const browser = await puppeteer.launch({ headless: 'new', executablePath: browserExecutable, args: ['--no-sandbox'] });
     const page = await browser.newPage();
     let errors = [];
-    page.on('pageerror', err => errors.push(err.message));
+    page.on('pageerror', err => errors.push(err.stack || err.message));
 
     await page.goto(BASE + '/index.html', { waitUntil: 'networkidle0' });
 
@@ -153,6 +154,10 @@ async function run() {
     console.log(`\n${'='.repeat(50)}`);
     console.log(`Results: ${passed}/30 passed, ${failed}/30 failed`);
     console.log(`Rapid-fire: ${result.errors.length === 0 ? 'PASSED' : 'FAILED'}`);
+    if (errors.length > 0) {
+        console.log(`Page errors: ${errors.length}`);
+        errors.forEach(error => console.log(`   ${error}`));
+    }
     console.log(`${'='.repeat(50)}`);
 
     await browser.close();

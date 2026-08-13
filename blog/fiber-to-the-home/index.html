@@ -1,0 +1,578 @@
+<!--
+THESIS: GPON's shared downstream is not the breach; risk depends on the filters and encryption around it, so this page refuses the panic-headline version of the story.
+OWN-WORLD: Warm research paper, navy structure, optical-blue paths, teal protected states, coral exposed states, and precise inline definition notes.
+STORY: Follow one frame from OLT to home, change the security boundary to see what becomes readable, compare blast radius, then separate household actions from ISP obligations.
+FIRST VIEWPORT: A split title and live fiber topology share the screen; direction controls and a plain-language signal readout sit inside the diagram.
+FORM: Signal boundary lab, the fourth grounded structure, using a layered x-ray composition and seed 4b910065; approved comp: .impeccable/mocks/fiber-comp-a.png.
+-->
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How GPON fiber reaches multiple homes, what the GPWN research can expose, what encryption still protects, and how households and ISPs can reduce the risk.">
+    <title>Your Fiber Is a Shared Beam - Brian Fong</title>
+    <script>document.documentElement.classList.replace('no-js', 'js');</script>
+    <link rel="icon" type="image/png" href="../../assets/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/blog.css">
+    <link rel="stylesheet" href="../../assets/css/fiber-security.css?v=8311342">
+</head>
+<body class="blog-article fiber-page">
+    <header class="topbar">
+        <a class="home-link" href="../../index.html" aria-label="Home">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </a>
+        <a class="blog-home-link" href="../../blog.html">All blogs</a>
+        <button id="sidebar-toggle" aria-label="Toggle navigation">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg>
+        </button>
+    </header>
+
+    <nav class="sidebar" id="sidebar" aria-label="Primary navigation">
+        <ul class="nav-links">
+            <li><a href="../../index.html">Home</a></li>
+            <li><a href="../../about.html">About</a></li>
+            <li><a href="../../projects.html">Projects</a></li>
+            <li><a href="../../learnings.html">Learnings</a></li>
+            <li><a href="../../blog.html">Blog</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <article class="fiber-article">
+            <header class="fiber-hero">
+                <div class="fiber-meta">
+                    <a href="../../blog.html">&larr; Blog</a>
+                    <span>Technology</span>
+                    <time datetime="2026-08-13">August 13, 2026</time>
+                    <span>12 minute read</span>
+                </div>
+
+                <div class="fiber-hero-grid">
+                    <div class="fiber-hero-copy">
+                        <h1>Your fiber is a shared beam</h1>
+                        <p class="fiber-deck">A modified home fiber terminal can receive downstream frames meant for other subscribers. That is real. It is also only the first layer of the story: filtering, GPON encryption, and end-to-end encryption determine what those captured photons reveal.</p>
+                        <p class="fiber-thesis">The important question is not <em>"Can another device receive the light?"</em> It can. The question is <strong>"Which security boundary still holds after it does?"</strong></p>
+                    </div>
+
+                    <div class="fiber-hero-lab" aria-labelledby="topology-title">
+                        <div class="lab-toolbar">
+                            <div>
+                                <span class="lab-label">Follow the signal</span>
+                                <strong id="topology-title">One fiber, multiple homes</strong>
+                            </div>
+                            <div class="flow-switch" role="group" aria-label="Traffic direction">
+                                <button type="button" data-flow-direction="downstream" aria-pressed="true">Downstream</button>
+                                <button type="button" data-flow-direction="upstream" aria-pressed="false">Upstream</button>
+                            </div>
+                        </div>
+
+                        <div class="topology-stage" data-direction="downstream">
+                            <svg class="fiber-topology" viewBox="0 0 720 390" role="img" aria-labelledby="topology-svg-title topology-svg-desc">
+                                <title id="topology-svg-title">Simplified GPON fiber topology</title>
+                                <desc id="topology-svg-desc">An ISP optical line terminal connects through one passive splitter to three homes. Downstream light reaches every home; upstream devices transmit in scheduled turns.</desc>
+                                <path class="fiber-line fiber-trunk" d="M145 194 H350" />
+                                <path class="fiber-line fiber-branch" d="M392 194 C465 194 468 82 540 82 H594" />
+                                <path class="fiber-line fiber-branch" d="M392 194 H594" />
+                                <path class="fiber-line fiber-branch" d="M392 194 C465 194 468 306 540 306 H594" />
+
+                                <g class="topology-node olt-node">
+                                    <rect x="32" y="148" width="114" height="92" rx="6" />
+                                    <circle cx="52" cy="172" r="5" />
+                                    <circle cx="69" cy="172" r="5" />
+                                    <path d="M50 210 H126" />
+                                    <text x="89" y="134" text-anchor="middle">ISP side</text>
+                                    <text x="89" y="198" text-anchor="middle">OLT</text>
+                                </g>
+
+                                <g class="topology-node splitter-node">
+                                    <path d="M370 156 L410 194 L370 232 L330 194 Z" />
+                                    <circle cx="370" cy="194" r="7" />
+                                    <text x="370" y="262" text-anchor="middle">Passive splitter</text>
+                                </g>
+
+                                <g class="topology-node home-node home-a">
+                                    <path d="M596 80 L635 48 L674 80 V130 H596 Z" />
+                                    <rect x="625" y="99" width="20" height="31" />
+                                    <text x="635" y="155" text-anchor="middle">ONT A</text>
+                                </g>
+                                <g class="topology-node home-node home-b">
+                                    <path d="M596 192 L635 160 L674 192 V242 H596 Z" />
+                                    <rect x="625" y="211" width="20" height="31" />
+                                    <text x="635" y="267" text-anchor="middle">ONT B</text>
+                                </g>
+                                <g class="topology-node home-node home-c">
+                                    <path d="M596 304 L635 272 L674 304 V354 H596 Z" />
+                                    <rect x="625" y="323" width="20" height="31" />
+                                    <text x="635" y="379" text-anchor="middle">ONT C</text>
+                                </g>
+
+                                <g class="signal-packets packet-down" aria-hidden="true">
+                                    <circle r="7"><animateMotion dur="2.8s" repeatCount="indefinite" path="M145 194 H350" /></circle>
+                                    <circle r="6"><animateMotion begin=".45s" dur="2.3s" repeatCount="indefinite" path="M392 194 C465 194 468 82 540 82 H594" /></circle>
+                                    <circle r="6"><animateMotion begin=".45s" dur="2.3s" repeatCount="indefinite" path="M392 194 H594" /></circle>
+                                    <circle r="6"><animateMotion begin=".45s" dur="2.3s" repeatCount="indefinite" path="M392 194 C465 194 468 306 540 306 H594" /></circle>
+                                </g>
+                                <g class="signal-packets packet-up" aria-hidden="true">
+                                    <circle r="6"><animateMotion begin="0s" dur="3.2s" repeatCount="indefinite" path="M594 82 H540 C468 82 465 194 392 194 H350 H145" /></circle>
+                                    <circle r="6"><animateMotion begin="1.05s" dur="3.2s" repeatCount="indefinite" path="M594 194 H392 H350 H145" /></circle>
+                                    <circle r="6"><animateMotion begin="2.1s" dur="3.2s" repeatCount="indefinite" path="M594 306 H540 C468 306 465 194 392 194 H350 H145" /></circle>
+                                </g>
+                            </svg>
+                            <div class="mobile-topology" aria-hidden="true">
+                                <div class="mobile-node mobile-olt"><span>Provider</span><strong>OLT</strong></div>
+                                <div class="mobile-fiber mobile-trunk-line"><span>Shared fiber</span></div>
+                                <div class="mobile-node mobile-splitter"><span>Unpowered</span><strong>Passive splitter</strong></div>
+                                <div class="mobile-fiber mobile-branch-line"><span>Same downstream light</span></div>
+                                <div class="mobile-homes">
+                                    <div><i></i><strong>ONT A</strong></div>
+                                    <div><i></i><strong>ONT B</strong></div>
+                                    <div><i></i><strong>ONT C</strong></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="signal-readout" aria-live="polite">
+                            <span class="readout-pulse" aria-hidden="true"></span>
+                            <p id="flow-readout"><strong>Downstream:</strong> the OLT broadcasts one optical stream through the splitter. Every ONT on that tree receives the light.</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <nav class="fiber-route" aria-label="Article sections">
+                <a href="#mechanism" data-section-link="mechanism" aria-current="true"><span>How it works</span><small>Packet to photon</small></a>
+                <a href="#exposure" data-section-link="exposure"><span>What gets exposed</span><small>Boundary by boundary</small></a>
+                <a href="#defense" data-section-link="defense"><span>How to reduce risk</span><small>You versus the ISP</small></a>
+            </nav>
+
+            <div class="fiber-layout">
+                <aside class="fiber-rail" aria-label="On this page">
+                    <span>On this page</span>
+                    <a href="#shared-tree">The shared tree</a>
+                    <a href="#frame-walk">Inside a frame</a>
+                    <a href="#boundary-lab">Exposure lab</a>
+                    <a href="#blast-radius">Blast radius</a>
+                    <a href="#home-defense">At home</a>
+                    <a href="#isp-defense">At the ISP</a>
+                    <a href="#sources">Sources</a>
+                </aside>
+
+                <main class="fiber-body">
+                    <section class="fiber-section mechanism-section" id="mechanism" data-article-section>
+                        <div class="section-heading">
+                            <h2>First: how GPON moves data</h2>
+                            <p>A <button class="term" type="button" data-term="gpon" aria-describedby="term-def-gpon">GPON</button> connection is a shared optical system. The powered intelligence sits at the provider and the distribution plant mostly just divides light.</p>
+                        </div>
+
+                        <div class="opening-claim">
+                            <p>I started with the Hackaday headline expecting a newly discovered wiretap. The architecture itself is not new: downstream GPON has always been broadcast through a passive tree. The research matters because commodity hardware and public tooling now make bypassing the subscriber device's normal filtering much easier to reproduce in an authorized lab.</p>
+                            <div class="claim-verdict">
+                                <span>Core distinction</span>
+                                <strong>Receiving a frame is not the same as decrypting its payload.</strong>
+                            </div>
+                        </div>
+
+                        <section class="subsection" id="shared-tree">
+                            <h3>The shared optical tree</h3>
+                            <p>At the provider, an <button class="term" type="button" data-term="olt" aria-describedby="term-def-olt">OLT</button> sends traffic onto a feeder fiber. A <button class="term" type="button" data-term="splitter" aria-describedby="term-def-splitter">passive splitter</button> divides that optical signal toward multiple premises. At each home, an <button class="term" type="button" data-term="ont" aria-describedby="term-def-ont">ONT</button> converts light back into Ethernet.</p>
+
+                            <ol class="architecture-walk">
+                                <li>
+                                    <span>Provider</span>
+                                    <div>
+                                        <strong>OLT schedules and multiplexes</strong>
+                                        <p>It wraps subscriber traffic into GPON frames, assigns logical channels, and controls upstream time slots.</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span>Street</span>
+                                    <div>
+                                        <strong>The splitter only divides light</strong>
+                                        <p>No routing table, software, or electricity decides which branch receives which downstream frame.</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span>Home</span>
+                                    <div>
+                                        <strong>Each ONT filters locally</strong>
+                                        <p>The ONT normally keeps only the <button class="term" type="button" data-term="gem-port" aria-describedby="term-def-gem-port">GEM Port-IDs</button> assigned to that subscriber.</p>
+                                    </div>
+                                </li>
+                            </ol>
+                        </section>
+
+                        <section class="subsection" id="frame-walk">
+                            <div class="subsection-heading">
+                                <h3>From website packet to light pulse</h3>
+                                <p>The protocol stack is less mysterious when each layer is treated as an envelope rather than another network.</p>
+                            </div>
+
+                            <div class="packet-xray" aria-label="GPON encapsulation layers">
+                                <ol class="packet-layers">
+                                    <li>
+                                        <span>01</span>
+                                        <div><strong>Application data</strong><small>HTTPS response, video segment, DNS reply</small></div>
+                                    </li>
+                                    <li>
+                                        <span>02</span>
+                                        <div><strong>Ethernet frame</strong><small>The familiar local-network container</small></div>
+                                    </li>
+                                    <li>
+                                        <span>03</span>
+                                        <div><strong><button class="term" type="button" data-term="gem" aria-describedby="term-def-gem">GEM frame</button></strong><small>GPON adds a logical Port-ID and payload framing</small></div>
+                                    </li>
+                                    <li>
+                                        <span>04</span>
+                                        <div><strong>GTC downstream frame</strong><small>Many GEM frames share one 125 microsecond transmission</small></div>
+                                    </li>
+                                    <li>
+                                        <span>05</span>
+                                        <div><strong>Modulated light</strong><small>The same downstream beam reaches every ONT on the tree</small></div>
+                                    </li>
+                                </ol>
+
+                                <div class="gem-cutaway">
+                                    <span class="cutaway-label">Simplified GEM envelope</span>
+                                    <div class="gem-header">
+                                        <small>Header</small>
+                                        <strong>Port-ID 200</strong>
+                                    </div>
+                                    <div class="gem-payload">
+                                        <small>Payload</small>
+                                        <strong>Ethernet / IP data</strong>
+                                    </div>
+                                    <p>ONT A sees <strong>100</strong> and discards this frame. ONT B sees <strong>200</strong> and accepts it. A modified ONT can stop obeying that discard rule.</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="subsection direction-compare">
+                            <div>
+                                <span>Downstream</span>
+                                <strong>One sender, every receiver</strong>
+                                <p>The OLT broadcasts continuously. Port-ID filtering and <button class="term" type="button" data-term="aes" aria-describedby="term-def-aes">AES</button> provide subscriber separation above the physical beam.</p>
+                                <div class="direction-strip broadcast-strip" aria-hidden="true">
+                                    <i></i><i></i><i></i><i></i><i></i>
+                                </div>
+                            </div>
+                            <div>
+                                <span>Upstream</span>
+                                <strong>Many senders, scheduled turns</strong>
+                                <p>The OLT assigns tiny transmission windows using <button class="term" type="button" data-term="tdma" aria-describedby="term-def-tdma">TDMA</button> so home transmitters do not collide.</p>
+                                <div class="direction-strip timeslot-strip" aria-hidden="true">
+                                    <i></i><i></i><i></i><i></i><i></i>
+                                </div>
+                            </div>
+                        </section>
+                    </section>
+
+                    <section class="fiber-section exposure-section" id="exposure" data-article-section>
+                        <div class="section-heading">
+                            <h2>Then: where the boundary fails</h2>
+                            <p>The GPWN toolkit can put compatible Realtek-based <button class="term" type="button" data-term="onu" aria-describedby="term-def-onu">ONU</button> hardware into a receive-only mode, scan active GEM ports, and save downstream traffic as a <button class="term" type="button" data-term="pcap" aria-describedby="term-def-pcap">PCAP</button>. It does not publicly demonstrate breaking correctly configured AES-128.</p>
+                        </div>
+
+                        <section class="subsection boundary-lab-section" id="boundary-lab">
+                            <div class="subsection-heading">
+                                <h3>Security boundary lab</h3>
+                                <p>Change the scenario. The same captured photons reveal very different information depending on which layers still hold.</p>
+                            </div>
+
+                            <div class="exposure-lab" data-scenario-state="normal">
+                                <div class="scenario-controls" role="group" aria-label="Exposure scenario">
+                                    <button type="button" data-scenario="normal" aria-pressed="true">
+                                        <span>Normal ONT</span>
+                                        <small>Filtering + encryption</small>
+                                    </button>
+                                    <button type="button" data-scenario="rogue" aria-pressed="false">
+                                        <span>Modified ONT</span>
+                                        <small>Filtering bypassed</small>
+                                    </button>
+                                    <button type="button" data-scenario="weak-pon" aria-pressed="false">
+                                        <span>Weak PON config</span>
+                                        <small>GPON AES absent</small>
+                                    </button>
+                                    <button type="button" data-scenario="plaintext" aria-pressed="false">
+                                        <span>No encryption</span>
+                                        <small>Legacy plaintext app</small>
+                                    </button>
+                                </div>
+
+                                <div class="boundary-grid">
+                                    <ol class="boundary-stack" aria-label="Security layers">
+                                        <li class="boundary-layer layer-filter" data-layer="filter">
+                                            <span>Local separation</span>
+                                            <strong>ONU filtering</strong>
+                                            <small data-layer-status="filter">Enforced</small>
+                                        </li>
+                                        <li class="boundary-layer layer-gpon" data-layer="gpon">
+                                            <span>Access link</span>
+                                            <strong>GPON AES-128</strong>
+                                            <small data-layer-status="gpon">Enabled</small>
+                                        </li>
+                                        <li class="boundary-layer layer-tls" data-layer="tls">
+                                            <span>End to end</span>
+                                            <strong>TLS / HTTPS</strong>
+                                            <small data-layer-status="tls">Enabled</small>
+                                        </li>
+                                    </ol>
+
+                                    <div class="exposure-output" role="status" aria-live="polite">
+                                        <div>
+                                            <span>Attacker receives</span>
+                                            <strong id="attacker-receives">The shared optical signal</strong>
+                                            <p id="receives-detail">The neighboring ONT physically receives the downstream beam, but normal firmware discards GEM frames that are not assigned to it.</p>
+                                        </div>
+                                        <div>
+                                            <span>Attacker can understand</span>
+                                            <strong id="attacker-understands">Only its own assigned traffic</strong>
+                                            <p id="understands-detail">Other subscribers' payloads do not pass the local Port-ID filter.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="lab-caveat"><strong>Important:</strong> HTTPS remains an independent security boundary. A failure in the GPON layer does not automatically expose passwords, messages, or page content protected by <button class="term" type="button" data-term="tls" aria-describedby="term-def-tls">TLS</button>.</p>
+                        </section>
+
+                        <section class="subsection" id="blast-radius">
+                            <div class="subsection-heading">
+                                <h3>Where the attacker sits changes the scale</h3>
+                                <p>"Your neighbors" means optical neighbors on the same distribution tree, not everyone who lives nearby.</p>
+                            </div>
+
+                            <div class="scope-explorer" data-scope-state="onu">
+                                <div class="scope-controls" role="group" aria-label="Attack position">
+                                    <button type="button" data-scope="onu" aria-pressed="true">Modified ONU</button>
+                                    <button type="button" data-scope="tap" aria-pressed="false">Physical tap</button>
+                                    <button type="button" data-scope="olt" aria-pressed="false">OLT compromise</button>
+                                    <button type="button" data-scope="ems" aria-pressed="false">Fleet manager</button>
+                                </div>
+
+                                <div class="scope-grid">
+                                    <div class="scope-map" aria-hidden="true">
+                                        <div class="ems-node">EMS</div>
+                                        <div class="olt-clusters">
+                                            <div class="olt-cluster olt-a">
+                                                <span class="scope-olt">OLT A</span>
+                                                <div class="pon-trees">
+                                                    <div class="pon-tree tree-a1"><i></i><i></i><i></i><i></i></div>
+                                                    <div class="pon-tree tree-a2"><i></i><i></i><i></i><i></i></div>
+                                                </div>
+                                            </div>
+                                            <div class="olt-cluster olt-b">
+                                                <span class="scope-olt">OLT B</span>
+                                                <div class="pon-trees">
+                                                    <div class="pon-tree tree-b1"><i></i><i></i><i></i><i></i></div>
+                                                    <div class="pon-tree tree-b2"><i></i><i></i><i></i><i></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="scope-summary" role="status" aria-live="polite">
+                                        <span id="scope-label">Same PON tree</span>
+                                        <strong id="scope-title">Local, constrained, and potentially continuous</strong>
+                                        <p id="scope-description">A rogue ONU must be optically connected to the relevant tree. It can keep receiving while its transmit laser is disabled, but it does not gain Internet-wide reach.</p>
+                                        <dl>
+                                            <div><dt>Access</dt><dd id="scope-access">Compatible ONU on the same tree</dd></div>
+                                            <div><dt>Typical scale</dt><dd id="scope-scale">One shared optical group</dd></div>
+                                            <div><dt>Primary concern</dt><dd id="scope-concern">Confidentiality if encryption is weak</dd></div>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="subsection risk-section">
+                            <div class="subsection-heading">
+                                <h3>The practical risk, without the headline</h3>
+                                <p>Likelihood and impact separate the interesting lab result from the scenarios that should drive defensive work.</p>
+                            </div>
+                            <div class="risk-table-wrap">
+                                <table class="risk-table">
+                                    <thead>
+                                        <tr><th scope="col">Scenario</th><th scope="col">Reach required</th><th scope="col">What is exposed</th><th scope="col">Concern</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">Remote stranger on the Internet</th>
+                                            <td data-label="Reach required">No optical access</td>
+                                            <td data-label="What is exposed">Nothing from this technique</td>
+                                            <td data-label="Concern"><span class="risk-low">Low</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Rogue ONU, GPON AES working</th>
+                                            <td data-label="Reach required">Same PON tree</td>
+                                            <td data-label="What is exposed">Ciphertext, sizes, timing</td>
+                                            <td data-label="Concern"><span class="risk-low">Low</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Rogue ONU, GPON AES absent</th>
+                                            <td data-label="Reach required">Same PON tree</td>
+                                            <td data-label="What is exposed">Network metadata and plaintext protocols</td>
+                                            <td data-label="Concern"><span class="risk-medium">Moderate-high</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Vulnerable OLT or <button class="term" type="button" data-term="ems" aria-describedby="term-def-ems">EMS</button></th>
+                                            <td data-label="Reach required">Management-plane access</td>
+                                            <td data-label="What is exposed">Control over many subscriber devices</td>
+                                            <td data-label="Concern"><span class="risk-high">Critical</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+                    </section>
+
+                    <section class="fiber-section defense-section" id="defense" data-article-section>
+                        <div class="section-heading">
+                            <h2>Finally: make the capture useless</h2>
+                            <p>Subscribers cannot configure the provider's OLT, key provisioning, or optical plant. They can still preserve end-to-end confidentiality while the ISP protects the shared access layer and control plane.</p>
+                        </div>
+
+                        <div class="defense-ownership">
+                            <div class="ownership-axis" aria-hidden="true">
+                                <span>You control</span>
+                                <i></i>
+                                <span>ISP controls</span>
+                            </div>
+                            <ol>
+                                <li class="owner-you">
+                                    <span><b class="owner-chip">You</b>Application</span>
+                                    <strong>HTTPS, encrypted messaging, SSH</strong>
+                                    <small>End-to-end content protection</small>
+                                </li>
+                                <li class="owner-you">
+                                    <span><b class="owner-chip">You</b>Optional tunnel</span>
+                                    <strong>Full-tunnel VPN</strong>
+                                    <small>Hides individual destination flows from the access link</small>
+                                </li>
+                                <li class="owner-isp">
+                                    <span><b class="owner-chip">ISP</b>Access link</span>
+                                    <strong>GPON AES + ONU authentication</strong>
+                                    <small>Separates subscribers on the shared beam</small>
+                                </li>
+                                <li class="owner-isp">
+                                    <span><b class="owner-chip">ISP</b>Control plane</span>
+                                    <strong>OLT / EMS isolation and patching</strong>
+                                    <small>Limits the largest blast radius</small>
+                                </li>
+                                <li class="owner-isp">
+                                    <span><b class="owner-chip">ISP</b>Device trust</span>
+                                    <strong>Signed firmware + secure boot</strong>
+                                    <small>Stops management access becoming arbitrary code</small>
+                                </li>
+                            </ol>
+                        </div>
+
+                        <section class="subsection action-section" id="home-defense">
+                            <div class="action-heading">
+                                <span>At home</span>
+                                <h3>Protect the data above the fiber layer</h3>
+                            </div>
+                            <ul class="action-list">
+                                <li>
+                                    <strong>Prefer end-to-end encrypted protocols.</strong>
+                                    <p>Modern HTTPS, encrypted messaging, SSH, and TLS-protected mail keep content unreadable even if the access link is observed.</p>
+                                </li>
+                                <li>
+                                    <strong>Use a full-tunnel VPN for high-sensitivity work.</strong>
+                                    <p>An interceptor can still infer timing, volume, and the VPN endpoint, but not the normal destinations and content carried inside the tunnel.</p>
+                                </li>
+                                <li>
+                                    <strong>Treat certificate warnings as security failures.</strong>
+                                    <p>Do not click through a broken HTTPS identity check. The independent application boundary only helps when it is intact.</p>
+                                </li>
+                                <li>
+                                    <strong>Do not attach experimental ONU hardware to a provider network.</strong>
+                                    <p>The GPWN project explicitly limits use to deployments you own or are authorized to test.</p>
+                                </li>
+                            </ul>
+                        </section>
+
+                        <section class="subsection action-section isp-actions" id="isp-defense">
+                            <div class="action-heading">
+                                <span>At the ISP</span>
+                                <h3>Protect the shared link and the systems that control it</h3>
+                            </div>
+                            <ul class="action-list">
+                                <li>
+                                    <strong>Enforce downstream AES for customer GEM flows.</strong>
+                                    <p>Supporting encryption is not the same as verifying that every relevant service is actually using it.</p>
+                                </li>
+                                <li>
+                                    <strong>Use strong ONU authentication and monitor registrations.</strong>
+                                    <p>Serial-only identity is easier to copy. Alert on duplicate identities, unexpected replacements, and unusual optical behavior.</p>
+                                </li>
+                                <li>
+                                    <strong>Keep OLT and EMS management off the public Internet.</strong>
+                                    <p>Use dedicated management networks, narrow access controls, strong credentials, MFA where supported, and encrypted management protocols.</p>
+                                </li>
+                                <li>
+                                    <strong>Patch and constrain remote firmware workflows.</strong>
+                                    <p>OLT-driven ONT upgrades are legitimate operations. Signed images, secure boot, rollback protection, logging, and approval gates keep that power from becoming a fleet-wide compromise.</p>
+                                </li>
+                            </ul>
+                        </section>
+
+                        <blockquote class="final-verdict">
+                            <span>My read</span>
+                            <p>For a typical home using modern HTTPS applications, this research is a reason to understand the architecture, not panic. The new capability is easier access to frames that the ONT used to discard. The highest systemic risk still sits upstream, where compromised OLT or fleet-management infrastructure can turn one foothold into control over many subscribers.</p>
+                        </blockquote>
+                    </section>
+
+                    <section class="fiber-section sources-section" id="sources">
+                        <div class="section-heading">
+                            <h2>Sources and boundaries</h2>
+                            <p>The diagrams are simplified mental models. Claims about practical tooling, protocol behavior, and management reach are linked to the public research and vendor documentation below.</p>
+                        </div>
+                        <ol class="fiber-sources">
+                            <li><a href="https://hackaday.com/2026/08/13/hacking-fiber-to-the-home/" target="_blank" rel="noopener noreferrer"><strong>Hackaday, "Hacking Fiber To The Home"</strong><span>Article that prompted this explainer</span></a></li>
+                            <li><a href="https://www.cisco.com/c/en/us/support/docs/switches/catalyst-pon-series/216230-understand-gpon-technology.html" target="_blank" rel="noopener noreferrer"><strong>Cisco, "Understand GPON Technology"</strong><span>Broadcast downstream, GEM filtering, TDMA, rates, and topology</span></a></li>
+                            <li><a href="https://github.com/gpwn-org/gpwn-toolkit" target="_blank" rel="noopener noreferrer"><strong>GPWN Toolkit</strong><span>Compatible hardware, GEM scanning, receive-only mode, PCAP recording</span></a></li>
+                            <li><a href="https://www.itu.int/rec/T-REC-G.984.3/" target="_blank" rel="noopener noreferrer"><strong>ITU-T G.984.3</strong><span>GPON transmission-convergence specification</span></a></li>
+                            <li><a href="https://blog.quarkslab.com/how-olts-may-have-exposed-entire-isp-networks.html" target="_blank" rel="noopener noreferrer"><strong>Quarkslab, "How OLTs May Have Exposed Entire ISP Networks"</strong><span>2026 lab research into pre-auth OLT and Cloud EMS vulnerabilities</span></a></li>
+                            <li><a href="https://www.tp-link.com/uk/support/faq/3320/" target="_blank" rel="noopener noreferrer"><strong>TP-Link, remote ONT firmware upgrade from an OLT</strong><span>Vendor documentation for legitimate OLT and EMS upgrade workflows</span></a></li>
+                        </ol>
+                        <p class="research-ethics"><strong>Research boundary:</strong> Capturing traffic on a network you do not own or lack permission to test may be illegal and harmful. GPWN's own documentation restricts the toolkit to authorized security research.</p>
+                    </section>
+                </main>
+            </div>
+
+            <section class="fiber-glossary" aria-labelledby="fiber-glossary-title">
+                <h2 id="fiber-glossary-title">Fiber glossary</h2>
+                <dl>
+                    <div data-glossary-term="aes"><dt>AES - Advanced Encryption Standard</dt><dd id="term-def-aes">A symmetric encryption algorithm. GPON uses 128-bit AES to keep one subscriber from reading another subscriber's encrypted downstream payload.</dd></div>
+                    <div data-glossary-term="ems"><dt>EMS - Element Management System</dt><dd id="term-def-ems">A central platform an ISP uses to configure and monitor many OLTs. Its reach makes it a high-value control-plane target.</dd></div>
+                    <div data-glossary-term="gem"><dt>GEM - GPON Encapsulation Method</dt><dd id="term-def-gem">The frame format GPON uses to carry services such as Ethernet. Its header includes a Port-ID that identifies a logical traffic flow.</dd></div>
+                    <div data-glossary-term="gem-port"><dt>GEM Port-ID</dt><dd id="term-def-gem-port">A logical identifier in a GEM frame. An ONT normally accepts only Port-IDs assigned to its subscriber services.</dd></div>
+                    <div data-glossary-term="gpon"><dt>GPON - Gigabit-capable Passive Optical Network</dt><dd id="term-def-gpon">A widely deployed fiber access standard where one OLT port and passive optical distribution tree serve multiple subscribers.</dd></div>
+                    <div data-glossary-term="olt"><dt>OLT - Optical Line Terminal</dt><dd id="term-def-olt">Provider-side equipment that sends downstream traffic, schedules upstream transmission, provisions ONTs, and manages the PON.</dd></div>
+                    <div data-glossary-term="ont"><dt>ONT - Optical Network Terminal</dt><dd id="term-def-ont">The subscriber-premises device that terminates the fiber and converts optical GPON traffic into local interfaces such as Ethernet.</dd></div>
+                    <div data-glossary-term="onu"><dt>ONU - Optical Network Unit</dt><dd id="term-def-onu">The general name for a subscriber-side PON device. In residential FTTH, ONU and ONT are often used almost interchangeably.</dd></div>
+                    <div data-glossary-term="pcap"><dt>PCAP - Packet Capture</dt><dd id="term-def-pcap">A file containing recorded network frames. Tools such as Wireshark can open PCAP or PCAPNG files for protocol analysis.</dd></div>
+                    <div data-glossary-term="splitter"><dt>Passive optical splitter</dt><dd id="term-def-splitter">An unpowered optical component that divides one input signal across multiple fibers. It does not inspect, route, or filter packets.</dd></div>
+                    <div data-glossary-term="tdma"><dt>TDMA - Time Division Multiple Access</dt><dd id="term-def-tdma">A scheduling method that gives each ONU a tiny upstream time slot so multiple transmitters can share one fiber without colliding.</dd></div>
+                    <div data-glossary-term="tls"><dt>TLS - Transport Layer Security</dt><dd id="term-def-tls">The end-to-end encryption used by HTTPS and many other protocols. It protects application content independently of GPON encryption.</dd></div>
+                </dl>
+            </section>
+        </article>
+
+        <footer class="footer">
+            <p>&copy; <span id="year"></span> Brian Fong. All Rights Reserved.</p>
+        </footer>
+
+        <div class="term-popover" id="fiber-term-popover" role="tooltip" hidden>
+            <strong id="term-popover-title"></strong>
+            <p id="term-popover-definition"></p>
+        </div>
+    </div>
+
+    <script src="../../assets/js/data.js?v=8311341"></script>
+    <script src="../../assets/js/main.js?v=8304232"></script>
+    <script src="../../assets/js/fiber-security.js?v=8311342"></script>
+</body>
+</html>
