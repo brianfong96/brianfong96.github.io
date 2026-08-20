@@ -77,6 +77,7 @@ async function run() {
         }
 
         await page.goto(`${origin}/blog.html`, { waitUntil: 'networkidle0' });
+        await page.waitForSelector('#blogs-list a[href*="linda-problem"]');
         await page.waitForSelector('#blogs-list a[href*="expertise-is-a-system"]');
         await page.waitForSelector('#blogs-list a[href*="fiber-to-the-home"]');
         await page.waitForSelector('#blogs-list a[href*="ai-capex-reckoning"]');
@@ -85,7 +86,7 @@ async function run() {
         const blogEntry = await page.$eval('#blogs-list a[href*="ai-capex-reckoning"]', (link) => link.innerText);
         assert.match(blogEntry, /finance/i);
         assert.match(blogEntry, /july 30, 2026/i);
-        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 4);
+        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 5);
         assert.equal(await page.$$eval('#blogs-list a[href*="will-ai-take-over"]', (nodes) => nodes.length), 0);
         assert.equal(await page.$$eval('#blog-topic-select option', (nodes) => nodes.length), 4);
         assert.match(await page.$eval('#blogs-list a[href*="expertise-is-a-system"]', (link) => link.innerText), /personal systems/i);
@@ -99,7 +100,8 @@ async function run() {
         assert.equal(await page.evaluate(() => window.location.hash), '#finance');
 
         await page.select('#blog-topic-select', 'Personal Systems');
-        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 1);
+        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 2);
+        assert.equal(await page.$$eval('#blogs-list a[href*="linda-problem"]', (nodes) => nodes.length), 1);
         assert.equal(await page.$$eval('#blogs-list a[href*="expertise-is-a-system"]', (nodes) => nodes.length), 1);
         assert.equal(await page.$eval('#posts-heading', (node) => node.textContent), 'Latest Personal Systems posts');
 
@@ -109,7 +111,7 @@ async function run() {
         assert.equal(await page.$eval('#posts-heading', (node) => node.textContent), 'Latest Technology posts');
 
         await page.select('#blog-topic-select', 'all');
-        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 4);
+        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 5);
 
         assert.equal(await page.$eval('#sidebar-toggle', (button) => button.getAttribute('aria-label')), 'Open navigation');
         const stableNavLabels = await page.$$eval('#sidebar a', (nodes) => nodes.map((node) => node.textContent.trim()));

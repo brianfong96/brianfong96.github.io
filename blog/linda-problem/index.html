@@ -1,0 +1,282 @@
+<!--
+THESIS: A compelling story can grow as its probability shrinks; the page rejects both dense textbook prose and title-only scrollytelling.
+OWN-WORLD: Research paper, navy ink, analytical blue, conjunction red, verified green, one reading column, and rounded containment diagrams.
+STORY: Make the Linda choice, understand the set rule, turn six lessons into five practical applications, and leave with a falsification habit.
+FIRST VIEWPORT: A direct title and short premise create curiosity without revealing the containment proof before the reader makes a choice.
+FORM: Annotated Personal Systems essay with restrained diagrams and paragraph-led pacing, revised directly from user feedback.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The Linda problem explains why detailed stories feel more likely even as every added condition makes an event less probable.">
+    <title>The Better Story Is the Worse Bet - Brian Fong</title>
+    <link rel="icon" type="image/png" href="../../assets/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/blog.css">
+    <link rel="stylesheet" href="../../assets/css/personal-systems.css">
+    <link rel="stylesheet" href="../../assets/css/linda-problem.css?v=8304238">
+</head>
+<body class="blog-article personal-systems-page linda-problem-page">
+    <header class="topbar">
+        <a class="home-link" href="../../index.html" aria-label="Home">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </a>
+        <a class="blog-home-link" href="../../blog.html">All blogs</a>
+        <button id="sidebar-toggle" aria-label="Toggle navigation">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg>
+        </button>
+    </header>
+
+    <nav class="sidebar" id="sidebar" aria-label="Primary navigation">
+        <ul class="nav-links">
+            <li><a href="../../index.html">Home</a></li>
+            <li><a href="../../about.html">About</a></li>
+            <li><a href="../../projects.html">Projects</a></li>
+            <li><a href="../../learnings.html">Learnings</a></li>
+            <li><a href="../../blog.html">Blog</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <div class="linda-progress" aria-hidden="true"><span></span></div>
+
+        <article class="linda-article">
+            <header class="linda-hero" data-linda-section data-linda-chapter="problem">
+                <div class="linda-meta">
+                    <a href="../../blog.html">&larr; Blog</a>
+                    <span>Personal Systems</span>
+                    <time datetime="2026-08-20">August 20, 2026</time>
+                    <span>12 minute read</span>
+                </div>
+                <div class="linda-hero-copy">
+                    <h1>A better story can still be a worse bet.</h1>
+                    <p>The Linda problem reveals a recurring error in judgment: every added condition makes a story feel more convincing while making the complete event less probable.</p>
+                </div>
+                <a class="scroll-cue" href="#problem">Read the problem <span aria-hidden="true">&darr;</span></a>
+            </header>
+
+            <div class="linda-layout">
+                <aside class="linda-rail" aria-label="Article outline">
+                    <span>In this essay</span>
+                    <a href="#problem" data-linda-route="problem">The original problem</a>
+                    <a href="#principles" data-linda-route="principles">What it teaches</a>
+                    <a href="#applications" data-linda-route="applications">Five applications</a>
+                    <a href="#practice" data-linda-route="practice">A practical test</a>
+                    <a href="#sources" data-linda-route="sources">Sources</a>
+                </aside>
+
+                <main class="linda-body">
+                    <section class="linda-section" id="problem" data-linda-section data-linda-chapter="problem">
+                        <div class="section-heading">
+                            <h2>The Linda problem</h2>
+                            <p>The classic experiment makes a narrow description feel more likely than the broader event that contains it.</p>
+                        </div>
+
+                        <p class="section-lead">Amos Tversky and Daniel Kahneman asked people to judge a fictional person from a short profile. The details were chosen to make one social identity feel immediately representative.</p>
+
+                        <blockquote class="linda-profile">
+                            <p>Linda is 31, single, outspoken, and very bright. She studied philosophy, cared deeply about discrimination and social justice, and participated in anti-nuclear demonstrations.</p>
+                        </blockquote>
+
+                        <div class="choice-block">
+                            <p><strong>Which statement is more probable?</strong></p>
+                            <div class="linda-choices" role="group" aria-label="Choose the more probable statement">
+                                <button type="button" data-linda-choice="b" aria-pressed="false">
+                                    <span>A</span>
+                                    Linda is a bank teller.
+                                </button>
+                                <button type="button" data-linda-choice="bf" aria-pressed="false">
+                                    <span>B</span>
+                                    Linda is a bank teller and active in the feminist movement.
+                                </button>
+                            </div>
+                            <p class="choice-readout" id="choice-readout" aria-live="polite">Choose an answer before reading the proof.</p>
+                        </div>
+
+                        <p>Many people choose the second statement. It matches the profile so well that it feels like the better prediction. Yet the second statement is a <mark class="key-term">conjunction</mark>: two things must be true instead of one.</p>
+
+                        <figure class="set-stage set-stage--proof" aria-label="The conjunction B and F sits inside the broader event B">
+                            <div class="set set--b">
+                                <span>B: bank teller</span>
+                                <div class="set set--bf"><span>B &cap; F: bank teller and feminist</span></div>
+                            </div>
+                            <figcaption>The conjunction is a subset of the broader event, not a competing category.</figcaption>
+                        </figure>
+
+                        <p>Let <strong>B</strong> mean that Linda is a bank teller and <strong>F</strong> mean that she is active in the feminist movement. Every person who is both a bank teller and a feminist is necessarily a bank teller. The smaller set cannot contain more people than the larger set around it.</p>
+
+                        <div class="probability-equation" aria-label="The probability of B and F is less than or equal to the probability of B">
+                            <span>P(B &cap; F)</span>
+                            <strong>&le;</strong>
+                            <span>P(B)</span>
+                        </div>
+
+                        <p>The two probabilities can be close. If 5% of comparable people are bank tellers, perhaps 4% are both bank tellers and feminists. But the second number can never exceed the first.</p>
+
+                        <figure class="probability-bars" aria-label="A four percent conjunction contained within a five percent event">
+                            <div class="probability-bar probability-bar--b"><span>P(B)</span><strong>5%</strong></div>
+                            <div class="probability-bar probability-bar--bf"><span>P(B &cap; F)</span><strong>4%</strong></div>
+                        </figure>
+
+                        <p>The error happens because the mind quietly substitutes one question for another. Instead of asking <em>which event has greater probability?</em>, we answer <em>which description sounds more like Linda?</em> Tversky and Kahneman called this the representativeness heuristic.</p>
+
+                        <blockquote class="key-quote">
+                            <p>Adding conditions can make a story feel more plausible while mathematically making the event less probable.</p>
+                        </blockquote>
+                    </section>
+
+                    <section class="linda-section" id="principles" data-linda-section data-linda-chapter="principles">
+                        <div class="section-heading">
+                            <h2>What the mistake teaches</h2>
+                            <p>The useful lesson is not merely to remember a probability rule. It is to notice when a satisfying narrative is doing the work of evidence.</p>
+                        </div>
+
+                        <p class="section-lead">Narrative coherence is not evidential strength. A story can fit every visible detail and still be statistically unlikely.</p>
+
+                        <div class="principle-list">
+                            <p><strong>Separate plausibility from probability.</strong> First ask whether the story fits. Then ask how often the event actually occurs. Those are related judgments, but they are not the same judgment.</p>
+                            <p><strong>Translate the claim into sets.</strong> Before reasoning narratively, identify the broad event and every added condition. If the comparison is between A and A &cap; B, the conjunction cannot be more likely.</p>
+                            <p><strong>Do not mistake detail for evidence.</strong> Specificity can create psychological confidence without adding independent support. A richer explanation is still only a narrower claim.</p>
+                            <p><strong>Watch for explanatory overfitting.</strong> Humans prefer causal stories that explain every observation. Like a model fitted too closely to training data, the story may describe the past beautifully and predict the future poorly.</p>
+                            <p><strong>Generate competing hypotheses.</strong> Stop asking only whether the preferred story fits. Ask what other explanations fit the same evidence and what observation would distinguish among them.</p>
+                            <p><strong>Use base rates before narratives.</strong> Begin with how common the event is, then update with evidence according to how diagnostic that evidence actually is.</p>
+                        </div>
+
+                        <figure class="detail-fold" aria-label="Each additional condition narrows the complete event">
+                            <div><span>Broad claim</span><strong>Company outperforms</strong></div>
+                            <div><span>+ condition</span><strong>AI spending grows</strong></div>
+                            <div><span>+ condition</span><strong>Share and margins rise</strong></div>
+                            <div><span>+ condition</span><strong>Major contract closes</strong></div>
+                            <figcaption>The story gains detail as the event loses room.</figcaption>
+                        </figure>
+                    </section>
+
+                    <section class="linda-section" id="applications" data-linda-section data-linda-chapter="applications">
+                        <div class="section-heading">
+                            <h2>Where the fallacy shows up</h2>
+                            <p>The same bias appears whenever one detailed explanation starts to feel stronger than the broader claim it sits inside.</p>
+                        </div>
+
+                        <article class="application-case" id="debugging">
+                            <h3>Software debugging</h3>
+                            <p>Suppose a production service starts timing out after a deployment. A compelling explanation might be: the new serializer increased allocations, which created garbage-collection pressure, caused latency spikes, and exhausted the connection pool.</p>
+                            <p>That chain is narrower than the statement that the deployment caused the regression. Its detail makes it useful as a hypothesis, not more probable by default. Instrument before elaborating the narrative: inspect the deployment diff, allocations, GC pauses, request traces, and pool saturation independently.</p>
+                            <figure class="causal-chain" aria-label="A serializer hypothesis split into independently testable signals">
+                                <div><span>Serializer</span><i></i><span>Allocations</span><i></i><span>GC</span><i></i><span>Latency</span><i></i><span>Pool</span></div>
+                                <figcaption>Each arrow needs evidence of its own.</figcaption>
+                            </figure>
+                        </article>
+
+                        <article class="application-case" id="investing">
+                            <h3>Investing</h3>
+                            <p>Investment narratives are especially vulnerable. A small AI company will outperform because spending is growing, the product is differentiated, management is strong, margins will expand, and a large enterprise contract is likely. The five-part story feels robust precisely because it explains so much.</p>
+                            <p>But every requirement narrows the complete thesis. Decomposing the story makes the uncertainty visible and reveals which assumptions actually need to be true for the investment to work.</p>
+                            <figure class="assumption-ledger" aria-label="Illustrative evidence strength and probability estimates for an investment thesis">
+                                <div><span>AI spending grows</span><strong>80%</strong><small>Strong evidence</small></div>
+                                <div><span>Company gains share</span><strong>55%</strong><small>Moderate evidence</small></div>
+                                <div><span>Margins expand</span><strong>60%</strong><small>Uncertain</small></div>
+                                <div><span>Major contract closes</span><strong>35%</strong><small>Weak evidence</small></div>
+                                <figcaption>Illustrative estimates, not an investment forecast; the assumptions may also be dependent.</figcaption>
+                            </figure>
+                        </article>
+
+                        <article class="application-case" id="architecture">
+                            <h3>AI and system architecture</h3>
+                            <p>Architecture discussions often bundle several forecasts into one decision: privacy requirements will increase, API costs will rise, latency will matter, volume will grow, and local inference hardware will improve, so the team should self-host its model.</p>
+                            <p>Instead of defending the combined narrative, model the decision and test its sensitivity. Ask whether self-hosting still wins when only two assumptions hold, or when operational cost is twice the estimate.</p>
+                            <figure class="decision-model" aria-label="Self-hosting value depends on five inputs">
+                                <strong>Self-host value</strong>
+                                <span>Volume</span>
+                                <span>GPU cost</span>
+                                <span>Latency</span>
+                                <span>Privacy</span>
+                                <span>Ops cost</span>
+                            </figure>
+                        </article>
+
+                        <article class="application-case" id="product">
+                            <h3>Product ideas</h3>
+                            <p>A founder might believe that developers want local AI, enterprises need privacy, agents will become mainstream, open-source models will improve, and teams will pay for orchestration. The story can be internally consistent while the market opportunity remains weak.</p>
+                            <p>The stronger discipline is <strong>narrative &rarr; assumptions &rarr; experiments</strong>. Test whether the pain is real, existing tools miss it, local inference matters enough, a buyer has budget, and that buyer can be reached. Each failed link should change the product thesis.</p>
+                            <figure class="product-funnel" aria-label="A product thesis narrowed through five necessary assumptions">
+                                <span>Pain is real</span>
+                                <span>Existing tools miss it</span>
+                                <span>Local inference matters</span>
+                                <span>The buyer has budget</span>
+                                <span>The buyer is reachable</span>
+                            </figure>
+                        </article>
+
+                        <article class="application-case" id="health">
+                            <h3>Health and training</h3>
+                            <p>If your bench press suddenly drops, it is easy to build a physiological chain: poor sleep raised fatigue, impaired recovery, created nervous-system fatigue, and reduced performance. The mechanism is plausible, but plausibility is not evidence that the entire chain occurred.</p>
+                            <p>Normal variance, technique, a calorie deficit, accumulated training fatigue, setup, illness, or programming could explain the same observation. Physiology offers an almost unlimited supply of satisfying mechanisms, so competing explanations matter even more.</p>
+                            <figure class="hypothesis-branches" aria-label="A bench press decline branching into several competing explanations">
+                                <strong>Bench dropped</strong>
+                                <div>
+                                    <span>Variance</span>
+                                    <span>Technique</span>
+                                    <span>Calories</span>
+                                    <span>Fatigue</span>
+                                    <span>Illness</span>
+                                    <span>Programming</span>
+                                </div>
+                            </figure>
+                        </article>
+                    </section>
+
+                    <section class="linda-section" id="practice" data-linda-section data-linda-chapter="practice">
+                        <div class="section-heading">
+                            <h2>A stronger mental model</h2>
+                            <p>When an explanation feels unusually satisfying, slow the story down and make every hidden claim inspectable.</p>
+                        </div>
+
+                        <p class="section-lead">The goal is not to reject detailed explanations. It is to earn them, one supported link at a time.</p>
+
+                        <ol class="story-audit">
+                            <li><strong>Extract the claims.</strong> Write down every event the story says occurred.</li>
+                            <li><strong>Find the necessary conditions.</strong> Identify which claims must be true for the conclusion to hold.</li>
+                            <li><strong>Check the base rates.</strong> Ask how common each event was before seeing this evidence.</li>
+                            <li><strong>Inspect independent support.</strong> Separate observations that test the claim from details that merely fit it.</li>
+                            <li><strong>Generate alternatives.</strong> Name several explanations that account for the same facts.</li>
+                            <li><strong>Prefer the simpler sufficient claim.</strong> Do not require five mechanisms when one broader cause explains the result.</li>
+                            <li><strong>Name the falsifier.</strong> Decide what observation would make you abandon the preferred story.</li>
+                        </ol>
+
+                        <blockquote class="final-question">
+                            <p>That explains everything. Good. Now how would I distinguish it from the simpler explanations?</p>
+                        </blockquote>
+
+                        <div class="linda-conclusion">
+                            <p><strong>Narrative coherence is not evidential strength.</strong> More detail can make an explanation easier to imagine while making the complete event harder to satisfy.</p>
+                            <p>The Linda problem becomes practical when it changes your next move: measure before diagnosing, decompose before investing, test assumptions before architecting, experiment before building, and compare alternatives before explaining your body.</p>
+                            <p class="closing-line">A better story can still be a worse bet.</p>
+                        </div>
+                    </section>
+
+                    <section class="linda-section sources-section" id="sources" data-linda-section data-linda-chapter="sources">
+                        <div class="section-heading">
+                            <h2>Sources</h2>
+                            <p>The original research behind the Linda problem and the representativeness heuristic.</p>
+                        </div>
+                        <ol class="linda-sources">
+                            <li><a href="https://doi.org/10.1037/0033-295X.90.4.293" target="_blank" rel="noopener noreferrer">Tversky &amp; Kahneman, "Extensional Versus Intuitive Reasoning" <span>Psychological Review, 1983</span></a></li>
+                            <li><a href="https://doi.org/10.1126/science.185.4157.1124" target="_blank" rel="noopener noreferrer">Tversky &amp; Kahneman, "Judgment Under Uncertainty" <span>Science, 1974</span></a></li>
+                        </ol>
+                    </section>
+                </main>
+            </div>
+        </article>
+
+        <footer class="footer">
+            <p>&copy; <span id="year"></span> Brian Fong. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <script src="../../assets/js/data.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/linda-problem.js?v=8304238"></script>
+</body>
+</html>
