@@ -404,6 +404,7 @@
         }
         if (typeof window.initFinanceArticle === 'function') window.initFinanceArticle();
         if (typeof window.initTrumpDisclosure === 'function') window.initTrumpDisclosure();
+        if (typeof window.initLindaProblem === 'function') window.initLindaProblem();
 
         // Re-highlight current nav
         var currentPath = window.location.pathname;

@@ -49,6 +49,14 @@ const siteData = {
     ],
     blogs: [
         {
+            title: 'The Better Story Is the Worse Bet',
+            url: 'blog/linda-problem/index.html',
+            description: 'What the Linda problem reveals about conjunction bias, explanatory overfitting, and the stories we tell in debugging, investing, architecture, products, and health.',
+            section: 'Blog',
+            category: 'Personal Systems',
+            date: '2026-08-20'
+        },
+        {
             title: 'Your Fiber Is a Shared Beam',
             url: 'blog/fiber-to-the-home/index.html',
             description: 'How GPON sends one downstream optical stream to multiple homes, what modified ONU hardware can capture, what encryption still protects, and where the largest risks actually sit.',
