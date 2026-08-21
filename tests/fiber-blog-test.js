@@ -78,11 +78,11 @@ async function run() {
         await page.waitForSelector('#blog-topic-select');
         await page.select('#blog-topic-select', 'Technology');
         await page.waitForSelector('#blogs-list a[href*="fiber-to-the-home"]');
-        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 1);
-        assert.match(await page.$eval('#blogs-list a', (node) => node.innerText), /technology/i);
-        assert.match(await page.$eval('#blogs-list a', (node) => node.innerText), /august 13, 2026/i);
+        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 2);
+        assert.match(await page.$eval('#blogs-list a[href*="fiber-to-the-home"]', (node) => node.innerText), /technology/i);
+        assert.match(await page.$eval('#blogs-list a[href*="fiber-to-the-home"]', (node) => node.innerText), /august 13, 2026/i);
 
-        await page.click('#blogs-list a[href*="fiber-to-the-home"]');
+        await page.$eval('#blogs-list a[href*="fiber-to-the-home"]', (link) => link.click());
         await page.waitForFunction(() => window.location.pathname.includes('/blog/fiber-to-the-home/'));
         await page.waitForSelector('.fiber-article[data-fiber-initialized="true"]');
         await page.waitForSelector('.fiber-topology');

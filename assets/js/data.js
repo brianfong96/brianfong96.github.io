@@ -49,6 +49,14 @@ const siteData = {
     ],
     blogs: [
         {
+            title: 'Seven Companies, Seven Layoff Cultures',
+            url: 'blog/tech-layoffs/index.html',
+            description: 'A source-backed comparison of layoffs at Amazon, Microsoft, Meta, Tesla, Google, Apple, and Nvidia—across absolute scale, time, workforce impact, and organizational intent.',
+            section: 'Blog',
+            category: 'Technology',
+            date: '2026-08-21'
+        },
+        {
             title: 'The Better Story Is the Worse Bet',
             url: 'blog/linda-problem/index.html',
             description: 'What the Linda problem reveals about conjunction bias, explanatory overfitting, and the stories we tell in debugging, investing, architecture, products, and health.',

@@ -79,7 +79,7 @@ async function run() {
         assert.match(await page.$eval('#blogs-list a[href*="linda-problem"]', (link) => link.innerText), /august 20, 2026/i);
         assert.match(await page.$eval('#blogs-list a[href*="linda-problem"]', (link) => link.innerText), /personal systems/i);
 
-        await page.click('#blogs-list a[href*="linda-problem"]');
+        await page.$eval('#blogs-list a[href*="linda-problem"]', (link) => link.click());
         await page.waitForFunction(() => window.location.pathname.includes('/blog/linda-problem/'));
         await page.waitForSelector('.linda-article[data-linda-initialized="true"]');
 
@@ -135,7 +135,7 @@ async function run() {
         await page.waitForFunction(() => window.location.pathname.endsWith('/blog.html'));
         await page.waitForFunction(() => typeof window.__lindaProblemCleanup === 'undefined');
         await page.waitForSelector('#blogs-list a[href*="linda-problem"]');
-        await page.click('#blogs-list a[href*="linda-problem"]');
+        await page.$eval('#blogs-list a[href*="linda-problem"]', (link) => link.click());
         await page.waitForSelector('.linda-article[data-linda-initialized="true"]');
         assert.equal(await page.evaluate(() => typeof window.__lindaProblemCleanup), 'function');
 
@@ -158,7 +158,7 @@ async function run() {
         await directPage.click('a[href="blog.html"]');
         await directPage.waitForFunction(() => window.location.pathname.endsWith('/blog.html'));
         await directPage.waitForSelector('#blogs-list a[href*="linda-problem"]');
-        await directPage.click('#blogs-list a[href*="linda-problem"]');
+        await directPage.$eval('#blogs-list a[href*="linda-problem"]', (link) => link.click());
         await directPage.waitForSelector('.linda-article[data-linda-initialized="true"]');
         assert.equal(await directPage.evaluate(() => typeof window.__lindaProblemCleanup), 'function');
         await directPage.close();

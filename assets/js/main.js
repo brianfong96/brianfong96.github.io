@@ -588,6 +588,7 @@
             if (heading) heading.textContent = topic === 'all' ? 'Latest posts' : 'Latest ' + topic + ' posts';
             if (summary) summary.textContent = selectedOption.dataset.description || '';
             populateList('blogs-list', filtered);
+            if (list) attachLinkHandlers(list);
         }
 
         if (!selector._topicHandled) {

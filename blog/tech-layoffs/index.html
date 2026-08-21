@@ -1,0 +1,445 @@
+<!--
+THESIS: Seven companies passed through the same technology cycle but developed different layoff cultures; the page rejects both a crowded dashboard and title-only scrollytelling.
+OWN-WORLD: Warm research paper, navy ink, analytical blue, layoff red, thin evidence rules, and a single calibrated comparison spine.
+STORY: Establish the absolute ranking, change the time window, follow one company across 23 quarters, inspect who was cut, then test whether AI explains the divergence.
+FIRST VIEWPORT: A direct thesis occupies the left half while one ranked layoff ledger makes the corrected company order visible on the right.
+FORM: Two-lens layoff ledger, fourth grounded structure, continuous comparison-spine staging, seed c520c636.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A source-backed, interactive comparison of publicly reported layoffs at Amazon, Microsoft, Meta, Tesla, Google, Apple, and Nvidia from 2021 through August 21, 2026.">
+    <title>Seven Companies, Seven Layoff Cultures - Brian Fong</title>
+    <link rel="icon" type="image/png" href="../../assets/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/blog.css">
+    <link rel="stylesheet" href="../../assets/css/tech-layoffs.css?v=8304241">
+</head>
+<body class="blog-article layoffs-page">
+    <header class="topbar">
+        <a class="home-link" href="../../index.html" aria-label="Home">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </a>
+        <a class="blog-home-link" href="../../blog.html">All blogs</a>
+        <button id="sidebar-toggle" aria-label="Toggle navigation">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg>
+        </button>
+    </header>
+
+    <nav class="sidebar" id="sidebar" aria-label="Primary navigation">
+        <ul class="nav-links">
+            <li><a href="../../index.html">Home</a></li>
+            <li><a href="../../about.html">About</a></li>
+            <li><a href="../../projects.html">Projects</a></li>
+            <li><a href="../../learnings.html">Learnings</a></li>
+            <li><a href="../../blog.html">Blog</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <div class="layoffs-progress" aria-hidden="true"><span></span></div>
+
+        <article class="layoffs-article">
+            <header class="layoffs-hero">
+                <div class="layoffs-meta">
+                    <a href="../../blog.html">&larr; Blog</a>
+                    <span>Technology</span>
+                    <time datetime="2026-08-21">August 21, 2026</time>
+                    <span>18 minute read</span>
+                    <span>Data through August 21, 2026</span>
+                </div>
+
+                <div class="layoffs-hero-grid">
+                    <div class="layoffs-hero-copy">
+                        <h1>Seven companies. Seven layoff cultures.</h1>
+                        <p class="layoffs-deck">Public announcements since 2021 establish <strong>at least 58,810 cuts at Amazon</strong>, roughly 38,000&ndash;39,000 at Microsoft, and at least 35,060 at Meta. The ranking is real. What it means depends on workforce size, cadence, organizational intent, and what companies never disclosed.</p>
+                    </div>
+
+                    <div class="hero-ranking" aria-label="Quantified or credibly estimated layoffs from 2021 through August 21, 2026">
+                        <div class="hero-ranking-heading">
+                            <span>Quantified public cuts</span>
+                            <span>U = undisclosed rounds</span>
+                        </div>
+                        <div data-hero-ranking>
+                            <div class="hero-rank-row" data-company="amazon"><strong>Amazon</strong><span class="hero-rank-track"><i style="--rank-ratio:1"></i></span><output>&ge;58,810 + U</output></div>
+                            <div class="hero-rank-row" data-company="microsoft"><strong>Microsoft</strong><span class="hero-rank-track"><i style="--rank-ratio:.65"></i></span><output>~38&ndash;39k</output></div>
+                            <div class="hero-rank-row" data-company="meta"><strong>Meta</strong><span class="hero-rank-track"><i style="--rank-ratio:.596"></i></span><output>&ge;35,060 + U</output></div>
+                            <div class="hero-rank-row" data-company="tesla"><strong>Tesla</strong><span class="hero-rank-track"><i style="--rank-ratio:.242"></i></span><output>&ge;14,229</output></div>
+                            <div class="hero-rank-row" data-company="google"><strong>Google</strong><span class="hero-rank-track"><i style="--rank-ratio:.228"></i></span><output>&ge;13,392 + U</output></div>
+                            <div class="hero-rank-row" data-company="apple"><strong>Apple</strong><span class="hero-rank-track"><i style="--rank-ratio:.016"></i></span><output>&ge;914 + U</output></div>
+                            <div class="hero-rank-row" data-company="nvidia"><strong>Nvidia</strong><span class="hero-rank-track"><i style="--rank-ratio:0"></i></span><output>None found</output></div>
+                        </div>
+                        <p class="hero-ranking-note">Floors sum discrete public counts and conservative estimates. They exclude contractors, voluntary programs, overlapping implementation notices, and every undisclosed U round.</p>
+                    </div>
+                </div>
+            </header>
+
+            <label class="layoffs-mobile-nav">
+                Section
+                <select data-mobile-route aria-label="Jump to article section">
+                    <option value="scale">Scale</option>
+                    <option value="time">Time</option>
+                    <option value="patterns">Company patterns</option>
+                    <option value="roles">Who gets cut</option>
+                    <option value="explanation">What explains it</option>
+                    <option value="methodology">Methodology</option>
+                    <option value="sources">Sources</option>
+                </select>
+            </label>
+
+            <div class="layoffs-layout">
+                <aside class="layoffs-rail" aria-label="Article sections">
+                    <span>Follow the evidence</span>
+                    <a href="#scale" data-layoffs-route="scale" aria-current="true">Scale</a>
+                    <a href="#time" data-layoffs-route="time">Time</a>
+                    <a href="#patterns" data-layoffs-route="patterns">Company patterns</a>
+                    <a href="#roles" data-layoffs-route="roles">Who gets cut</a>
+                    <a href="#explanation" data-layoffs-route="explanation">What explains it</a>
+                    <a href="#methodology" data-layoffs-route="methodology">Methodology</a>
+                    <a href="#sources" data-layoffs-route="sources">Sources</a>
+                </aside>
+
+                <main class="layoffs-body">
+                    <section class="layoffs-section" id="scale">
+                        <div class="layoffs-section-heading">
+                            <h2>The ranking survives correction.</h2>
+                            <p>The original totals were close, but several small figures were unsupported and some state WARN counts had been divided by global headcount. Removing those errors changes the precision, not the overall order.</p>
+                        </div>
+
+                        <p class="layoffs-prose">Amazon remains first in absolute cuts because its de-duplicated 2022&ndash;2023 program totaled about 27,000, not 37,000, and its October 2025 plus January 2026 corporate programs added another 30,000.<a class="source-ref" href="#source-amazon-2023">[source]</a><a class="source-ref" href="#source-amazon-2025-corporate">[source]</a><a class="source-ref" href="#source-amazon-2026-corporate">[source]</a> Microsoft follows only after combining company-confirmed programs with several credible media estimates; its hard confirmed floor is lower than the headline range.</p>
+                        <p class="layoffs-prose">Meta is the opposite statistical problem. Its absolute total is lower than Amazon's, but its company-wide rounds repeatedly removed 5%&ndash;13% of employees.<a class="source-ref" href="#source-meta-2022">[source]</a><a class="source-ref" href="#source-meta-2025">[source]</a><a class="source-ref" href="#source-meta-2026-company">[source]</a> Amazon's 30,000 corporate cuts are about 1.9% of total employment yet roughly 8.6% of the last publicly disclosed corporate workforce. The denominator decides which story a percentage tells.</p>
+
+                        <div class="focus-stage">
+                            <div class="comparison-controls">
+                                <fieldset class="control-group">
+                                    <legend>Time window</legend>
+                                    <button type="button" data-window="full" aria-pressed="true">Full period</button>
+                                    <button type="button" data-window="reset" aria-pressed="false">2021&ndash;2023</button>
+                                    <button type="button" data-window="recurring" aria-pressed="false">2024&ndash;2026</button>
+                                </fieldset>
+                                <fieldset class="control-group">
+                                    <legend>Measure</legend>
+                                    <button type="button" data-metric="jobs" aria-pressed="true">Quantified jobs</button>
+                                    <button type="button" data-metric="cadence" aria-pressed="false">Quarters with cuts</button>
+                                </fieldset>
+                            </div>
+
+                            <div class="comparison-heading">
+                                <h3 data-comparison-title>Quantified cuts in 2021&ndash;Aug. 2026</h3>
+                                <p data-comparison-summary>Unknown totals are marked U and never converted into invented estimates. Select a company row to carry that company into the timeline and pattern sections.</p>
+                            </div>
+
+                            <div class="comparison-chart" data-comparison-chart aria-live="polite">
+                                <button class="comparison-row is-selected" type="button" data-company-choice="amazon" data-company="amazon" aria-pressed="true">
+                                    <span class="comparison-name">Amazon</span><span class="comparison-track"><span class="comparison-bar" style="--comparison-ratio:1"></span></span><span class="comparison-value">&ge;58,810 + U<small>undisclosed rounds excluded</small></span>
+                                </button>
+                                <button class="comparison-row" type="button" data-company-choice="microsoft" data-company="microsoft" aria-pressed="false">
+                                    <span class="comparison-name">Microsoft</span><span class="comparison-track"><span class="comparison-bar" style="--comparison-ratio:.65"></span></span><span class="comparison-value">~38&ndash;39k<small>reported estimates included</small></span>
+                                </button>
+                                <button class="comparison-row" type="button" data-company-choice="meta" data-company="meta" aria-pressed="false">
+                                    <span class="comparison-name">Meta</span><span class="comparison-track"><span class="comparison-bar" style="--comparison-ratio:.596"></span></span><span class="comparison-value">&ge;35,060 + U<small>undisclosed rounds excluded</small></span>
+                                </button>
+                                <button class="comparison-row" type="button" data-company-choice="tesla" data-company="tesla" aria-pressed="false">
+                                    <span class="comparison-name">Tesla</span><span class="comparison-track"><span class="comparison-bar" style="--comparison-ratio:.242"></span></span><span class="comparison-value">&ge;14,229 + U<small>2022 total undisclosed</small></span>
+                                </button>
+                                <button class="comparison-row" type="button" data-company-choice="google" data-company="google" aria-pressed="false">
+                                    <span class="comparison-name">Google / Alphabet</span><span class="comparison-track"><span class="comparison-bar" style="--comparison-ratio:.228"></span></span><span class="comparison-value">&ge;13,392 + U<small>many undisclosed rounds</small></span>
+                                </button>
+                                <button class="comparison-row" type="button" data-company-choice="apple" data-company="apple" aria-pressed="false">
+                                    <span class="comparison-name">Apple</span><span class="comparison-track"><span class="comparison-bar" style="--comparison-ratio:.016"></span></span><span class="comparison-value">&ge;914 + U<small>project-specific cuts</small></span>
+                                </button>
+                                <button class="comparison-row" type="button" data-company-choice="nvidia" data-company="nvidia" aria-pressed="false">
+                                    <span class="comparison-name">Nvidia</span><span class="comparison-track"><span class="comparison-bar" style="--comparison-ratio:0"></span></span><span class="comparison-value">None<small>no substantiated program found</small></span>
+                                </button>
+                            </div>
+                            <div class="comparison-axis" data-comparison-axis aria-label="Comparison chart scale">
+                                <span class="axis-title">Employees affected</span>
+                                <div><span>0</span><span>29.4k</span><span>58.8k</span></div>
+                            </div>
+                            <p class="data-error" data-layoffs-error hidden></p>
+                        </div>
+
+                        <div class="table-wrap">
+                            <table class="layoffs-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Company</th>
+                                        <th scope="col">Defensible total</th>
+                                        <th scope="col">Largest disclosed share</th>
+                                        <th scope="col">What the headline misses</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><th scope="row">Amazon</th><td class="numeric">&ge;58,810 + U</td><td>~1% total workforce in the 16,000 round; ~8.6% of last disclosed corporate workforce across the 30,000</td><td>Its 1.55 million-person logistics base suppresses company-wide percentages.</td></tr>
+                                    <tr><th scope="row">Microsoft</th><td class="numeric">~38,000&ndash;39,000</td><td>~4.5% in January 2023</td><td>About 33,200 comes from company-confirmed global programs and LinkedIn; the rest is reported estimates.</td></tr>
+                                    <tr><th scope="row">Meta</th><td class="numeric">&ge;35,060</td><td>13% in November 2022</td><td>The most aggressive repeat cutter relative to its workforce.</td></tr>
+                                    <tr><th scope="row">Tesla</th><td class="numeric">&ge;14,229 + U</td><td>&gt;10% in April 2024</td><td>The 2022 salaried total remains unknown; contractors are excluded.</td></tr>
+                                    <tr><th scope="row">Google / Alphabet</th><td class="numeric">&ge;13,392 + U</td><td>~6% in January 2023</td><td>More later rounds were reported only as hundreds or left undisclosed.</td></tr>
+                                    <tr><th scope="row">Apple</th><td class="numeric">&ge;914</td><td class="unknown">No comparable company-wide share</td><td>Public cuts cluster around canceled or reduced projects.</td></tr>
+                                    <tr><th scope="row">Nvidia</th><td class="numeric">No program found</td><td>0% substantiated</td><td>Absence of an announcement is not proof that no individual reductions occurred.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="layoffs-section" id="time">
+                        <div class="layoffs-section-heading">
+                            <h2>One cycle became several habits.</h2>
+                            <p>The same broad correction reached each company differently. The timeline holds one company in focus so a large event, an undisclosed round, and a quiet quarter do not collapse into the same visual noise.</p>
+                        </div>
+
+                        <p class="layoffs-prose">The 2022&ndash;2023 wave contains the largest one-time resets: Amazon's 27,000, Meta's 21,000 across two programs, Google's 12,000, and Microsoft's 10,000. By 2024, the pattern fragmented. Tesla made one cut above 10%, while Google, Amazon, and Microsoft kept pruning individual organizations.</p>
+                        <p class="layoffs-prose">The 2025&ndash;2026 rounds are more revealing because management language changed. Amazon emphasized layers and bureaucracy; Microsoft emphasized management spans and performance; Meta continued both flattening and strategic reallocation. A macro shock became an operating practice at some companies, but not at all of them.</p>
+
+                        <div class="focus-stage timeline-stage">
+                            <div class="company-selector" aria-label="Choose a company timeline">
+                                <button type="button" data-company-choice="amazon" aria-pressed="true">Amazon</button>
+                                <button type="button" data-company-choice="microsoft" aria-pressed="false">Microsoft</button>
+                                <button type="button" data-company-choice="meta" aria-pressed="false">Meta</button>
+                                <button type="button" data-company-choice="tesla" aria-pressed="false">Tesla</button>
+                                <button type="button" data-company-choice="google" aria-pressed="false">Google</button>
+                                <button type="button" data-company-choice="apple" aria-pressed="false">Apple</button>
+                                <button type="button" data-company-choice="nvidia" aria-pressed="false">Nvidia</button>
+                            </div>
+                            <div class="timeline-copy">
+                                <h3 data-timeline-title>Amazon across 23 quarters</h3>
+                                <p data-timeline-summary>Bar height uses a square-root scale so smaller events remain visible. Outlined marks contain an undisclosed or excluded component.</p>
+                            </div>
+                            <div class="timeline-viewport">
+                                <div class="timeline-plot">
+                                    <div class="timeline-y-axis" data-timeline-axis aria-label="Employees affected, square-root scale">
+                                        <span class="axis-title">Employees affected (square-root scale)</span>
+                                        <div class="axis-tick is-max"><span>17k</span></div>
+                                        <div class="axis-tick is-mid"><span>4.3k</span></div>
+                                        <div class="axis-tick is-zero"><span>0</span></div>
+                                    </div>
+                                    <div class="timeline-chart" data-timeline-chart role="group" aria-label="Quarterly layoff timeline"></div>
+                                </div>
+                            </div>
+                            <span class="timeline-scroll-cue" aria-hidden="true">Earlier context &larr; scroll timeline &rarr; later events</span>
+                            <div class="timeline-legend" aria-label="Timeline legend">
+                                <span><i></i> Quantified public count</span>
+                                <span><i class="is-undisclosed"></i> Undisclosed or excluded component</span>
+                            </div>
+                            <ul class="timeline-event-list" data-timeline-events aria-live="polite">
+                                <li><time>2022 Q4</time><span><strong>~10,000 - first portion of the 18,000-role program</strong>Amazon's later total includes this estimate, so it is not added twice.</span></li>
+                                <li><time>2023 Q1</time><span><strong>~17,000 incremental</strong>The remainder of 18,000 plus a new 9,000 produces 27,000 across the two quarters.</span></li>
+                            </ul>
+                        </div>
+
+                        <div class="table-wrap">
+                            <table class="layoffs-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Company</th>
+                                        <th scope="col">2021&ndash;2023 quantified</th>
+                                        <th scope="col">2024&ndash;Aug. 2026 quantified</th>
+                                        <th scope="col">Window read</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><th scope="row">Amazon</th><td class="numeric">~27,000 + U</td><td class="numeric">&ge;31,810 + U</td><td>A pandemic reset was followed by a corporate flattening campaign.</td></tr>
+                                    <tr><th scope="row">Microsoft</th><td class="numeric">~11,800 + U</td><td class="numeric">~26,225 + U</td><td>The cadence accelerated after the initial 10,000-person correction.</td></tr>
+                                    <tr><th scope="row">Meta</th><td class="numeric">&ge;21,000</td><td class="numeric">&ge;14,060 + U</td><td>Large relative programs recurred in both windows.</td></tr>
+                                    <tr><th scope="row">Tesla</th><td class="numeric">&ge;229 + U</td><td class="numeric">&gt;14,000</td><td>Two concentrated episodes; no substantiated 2025&ndash;Aug. 2026 program found.</td></tr>
+                                    <tr><th scope="row">Google / Alphabet</th><td class="numeric">&ge;12,040 + U</td><td class="numeric">&ge;1,352 + many U</td><td>The later quantified number is misleadingly low because many totals were undisclosed.</td></tr>
+                                    <tr><th scope="row">Apple</th><td class="numeric">U, small</td><td class="numeric">&ge;914</td><td>Project-specific reductions appeared only after programs were canceled or narrowed.</td></tr>
+                                    <tr><th scope="row">Nvidia</th><td class="numeric">None found</td><td class="numeric">None found</td><td>No substantiated mass-layoff program in either window.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="layoffs-section" id="patterns">
+                        <div class="layoffs-section-heading">
+                            <h2>The same number can describe a different culture.</h2>
+                            <p>A layoff total says how many positions were publicly quantified. It does not say whether management was closing a failed project, integrating an acquisition, pruning continuously, or resetting the company hierarchy.</p>
+                        </div>
+
+                        <p class="layoffs-prose">Apple's pattern is the clearest counterexample to Meta's. Apple tends to cancel or narrow a project, attempt redeployment, and remove the residual roles. Meta repeatedly used layoffs to change company-wide cost, performance, and management structure. Microsoft and Amazon moved closer to Meta's language over time, even though their workforce compositions remain very different.</p>
+
+                        <div class="focus-stage company-lens">
+                            <div class="company-lens-index">
+                                <span>Hold one company in focus</span>
+                                <button type="button" data-company-choice="amazon" aria-pressed="true">Amazon <output>&ge;58,810</output></button>
+                                <button type="button" data-company-choice="microsoft" aria-pressed="false">Microsoft <output>~38&ndash;39k</output></button>
+                                <button type="button" data-company-choice="meta" aria-pressed="false">Meta <output>&ge;35,060</output></button>
+                                <button type="button" data-company-choice="tesla" aria-pressed="false">Tesla <output>&ge;14.2k</output></button>
+                                <button type="button" data-company-choice="google" aria-pressed="false">Google <output>&ge;13.4k</output></button>
+                                <button type="button" data-company-choice="apple" aria-pressed="false">Apple <output>&ge;914</output></button>
+                                <button type="button" data-company-choice="nvidia" aria-pressed="false">Nvidia <output>None</output></button>
+                            </div>
+                            <div class="company-portrait">
+                                <h3 data-portrait-title>Two separate eras produced the largest absolute total.</h3>
+                                <p data-portrait-copy>Amazon first corrected pandemic-era expansion, then returned to large corporate reductions framed around fewer layers, less bureaucracy, and greater ownership.</p>
+                                <div class="portrait-evidence">
+                                    <div><span>Mechanism</span><strong data-portrait-mechanism>Pandemic reset, then organizational flattening</strong></div>
+                                    <div><span>Functions hit</span><strong data-portrait-affected>Stores, PXT, Devices, AWS, Advertising, Twitch, warehouses, and AGI</strong></div>
+                                    <div><span>Risk signal</span><strong data-portrait-risk>Corporate layers and businesses outside current priorities</strong></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-wrap">
+                            <table class="layoffs-table">
+                                <thead><tr><th scope="col">Company</th><th scope="col">Dominant pattern</th><th scope="col">Functions repeatedly affected</th></tr></thead>
+                                <tbody>
+                                    <tr><th scope="row">Apple</th><td>Project failure or reprioritization</td><td>Car, displays, Books, News, Siri, software, and Vision Pro work</td></tr>
+                                    <tr><th scope="row">Microsoft</th><td>Cost correction &rarr; product integration &rarr; flattening and performance</td><td>Gaming, Azure, mixed reality, engineering, PM, sales, marketing, legal, and LinkedIn</td></tr>
+                                    <tr><th scope="row">Amazon</th><td>Pandemic overexpansion &rarr; explicit corporate flattening</td><td>Stores, HR, Devices, AWS, Advertising, Twitch, media, warehouses, and AGI</td></tr>
+                                    <tr><th scope="row">Meta</th><td>Recurring company-wide efficiency and performance resets</td><td>Recruiting, operations, management, engineering, Reality Labs, AI, and sales</td></tr>
+                                    <tr><th scope="row">Google</th><td>One giant reset followed by continuous team pruning</td><td>Recruiting, hardware, Assistant, Core, ads, Android, Chrome, Cloud, and People Ops</td></tr>
+                                    <tr><th scope="row">Tesla</th><td>Concentrated operating resets</td><td>Salaried corporate, Autopilot, engineering, sales, service, and Supercharger</td></tr>
+                                    <tr><th scope="row">Nvidia</th><td>No comparable public program</td><td>No public cohort large enough to characterize</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="layoffs-section" id="roles">
+                        <div class="layoffs-section-heading">
+                            <h2>The middle is not safer than the edge.</h2>
+                            <p>The evidence does not support a simple story that junior engineers were replaced by AI. Several of the clearest declared targets were management layers, coordination work, lower performance groups, and roles attached to products losing priority.</p>
+                        </div>
+
+                        <blockquote class="evidence-quote">
+                            <p>Role vulnerability follows strategic differentiation more closely than seniority alone.</p>
+                            <cite>My synthesis of the company announcements and occupational records below; not a company-issued ranking.</cite>
+                        </blockquote>
+
+                        <p class="layoffs-prose">Meta explicitly said it would remove management layers and ask many managers to become individual contributors.<a class="source-ref" href="#source-meta-2023">[source]</a> Amazon later described reducing layers, increasing ownership, and removing bureaucracy.<a class="source-ref" href="#source-amazon-2025-corporate">[source]</a> Microsoft said its May 2025 program was designed to reduce management layers, while separate performance-based exits targeted lower performers.<a class="source-ref" href="#source-microsoft-2025-may">[source]</a><a class="source-ref" href="#source-microsoft-2025-performance">[source]</a></p>
+                        <p class="layoffs-prose">Engineers were not immune. In one Washington-state Microsoft filing, software engineering was the largest identified discipline: 67 of 305 positions, about 22%, followed by product management and technical program management. That is a local occupational snapshot, not a global distribution, so it cannot prove that engineers bore the largest burden company-wide.<a class="source-ref" href="#source-microsoft-2025-warn">[source]</a></p>
+
+                        <div class="risk-ledger">
+                            <div class="risk-row"><strong>Redundant organizational layers</strong><p>Directly named by Meta, Amazon, and Microsoft. Middle management and coordination work can be exposed even when individual contributors remain strategically useful.</p></div>
+                            <div class="risk-row"><strong>Declining or canceled products</strong><p>Apple's car and display programs, Microsoft mixed reality, Google hardware and AR work, and Meta Reality Labs show how project risk becomes employment risk.</p></div>
+                            <div class="risk-row"><strong>Relative performance ranking</strong><p>Meta's 2025 target and Microsoft performance-based exits make internal ranking an explicit layoff mechanism rather than an incidental outcome.</p></div>
+                            <div class="risk-row"><strong>Duplicated acquisition structure</strong><p>Microsoft Gaming reductions after Activision Blizzard show how integration can remove both development and shared-service roles.</p></div>
+                            <div class="risk-row"><strong>Skills outside current investment priorities</strong><p>Companies cut within AI, VR, hardware, and cloud organizations while hiring elsewhere in those same broad fields. The strategic sub-area matters more than the label.</p></div>
+                        </div>
+                    </section>
+
+                    <section class="layoffs-section" id="explanation">
+                        <div class="layoffs-section-heading">
+                            <h2>AI is an accelerant, not a complete cause.</h2>
+                            <p>Every company faced the same generative-AI breakthrough, but their employment responses diverged sharply. That makes AI alone an insufficient explanation for the observed cuts.</p>
+                        </div>
+
+                        <div class="focus-stage divergence-map" role="img" aria-label="The same AI technology wave led to different workforce responses at Nvidia, Apple, Google, Microsoft, Amazon, and Meta">
+                            <div class="divergence-input">One AI technology wave</div>
+                            <svg class="divergence-rail" viewBox="0 0 72 260" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+                                <path d="M0 130 H28 M28 18 V242 M28 18 H72 M28 63 H72 M28 108 H72 M28 152 H72 M28 197 H72 M28 242 H72" fill="none" stroke="currentColor" stroke-width="1"/>
+                            </svg>
+                            <div class="divergence-outcomes">
+                                <div><strong>Nvidia</strong><span>No substantiated mass-layoff program found</span></div>
+                                <div><strong>Apple</strong><span>Project-specific cuts, not a broad reset</span></div>
+                                <div><strong>Google</strong><span>One large reset, then continuous pruning</span></div>
+                                <div><strong>Microsoft</strong><span>Recurring cuts plus strategic redeployment</span></div>
+                                <div><strong>Amazon</strong><span>Overexpansion correction, then corporate flattening</span></div>
+                                <div><strong>Meta</strong><span>Repeated company-wide efficiency programs</span></div>
+                            </div>
+                        </div>
+
+                        <p class="layoffs-prose">In 2024, Fortune reported that Nvidia had maintained a nearly 15-year streak without layoffs while the broader sector was cutting heavily.<a class="source-ref" href="#source-nvidia">[source]</a> Apple, exposed to the same AI shift, mostly tied reductions to failed or narrowed projects. Meanwhile Meta cut inside established AI organizations while hiring into a newer superintelligence group.<a class="source-ref" href="#source-meta-2025-ai">[source]</a></p>
+                        <p class="layoffs-prose">The more complete explanation combines pandemic hiring, acquisition integration, project failure, revenue mix, organizational complexity, performance systems, and management philosophy. AI changes which skills and organizations receive capital. It does not mechanically determine that a company must cut 10% of its workforce.</p>
+                    </section>
+
+                    <section class="layoffs-section" id="methodology">
+                        <div class="layoffs-section-heading">
+                            <h2>How the numbers were made comparable.</h2>
+                            <p>The dataset is conservative by design. It favors a lower defensible floor over a precise-looking total that public evidence cannot support.</p>
+                        </div>
+
+                        <div class="formula">
+                            Comparable total = discrete public employee counts &minus; overlaps
+                            <small>Undisclosed rounds remain U. They are never converted into a point estimate.</small>
+                        </div>
+
+                        <div class="method-grid">
+                            <div class="method-item"><h3>Window</h3><p>January 1, 2021 through the end of August 21, 2026. Events are assigned to the quarter announced, not the final termination date.</p></div>
+                            <div class="method-item"><h3>Included</h3><p>Company-announced employee programs, reputable reported estimates, and discrete state WARN counts when they establish a non-overlapping floor.</p></div>
+                            <div class="method-item"><h3>Excluded</h3><p>Contractors, hiring freezes, unfilled openings, voluntary buyouts, ordinary attrition, and local notices already contained inside a quantified global program.</p></div>
+                            <div class="method-item"><h3>Percentages</h3><p>Shown only when a company or credible report stated a comparable workforce share. A state WARN count is never divided by global headcount.</p></div>
+                            <div class="method-item"><h3>Amazon de-duplication</h3><p>November 2022 plus January 2023 totaled just over 18,000; March added 9,000. The combined program is about 27,000, not 37,000.</p></div>
+                            <div class="method-item"><h3>Meta de-duplication</h3><p>The 10,000 announced in March 2023 was one program implemented in three waves. April and May implementation notices are not new rounds.</p></div>
+                            <div class="method-item"><h3>Apple retail notices</h3><p>Store-closure WARN notices are disclosed but excluded because transfer and reapplication paths mean an unknown share of affected employees remained at Apple.<a class="source-ref" href="#source-apple-2026-retail">[source]</a></p></div>
+                            <div class="method-item"><h3>Microsoft voluntary program</h3><p>Offers made to roughly 8,750 people in 2026 are excluded because acceptance was voluntary and the final departure count was not disclosed.<a class="source-ref" href="#source-meta-2026-company">[source]</a></p></div>
+                        </div>
+
+                        <p class="layoffs-prose"><strong>Important limitation:</strong> Google has more U quarters than the other companies. Its &ge;13,392 figure is a much looser floor than Meta's &ge;35,060 because recruiting, ad sales, Platforms and Devices, and Cloud reductions were often described only as hundreds or left undisclosed. A lower quantified total does not necessarily mean fewer actual cuts.</p>
+                        <p class="layoffs-prose">The two culture rankings in this essay are my synthesis of the event record, not an objective company score. Public reporting also favors large U.S. programs, and absence of a public announcement cannot prove that no smaller or non-U.S. reductions occurred.</p>
+                    </section>
+
+                    <section class="layoffs-section" id="sources">
+                        <div class="layoffs-section-heading">
+                            <h2>Sources and audit trail.</h2>
+                            <p>Primary company statements and government WARN databases lead where available. AP, Reuters, CNBC, GeekWire, TechCrunch, CBS, The Verge, Polygon, and Variety fill gaps. Tracking parameters were removed.</p>
+                        </div>
+
+                        <ol class="source-list">
+                            <li id="source-meta-2022"><a href="https://about.fb.com/news/2022/11/mark-zuckerberg-layoff-message-to-employees/" target="_blank" rel="noopener noreferrer">Meta: Zuckerberg's November 2022 employee message</a> &mdash; more than 11,000 people, about 13%.</li>
+                            <li id="source-meta-2023"><a href="https://about.fb.com/news/2023/03/mark-zuckerberg-meta-year-of-efficiency/" target="_blank" rel="noopener noreferrer">Meta: 2023 Year of Efficiency update</a> &mdash; about 10,000 roles, three waves, and explicit management flattening.</li>
+                            <li id="source-google-2023"><a href="https://blog.google/company-news/inside-google/message-ceo/january-update/" target="_blank" rel="noopener noreferrer">Google: January 2023 CEO update</a> &mdash; about 12,000 roles, roughly 6%.</li>
+                            <li id="source-amazon-2023"><a href="https://www.aboutamazon.com/news/company-news/update-from-ceo-andy-jassy-on-role-eliminations" target="_blank" rel="noopener noreferrer">Amazon: January and March 2023 role-elimination updates</a> &mdash; just over 18,000 including November, followed by 9,000 more.</li>
+                            <li id="source-microsoft-2023"><a href="https://apnews.com/article/microsoft-job-cuts-18fe0c9b8c9ff856e932e075161b1f43" target="_blank" rel="noopener noreferrer">AP: Microsoft cuts 10,000 jobs in January 2023</a>.</li>
+                            <li id="source-tesla-2024"><a href="https://www.cbsnews.com/news/tesla-layoffs-elon-musk-electric-vehicle/" target="_blank" rel="noopener noreferrer">CBS News: Tesla's April 2024 reduction</a> &mdash; more than 10% of employees.</li>
+                            <li id="source-nvidia"><a href="https://blogs.nvidia.com/blog/nvidia-life-fortune-100-best-companies/" target="_blank" rel="noopener noreferrer">Nvidia: Fortune 100 Best Companies feature</a> &mdash; Fortune's 2024 report of a nearly 15-year no-layoff streak.</li>
+                            <li id="source-microsoft-2022"><a href="https://www.theverge.com/2022/7/12/23205263/microsoft-layoffs-restructuring-less-than-1-percent" target="_blank" rel="noopener noreferrer">The Verge: Microsoft's July 2022 restructuring</a>.</li>
+                            <li id="source-tesla-2022"><a href="https://techcrunch.com/2022/07/12/tesla-laying-off-229-autopilot-workers-shuttering-san-mateo-office-filing-confirms/" target="_blank" rel="noopener noreferrer">TechCrunch: Tesla San Mateo WARN filing</a> &mdash; 229 Autopilot workers.</li>
+                            <li id="source-apple-2023"><a href="https://www.bloomberg.com/news/articles/2023-04-03/apple-to-make-small-number-of-job-cuts-in-some-corporate-retail-teams" target="_blank" rel="noopener noreferrer">Bloomberg: Apple's small April 2023 corporate-retail restructuring</a>.</li>
+                            <li id="source-google-2023-news"><a href="https://www.cnbc.com/2023/10/18/google-cuts-dozens-of-jobs-in-news-division-.html" target="_blank" rel="noopener noreferrer">CNBC: Google cuts at least 40 News-division roles in October 2023</a>.</li>
+                            <li id="source-microsoft-2024-gaming"><a href="https://apnews.com/article/microsoft-layoffs-activision-blizzard-job-cuts-580e3f001b8c92212547a4a58056c69c" target="_blank" rel="noopener noreferrer">AP: Microsoft Gaming's January 2024 reduction</a> &mdash; 1,900 roles, about 8% of the division.</li>
+                            <li id="source-microsoft-2024-azure"><a href="https://www.geekwire.com/2024/microsoft-cuts-jobs-in-azure-hololens-and-other-units-in-latest-move-to-control-costs/" target="_blank" rel="noopener noreferrer">GeekWire: Microsoft Azure and HoloLens cuts</a> &mdash; around 1,000 reported in June 2024.</li>
+                            <li id="source-amazon-2025-corporate"><a href="https://www.aboutamazon.com/news/company-news/amazon-workforce-reduction" target="_blank" rel="noopener noreferrer">Amazon: October 2025 workforce reduction</a> &mdash; about 14,000 corporate roles.</li>
+                            <li id="source-amazon-2026-corporate"><a href="https://www.aboutamazon.com/news/company-news/amazon-layoffs-corporate-jan-2026" target="_blank" rel="noopener noreferrer">Amazon: January 2026 corporate reduction</a> &mdash; about 16,000 roles.</li>
+                            <li id="source-amazon-2024-twitch"><a href="https://www.polygon.com/24032885/twitch-layoffs-january-2024/" target="_blank" rel="noopener noreferrer">Polygon: Twitch's January 2024 reduction</a> &mdash; more than 500 roles.</li>
+                            <li id="source-amazon-2024-audible"><a href="https://variety.com/2024/digital/news/audible-layoffs-amazon-1235869320/" target="_blank" rel="noopener noreferrer">Variety: Audible's January 2024 reduction</a> &mdash; just over 100 roles.</li>
+                            <li id="source-amazon-2024-video"><a href="https://www.cnbc.com/2024/01/10/amazon-layoffs-hundreds-of-jobs-cut-in-prime-video-and-mgm-studios.html" target="_blank" rel="noopener noreferrer">CNBC: Prime Video and MGM reductions</a> &mdash; several hundred roles, exact count undisclosed.</li>
+                            <li id="source-amazon-2024-aws"><a href="https://www.geekwire.com/2024/amazon-web-services-cuts-hundreds-of-jobs-in-sales-training-and-physical-stores-technology/" target="_blank" rel="noopener noreferrer">GeekWire: AWS cuts several hundred sales and services roles plus a few hundred physical-stores technology roles</a>.</li>
+                            <li id="source-microsoft-2025-performance"><a href="https://www.cnbc.com/2025/01/08/microsoft-confirms-performance-based-job-cuts-across-departments.html" target="_blank" rel="noopener noreferrer">CNBC: Microsoft performance-based cuts in January 2025</a>.</li>
+                            <li id="source-microsoft-2025-may"><a href="https://www.geekwire.com/2025/microsoft-layoffs-hit-3-of-workforce/" target="_blank" rel="noopener noreferrer">GeekWire: Microsoft cuts nearly 3% in May 2025</a>.</li>
+                            <li id="source-microsoft-2025-warn"><a href="https://www.geekwire.com/2025/latest-microsoft-layoffs-target-engineering-product-and-legal-roles-records-show/" target="_blank" rel="noopener noreferrer">GeekWire: Washington occupational breakdown for Microsoft's June 2025 round</a>.</li>
+                            <li id="source-meta-2025"><a href="https://apnews.com/article/meta-layoffs-ebf95196598467c9ddf175571eecaa98" target="_blank" rel="noopener noreferrer">AP: Meta targets roughly 5% in early 2025</a>.</li>
+                            <li id="source-meta-2025-ai"><a href="https://apnews.com/article/meta-ai-layoffs-600-artificial-intelligence-7f7b77ba002f7095984f17ebd034bf60" target="_blank" rel="noopener noreferrer">AP: Meta cuts about 600 AI roles in October 2025</a>.</li>
+                            <li id="source-meta-2026-reality"><a href="https://techcrunch.com/2026/01/14/meta-to-reportedly-lay-off-10-of-reality-labs-staff/" target="_blank" rel="noopener noreferrer">TechCrunch: Meta Reality Labs reduction in January 2026</a>.</li>
+                            <li id="source-meta-2026-march"><a href="https://www.cnbc.com/2026/03/25/meta-layoffs-reality-labs-facebook.html" target="_blank" rel="noopener noreferrer">CNBC: Meta's March 2026 cross-organization cuts</a>.</li>
+                            <li id="source-meta-2026-company"><a href="https://apnews.com/article/microsoft-voluntary-buyouts-ai-224eee4489cbc227244558ff02f5919a" target="_blank" rel="noopener noreferrer">AP: Meta's roughly 8,000-person 2026 program and Microsoft's voluntary buyouts</a>.</li>
+                            <li id="source-microsoft-2025-july"><a href="https://www.cnbc.com/2025/07/02/microsoft-laying-off-about-9000-employees-in-latest-round-of-cuts.html" target="_blank" rel="noopener noreferrer">CNBC: Microsoft's roughly 9,000-person July 2025 program</a>.</li>
+                            <li id="source-microsoft-2026-linkedin"><a href="https://www.reuters.com/business/world-at-work/linkedin-is-planning-lay-off-5-staff-latest-tech-sector-cuts-source-says-2026-05-13/" target="_blank" rel="noopener noreferrer">Reuters: LinkedIn cuts about 5%, roughly 875 roles, in May 2026</a>.</li>
+                            <li id="source-apple-2026-retail"><a href="https://www.cbsnews.com/baltimore/news/apple-store-maryland-towson-closing-mall-conditions/" target="_blank" rel="noopener noreferrer">CBS News Baltimore: Apple Towson store closure and reapplication terms</a>.</li>
+                            <li id="source-apple-2024"><a href="https://techcrunch.com/2024/04/05/apple-lays-off-over-600-employees-in-california-after-abandoning-electric-car-plans/" target="_blank" rel="noopener noreferrer">TechCrunch: Apple's 614 California positions after project cancellations</a>.</li>
+                            <li id="source-apple-2024-services"><a href="https://www.theverge.com/2024/8/28/24230344/apple-job-layoffs-books-news-apps-digital-services" target="_blank" rel="noopener noreferrer">The Verge: Apple Books, News, and services cuts in August 2024</a>.</li>
+                            <li id="source-apple-2026"><a href="https://www.theverge.com/tech/983451/apple-layoffs-vision-pro-siri" target="_blank" rel="noopener noreferrer">The Verge: more than 200 Apple Siri, software, and Vision Pro roles in August 2026</a>.</li>
+                            <li id="source-meta-2024"><a href="https://techcrunch.com/2024/01/12/instagram-cuts-60-jobs-eliminating-a-layer-of-management-at-the-company/" target="_blank" rel="noopener noreferrer">TechCrunch: Instagram removes 60 TPM roles</a>; later 2024 reductions remained undisclosed.</li>
+                            <li id="source-google-2023-recruiting"><a href="https://www.cnbc.com/2023/09/13/google-is-cutting-hundreds-of-jobs-in-its-recruiting-organization.html" target="_blank" rel="noopener noreferrer">CNBC: Google cuts hundreds in recruiting</a>.</li>
+                            <li id="source-google-2024"><a href="https://techcrunch.com/2024/01/10/google-cuts-hundreds-of-jobs-in-its-voice-assistance-hardware-teams-as-fitbit-founders-leave/" target="_blank" rel="noopener noreferrer">TechCrunch: Google's January 2024 Assistant and hardware cuts</a>.</li>
+                            <li id="source-google-2024-core"><a href="https://www.cnbc.com/2024/05/01/google-cuts-hundreds-of-core-workers-moves-jobs-to-india-mexico.html" target="_blank" rel="noopener noreferrer">CNBC: Google cuts at least 200 Core roles in May 2024</a>.</li>
+                            <li id="source-google-2025"><a href="https://9to5google.com/2025/04/11/google-pixel-android-layoffs/" target="_blank" rel="noopener noreferrer">9to5Google: hundreds cut from Platforms and Devices in April 2025</a>.</li>
+                            <li id="source-google-2026"><a href="https://www.geekwire.com/2026/google-to-cut-52-employees-in-washington-state/" target="_blank" rel="noopener noreferrer">GeekWire: Google cuts 52 Washington roles in August 2026</a>.</li>
+                            <li id="source-amazon-2025-devices"><a href="https://www.cnbc.com/2025/05/14/amazon-lays-off-about-100-employees-in-devices-and-services-unit.html" target="_blank" rel="noopener noreferrer">CNBC: Amazon Devices and Services cuts about 100 roles</a>.</li>
+                            <li id="source-amazon-2026-agi"><a href="https://www.geekwire.com/2026/amazon-cuts-jobs-in-agi-group-as-it-puts-more-focus-on-customer-facing-ai/" target="_blank" rel="noopener noreferrer">GeekWire: Amazon AGI cuts, exact count undisclosed</a>.</li>
+                            <li id="source-microsoft-2026"><a href="https://www.geekwire.com/2026/microsoft-cuts-4800-jobs-about-2-globally-revamps-salesforce-and-launches-massive-xbox-overhaul/" target="_blank" rel="noopener noreferrer">GeekWire: Microsoft's 4,800-person July 2026 program</a>.</li>
+                            <li id="source-warn-wa"><a href="https://esd.wa.gov/employer-requirements/layoffs-and-employee-notifications/worker-adjustment-and-retraining-notification-warn-layoff-and-closure-database" target="_blank" rel="noopener noreferrer">Washington ESD WARN database</a>.</li>
+                            <li id="source-warn-fl"><a href="https://reactwarn.floridajobs.org/" target="_blank" rel="noopener noreferrer">Florida REACT WARN database</a> &mdash; Amazon Homestead and Port St. Lucie notices.</li>
+                        </ol>
+
+                        <p class="layoffs-footer-note">Last audited August 21, 2026. Counts can change when companies file new notices, disclose additional rounds, or clarify whether one announcement implements an earlier program. This page preserves U rather than backfilling uncertainty with estimates.</p>
+                    </section>
+                </main>
+            </div>
+        </article>
+
+        <footer class="footer">
+            <p>&copy; <span id="year"></span> Brian Fong. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <script src="../../assets/js/data.js?v=8304241"></script>
+    <script src="../../assets/js/main.js?v=8304232"></script>
+    <script src="../../assets/js/tech-layoffs-data.js?v=8304241"></script>
+    <script src="../../assets/js/tech-layoffs.js?v=8304241"></script>
+    <script>window.initTechLayoffs && window.initTechLayoffs();</script>
+</body>
+</html>
