@@ -1,0 +1,74 @@
+{
+  "asOf": "2026-09-09",
+  "source": "Moomoo market snapshot and historical K-line APIs",
+  "underlying": {
+    "symbol": "MSFT",
+    "name": "Microsoft",
+    "close": 491.65,
+    "open": 493.07,
+    "high": 494.39,
+    "low": 489.80,
+    "previousClose": 493.95,
+    "volume": 12889572
+  },
+  "contract": {
+    "expiration": "2026-10-09",
+    "strike": 490,
+    "daysToExpiration": 30,
+    "multiplier": 100,
+    "style": "American"
+  },
+  "historicalGreekModel": {
+    "method": "European Black-Scholes approximation",
+    "riskFreeRate": 4.0,
+    "dividendYield": 0.72,
+    "note": "Derived from the observed MSFT close, daily option IV, strike, and calendar days remaining. These are teaching estimates, not historical broker quotes."
+  },
+  "call": {
+    "symbol": "MSFT261009C490000",
+    "last": 17.09,
+    "bid": 15.25,
+    "ask": 16.60,
+    "open": 18.05,
+    "high": 18.05,
+    "low": 16.25,
+    "volume": 25,
+    "openInterest": 56,
+    "iv": 25.522,
+    "delta": 0.550071292,
+    "gamma": 0.011026756,
+    "theta": -0.266811847,
+    "vega": 0.556636574,
+    "rho": 0.208262375,
+    "quoteTimestampUtc": "2026-09-09T17:38:59.240Z"
+  },
+  "put": {
+    "symbol": "MSFT261009P490000",
+    "last": 12.85,
+    "bid": 12.35,
+    "ask": 13.10,
+    "open": 11.15,
+    "high": 13.10,
+    "low": 11.15,
+    "volume": 21,
+    "openInterest": 100,
+    "iv": 25.383,
+    "delta": -0.452748678,
+    "gamma": 0.011209672,
+    "theta": -0.2169961,
+    "vega": 0.555865484,
+    "rho": -0.164245991,
+    "quoteTimestampUtc": "2026-09-09T19:59:48.545Z"
+  },
+  "callHistory": [
+    { "date": "2026-08-27", "msft": 505.06, "call": 26.65, "iv": 26.662, "itmProbability": 63.081, "daysLeft": 43, "greeks": { "delta": 0.6617, "gamma": 0.00790, "theta": -0.2232, "vega": 0.6330, "rho": 0.3610 } },
+    { "date": "2026-08-28", "msft": 513.53, "call": 36.13, "iv": 26.407, "itmProbability": 70.205, "daysLeft": 42, "greeks": { "delta": 0.7286, "gamma": 0.00719, "theta": -0.2111, "vega": 0.5763, "rho": 0.3922 } },
+    { "date": "2026-08-31", "msft": 507.29, "call": 30.46, "iv": 24.704, "itmProbability": 66.673, "daysLeft": 39, "greeks": { "delta": 0.6956, "gamma": 0.00853, "theta": -0.2122, "vega": 0.5795, "rho": 0.3479 } },
+    { "date": "2026-09-01", "msft": 501.02, "call": 23.28, "iv": 24.844, "itmProbability": 61.087, "daysLeft": 38, "greeks": { "delta": 0.6401, "gamma": 0.00930, "theta": -0.2237, "vega": 0.6040, "rho": 0.3100 } },
+    { "date": "2026-09-02", "msft": 496.82, "call": 20.60, "iv": 25.848, "itmProbability": 56.925, "daysLeft": 37, "greeks": { "delta": 0.5981, "gamma": 0.00945, "theta": -0.2379, "vega": 0.6113, "rho": 0.2802 } },
+    { "date": "2026-09-03", "msft": 510.12, "call": 31.55, "iv": 26.286, "itmProbability": 69.590, "daysLeft": 36, "greeks": { "delta": 0.7144, "gamma": 0.00806, "theta": -0.2280, "vega": 0.5436, "rho": 0.3304 } },
+    { "date": "2026-09-04", "msft": 499.70, "call": 21.99, "iv": 24.297, "itmProbability": 60.375, "daysLeft": 35, "greeks": { "delta": 0.6326, "gamma": 0.01001, "theta": -0.2282, "vega": 0.5823, "rho": 0.2829 } },
+    { "date": "2026-09-08", "msft": 493.95, "call": 17.67, "iv": 26.444, "itmProbability": 54.400, "daysLeft": 31, "greeks": { "delta": 0.5706, "gamma": 0.01031, "theta": -0.2643, "vega": 0.5648, "rho": 0.2242 } },
+    { "date": "2026-09-09", "msft": 491.65, "call": 17.09, "iv": 26.650, "itmProbability": 52.011, "daysLeft": 30, "greeks": { "delta": 0.5464, "gamma": 0.01054, "theta": -0.2702, "vega": 0.5581, "rho": 0.2073 } }
+  ]
+}

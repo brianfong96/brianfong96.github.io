@@ -217,6 +217,19 @@
         }
     }
 
+    function syncPersistentNavigation(newDoc, baseUrl) {
+        var selectorGroups = ['.topbar .home-link', '.sidebar .nav-links a'];
+        selectorGroups.forEach(function (selector) {
+            var currentLinks = Array.from(document.querySelectorAll(selector));
+            var incomingLinks = Array.from(newDoc.querySelectorAll(selector));
+            currentLinks.forEach(function (link, index) {
+                var incoming = incomingLinks[index];
+                if (!incoming) return;
+                link.href = new URL(incoming.getAttribute('href'), baseUrl).href;
+            });
+        });
+    }
+
     function doPageTransition(href, skipPushState) {
         // Cancel any in-progress transition and restore text
         if (isTransitioning) {
@@ -312,6 +325,7 @@
             if (newContent) {
                 contentEl.innerHTML = newContent.innerHTML;
             }
+            syncPersistentNavigation(newDoc, baseUrl);
             if (newBody) {
                 body.className = newBody.className;
                 syncBlogHomeLink(newBody.className);
@@ -405,6 +419,7 @@
         if (typeof window.initFinanceArticle === 'function') window.initFinanceArticle();
         if (typeof window.initTrumpDisclosure === 'function') window.initTrumpDisclosure();
         if (typeof window.initLindaProblem === 'function') window.initLindaProblem();
+        if (typeof window.initOptionsVolatility === 'function') window.initOptionsVolatility();
 
         // Re-highlight current nav
         var currentPath = window.location.pathname;

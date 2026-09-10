@@ -4,11 +4,12 @@
   "description": "🔗 **Live site:** [https://brianfong96.github.io](https://brianfong96.github.io)",
   "main": "index.js",
   "scripts": {
-    "test": "node tests/finance-blog-test.js && node tests/linda-problem-test.js && node tests/fiber-blog-test.js && node tests/tech-layoffs-test.js",
+    "test": "node tests/finance-blog-test.js && node tests/linda-problem-test.js && node tests/fiber-blog-test.js && node tests/tech-layoffs-test.js && node tests/options-volatility-test.js",
     "test:finance": "node tests/finance-blog-test.js",
     "test:linda": "node tests/linda-problem-test.js",
     "test:fiber": "node tests/fiber-blog-test.js",
-    "test:layoffs": "node tests/tech-layoffs-test.js"
+    "test:layoffs": "node tests/tech-layoffs-test.js",
+    "test:volatility": "node tests/options-volatility-test.js"
   },
   "repository": {
     "type": "git",

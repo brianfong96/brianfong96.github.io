@@ -49,6 +49,14 @@ const siteData = {
     ],
     blogs: [
         {
+            title: 'Options, Calls, Puts, and Greeks',
+            url: 'blog/pricing-the-move/index.html',
+            description: 'A beginner guide to option contracts, calls, puts, and the Greeks, grounded in a real MSFT option-chain snapshot and contract history.',
+            section: 'Blog',
+            category: 'Finance',
+            date: '2026-09-03'
+        },
+        {
             title: 'Seven Companies, Seven Layoff Cultures',
             url: 'blog/tech-layoffs/index.html',
             description: 'A source-backed comparison of layoffs at Amazon, Microsoft, Meta, Tesla, Google, Apple, and Nvidia—across absolute scale, time, workforce impact, and organizational intent.',

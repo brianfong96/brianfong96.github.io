@@ -1,0 +1,589 @@
+<!--
+THESIS: Options become understandable when the contract, call, put, and Greeks are tied to one real market snapshot instead of taught as isolated vocabulary.
+OWN-WORLD: The Financial Research Desk's warm paper, navy ink, analytical blue, semantic green/red, thin rules, and tabular market data.
+STORY: Learn the contract, contrast calls and puts, understand the Greeks, read a dated MSFT option chain, then follow one call through time.
+FIRST VIEWPORT: A compact title and four-part roadmap lead directly into the first definition; no promotional hero or tool dashboard.
+FORM: Continuous beginner field guide with static evidence graphics and reasoning-based multiple-choice checks.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A beginner guide to options, calls, puts, and the Greeks using a real Microsoft option-chain snapshot from September 9, 2026.">
+    <title>Options, Calls, Puts, and Greeks - Brian Fong</title>
+    <link rel="icon" type="image/png" href="../../assets/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/finance.css">
+    <link rel="stylesheet" href="../../assets/css/options-volatility.css?v=20260909-5">
+</head>
+<body class="finance-page options-guide-page">
+    <header class="topbar">
+        <a class="home-link" href="../../index.html" aria-label="Home">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </a>
+        <a class="blog-home-link" href="../../blog.html">All blogs</a>
+        <button id="sidebar-toggle" aria-label="Toggle navigation">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg>
+        </button>
+    </header>
+
+    <nav class="sidebar" id="sidebar" aria-label="Primary navigation">
+        <ul class="nav-links">
+            <li><a href="../../index.html">Home</a></li>
+            <li><a href="../../about.html">About</a></li>
+            <li><a href="../../projects.html">Projects</a></li>
+            <li><a href="../../learnings.html">Learnings</a></li>
+            <li><a href="../../blog.html">Blog</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <article class="options-guide" id="options-guide">
+            <header class="guide-header">
+                <div class="guide-meta">
+                    <a href="../../blog.html">← Blog</a>
+                    <span>September 9, 2026</span>
+                    <span>Finance · Beginner guide</span>
+                </div>
+                <h1>Options: calls, puts, and Greeks</h1>
+                <p>What an option contract is, how calls and puts differ, what the Greeks measure, and how those numbers appeared in a real Microsoft option chain.</p>
+            </header>
+
+            <div class="guide-layout">
+                <nav class="guide-rail" aria-label="Article chapters">
+                    <a href="#options" data-section-link="options" aria-current="true"><span>1</span>Options</a>
+                    <a href="#calls" data-section-link="calls"><span>2</span>Calls</a>
+                    <a href="#puts" data-section-link="puts"><span>3</span>Puts</a>
+                    <a href="#iv" data-section-link="iv"><span>4</span>Implied volatility</a>
+                    <a href="#greeks" data-section-link="greeks"><span>5</span>Greeks</a>
+                    <a href="#snapshot" data-section-link="snapshot"><span>6</span>MSFT snapshot</a>
+                    <a href="#over-time" data-section-link="over-time"><span>7</span>Over time</a>
+                    <a href="#references" data-section-link="references"><span>8</span>References</a>
+                </nav>
+
+                <main class="guide-body">
+                    <section class="guide-roadmap" aria-labelledby="roadmap-title">
+                        <h2 id="roadmap-title">In this guide</h2>
+                        <p>Start with the contract, learn calls and puts, then use the Greeks to read one real MSFT snapshot and its history.</p>
+                        <ol>
+                            <li><a href="#options"><span>1</span><strong>What is an option?</strong></a></li>
+                            <li><a href="#calls"><span>2</span><strong>What is a call?</strong></a></li>
+                            <li><a href="#puts"><span>3</span><strong>What is a put?</strong></a></li>
+                            <li><a href="#iv"><span>4</span><strong>What is implied volatility?</strong></a></li>
+                            <li><a href="#greeks"><span>5</span><strong>How do the Greeks move price?</strong></a></li>
+                            <li><a href="#snapshot"><span>6</span><strong>Read the MSFT snapshot</strong></a></li>
+                            <li><a href="#over-time"><span>7</span><strong>Follow the call over time</strong></a></li>
+                        </ol>
+                    </section>
+
+                    <section class="guide-section" id="options">
+                        <header>
+                            <span>1 · Options</span>
+                            <h2>What is an option?</h2>
+                            <p>An option is a contract tied to another asset, called the underlying. A stock option normally represents 100 shares and exists only until a specific expiration date. The buyer pays a premium for a right; the seller receives that premium and accepts an obligation.</p>
+                        </header>
+
+                        <div class="contract-anatomy">
+                            <div><span>Underlying</span><strong>MSFT stock</strong><p>The asset whose price determines the option's value.</p></div>
+                            <div><span>Type</span><strong>Call or put</strong><p>Whether the buyer receives the right to buy or the right to sell.</p></div>
+                            <div><span>Strike</span><strong>$490</strong><p>The fixed transaction price written into the contract.</p></div>
+                            <div><span>Expiration</span><strong>Oct. 9, 2026</strong><p>The final date on which the contract can exist.</p></div>
+                            <div><span>Premium</span><strong>Market price</strong><p>The amount paid per share for the option contract.</p></div>
+                            <div><span>Multiplier</span><strong>100 shares</strong><p>A quoted premium of $17.09 means $1,709 for one standard contract.</p></div>
+                        </div>
+
+                        <div class="concept-split">
+                            <div>
+                                <h3>Rights and obligations are different</h3>
+                                <p>The option buyer can choose whether to exercise. The seller does not have that choice if assigned. This asymmetry is why buying and selling the same option create very different risk.</p>
+                            </div>
+                            <div>
+                                <h3>Premium is not a refundable deposit</h3>
+                                <p>The buyer pays the premium upfront. If the contract expires without enough value, some or all of that premium is lost. A correct directional idea can still lose when the move is too small or too late.</p>
+                            </div>
+                        </div>
+
+                        <div class="reasoning-check" data-quiz data-answer="contract" data-correct-feedback="Correct. The $12 quote is per share, and one standard contract covers 100 shares: $12 × 100 = $1,200.">
+                            <h3>Check the contract math</h3>
+                            <p>An option is quoted at $12.00. What does one standard contract cost before fees?</p>
+                            <div>
+                                <button type="button" data-quiz-choice="quote" data-feedback="Option quotes are normally per share, not per contract.">$12</button>
+                                <button type="button" data-quiz-choice="contract">$1,200</button>
+                                <button type="button" data-quiz-choice="strike" data-feedback="The strike is the contract's transaction price, not the premium paid.">It depends on the strike</button>
+                            </div>
+                            <p class="quiz-answer" aria-live="polite">Choose an answer.</p>
+                        </div>
+
+                        <div class="chapter-link">
+                            <strong>Next: the right to buy</strong>
+                            <p>With the contract anatomy established, the first directional building block is the call option.</p>
+                            <a href="#calls">Continue to calls ↓</a>
+                        </div>
+                    </section>
+
+                    <section class="guide-section" id="calls">
+                        <header>
+                            <span>2 · Calls</span>
+                            <h2>What is a call?</h2>
+                            <p>A call gives its buyer the right to buy the underlying at the strike price. A call becomes more valuable when buying at the strike is attractive compared with buying at the market price.</p>
+                        </header>
+
+                        <div class="worked-example">
+                            <div>
+                                <h3>MSFT $490 call</h3>
+                                <p>On September 9, MSFT closed at $491.65. The October 9 $490 call last traded at $17.09. The call already had $1.65 of intrinsic value because the stock was $1.65 above the strike. The remaining $15.44 was time value.</p>
+                                <p>At expiration, the call buyer's break-even is $507.09: the $490 strike plus the $17.09 premium. Finishing above $490 is not enough to create a profit because the premium must also be recovered.</p>
+                            </div>
+                            <div class="value-bridge" role="img" aria-label="The 17 dollar and 9 cent call price contains 1 dollar and 65 cents of intrinsic value and 15 dollars and 44 cents of time value.">
+                                <span class="value-intrinsic" style="--share:9.65%"><b>$1.65</b> intrinsic</span>
+                                <span class="value-time" style="--share:90.35%"><b>$15.44</b> time value</span>
+                            </div>
+                        </div>
+
+                        <div class="payoff-table">
+                            <h3>Call value at expiration</h3>
+                            <table>
+                                <thead><tr><th>MSFT at expiration</th><th>Call value</th><th>Profit/loss per share</th><th>Meaning</th></tr></thead>
+                                <tbody>
+                                    <tr><td>$470</td><td>$0</td><td class="metric-negative">−$17.09</td><td>Below strike; full premium lost</td></tr>
+                                    <tr><td>$490</td><td>$0</td><td class="metric-negative">−$17.09</td><td>At strike; still no intrinsic value</td></tr>
+                                    <tr><td>$507.09</td><td>$17.09</td><td>$0</td><td>Break-even before fees</td></tr>
+                                    <tr><td>$520</td><td>$30</td><td class="metric-positive">+$12.91</td><td>Stock gain exceeds premium</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="reasoning-check" data-quiz data-answer="small-loss" data-correct-feedback="Correct. The call is worth $10 at expiration, but the buyer paid $17.09. Being right about direction was not enough.">
+                            <h3>Direction versus magnitude</h3>
+                            <p>MSFT rises from $491.65 to $500 by expiration. What happens to the $490 call buyer who paid $17.09?</p>
+                            <div>
+                                <button type="button" data-quiz-choice="profit" data-feedback="The call has $10 of value, but the buyer paid $17.09.">Profit, because MSFT rose</button>
+                                <button type="button" data-quiz-choice="small-loss">Lose $7.09 per share</button>
+                                <button type="button" data-quiz-choice="full-loss" data-feedback="The call is not worthless; it has $10 of intrinsic value.">Lose the full $17.09</button>
+                            </div>
+                            <p class="quiz-answer" aria-live="polite">Choose an answer.</p>
+                        </div>
+
+                        <div class="chapter-link">
+                            <strong>Next: the mirror image</strong>
+                            <p>A put uses the same contract anatomy but gives the buyer the opposite right.</p>
+                            <a href="#puts">Continue to puts ↓</a>
+                        </div>
+                    </section>
+
+                    <section class="guide-section" id="puts">
+                        <header>
+                            <span>3 · Puts</span>
+                            <h2>What is a put?</h2>
+                            <p>A put gives its buyer the right to sell the underlying at the strike price. A put becomes more valuable when selling at the strike is attractive compared with the lower market price.</p>
+                        </header>
+
+                        <div class="worked-example">
+                            <div>
+                                <h3>MSFT $490 put</h3>
+                                <p>The October 9 $490 put last traded at $12.85. Because MSFT was above the $490 strike, the put had no intrinsic value in the snapshot; all $12.85 was time value.</p>
+                                <p>At expiration, the put buyer's break-even is $477.15: the $490 strike minus the $12.85 premium. The put begins to profit only after the stock falls far enough to recover what the buyer paid.</p>
+                            </div>
+                            <div class="call-put-contrast">
+                                <div><span>Call buyer wants</span><strong>MSFT above $507.09</strong><p>Upside beyond strike + premium</p></div>
+                                <div><span>Put buyer wants</span><strong>MSFT below $477.15</strong><p>Downside beyond strike − premium</p></div>
+                            </div>
+                        </div>
+
+                        <div class="payoff-table">
+                            <h3>Put value at expiration</h3>
+                            <table>
+                                <thead><tr><th>MSFT at expiration</th><th>Put value</th><th>Profit/loss per share</th><th>Meaning</th></tr></thead>
+                                <tbody>
+                                    <tr><td>$520</td><td>$0</td><td class="metric-negative">−$12.85</td><td>Above strike; full premium lost</td></tr>
+                                    <tr><td>$490</td><td>$0</td><td class="metric-negative">−$12.85</td><td>At strike; still no intrinsic value</td></tr>
+                                    <tr><td>$477.15</td><td>$12.85</td><td>$0</td><td>Break-even before fees</td></tr>
+                                    <tr><td>$460</td><td>$30</td><td class="metric-positive">+$17.15</td><td>Stock decline exceeds premium</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="reasoning-check" data-quiz data-answer="put" data-correct-feedback="Correct. The put directly gains intrinsic value as MSFT falls below the strike; the maximum loss for its buyer remains the premium paid.">
+                            <h3>Choose the directional right</h3>
+                            <p>You want a limited-loss position that benefits if MSFT falls sharply before October 9. Which contract directly expresses that view?</p>
+                            <div>
+                                <button type="button" data-quiz-choice="call" data-feedback="A call is the right to buy and primarily benefits from upside.">Buy the $490 call</button>
+                                <button type="button" data-quiz-choice="put">Buy the $490 put</button>
+                                <button type="button" data-quiz-choice="stock" data-feedback="Buying stock benefits from a rise, not a sharp decline.">Buy 100 MSFT shares</button>
+                            </div>
+                            <p class="quiz-answer" aria-live="polite">Choose an answer.</p>
+                        </div>
+
+                        <div class="chapter-link">
+                            <strong>Next: the market's movement setting</strong>
+                            <p>Calls and puts define the payoff direction. Implied volatility explains how much uncertainty the market has priced into both contracts.</p>
+                            <a href="#iv">Continue to implied volatility ↓</a>
+                        </div>
+                    </section>
+
+                    <section class="guide-section" id="iv">
+                        <header>
+                            <span>4 · Implied volatility</span>
+                            <h2>What is IV?</h2>
+                            <p>Implied volatility is the annualized volatility input that makes an option-pricing model agree with the market premium. It is backed out from the option price; it is not surveyed from traders and it is not a direct forecast of whether MSFT will rise or fall.</p>
+                            <p>Higher IV means the market is assigning more value to a wider range of possible outcomes. Because either a large rise or a large fall can make an option valuable, higher IV generally raises both call and put premiums when the other inputs stay approximately unchanged.</p>
+                        </header>
+
+                        <div class="iv-foundations">
+                            <div><span>What IV measures</span><strong>Priced uncertainty</strong><p>How much future movement is embedded in the option premium.</p></div>
+                            <div><span>What IV does not measure</span><strong>Direction</strong><p>A 25% IV does not mean the stock is expected to rise 25%.</p></div>
+                            <div><span>Why it is annualized</span><strong>Common scale</strong><p>Annualizing lets traders compare contracts with different expirations.</p></div>
+                            <div><span>Why one stock has many IVs</span><strong>A surface</strong><p>Each strike and expiration can imply a different volatility.</p></div>
+                        </div>
+
+                        <div class="iv-example">
+                            <div>
+                                <h3>Reading MSFT's 25.522% call IV</h3>
+                                <p>The October 9 $490 call showed 25.522% IV in the intraday snapshot. This means the $17.09 premium was consistent with a model using roughly 25.5% annualized volatility alongside the stock price, strike, 30 days remaining, rates, and dividends.</p>
+                                <p>It does not mean the call should gain 25.5%, that MSFT has a 25.5% chance of rising, or that MSFT should move 25.5% before October 9. Over 30 days, a square-root-of-time estimate based on 25.522% IV corresponds to an approximate one-standard-deviation move of 7.3% of the stock price, or about $36.0, under simplified lognormal assumptions. It is not a boundary or guaranteed forecast.</p>
+                            </div>
+                            <div class="iv-scale" role="img" aria-label="Higher implied volatility widens the range of outcomes priced by the market and raises option time value.">
+                                <div><span>Lower IV</span><i style="--iv-width:38%"></i><small>Narrower priced range</small></div>
+                                <div><span>MSFT 25.5%</span><i style="--iv-width:62%"></i><small>Snapshot range</small></div>
+                                <div><span>Higher IV</span><i style="--iv-width:88%"></i><small>Wider priced range</small></div>
+                            </div>
+                        </div>
+
+                        <div class="iv-uses">
+                            <div><h3>Compare like with like</h3><p>Compare IV across similar strikes and expirations, or compare the same contract through time. A front-week earnings option and a six-month option carry different event exposure.</p></div>
+                            <div><h3>Separate IV from realized volatility</h3><p>IV is what the option price implies before the period is complete. Realized volatility is what the stock actually does. The difference is central to volatility trading.</p></div>
+                            <div><h3>Connect IV to Vega</h3><p>Vega converts an IV change into an approximate price change. With 0.557 Vega, a one-point IV rise—from 25.5% to 26.5%—adds about $0.56 per share to the call, all else equal.</p></div>
+                        </div>
+
+                        <div class="reasoning-check" data-quiz data-answer="both" data-correct-feedback="Correct. Higher IV widens the priced outcome range, so both the call and put generally gain time value when other inputs stay unchanged.">
+                            <h3>Read an IV increase</h3>
+                            <p>MSFT stays at $491.65, one minute passes, and IV rises from 25.5% to 30.5%. What should happen first, all else equal?</p>
+                            <div>
+                                <button type="button" data-quiz-choice="call" data-feedback="Higher IV values movement in either direction, not only upside.">Only the call should rise</button>
+                                <button type="button" data-quiz-choice="both">Both the call and put should rise</button>
+                                <button type="button" data-quiz-choice="direction" data-feedback="IV describes the width of outcomes, not a bullish or bearish direction.">MSFT must be expected to rise</button>
+                            </div>
+                            <p class="quiz-answer" aria-live="polite">Choose an answer.</p>
+                        </div>
+
+                        <div class="chapter-link">
+                            <strong>Next: translate each sensitivity into dollars</strong>
+                            <p>IV establishes the market's uncertainty setting. The Greeks show how changes in stock price, IV, time, and rates feed into the option premium.</p>
+                            <a href="#greeks">Continue to the Greeks ↓</a>
+                        </div>
+                    </section>
+
+                    <section class="guide-section" id="greeks">
+                        <header>
+                            <span>5 · Greeks</span>
+                            <h2>What are the Greeks?</h2>
+                            <p>The Greeks are measurements, not predictions. Each holds other inputs approximately constant and describes one source of option-price sensitivity. They work together, and they change as the stock price, time, and market expectations change.</p>
+                        </header>
+
+                        <div class="greek-grid">
+                            <article><span>Δ</span><h3>Delta</h3><strong>Direction</strong><p>Approximate option-price change for a $1 move in MSFT. The call's 0.550 delta suggests about +$0.55 for a $1 stock rise; the put's −0.453 suggests about −$0.45.</p></article>
+                            <article><span>Γ</span><h3>Gamma</h3><strong>Delta's change</strong><p>Approximate change in delta for a $1 stock move. A call gamma of 0.011 means its delta may rise from 0.550 to about 0.561 after a $1 rise, all else equal.</p></article>
+                            <article><span>Θ</span><h3>Theta</h3><strong>Time</strong><p>Approximate daily change from one day passing. The call's −0.267 theta means about 27 cents per share of daily decay, all else equal.</p></article>
+                            <article><span>V</span><h3>Vega</h3><strong>Implied volatility</strong><p>Approximate option-price change for a one-percentage-point IV change. The call's 0.557 vega means a rise from 25.5% to 26.5% IV may add about $0.56.</p></article>
+                            <article><span>ρ</span><h3>Rho</h3><strong>Interest rates</strong><p>Approximate sensitivity to a one-percentage-point rate change. Rho matters more for longer-dated options and is usually less visible in a 30-day example.</p></article>
+                        </div>
+
+                        <div class="greek-equation">
+                            <h3>How the Greeks connect to the option price</h3>
+                            <p>For a small change, traders often use the Greeks as a local approximation. Start with Delta for the stock move, add half of Gamma times the squared move, add Theta for each day, add Vega for each IV point, and add Rho for each interest-rate point.</p>
+                            <div class="formula-line">Option change ≈ Δ × stock move + ½Γ × move² + Θ × days + Vega × IV points + Rho × rate points</div>
+                            <p>This is a map of nearby sensitivity, not a guaranteed price. Large moves change the Greeks themselves, bid/ask spreads move, and the approximation becomes less precise.</p>
+                        </div>
+
+                        <div class="greek-scenarios">
+                            <h3>Use the MSFT call in four scenarios</h3>
+                            <div>
+                                <span>Scenario 1</span>
+                                <strong>MSFT rises $5 immediately</strong>
+                                <p>Delta adds about 0.550 × $5 = $2.75. Gamma adds about ½ × 0.0110 × $5² = $0.14. The call estimate moves from $17.09 to roughly $19.98 before other effects.</p>
+                            </div>
+                            <div>
+                                <span>Scenario 2</span>
+                                <strong>One day passes with nothing else changed</strong>
+                                <p>Theta subtracts about $0.267 per share. The call estimate moves from $17.09 to roughly $16.82. For one contract, that local time-decay estimate is about $27.</p>
+                            </div>
+                            <div>
+                                <span>Scenario 3</span>
+                                <strong>IV rises three percentage points</strong>
+                                <p>Vega adds about 0.557 × 3 = $1.67 per share. The call estimate moves from $17.09 to roughly $18.76 even if MSFT itself does not move.</p>
+                            </div>
+                            <div>
+                                <span>Scenario 4</span>
+                                <strong>MSFT +$5, IV −2 points, and one day passes</strong>
+                                <p>Delta and Gamma add about $2.89, Vega removes about $1.11, and Theta removes about $0.27. Net estimated change: +$1.51, putting the call near $18.60.</p>
+                            </div>
+                        </div>
+
+                        <div class="greek-use-table">
+                            <h3>How traders use each Greek</h3>
+                            <table>
+                                <thead><tr><th>Greek</th><th>Question it answers</th><th>Practical use</th><th>MSFT reading</th></tr></thead>
+                                <tbody>
+                                    <tr><th>Delta</th><td>How directional is this option now?</td><td>Compare directional exposure across contracts or estimate share-equivalent exposure.</td><td>0.550 × 100 ≈ 55 shares of local call exposure</td></tr>
+                                    <tr><th>Gamma</th><td>How quickly can Delta change?</td><td>Identify positions whose directional exposure can accelerate after a move.</td><td>A $5 rise lifts estimated Delta toward 0.605</td></tr>
+                                    <tr><th>Theta</th><td>What does waiting cost?</td><td>Compare expected daily decay with the time needed for the thesis to work.</td><td>About −$27 per contract per day, all else equal</td></tr>
+                                    <tr><th>Vega</th><td>How exposed am I to IV?</td><td>Estimate the effect of IV expansion before events or contraction after uncertainty resolves.</td><td>A five-point IV fall implies roughly −$278 per contract</td></tr>
+                                    <tr><th>Rho</th><td>How exposed am I to rates?</td><td>Assess rate sensitivity, especially in long-dated contracts.</td><td>A 0.25-point rate rise implies about +$0.05 per share</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="greek-caveat">
+                            <h3>“All else equal” is the important phrase</h3>
+                            <p>In a real market, several inputs change together. MSFT can fall while IV rises and a day passes. Delta, gamma, theta, and vega then contribute at the same time, so no single Greek fully explains the observed price change.</p>
+                        </div>
+
+                        <div class="reasoning-check" data-quiz data-answer="combined" data-correct-feedback="Correct. Delta and Gamma help from the stock rise, while Vega and Theta offset part of that gain. Greeks are most useful when combined.">
+                            <h3>Combine the sensitivities</h3>
+                            <p>MSFT rises $5, IV falls two points, and one day passes. Which description best uses the Greeks?</p>
+                            <div>
+                                <button type="button" data-quiz-choice="delta-only" data-feedback="Delta captures only the first-order stock move. Gamma, Vega, and Theta also changed in this scenario.">Use Delta only because MSFT rose</button>
+                                <button type="button" data-quiz-choice="combined">Add Delta and Gamma; subtract the Vega and Theta effects</button>
+                                <button type="button" data-quiz-choice="cancel" data-feedback="The effects have different sizes. Opposite signs do not make them cancel automatically.">The Greeks cancel, so the call stays at $17.09</button>
+                            </div>
+                            <p class="quiz-answer" aria-live="polite">Choose an answer.</p>
+                        </div>
+
+                        <div class="chapter-link">
+                            <strong>Next: read the real chain</strong>
+                            <p>The definitions now have enough structure to interpret the actual MSFT call and put side by side.</p>
+                            <a href="#snapshot">Continue to the MSFT snapshot ↓</a>
+                        </div>
+                    </section>
+
+                    <section class="guide-section" id="snapshot">
+                        <header>
+                            <span>6 · Real MSFT snapshot</span>
+                            <h2>What did the numbers look like?</h2>
+                            <p>This frozen snapshot uses MSFT's September 9, 2026 regular-session close and the standard October 9 $490 call and put. The contracts had 30 calendar days remaining and represented 100 shares each.</p>
+                        </header>
+
+                        <div class="snapshot-banner">
+                            <div><span>MSFT close</span><strong>$491.65</strong></div>
+                            <div><span>Strike</span><strong>$490</strong></div>
+                            <div><span>Expiration</span><strong>Oct. 9, 2026</strong></div>
+                            <div><span>Days left</span><strong>30</strong></div>
+                        </div>
+
+                        <div class="chain-table-wrap">
+                            <table class="chain-table">
+                                <thead><tr><th>Field</th><th>$490 call</th><th>$490 put</th><th>How to read it</th></tr></thead>
+                                <tbody>
+                                    <tr><th>Last trade</th><td>$17.09</td><td>$12.85</td><td>Most recent traded premium; not a guaranteed current fill</td></tr>
+                                    <tr><th>Bid / ask</th><td>$15.25 / $16.60</td><td>$12.35 / $13.10</td><td>Displayed buyer and seller prices at the snapshot time</td></tr>
+                                    <tr><th>IV</th><td>25.522%</td><td>25.383%</td><td>Annualized movement input implied by each option price</td></tr>
+                                    <tr><th>Delta</th><td>+0.550</td><td>−0.453</td><td>Immediate directional sensitivity to a $1 MSFT move</td></tr>
+                                    <tr><th>Gamma</th><td>0.0110</td><td>0.0112</td><td>Approximate delta change after a $1 MSFT move</td></tr>
+                                    <tr><th>Theta</th><td>−0.267</td><td>−0.217</td><td>Approximate one-day time decay per share</td></tr>
+                                    <tr><th>Vega</th><td>0.557</td><td>0.556</td><td>Approximate change for a one-point IV move</td></tr>
+                                    <tr><th>Rho</th><td>+0.208</td><td>−0.164</td><td>Approximate change for a one-point interest-rate move</td></tr>
+                                    <tr><th>Volume</th><td>25</td><td>21</td><td>Contracts traded during September 9</td></tr>
+                                    <tr><th>Open interest</th><td>56</td><td>100</td><td>Open contracts carried into the session</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="snapshot-lessons">
+                            <div><h3>The call and put are near the money</h3><p>MSFT was only $1.65 above the $490 strike. That is why both deltas were near ±0.50 and both contracts retained substantial time value.</p></div>
+                            <div><h3>The signs tell the direction</h3><p>Call delta was positive because a stock rise helps the call. Put delta was negative because the same stock rise hurts the put.</p></div>
+                            <div><h3>Similar vega, different theta</h3><p>Both options had nearly identical vega because they shared the same strike and expiration. Their theta differed slightly because their prices and directional positions were not identical.</p></div>
+                            <div><h3>Last price is not the same as a fill</h3><p>The call's last trade was $17.09, but its displayed bid and ask were $15.25 and $16.60 at a later quote timestamp. Real execution analysis starts with current bid/ask data, not a stale last trade.</p></div>
+                        </div>
+
+                        <div class="reasoning-check" data-quiz data-answer="call" data-correct-feedback="Correct. Positive delta means the call tends to rise with MSFT; negative delta means the put tends to fall when MSFT rises.">
+                            <h3>Read the signs</h3>
+                            <p>If MSFT rises $1 immediately and other inputs barely change, which contract does delta suggest should gain value?</p>
+                            <div>
+                                <button type="button" data-quiz-choice="call">The call</button>
+                                <button type="button" data-quiz-choice="put" data-feedback="The put's delta is negative, so a stock rise points to a lower put price.">The put</button>
+                                <button type="button" data-quiz-choice="both" data-feedback="The deltas have opposite signs because calls and puts have opposite directional exposure.">Both equally</button>
+                            </div>
+                            <p class="quiz-answer" aria-live="polite">Choose an answer.</p>
+                        </div>
+
+                        <p class="snapshot-note">Snapshot source: Moomoo market snapshot and quote APIs, accessed September 9, 2026. The call quote's 25.522% IV was captured at 1:38 p.m. ET; the put quote was captured near 4:00 p.m. ET. Option last trades, bid/ask quotes, and Greeks can therefore have different timestamps. The 26.650% value in the history chapter comes from the daily K-line/volatility series rather than this intraday quote. Values are frozen for education and are not live prices.</p>
+
+                        <div class="chapter-link">
+                            <strong>Next: follow the same call through time</strong>
+                            <p>A single snapshot defines the fields. The history shows why those fields cannot be understood independently.</p>
+                            <a href="#over-time">Continue to the time series ↓</a>
+                        </div>
+                    </section>
+
+                    <section class="guide-section" id="over-time">
+                        <header>
+                            <span>7 · Change over time</span>
+                            <h2>How did the $490 call change?</h2>
+                            <p>The chart follows the exact October 9 $490 call from August 27 through September 9. It compares MSFT's closing price, the call's last traded price, the call's daily IV, and the estimated probability of finishing above the strike.</p>
+                        </header>
+
+                        <div class="history-explorer-intro">
+                            <strong>Read one date across every graph</strong>
+                            <p id="history-chart-instructions">Move across either chart on desktop, or tap a date column. A shared vertical line marks the same date in all nine series, and the readout updates every observed and estimated value together. With a keyboard, focus either chart and use the Left and Right Arrow keys.</p>
+                        </div>
+
+                        <div class="history-cross-readout" id="history-cross-readout" aria-live="polite">
+                            <div><span>Selected date</span><strong id="cross-date">September 9, 2026</strong></div>
+                            <div><span>Observed</span><strong id="cross-observed">MSFT $491.65 · Call $17.09 · IV 26.650% · Above strike 52.0% · 30 days</strong></div>
+                            <div><span>Estimated Greeks</span><strong id="cross-greeks">Delta 0.5464 · Gamma 0.01054 · Theta −0.2702 · Vega 0.5581 · Rho 0.2073</strong></div>
+                        </div>
+
+                        <div class="history-chart" id="msft-history-chart" aria-label="Historical charts for MSFT and the October 9 490 dollar call"></div>
+
+                        <div class="history-insights">
+                            <div>
+                                <h3>A small stock decline became a large call decline</h3>
+                                <p>From August 27 to September 9, MSFT fell from $505.06 to $491.65, about 2.7%. The call fell from $26.65 to $17.09, about 35.9%. The option changed more because its payoff depends on distance from the strike, remaining time, and volatility—not stock direction alone.</p>
+                            </div>
+                            <div>
+                                <h3>September 3 shows directional sensitivity</h3>
+                                <p>MSFT rose 2.7% in one session, from $496.82 to $510.12. The call rose 53.2%, from $20.60 to $31.55. A near-the-money call can respond sharply when the stock moves through the strike region.</p>
+                            </div>
+                            <div>
+                                <h3>IV ended near where it began</h3>
+                                <p>Call IV was 26.662% on August 27 and 26.650% on September 9. The large decline in the call therefore cannot be explained by an IV collapse. The lower stock price and 13 fewer calendar days were central.</p>
+                            </div>
+                            <div>
+                                <h3>Probability moved with the stock</h3>
+                                <p>The estimated chance of finishing above $490 rose above 70% when MSFT reached $513.53, then fell toward 52% as MSFT returned to $491.65. This probability is model-derived, not a guarantee.</p>
+                            </div>
+                        </div>
+
+                        <div class="greek-history-intro">
+                            <h3>How the call's Greeks changed</h3>
+                            <p>The data source exposes historical closes and IV, but not a complete daily history of broker-calculated Greeks. The chart below therefore uses a transparent Black-Scholes approximation based on each day's observed MSFT close, daily call IV, $490 strike, and calendar time remaining, with a 4.0% risk-free rate and 0.72% dividend yield.</p>
+                            <p>These estimates teach the direction and scale of change; they are not historical broker quotes. They apply a European Black-Scholes approximation to an American-style MSFT contract, so early exercise and dividend effects can create differences. On September 9, the model estimated 0.546 delta, 0.01054 gamma, −0.270 theta, 0.558 vega, and 0.207 rho. Those values sit close to the intraday snapshot's 0.550, 0.01103, −0.267, 0.557, and 0.208.</p>
+                        </div>
+
+                        <div class="greek-history-chart" id="msft-greek-history-chart" aria-label="Estimated historical Greeks for the October 9 490 dollar MSFT call"></div>
+
+                        <div class="greek-history-lessons">
+                            <div><h3>Delta followed moneyness</h3><p>When MSFT rose to $513.53 on August 28, the estimated call Delta reached 0.729 because the stock sat well above the $490 strike. By September 9, MSFT was only $1.65 above the strike and Delta had fallen to 0.546.</p></div>
+                            <div><h3>Gamma concentrated near the strike</h3><p>Estimated Gamma was 0.00719 when the call was deeper in the money on August 28. It rose to 0.01054 as MSFT returned toward $490 and expiration approached, meaning each additional stock dollar changed Delta more.</p></div>
+                            <div><h3>Theta became more negative</h3><p>Estimated daily Theta moved from −0.223 on August 27 to −0.270 on September 9. With less time remaining and the call near the strike, each quiet day consumed more of the option's remaining time value.</p></div>
+                            <div><h3>Vega and Rho lost time horizon</h3><p>Vega moved from 0.633 to 0.558 and Rho from 0.361 to 0.207. With 13 fewer days remaining, there was less time for volatility and interest-rate changes to affect the final payoff.</p></div>
+                        </div>
+
+                        <div class="history-table-wrap">
+                            <table class="history-table">
+                                <thead><tr><th>Date</th><th>MSFT</th><th>Call</th><th>IV</th><th>Above-$490 probability</th><th>Days left</th></tr></thead>
+                                <tbody id="msft-history-body">
+                                    <tr><th scope="row">2026-08-27</th><td>$505.06</td><td>$26.65</td><td>26.662%</td><td>63.1%</td><td>43</td></tr>
+                                    <tr><th scope="row">2026-08-28</th><td>$513.53</td><td>$36.13</td><td>26.407%</td><td>70.2%</td><td>42</td></tr>
+                                    <tr><th scope="row">2026-08-31</th><td>$507.29</td><td>$30.46</td><td>24.704%</td><td>66.7%</td><td>39</td></tr>
+                                    <tr><th scope="row">2026-09-01</th><td>$501.02</td><td>$23.28</td><td>24.844%</td><td>61.1%</td><td>38</td></tr>
+                                    <tr><th scope="row">2026-09-02</th><td>$496.82</td><td>$20.60</td><td>25.848%</td><td>56.9%</td><td>37</td></tr>
+                                    <tr><th scope="row">2026-09-03</th><td>$510.12</td><td>$31.55</td><td>26.286%</td><td>69.6%</td><td>36</td></tr>
+                                    <tr><th scope="row">2026-09-04</th><td>$499.70</td><td>$21.99</td><td>24.297%</td><td>60.4%</td><td>35</td></tr>
+                                    <tr><th scope="row">2026-09-08</th><td>$493.95</td><td>$17.67</td><td>26.444%</td><td>54.4%</td><td>31</td></tr>
+                                    <tr><th scope="row">2026-09-09</th><td>$491.65</td><td>$17.09</td><td>26.650%</td><td>52.0%</td><td>30</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="history-table-wrap">
+                            <table class="history-table greek-history-table">
+                                <thead><tr><th>Date</th><th>Delta</th><th>Gamma</th><th>Theta</th><th>Vega</th><th>Rho</th></tr></thead>
+                                <tbody id="msft-greek-history-body">
+                                    <tr><th scope="row">2026-08-27</th><td>0.6617</td><td>0.00790</td><td>−0.2232</td><td>0.6330</td><td>0.3610</td></tr>
+                                    <tr><th scope="row">2026-08-28</th><td>0.7286</td><td>0.00719</td><td>−0.2111</td><td>0.5763</td><td>0.3922</td></tr>
+                                    <tr><th scope="row">2026-08-31</th><td>0.6956</td><td>0.00853</td><td>−0.2122</td><td>0.5795</td><td>0.3479</td></tr>
+                                    <tr><th scope="row">2026-09-01</th><td>0.6401</td><td>0.00930</td><td>−0.2237</td><td>0.6040</td><td>0.3100</td></tr>
+                                    <tr><th scope="row">2026-09-02</th><td>0.5981</td><td>0.00945</td><td>−0.2379</td><td>0.6113</td><td>0.2802</td></tr>
+                                    <tr><th scope="row">2026-09-03</th><td>0.7144</td><td>0.00806</td><td>−0.2280</td><td>0.5436</td><td>0.3304</td></tr>
+                                    <tr><th scope="row">2026-09-04</th><td>0.6326</td><td>0.01001</td><td>−0.2282</td><td>0.5823</td><td>0.2829</td></tr>
+                                    <tr><th scope="row">2026-09-08</th><td>0.5706</td><td>0.01031</td><td>−0.2643</td><td>0.5648</td><td>0.2242</td></tr>
+                                    <tr><th scope="row">2026-09-09</th><td>0.5464</td><td>0.01054</td><td>−0.2702</td><td>0.5581</td><td>0.2073</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="reasoning-check" data-quiz data-answer="combined" data-correct-feedback="Correct. IV ended almost unchanged, so the lower stock price and 13 fewer days explain why the call lost far more than MSFT.">
+                            <h3>Explain the two-week change</h3>
+                            <p>MSFT fell 2.7%, the call fell 35.9%, and IV ended almost unchanged. Which explanation best fits the evidence?</p>
+                            <div>
+                                <button type="button" data-quiz-choice="iv" data-feedback="IV was 26.662% at the start and 26.650% at the end, so an IV collapse did not drive the change.">The call fell mainly because IV collapsed</button>
+                                <button type="button" data-quiz-choice="combined">The stock moved closer to the strike while 13 days of time disappeared</button>
+                                <button type="button" data-quiz-choice="delta" data-feedback="Delta describes local sensitivity, but it does not mean the option must move by the same percentage as MSFT.">The call should have fallen only 2.7%, so the data must be wrong</button>
+                            </div>
+                            <p class="quiz-answer" aria-live="polite">Choose an answer.</p>
+                        </div>
+
+                        <div class="chapter-link">
+                            <strong>The central takeaway</strong>
+                            <p>A call or put is a time-limited payoff, and the Greeks describe different ways its price responds before expiration. The MSFT history shows those forces moving together in real data.</p>
+                            <a href="#references">Continue to sources and definitions ↓</a>
+                        </div>
+                    </section>
+
+                    <section class="guide-section reference-section" id="references">
+                        <header>
+                            <span>8 · References</span>
+                            <h2>Sources, definitions, and limitations</h2>
+                            <p>The market values in this article are a frozen educational snapshot. They should not be treated as current quotes or as a recommendation to trade MSFT options.</p>
+                        </header>
+
+                        <div class="source-list">
+                            <a href="https://www.optionseducation.org/optionsoverview/what-is-an-option" target="_blank" rel="noopener noreferrer"><strong>Options Industry Council: What is an option?</strong><span>Contract fundamentals ↗</span></a>
+                            <a href="https://www.optionseducation.org/advancedconcepts/understanding-options-greeks" target="_blank" rel="noopener noreferrer"><strong>Options Industry Council: Understanding Options Greeks</strong><span>Sensitivity definitions ↗</span></a>
+                            <a href="https://www.cboe.com/optionsinstitute/" target="_blank" rel="noopener noreferrer"><strong>Cboe Options Institute</strong><span>Options education ↗</span></a>
+                            <div><strong>Moomoo quote, snapshot, K-line, volatility, and exercise-probability APIs</strong><span>MSFT and option data captured September 9, 2026</span></div>
+                        </div>
+
+                        <div class="glossary-source" aria-labelledby="glossary-title">
+                            <h3 id="glossary-title">Quick glossary</h3>
+                            <dl id="options-glossary-data">
+                                <div data-glossary-term="option" data-aliases="options"><dt>Option</dt><dd>A time-limited contract that gives its buyer a right and its seller an obligation.</dd></div>
+                                <div data-glossary-term="call" data-aliases="calls"><dt>Call</dt><dd>An option giving its buyer the right to buy the underlying at the strike.</dd></div>
+                                <div data-glossary-term="put" data-aliases="puts"><dt>Put</dt><dd>An option giving its buyer the right to sell the underlying at the strike.</dd></div>
+                                <div data-glossary-term="underlying"><dt>Underlying</dt><dd>The asset whose price the option contract references.</dd></div>
+                                <div data-glossary-term="premium" data-aliases="premiums"><dt>Premium</dt><dd>The option price quoted per share.</dd></div>
+                                <div data-glossary-term="strike" data-aliases="strike price"><dt>Strike price</dt><dd>The fixed buy or sell price written into the contract.</dd></div>
+                                <div data-glossary-term="expiration"><dt>Expiration</dt><dd>The final date on which the option exists.</dd></div>
+                                <div data-glossary-term="intrinsic value"><dt>Intrinsic value</dt><dd>The amount an option is in the money based only on stock price and strike.</dd></div>
+                                <div data-glossary-term="time value"><dt>Time value</dt><dd>The option premium remaining after intrinsic value.</dd></div>
+                                <div data-glossary-term="implied volatility" data-aliases="IV"><dt>Implied volatility</dt><dd>The annualized movement input consistent with the market option price.</dd></div>
+                                <div data-glossary-term="delta"><dt>Delta</dt><dd>Approximate option-price sensitivity to a $1 underlying move.</dd></div>
+                                <div data-glossary-term="gamma"><dt>Gamma</dt><dd>Approximate change in delta for a $1 underlying move.</dd></div>
+                                <div data-glossary-term="theta"><dt>Theta</dt><dd>Approximate option-price change from one day passing.</dd></div>
+                                <div data-glossary-term="vega"><dt>Vega</dt><dd>Approximate option-price change for a one-point IV change.</dd></div>
+                                <div data-glossary-term="rho"><dt>Rho</dt><dd>Approximate option-price sensitivity to interest rates.</dd></div>
+                                <div data-glossary-term="volume"><dt>Volume</dt><dd>Contracts traded during the current session.</dd></div>
+                                <div data-glossary-term="open interest"><dt>Open interest</dt><dd>Open contracts carried into the session.</dd></div>
+                                <div data-glossary-term="bid"><dt>Bid</dt><dd>The highest displayed price a buyer is offering.</dd></div>
+                                <div data-glossary-term="ask"><dt>Ask</dt><dd>The lowest displayed price a seller is offering.</dd></div>
+                            </dl>
+                        </div>
+
+                        <div class="chapter-link is-final">
+                            <strong>One sentence to remember</strong>
+                            <p>An option is a priced, time-limited right; calls benefit from upside, puts benefit from downside, and the Greeks measure how direction, acceleration, time, volatility, and rates change that price.</p>
+                            <a href="#options-guide">Back to the title ↑</a>
+                        </div>
+                    </section>
+                </main>
+            </div>
+        </article>
+
+        <div class="options-term-popover" id="options-term-popover" role="tooltip" hidden>
+            <strong id="options-term-title"></strong>
+            <p id="options-term-definition"></p>
+        </div>
+
+        <footer class="footer">
+            <p>&copy; <span id="year"></span> Brian Fong. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <script src="../../assets/js/data.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/options-volatility.js?v=20260909-5"></script>
+    <script>window.initOptionsVolatility && window.initOptionsVolatility();</script>
+</body>
+</html>
