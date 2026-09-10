@@ -69,13 +69,13 @@
 
 .passkey-hero-grid {
     display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(460px, 1.1fr);
-    gap: clamp(42px, 6vw, 80px);
+    grid-template-columns: 1fr;
+    gap: 36px;
     align-items: center;
 }
 
 .passkey-hero h1 {
-    max-width: 9ch;
+    max-width: 12ch;
     margin: 0 0 24px;
     color: var(--pk-ink);
     font-size: clamp(3.2rem, 7.4vw, 6rem);
@@ -94,16 +94,16 @@
 
 .vault-summary {
     display: grid;
-    grid-template-columns: 1fr 80px 1fr;
+    grid-template-columns: 1fr;
+    width: min(720px, 100%);
     align-items: stretch;
     border: 1px solid var(--pk-line-strong);
     background: var(--pk-panel);
-    box-shadow: 0 16px 40px rgba(23, 38, 58, 0.12);
 }
 
 .vault-side {
     display: grid;
-    min-height: 280px;
+    min-height: 180px;
     align-content: center;
     justify-items: center;
     padding: 28px;
@@ -176,11 +176,12 @@
 }
 
 .vault-pair {
-    display: grid;
-    place-content: center;
+    display: flex;
+    justify-content: center;
     gap: 8px;
-    border-right: 1px solid var(--pk-line);
-    border-left: 1px solid var(--pk-line);
+    padding: 12px;
+    border-top: 1px solid var(--pk-line);
+    border-bottom: 1px solid var(--pk-line);
     color: var(--pk-muted);
     font-size: 0.72rem;
     text-align: center;
@@ -188,9 +189,9 @@
 }
 
 .vault-pair span {
-    width: 1px;
-    height: 42px;
-    justify-self: center;
+    width: 42px;
+    height: 1px;
+    align-self: center;
     background: var(--pk-line-strong);
 }
 
@@ -238,11 +239,11 @@
 }
 
 .passkey-layout {
-    display: grid;
-    grid-template-columns: 176px minmax(0, 820px);
-    gap: clamp(40px, 6vw, 84px);
-    justify-content: center;
+    display: block;
+    width: min(820px, 100%);
     margin-top: 66px;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 .passkey-rail {
@@ -322,19 +323,25 @@
 
 .term-map {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     margin: 42px 0;
     border-top: 1px solid var(--pk-line-strong);
 }
 
 .term-map > div {
-    padding: 22px;
-    border-right: 1px solid var(--pk-line);
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 6px 24px;
+    padding: 18px 0;
     border-bottom: 1px solid var(--pk-line);
 }
 
-.term-map > div:nth-child(2n) {
-    border-right: 0;
+.term-map > div > span {
+    grid-row: 1 / 3;
+}
+
+.term-map > div > p {
+    grid-column: 2;
 }
 
 .term-map span,
@@ -362,7 +369,7 @@
 .key-properties,
 .attack-walk {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     gap: 28px;
     margin: 42px 0;
 }
@@ -384,6 +391,19 @@
     border: 1px solid var(--pk-line-strong);
     background: var(--pk-panel);
     box-shadow: 0 16px 42px rgba(23, 38, 58, 0.1);
+}
+
+.challenge-detail {
+    margin: 34px 0;
+    padding: 24px 0;
+    border-top: 1px solid var(--pk-line);
+    border-bottom: 1px solid var(--pk-line);
+}
+
+.challenge-detail p {
+    max-width: 70ch;
+    margin: 8px 0 0;
+    color: var(--pk-muted);
 }
 
 .ceremony-toolbar {
@@ -465,8 +485,10 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 92px;
-    min-height: 250px;
-    align-items: center;
+    min-height: 330px;
+    box-sizing: border-box;
+    align-items: end;
+    padding-top: 70px;
     margin-top: 18px;
 }
 
@@ -494,6 +516,7 @@
     border: 1px solid var(--pk-line-strong);
     background: var(--pk-white);
     text-align: center;
+    margin-bottom: 20px;
     transition: border-color 240ms ease-out, background-color 240ms ease-out, transform 240ms ease-out;
 }
 
@@ -512,7 +535,7 @@
 .private-key-state {
     position: absolute;
     z-index: 5;
-    top: 114px;
+    top: 82px;
     left: 50%;
     padding: 7px 10px;
     border: 1px solid currentColor;
@@ -528,7 +551,7 @@
 }
 
 .private-key-state {
-    top: 182px;
+    top: 286px;
     left: 16.66%;
     color: var(--pk-red);
 }
@@ -543,6 +566,13 @@
     transform: translateX(-50%);
 }
 
+.ceremony-lab[data-stage="2"] .actor-browser,
+.ceremony-lab[data-stage="5"] .actor-browser {
+    border-color: var(--pk-blue);
+    background: var(--pk-blue-pale);
+    transform: translateY(-5px);
+}
+
 .ceremony-lab[data-stage="3"] .actor-device,
 .ceremony-lab[data-stage="4"] .actor-device {
     border-color: var(--pk-blue);
@@ -551,7 +581,8 @@
 }
 
 .ceremony-lab[data-stage="4"] .private-key-state,
-.ceremony-lab[data-stage="5"] .private-key-state {
+.ceremony-lab[data-stage="5"] .private-key-state,
+.ceremony-lab[data-stage="6"] .private-key-state {
     opacity: 1;
 }
 
@@ -561,6 +592,11 @@
 }
 
 .ceremony-lab[data-ceremony="register"][data-stage="5"] .packet-public {
+    opacity: 1;
+    transform: translateX(-50%);
+}
+
+.ceremony-lab[data-ceremony="register"][data-stage="6"] .packet-public {
     opacity: 1;
     transform: translateX(188px);
 }
@@ -572,10 +608,15 @@
 
 .ceremony-lab[data-ceremony="signin"][data-stage="5"] .packet-signature {
     opacity: 1;
+    transform: translateX(-50%);
+}
+
+.ceremony-lab[data-ceremony="signin"][data-stage="6"] .packet-signature {
+    opacity: 1;
     transform: translateX(188px);
 }
 
-.ceremony-lab[data-stage="5"] .actor-server {
+.ceremony-lab[data-stage="6"] .actor-server {
     border-color: var(--pk-green);
     background: var(--pk-green-pale);
     transform: translateY(-5px);
@@ -583,7 +624,7 @@
 
 .ceremony-steps {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: 1fr;
     margin: 0;
     padding: 0;
     border-top: 1px solid var(--pk-line);
@@ -591,11 +632,14 @@
 }
 
 .ceremony-steps button {
+    display: grid;
+    grid-template-columns: 30px minmax(130px, 0.42fr) minmax(0, 1fr);
+    gap: 14px;
     width: 100%;
-    min-height: 114px;
-    padding: 12px;
+    min-height: 0;
+    padding: 13px 16px;
     border: 0;
-    border-right: 1px solid var(--pk-line);
+    border-bottom: 1px solid var(--pk-line);
     background: transparent;
     color: var(--pk-muted);
     text-align: left;
@@ -603,17 +647,17 @@
 }
 
 .ceremony-steps li:last-child button {
-    border-right: 0;
+    border-bottom: 0;
 }
 
 .ceremony-steps button > span,
 .ceremony-steps button > strong,
 .ceremony-steps button > small {
-    display: block;
+    display: inline;
 }
 
 .ceremony-steps button > span {
-    margin-bottom: 8px;
+    margin-bottom: 0;
     color: var(--pk-blue);
     font-size: 0.72rem;
 }
@@ -624,7 +668,7 @@
 }
 
 .ceremony-steps button > small {
-    margin-top: 4px;
+    margin-top: 0;
     line-height: 1.35;
 }
 
@@ -667,7 +711,7 @@
 .stored-record,
 .sync-contrast {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     margin: 42px 0;
     border: 1px solid var(--pk-line-strong);
 }
@@ -679,7 +723,8 @@
 
 .stored-record > div + div,
 .sync-contrast > div + div {
-    border-left: 1px solid var(--pk-line);
+    border-top: 1px solid var(--pk-line);
+    border-left: 0;
 }
 
 .record-server {
@@ -698,7 +743,7 @@
 
 .signed-payload {
     display: grid;
-    grid-template-columns: 1fr auto 1fr auto 1fr;
+    grid-template-columns: 1fr;
     gap: 12px;
     align-items: center;
     margin: 42px 0;
@@ -711,13 +756,15 @@
 
 .signed-payload span,
 .signed-payload strong {
-    padding: 16px;
-    border: 1px solid var(--pk-line);
+    padding: 12px 0;
+    border: 0;
+    border-bottom: 1px solid var(--pk-line);
 }
 
 .signed-payload strong {
     border-color: var(--pk-green);
-    background: var(--pk-green-pale);
+    border-bottom: 0;
+    background: transparent;
     color: var(--pk-green);
 }
 
@@ -912,7 +959,7 @@
 
 .passkey-glossary > dl {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 0 28px;
 }
 
@@ -1141,15 +1188,16 @@
     }
 
     .ceremony-steps {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
     }
 
     .ceremony-steps button {
+        grid-template-columns: 28px 1fr;
         border-bottom: 1px solid var(--pk-line);
     }
 
-    .ceremony-steps li:nth-child(2n) button {
-        border-right: 0;
+    .ceremony-steps button > small {
+        grid-column: 2;
     }
 
     .protocol-walk li {

@@ -6,10 +6,11 @@
             playLabel: 'Play registration',
             steps: [
                 { title: 'Registration begins', description: 'The website asks the browser to create a new public-key credential for its RP ID.', name: 'Request', detail: 'Site asks to create a credential' },
-                { title: 'A fresh challenge leaves the server', description: 'Random, single-use bytes bind the response to this registration attempt.', name: 'Challenge', detail: 'Server sends fresh random bytes' },
+                { title: 'The server creates a fresh challenge', description: 'At least 16 cryptographically unpredictable bytes are associated with this short-lived registration request.', name: 'Challenge', detail: 'Server creates one-time random bytes' },
                 { title: 'The browser binds the request to the origin', description: 'The browser checks that the requested RP ID is valid for the page that called WebAuthn.', name: 'Origin check', detail: 'Browser enforces the site boundary' },
                 { title: 'The user approves on the authenticator', description: 'A local PIN, fingerprint, face, or touch authorizes the credential operation. It is not sent to the site.', name: 'Local approval', detail: 'PIN, biometric, or physical touch' },
                 { title: 'The authenticator creates the key pair', description: 'The private key remains under authenticator control. The public key and credential ID are prepared for the site.', name: 'Key creation', detail: 'Private stays; public can travel' },
+                { title: 'The credential returns through the browser', description: 'The authenticator returns the WebAuthn credential to the browser. Page code sends that response to the website over HTTPS.', name: 'Browser relays', detail: 'Authenticator → browser → website' },
                 { title: 'The server stores the public record', description: 'After verifying challenge, origin, RP ID hash, flags, and policy, the server saves the credential ID and public key.', name: 'Store public half', detail: 'Server verifies and saves the record' }
             ]
         },
@@ -17,10 +18,11 @@
             playLabel: 'Play sign-in',
             steps: [
                 { title: 'Sign-in begins', description: 'The website requests a passkey assertion instead of asking for a reusable password.', name: 'Request', detail: 'Site requests an assertion' },
-                { title: 'A new challenge leaves the server', description: 'A new random challenge makes an old captured assertion unusable.', name: 'Challenge', detail: 'Server sends one-time bytes' },
+                { title: 'The server creates a new challenge', description: 'At least 16 fresh random bytes are associated with this sign-in. An old assertion contains the wrong challenge.', name: 'Challenge', detail: 'Server creates one-time bytes' },
                 { title: 'The real origin selects the credential', description: 'The browser and authenticator match only credentials scoped to this RP ID.', name: 'Site binding', detail: 'Fake domains cannot request it' },
                 { title: 'The user authorizes the private-key operation', description: 'Local user presence and optional verification release use of the private key.', name: 'Local approval', detail: 'User presence and verification' },
                 { title: 'The authenticator signs fresh context', description: 'It signs authenticator data joined with the hash of client data containing the challenge and origin.', name: 'Sign assertion', detail: 'Private key creates a signature' },
+                { title: 'The assertion returns through the browser', description: 'The authenticator returns the signed assertion to the WebAuthn client. Page code sends it to the website over HTTPS.', name: 'Browser relays', detail: 'Authenticator → browser → website' },
                 { title: 'The server verifies and creates a session', description: 'The stored public key verifies the signature only after challenge, origin, RP ID, flags, and account checks pass.', name: 'Verify', detail: 'Public key accepts or rejects' }
             ]
         }
@@ -86,10 +88,10 @@
             lab.dataset.stage = String(stage);
             title.textContent = step.title;
             description.textContent = step.description;
-            var mobilePositions = [2, 2, 1, 0, 0, 2];
+            var mobilePositions = [2, 2, 1, 0, 0, 1, 2];
             var mobileArtifacts = mode === 'register'
-                ? ['Registration request starts', 'Challenge travels to the browser', 'Browser checks the site binding', 'Local approval reaches the authenticator', 'Private/public key pair is created', 'Public key reaches the website']
-                : ['Sign-in request starts', 'Challenge travels to the browser', 'Browser selects the RP-scoped credential', 'Local approval reaches the authenticator', 'Private key creates the signature', 'Signature reaches the website'];
+                ? ['Registration request starts', 'Server creates the one-time challenge', 'Browser checks the site binding', 'Local approval reaches the authenticator', 'Private/public key pair is created', 'Public key returns to the browser', 'Browser sends the public response to the website']
+                : ['Sign-in request starts', 'Server creates the one-time challenge', 'Browser selects the RP-scoped credential', 'Local approval reaches the authenticator', 'Private key creates the signature', 'Signature returns to the browser', 'Browser sends the assertion to the website'];
             document.getElementById('mobile-stage-artifact').textContent = mobileArtifacts[stage];
             root.querySelectorAll('[data-mobile-position]').forEach(function (item) {
                 if (Number(item.dataset.mobilePosition) === mobilePositions[stage]) item.setAttribute('aria-current', 'step');

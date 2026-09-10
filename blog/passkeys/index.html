@@ -1,9 +1,9 @@
 <!--
-THESIS: A passkey is understandable when the reader can see the private key stay inside the authenticator while challenges, public keys, and signatures cross a site-bound ceremony.
-OWN-WORLD: Warm editorial paper, navy protocol lines, blue trusted state, green verified state, red rejected state, and patent-like numbered leaders.
+THESIS: A passkey is understandable when the reader can see the private key stay inside the authenticator while challenges, public keys, and signatures cross a site-bound flow through the browser.
+OWN-WORLD: Warm editorial paper, navy protocol lines, blue trusted state, green verified state, red rejected state, and one uninterrupted reading column.
 STORY: Separate the keys, walk registration, replay sign-in, compare the same attacks against passwords, then inspect sync, recovery, and residual risk.
 FIRST VIEWPORT: A compact title sits beside one split vault showing the device's private key and the website's public-key record.
-FORM: Split-key vault, fifth grounded structure, with animated ceremony traces and seed 59e10a1a.
+FORM: Split-key vault, fifth grounded structure, with animated registration and sign-in traces and seed 59e10a1a.
 -->
 <!DOCTYPE html>
 <html lang="en" class="no-js">
@@ -16,7 +16,7 @@ FORM: Split-key vault, fifth grounded structure, with animated ceremony traces a
     <link rel="icon" type="image/png" href="../../assets/favicon.png">
     <link rel="stylesheet" href="../../assets/css/style.css">
     <link rel="stylesheet" href="../../assets/css/blog.css">
-    <link rel="stylesheet" href="../../assets/css/passkeys.css?v=20260909-2">
+    <link rel="stylesheet" href="../../assets/css/passkeys.css?v=20260909-3">
 </head>
 <body class="blog-article passkey-page">
     <header class="topbar">
@@ -71,27 +71,7 @@ FORM: Split-key vault, fifth grounded structure, with animated ceremony traces a
                 </div>
             </header>
 
-            <nav class="passkey-route" aria-label="Article sections">
-                <a href="#key-pair" data-section-link="key-pair" aria-current="true"><span>Key pair</span><small>What a passkey is</small></a>
-                <a href="#registration" data-section-link="registration"><span>Registration</span><small>Create the credential</small></a>
-                <a href="#authentication" data-section-link="authentication"><span>Sign-in</span><small>Prove possession</small></a>
-                <a href="#security" data-section-link="security"><span>Security</span><small>Why phishing fails</small></a>
-                <a href="#risks" data-section-link="risks"><span>Risks</span><small>What remains</small></a>
-            </nav>
-
             <div class="passkey-layout">
-                <aside class="passkey-rail" aria-label="On this page">
-                    <span>On this page</span>
-                    <a href="#key-pair">Public and private keys</a>
-                    <a href="#ceremony-lab">Animated ceremony</a>
-                    <a href="#registration">Registration flow</a>
-                    <a href="#authentication">Authentication flow</a>
-                    <a href="#security">Passkeys vs passwords</a>
-                    <a href="#sync">Sync and recovery</a>
-                    <a href="#risks">Risks and limits</a>
-                    <a href="#sources">Sources</a>
-                </aside>
-
                 <main class="passkey-body">
                     <section class="passkey-section" id="key-pair" data-article-section>
                         <header class="section-heading">
@@ -109,7 +89,7 @@ FORM: Split-key vault, fifth grounded structure, with animated ceremony traces a
                         <div class="key-properties">
                             <div>
                                 <h3>The private key proves</h3>
-                                <p>The authenticator uses the private key to sign fresh ceremony data. The website never needs the private key and never receives it during registration or sign-in.</p>
+                                <p>The authenticator uses the private key to sign fresh flow data. The website never needs the private key and never receives it during registration or sign-in.</p>
                             </div>
                             <div>
                                 <h3>The public key verifies</h3>
@@ -139,13 +119,19 @@ FORM: Split-key vault, fifth grounded structure, with animated ceremony traces a
 
                     <section class="passkey-section ceremony-section" id="ceremony-lab" data-article-section>
                         <header class="section-heading">
-                            <h2>Watch the ceremony cross the boundary</h2>
-                            <p>Registration creates the key pair. Authentication proves possession later. Select a ceremony, press play, or choose any numbered step to inspect it directly.</p>
+                            <h2>Watch the flow cross the boundary</h2>
+                            <p>Registration creates the key pair. Authentication proves possession later. In both flows, the browser sits between the authenticator and website: it enforces the origin, receives the WebAuthn response, and lets page code send that response to the server over HTTPS.</p>
                         </header>
+
+                        <div class="challenge-detail">
+                            <h3>What the challenge actually is</h3>
+                            <p>The challenge is at least 16 bytes of cryptographically unpredictable random data generated by the server. It is not a password and does not need to stay secret. Its job is freshness: the server associates it with one short-lived request, the browser includes it in <code>clientDataJSON</code>, and the server requires an exact match before accepting the response.</p>
+                            <p>After success or failure, the server invalidates the challenge. A signature captured from an earlier sign-in contains the old challenge, so replaying it against a new request fails.</p>
+                        </div>
 
                         <div class="ceremony-lab" data-ceremony="register" data-stage="0">
                             <div class="ceremony-toolbar">
-                                <div class="ceremony-switch" role="group" aria-label="Passkey ceremony">
+                                <div class="ceremony-switch" role="group" aria-label="Passkey flow">
                                     <button type="button" data-ceremony-mode="register" aria-pressed="true">Create passkey</button>
                                     <button type="button" data-ceremony-mode="signin" aria-pressed="false">Sign in</button>
                                 </div>
@@ -153,7 +139,7 @@ FORM: Split-key vault, fifth grounded structure, with animated ceremony traces a
                             </div>
 
                             <div class="ceremony-figure" role="img" aria-labelledby="ceremony-title ceremony-description">
-                                <span class="figure-label">Fig. 1 · Split-key ceremony</span>
+                                <span class="figure-label">Fig. 1 · Split-key flow</span>
                                 <div class="ceremony-caption" aria-live="polite" aria-atomic="true">
                                     <h3 id="ceremony-title">Registration begins</h3>
                                     <p id="ceremony-description">The website asks the browser to create a new public-key credential for its RP ID.</p>
@@ -163,8 +149,8 @@ FORM: Split-key vault, fifth grounded structure, with animated ceremony traces a
                                     <div class="actor actor-browser"><span>WebAuthn client</span><strong>Browser</strong><small>Origin enforcement</small></div>
                                     <div class="actor actor-server"><span>Relying party</span><strong>Website server</strong><small>Challenge + verification</small></div>
                                     <svg viewBox="0 0 900 250" aria-hidden="true">
-                                        <path class="ceremony-path path-left" d="M210 132 H404" />
-                                        <path class="ceremony-path path-right" d="M496 132 H690" />
+                                        <path class="ceremony-path path-left" d="M210 90 H404" />
+                                        <path class="ceremony-path path-right" d="M496 90 H690" />
                                     </svg>
                                     <span class="packet packet-challenge">challenge</span>
                                     <span class="packet packet-public">public key</span>
@@ -184,11 +170,12 @@ FORM: Split-key vault, fifth grounded structure, with animated ceremony traces a
 
                             <ol class="ceremony-steps" id="ceremony-steps">
                                 <li><button type="button" data-ceremony-step="0" aria-current="step"><span>1</span><strong>Request</strong><small>Site asks to create a credential</small></button></li>
-                                <li><button type="button" data-ceremony-step="1"><span>2</span><strong>Challenge</strong><small>Server sends fresh random bytes</small></button></li>
-                                <li><button type="button" data-ceremony-step="2"><span>3</span><strong>Origin check</strong><small>Browser binds the ceremony to the site</small></button></li>
+                                <li><button type="button" data-ceremony-step="1"><span>2</span><strong>Challenge</strong><small>Server creates one-time random bytes</small></button></li>
+                                <li><button type="button" data-ceremony-step="2"><span>3</span><strong>Origin check</strong><small>Browser binds the flow to the site</small></button></li>
                                 <li><button type="button" data-ceremony-step="3"><span>4</span><strong>Local approval</strong><small>Face, fingerprint, PIN, or touch</small></button></li>
                                 <li><button type="button" data-ceremony-step="4"><span>5</span><strong>Key creation</strong><small>Authenticator generates the pair</small></button></li>
-                                <li><button type="button" data-ceremony-step="5"><span>6</span><strong>Store public half</strong><small>Server verifies and saves the record</small></button></li>
+                                <li><button type="button" data-ceremony-step="5"><span>6</span><strong>Browser relays</strong><small>WebAuthn response returns through the browser</small></button></li>
+                                <li><button type="button" data-ceremony-step="6"><span>7</span><strong>Store public half</strong><small>Server verifies and saves the record</small></button></li>
                             </ol>
                         </div>
                     </section>
@@ -196,7 +183,7 @@ FORM: Split-key vault, fifth grounded structure, with animated ceremony traces a
                     <section class="passkey-section" id="registration" data-article-section>
                         <header class="section-heading">
                             <h2>Registration: creating the passkey</h2>
-                            <p>The registration ceremony binds a new credential to an account and a relying-party domain. Adding a passkey is security-sensitive because a newly bound authenticator can later sign in.</p>
+                            <p>The registration flow binds a new credential to an account and a relying-party domain. Adding a passkey is security-sensitive because a newly bound authenticator can later sign in.</p>
                         </header>
 
                         <ol class="protocol-walk">
@@ -314,7 +301,7 @@ FORM: Split-key vault, fifth grounded structure, with animated ceremony traces a
                             <h3>Find the weakest remaining path</h3>
                             <p>A site adds passkeys but still lets support agents reset any account after answering two knowledge questions. What is the main risk?</p>
                             <div>
-                                <button type="button" data-choice="crypto" data-feedback="The public/private-key ceremony can be sound while another account path remains weak.">The passkey signature becomes easier to forge</button>
+                                <button type="button" data-choice="crypto" data-feedback="The public/private-key flow can be sound while another account path remains weak.">The passkey signature becomes easier to forge</button>
                                 <button type="button" data-choice="recovery">Attackers bypass the passkey through account recovery</button>
                                 <button type="button" data-choice="iv" data-feedback="Passkey security does not depend on changing key volatility.">The public key changes too often</button>
                             </div>
@@ -352,7 +339,7 @@ FORM: Split-key vault, fifth grounded structure, with animated ceremony traces a
                             <div data-glossary-term="rp-id"><dt>RP ID</dt><dd>The domain identifier to which a WebAuthn credential is scoped.</dd></div>
                             <div data-glossary-term="origin"><dt>Origin</dt><dd>The scheme, host, and port of the calling web page.</dd></div>
                             <div data-glossary-term="authenticator"><dt>Authenticator</dt><dd>The hardware or software entity that creates credentials and signs assertions.</dd></div>
-                            <div data-glossary-term="challenge"><dt>Challenge</dt><dd>Fresh random bytes issued by the server to bind a response to one ceremony.</dd></div>
+                            <div data-glossary-term="challenge"><dt>Challenge</dt><dd>Fresh random bytes issued by the server to bind a response to one short-lived request and prevent replay.</dd></div>
                             <div data-glossary-term="assertion"><dt>Assertion</dt><dd>The signed authentication response returned by WebAuthn.</dd></div>
                             <div data-glossary-term="attestation"><dt>Attestation</dt><dd>Optional evidence about an authenticator's provenance or properties.</dd></div>
                             <div data-glossary-term="user-verification"><dt>User verification</dt><dd>A local check such as device PIN, fingerprint, or face recognition, reflected in the UV flag.</dd></div>
@@ -376,7 +363,7 @@ FORM: Split-key vault, fifth grounded structure, with animated ceremony traces a
 
     <script src="../../assets/js/data.js"></script>
     <script src="../../assets/js/main.js"></script>
-    <script src="../../assets/js/passkeys.js?v=20260909-2"></script>
+    <script src="../../assets/js/passkeys.js?v=20260909-3"></script>
     <script>window.initPasskeyArticle && window.initPasskeyArticle();</script>
 </body>
 </html>

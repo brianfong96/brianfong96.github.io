@@ -82,13 +82,14 @@ async function run() {
 
         assert.equal(await page.$eval('h1', (node) => node.textContent.trim()), 'Passkeys: the key that never reaches the website');
         assert.equal(await page.$$eval('[data-ceremony-mode]', (nodes) => nodes.length), 2);
-        assert.equal(await page.$$eval('[data-ceremony-step]', (nodes) => nodes.length), 6);
+        assert.equal(await page.$$eval('[data-ceremony-step]', (nodes) => nodes.length), 7);
         assert.equal(await page.$$eval('.protocol-walk', (nodes) => nodes.length), 2);
         assert.equal(await page.$$eval('.protocol-walk li', (nodes) => nodes.length), 12);
         assert.equal(await page.$$eval('.comparison-table tbody tr', (nodes) => nodes.length), 6);
         assert.equal(await page.$$eval('.risk-register article', (nodes) => nodes.length), 8);
         assert.equal(await page.$$eval('[data-glossary-term]', (nodes) => nodes.length), 14);
         assert.ok(await page.$$eval('.term[data-term]', (nodes) => nodes.length) >= 25);
+        assert.equal(await page.$$eval('.passkey-route, .passkey-rail', (nodes) => nodes.length), 0);
 
         const bodyText = await page.$eval('#passkey-article', (node) => node.textContent);
         assert.match(bodyText, /navigator\.credentials\.create/);
@@ -100,6 +101,9 @@ async function run() {
         assert.match(bodyText, /device-bound.+does not prove hardware isolation or AAL3/is);
         assert.match(bodyText, /phishing-resistant authentication, not a force field/i);
         assert.match(bodyText, /counter regression is a risk signal/i);
+        assert.match(bodyText, /at least 16 bytes of cryptographically unpredictable random data/i);
+        assert.match(bodyText, /requires an exact match before accepting the response/i);
+        assert.doesNotMatch(bodyText, /\bceremony\b/i);
 
         await page.$eval('[data-ceremony-step="4"]', (node) => node.click());
         assert.equal(await page.$eval('.ceremony-lab', (node) => node.dataset.stage), '4');
@@ -115,6 +119,9 @@ async function run() {
         assert.match(await page.$eval('#ceremony-play', (node) => node.textContent), /Play sign-in/);
         assert.match(await page.$eval('[data-ceremony-step="2"] small', (node) => node.textContent), /Fake domains/i);
         await page.$eval('[data-ceremony-step="5"]', (node) => node.click());
+        assert.match(await page.$eval('#ceremony-title', (node) => node.textContent), /returns through the browser/i);
+        assert.match(await page.$eval('#ceremony-description', (node) => node.textContent), /Page code sends it to the website over HTTPS/i);
+        await page.$eval('[data-ceremony-step="6"]', (node) => node.click());
         assert.match(await page.$eval('#ceremony-title', (node) => node.textContent), /verifies and creates a session/i);
         await new Promise((resolve) => setTimeout(resolve, 250));
         assert.equal(await page.$eval('.packet-signature', (node) => getComputedStyle(node).opacity), '1');
@@ -154,8 +161,6 @@ async function run() {
             heroColumns: getComputedStyle(document.querySelector('.passkey-hero-grid')).gridTemplateColumns.split(' ').length,
             planeColumns: getComputedStyle(document.querySelector('.ceremony-plane')).gridTemplateColumns.split(' ').length,
             packets: getComputedStyle(document.querySelector('.packet')).display,
-            routeColumns: getComputedStyle(document.querySelector('.passkey-route')).gridTemplateColumns.split(' ').length,
-            rail: getComputedStyle(document.querySelector('.passkey-rail')).display,
             mobileState: getComputedStyle(document.querySelector('.mobile-ceremony-state')).display,
             privateMessage: document.querySelector('.mobile-ceremony-state').textContent
         }));
@@ -163,11 +168,13 @@ async function run() {
         assert.equal(mobile.heroColumns, 1);
         assert.equal(mobile.planeColumns, 1);
         assert.equal(mobile.packets, 'none');
-        assert.equal(mobile.routeColumns, 2);
-        assert.equal(mobile.rail, 'none');
         assert.equal(mobile.mobileState, 'block');
         assert.match(mobile.privateMessage, /Private key.+remains under authenticator control/s);
         assert.equal(await page.$$eval('.ceremony-lab [aria-live="polite"]', (nodes) => nodes.filter((node) => getComputedStyle(node).display !== 'none').length), 1);
+        await page.$eval('[data-ceremony-mode="signin"]', (node) => node.click());
+        await page.$eval('[data-ceremony-step="5"]', (node) => node.click());
+        assert.equal(await page.$eval('[data-mobile-position="1"]', (node) => node.getAttribute('aria-current')), 'step');
+        assert.match(await page.$eval('#mobile-stage-artifact', (node) => node.textContent), /returns to the browser/i);
         await assertNoClippedHeadings(page, 'Passkey mobile');
 
         await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
@@ -177,6 +184,7 @@ async function run() {
         await noJsPage.setJavaScriptEnabled(false);
         await noJsPage.goto(`${origin}/blog/passkeys/`, { waitUntil: 'networkidle0' });
         assert.equal(await noJsPage.$$eval('.protocol-walk li', (nodes) => nodes.length), 12);
+        assert.equal(await noJsPage.$$eval('[data-ceremony-step]', (nodes) => nodes.length), 7);
         assert.equal(await noJsPage.$$eval('[data-glossary-term]', (nodes) => nodes.length), 14);
         assert.match(await noJsPage.$eval('.ceremony-figure', (node) => node.textContent), /Registration begins/);
         await noJsPage.close();
