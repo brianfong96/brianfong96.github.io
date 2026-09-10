@@ -50,34 +50,47 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
                 </div>
                 <div class="passkey-hero-grid">
                     <div>
-                        <h1>Passkeys: the key that never reaches the website</h1>
-                        <p>A passkey replaces a reusable password with a site-specific cryptographic proof. Your device keeps control of the private key. The website stores a public key that can verify signatures but cannot create them.</p>
-                    </div>
-                    <div class="vault-summary" role="img" aria-label="A device vault stores the private key while the website stores only the corresponding public key.">
-                        <div class="vault-side is-device">
-                            <span>Your authenticator</span>
-                            <strong>Private key</strong>
-                            <i class="key-shape" aria-hidden="true"></i>
-                            <small>Signs locally · never sent to the website</small>
-                        </div>
-                        <div class="vault-pair" aria-hidden="true"><span></span><b>paired</b><span></span></div>
-                        <div class="vault-side is-server">
-                            <span>example.com</span>
-                            <strong>Public key</strong>
-                            <i class="key-shape" aria-hidden="true"></i>
-                            <small>Verifies signatures · safe to store publicly</small>
-                        </div>
+                        <h1>How passkeys work</h1>
+                        <p>Public and private keys, registration, sign-in, phishing resistance, recovery, and the risks that remain.</p>
                     </div>
                 </div>
             </header>
 
             <div class="passkey-layout">
+                <aside class="passkey-rail" aria-label="On this page">
+                    <span>On this page</span>
+                    <a href="#key-pair" data-section-link="key-pair" aria-current="true">Public and private keys</a>
+                    <a href="#ceremony-lab" data-section-link="ceremony-lab">Animated flow</a>
+                    <a href="#registration" data-section-link="registration">Registration</a>
+                    <a href="#authentication" data-section-link="authentication">Sign-in</a>
+                    <a href="#security" data-section-link="security">Passkeys vs passwords</a>
+                    <a href="#sync" data-section-link="sync">Sync and recovery</a>
+                    <a href="#risks" data-section-link="risks">Risks and limits</a>
+                    <a href="#sources" data-section-link="sources">Sources</a>
+                </aside>
+
                 <main class="passkey-body">
                     <section class="passkey-section" id="key-pair" data-article-section>
                         <header class="section-heading">
                             <h2>First: what a passkey actually is</h2>
                             <p>A passkey is a passwordless FIDO credential—a discoverable WebAuthn credential—scoped to one relying party such as <code>example.com</code>.</p>
                         </header>
+
+                        <div class="vault-summary" role="img" aria-label="A device vault stores the private key while the website stores only the corresponding public key.">
+                            <div class="vault-side is-device">
+                                <span>Your authenticator</span>
+                                <strong>Private key</strong>
+                                <i class="key-shape" aria-hidden="true"></i>
+                                <small>Signs locally · never sent to the website</small>
+                            </div>
+                            <div class="vault-pair" aria-hidden="true"><span></span><b>paired</b><span></span></div>
+                            <div class="vault-side is-server">
+                                <span>example.com</span>
+                                <strong>Public key</strong>
+                                <i class="key-shape" aria-hidden="true"></i>
+                                <small>Verifies signatures · safe to store publicly</small>
+                            </div>
+                        </div>
 
                         <div class="term-map">
                             <div><span>Protocol family</span><strong>FIDO2</strong><p>WebAuthn between the site and browser, plus CTAP when the browser talks to an external authenticator.</p></div>

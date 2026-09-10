@@ -24,7 +24,7 @@
 .passkey-article {
     width: min(1240px, calc(100% - 48px));
     margin: 0 auto;
-    padding: 92px 0 100px;
+    padding: 64px 0 100px;
     color: var(--pk-ink);
     font-family: "Segoe UI", Arial, sans-serif;
 }
@@ -49,7 +49,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px 18px;
-    margin-bottom: 34px;
+    margin-bottom: 14px;
     color: var(--pk-muted);
     font-size: 0.76rem;
     font-weight: 700;
@@ -63,39 +63,37 @@
 }
 
 .passkey-hero {
-    padding: 22px 0 56px;
+    padding: 4px 0 24px;
     border-bottom: 2px solid var(--pk-ink);
 }
 
 .passkey-hero-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 36px;
-    align-items: center;
+    display: block;
 }
 
 .passkey-hero h1 {
-    max-width: 12ch;
-    margin: 0 0 24px;
+    max-width: none;
+    margin: 0 0 10px;
     color: var(--pk-ink);
-    font-size: clamp(3.2rem, 7.4vw, 6rem);
-    line-height: 1;
+    font-size: clamp(2.7rem, 4vw, 3.6rem);
+    line-height: 1.02;
     letter-spacing: -0.04em;
     text-wrap: balance;
 }
 
 .passkey-hero-grid > div:first-child > p {
-    max-width: 56ch;
+    max-width: 90ch;
     margin: 0;
     color: var(--pk-muted);
-    font-size: 1.1rem;
-    line-height: 1.7;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
 .vault-summary {
     display: grid;
     grid-template-columns: 1fr;
-    width: min(720px, 100%);
+    width: 100%;
+    margin: 36px 0 42px;
     align-items: stretch;
     border: 1px solid var(--pk-line-strong);
     background: var(--pk-panel);
@@ -239,9 +237,11 @@
 }
 
 .passkey-layout {
-    display: block;
-    width: min(820px, 100%);
-    margin-top: 66px;
+    display: grid;
+    grid-template-columns: 170px minmax(0, 820px);
+    gap: 56px;
+    width: min(1046px, 100%);
+    margin-top: 52px;
     margin-right: auto;
     margin-left: auto;
 }
@@ -273,8 +273,13 @@
 }
 
 .passkey-rail a:hover,
-.passkey-rail a:focus-visible {
+.passkey-rail a:focus-visible,
+.passkey-rail a[aria-current="true"] {
     color: var(--pk-blue);
+}
+
+.passkey-rail a[aria-current="true"] {
+    font-weight: 700;
 }
 
 .passkey-body {
@@ -1046,7 +1051,17 @@
     }
 
     .passkey-hero h1 {
-        font-size: clamp(2.6rem, 14vw, 4.4rem);
+        font-size: clamp(2.2rem, 10vw, 2.7rem);
+    }
+
+    .passkey-meta {
+        gap: 6px 12px;
+        margin-bottom: 12px;
+        font-size: 0.68rem;
+    }
+
+    .passkey-meta span:last-child {
+        display: none;
     }
 
     .vault-summary {
@@ -1054,7 +1069,7 @@
     }
 
     .vault-side {
-        min-height: 220px;
+        min-height: 180px;
     }
 
     .vault-pair {

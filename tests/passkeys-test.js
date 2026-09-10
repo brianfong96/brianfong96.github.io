@@ -80,7 +80,7 @@ async function run() {
         await page.waitForSelector('#passkey-article[data-passkey-initialized="true"]');
         await page.waitForFunction(() => window.__spaTransition === false);
 
-        assert.equal(await page.$eval('h1', (node) => node.textContent.trim()), 'Passkeys: the key that never reaches the website');
+        assert.equal(await page.$eval('h1', (node) => node.textContent.trim()), 'How passkeys work');
         assert.equal(await page.$$eval('[data-ceremony-mode]', (nodes) => nodes.length), 2);
         assert.equal(await page.$$eval('[data-ceremony-step]', (nodes) => nodes.length), 7);
         assert.equal(await page.$$eval('.protocol-walk', (nodes) => nodes.length), 2);
@@ -89,7 +89,20 @@ async function run() {
         assert.equal(await page.$$eval('.risk-register article', (nodes) => nodes.length), 8);
         assert.equal(await page.$$eval('[data-glossary-term]', (nodes) => nodes.length), 14);
         assert.ok(await page.$$eval('.term[data-term]', (nodes) => nodes.length) >= 25);
-        assert.equal(await page.$$eval('.passkey-route, .passkey-rail', (nodes) => nodes.length), 0);
+        assert.equal(await page.$$eval('.passkey-route', (nodes) => nodes.length), 0);
+        assert.equal(await page.$$eval('.passkey-rail', (nodes) => nodes.length), 1);
+        const desktopLayout = await page.evaluate(() => ({
+            railDisplay: getComputedStyle(document.querySelector('.passkey-rail')).display,
+            railPosition: getComputedStyle(document.querySelector('.passkey-rail')).position,
+            heroHeight: document.querySelector('.passkey-hero').getBoundingClientRect().height,
+            titleSize: parseFloat(getComputedStyle(document.querySelector('.passkey-hero h1')).fontSize)
+        }));
+        assert.equal(desktopLayout.railDisplay, 'grid');
+        assert.equal(desktopLayout.railPosition, 'sticky');
+        assert.ok(desktopLayout.heroHeight < 190, `Passkey desktop hero is too tall: ${desktopLayout.heroHeight}px`);
+        assert.ok(desktopLayout.titleSize <= 68, `Passkey desktop title is too large: ${desktopLayout.titleSize}px`);
+        await page.$eval('#registration', (node) => node.scrollIntoView());
+        await page.waitForFunction(() => document.querySelector('[data-section-link="registration"]').getAttribute('aria-current') === 'true');
 
         const bodyText = await page.$eval('#passkey-article', (node) => node.textContent);
         assert.match(bodyText, /navigator\.credentials\.create/);
@@ -161,6 +174,9 @@ async function run() {
             heroColumns: getComputedStyle(document.querySelector('.passkey-hero-grid')).gridTemplateColumns.split(' ').length,
             planeColumns: getComputedStyle(document.querySelector('.ceremony-plane')).gridTemplateColumns.split(' ').length,
             packets: getComputedStyle(document.querySelector('.packet')).display,
+            railDisplay: getComputedStyle(document.querySelector('.passkey-rail')).display,
+            heroHeight: document.querySelector('.passkey-hero').getBoundingClientRect().height,
+            titleSize: parseFloat(getComputedStyle(document.querySelector('.passkey-hero h1')).fontSize),
             mobileState: getComputedStyle(document.querySelector('.mobile-ceremony-state')).display,
             privateMessage: document.querySelector('.mobile-ceremony-state').textContent
         }));
@@ -168,6 +184,9 @@ async function run() {
         assert.equal(mobile.heroColumns, 1);
         assert.equal(mobile.planeColumns, 1);
         assert.equal(mobile.packets, 'none');
+        assert.equal(mobile.railDisplay, 'none');
+        assert.ok(mobile.heroHeight < 230, `Passkey mobile hero is too tall: ${mobile.heroHeight}px`);
+        assert.ok(mobile.titleSize <= 53, `Passkey mobile title is too large: ${mobile.titleSize}px`);
         assert.equal(mobile.mobileState, 'block');
         assert.match(mobile.privateMessage, /Private key.+remains under authenticator control/s);
         assert.equal(await page.$$eval('.ceremony-lab [aria-live="polite"]', (nodes) => nodes.filter((node) => getComputedStyle(node).display !== 'none').length), 1);
