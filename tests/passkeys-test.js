@@ -118,6 +118,20 @@ async function run() {
         assert.match(bodyText, /requires an exact match before accepting the response/i);
         assert.doesNotMatch(bodyText, /\bceremony\b/i);
 
+        const flowLayout = await page.evaluate(() => {
+            const steps = document.querySelector('.ceremony-steps');
+            const figure = document.querySelector('.ceremony-figure');
+            const lab = document.querySelector('.ceremony-lab');
+            return {
+                stepColumns: getComputedStyle(steps).gridTemplateColumns.split(' ').length,
+                stepsBeforeFigure: Boolean(steps.compareDocumentPosition(figure) & Node.DOCUMENT_POSITION_FOLLOWING),
+                labHeight: lab.getBoundingClientRect().height
+            };
+        });
+        assert.equal(flowLayout.stepColumns, 7);
+        assert.equal(flowLayout.stepsBeforeFigure, true);
+        assert.ok(flowLayout.labHeight < 560, `Passkey desktop flow is too tall: ${flowLayout.labHeight}px`);
+
         await page.$eval('[data-ceremony-step="4"]', (node) => node.click());
         assert.equal(await page.$eval('.ceremony-lab', (node) => node.dataset.stage), '4');
         assert.match(await page.$eval('#ceremony-title', (node) => node.textContent), /creates the key pair/i);
@@ -173,7 +187,11 @@ async function run() {
             scrollWidth: document.documentElement.scrollWidth,
             heroColumns: getComputedStyle(document.querySelector('.passkey-hero-grid')).gridTemplateColumns.split(' ').length,
             planeColumns: getComputedStyle(document.querySelector('.ceremony-plane')).gridTemplateColumns.split(' ').length,
+            planeDisplay: getComputedStyle(document.querySelector('.ceremony-plane')).display,
             packets: getComputedStyle(document.querySelector('.packet')).display,
+            stepScrollWidth: document.querySelector('.ceremony-steps').scrollWidth,
+            stepClientWidth: document.querySelector('.ceremony-steps').clientWidth,
+            labHeight: document.querySelector('.ceremony-lab').getBoundingClientRect().height,
             railDisplay: getComputedStyle(document.querySelector('.passkey-rail')).display,
             heroHeight: document.querySelector('.passkey-hero').getBoundingClientRect().height,
             titleSize: parseFloat(getComputedStyle(document.querySelector('.passkey-hero h1')).fontSize),
@@ -182,8 +200,10 @@ async function run() {
         }));
         assert.ok(mobile.scrollWidth <= mobile.clientWidth, `Passkey mobile overflow: ${mobile.scrollWidth}px > ${mobile.clientWidth}px`);
         assert.equal(mobile.heroColumns, 1);
-        assert.equal(mobile.planeColumns, 1);
+        assert.equal(mobile.planeDisplay, 'none');
         assert.equal(mobile.packets, 'none');
+        assert.equal(mobile.stepScrollWidth, mobile.stepClientWidth);
+        assert.ok(mobile.labHeight < 520, `Passkey mobile flow is too tall: ${mobile.labHeight}px`);
         assert.equal(mobile.railDisplay, 'none');
         assert.ok(mobile.heroHeight < 230, `Passkey mobile hero is too tall: ${mobile.heroHeight}px`);
         assert.ok(mobile.titleSize <= 53, `Passkey mobile title is too large: ${mobile.titleSize}px`);

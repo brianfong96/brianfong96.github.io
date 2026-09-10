@@ -151,6 +151,16 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
                                 <button type="button" class="ceremony-play" id="ceremony-play">Play registration</button>
                             </div>
 
+                            <ol class="ceremony-steps" id="ceremony-steps">
+                                <li><button type="button" data-ceremony-step="0" aria-label="Step 1: Request" aria-current="step"><span>1</span><strong>Request</strong><small>Site asks to create a credential</small></button></li>
+                                <li><button type="button" data-ceremony-step="1" aria-label="Step 2: Challenge"><span>2</span><strong>Challenge</strong><small>Server creates one-time random bytes</small></button></li>
+                                <li><button type="button" data-ceremony-step="2" aria-label="Step 3: Origin check"><span>3</span><strong>Origin check</strong><small>Browser binds the flow to the site</small></button></li>
+                                <li><button type="button" data-ceremony-step="3" aria-label="Step 4: Local approval"><span>4</span><strong>Local approval</strong><small>Face, fingerprint, PIN, or touch</small></button></li>
+                                <li><button type="button" data-ceremony-step="4" aria-label="Step 5: Key creation"><span>5</span><strong>Key creation</strong><small>Authenticator generates the pair</small></button></li>
+                                <li><button type="button" data-ceremony-step="5" aria-label="Step 6: Browser relays"><span>6</span><strong>Browser relays</strong><small>WebAuthn response returns through the browser</small></button></li>
+                                <li><button type="button" data-ceremony-step="6" aria-label="Step 7: Store public half"><span>7</span><strong>Store public half</strong><small>Server verifies and saves the record</small></button></li>
+                            </ol>
+
                             <div class="ceremony-figure" role="img" aria-labelledby="ceremony-title ceremony-description">
                                 <span class="figure-label">Fig. 1 · Split-key flow</span>
                                 <div class="ceremony-caption" aria-live="polite" aria-atomic="true">
@@ -180,16 +190,6 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
                                     <p>Private key: <b>remains under authenticator control</b></p>
                                 </div>
                             </div>
-
-                            <ol class="ceremony-steps" id="ceremony-steps">
-                                <li><button type="button" data-ceremony-step="0" aria-current="step"><span>1</span><strong>Request</strong><small>Site asks to create a credential</small></button></li>
-                                <li><button type="button" data-ceremony-step="1"><span>2</span><strong>Challenge</strong><small>Server creates one-time random bytes</small></button></li>
-                                <li><button type="button" data-ceremony-step="2"><span>3</span><strong>Origin check</strong><small>Browser binds the flow to the site</small></button></li>
-                                <li><button type="button" data-ceremony-step="3"><span>4</span><strong>Local approval</strong><small>Face, fingerprint, PIN, or touch</small></button></li>
-                                <li><button type="button" data-ceremony-step="4"><span>5</span><strong>Key creation</strong><small>Authenticator generates the pair</small></button></li>
-                                <li><button type="button" data-ceremony-step="5"><span>6</span><strong>Browser relays</strong><small>WebAuthn response returns through the browser</small></button></li>
-                                <li><button type="button" data-ceremony-step="6"><span>7</span><strong>Store public half</strong><small>Server verifies and saves the record</small></button></li>
-                            </ol>
                         </div>
                     </section>
 

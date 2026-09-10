@@ -73,7 +73,7 @@
             var list = document.getElementById('ceremony-steps');
             list.innerHTML = ceremonies[mode].steps.map(function (item, index) {
                 return [
-                    '<li><button type="button" data-ceremony-step="' + index + '"' + (index === stage ? ' aria-current="step"' : '') + '>',
+                    '<li><button type="button" data-ceremony-step="' + index + '" aria-label="Step ' + (index + 1) + ': ' + item.name + '"' + (index === stage ? ' aria-current="step"' : '') + '>',
                     '<span>' + (index + 1) + '</span>',
                     '<strong>' + item.name + '</strong>',
                     '<small>' + item.detail + '</small>',
