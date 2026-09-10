@@ -164,7 +164,7 @@ async function run() {
         await page.goto(`${origin}/blog.html`, { waitUntil: 'networkidle0' });
         await page.select('#blog-topic-select', 'Technology');
         await page.waitForSelector('#blogs-list a[href*="tech-layoffs"]');
-        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 2);
+        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 3);
         assert.match(await page.$eval('#blogs-list a[href*="tech-layoffs"]', (link) => link.innerText), /august 21, 2026/i);
         assert.match(await page.$eval('#blogs-list a[href*="tech-layoffs"]', (link) => link.innerText), /technology/i);
 

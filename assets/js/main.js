@@ -420,6 +420,7 @@
         if (typeof window.initTrumpDisclosure === 'function') window.initTrumpDisclosure();
         if (typeof window.initLindaProblem === 'function') window.initLindaProblem();
         if (typeof window.initOptionsVolatility === 'function') window.initOptionsVolatility();
+        if (typeof window.initPasskeyArticle === 'function') window.initPasskeyArticle();
 
         // Re-highlight current nav
         var currentPath = window.location.pathname;

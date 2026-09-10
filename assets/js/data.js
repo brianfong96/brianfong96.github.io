@@ -49,6 +49,14 @@ const siteData = {
     ],
     blogs: [
         {
+            title: 'Passkeys: The Key That Never Reaches the Website',
+            url: 'blog/passkeys/index.html',
+            description: 'A visual walkthrough of passkey registration and sign-in, public/private-key cryptography, phishing resistance, synchronization, recovery, and the risks that remain.',
+            section: 'Blog',
+            category: 'Technology',
+            date: '2026-09-09'
+        },
+        {
             title: 'Options, Calls, Puts, and Greeks',
             url: 'blog/pricing-the-move/index.html',
             description: 'A beginner guide to option contracts, calls, puts, and the Greeks, grounded in a real MSFT option-chain snapshot and contract history.',

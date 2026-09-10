@@ -1,0 +1,382 @@
+<!--
+THESIS: A passkey is understandable when the reader can see the private key stay inside the authenticator while challenges, public keys, and signatures cross a site-bound ceremony.
+OWN-WORLD: Warm editorial paper, navy protocol lines, blue trusted state, green verified state, red rejected state, and patent-like numbered leaders.
+STORY: Separate the keys, walk registration, replay sign-in, compare the same attacks against passwords, then inspect sync, recovery, and residual risk.
+FIRST VIEWPORT: A compact title sits beside one split vault showing the device's private key and the website's public-key record.
+FORM: Split-key vault, fifth grounded structure, with animated ceremony traces and seed 59e10a1a.
+-->
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How passkeys use public-key cryptography, how registration and sign-in work, why they resist phishing, and what risks remain.">
+    <title>Passkeys: The Key That Never Reaches the Website - Brian Fong</title>
+    <script>document.documentElement.classList.replace('no-js', 'js');</script>
+    <link rel="icon" type="image/png" href="../../assets/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/blog.css">
+    <link rel="stylesheet" href="../../assets/css/passkeys.css?v=20260909-2">
+</head>
+<body class="blog-article passkey-page">
+    <header class="topbar">
+        <a class="home-link" href="../../index.html" aria-label="Home">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </a>
+        <a class="blog-home-link" href="../../blog.html">All blogs</a>
+        <button id="sidebar-toggle" aria-label="Toggle navigation">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg>
+        </button>
+    </header>
+
+    <nav class="sidebar" id="sidebar" aria-label="Primary navigation">
+        <ul class="nav-links">
+            <li><a href="../../index.html">Home</a></li>
+            <li><a href="../../about.html">About</a></li>
+            <li><a href="../../projects.html">Projects</a></li>
+            <li><a href="../../learnings.html">Learnings</a></li>
+            <li><a href="../../blog.html">Blog</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <article class="passkey-article" id="passkey-article">
+            <header class="passkey-hero">
+                <div class="passkey-meta">
+                    <a href="../../blog.html">← Blog</a>
+                    <span>Technology</span>
+                    <time datetime="2026-09-09">September 9, 2026</time>
+                    <span>15 minute read</span>
+                </div>
+                <div class="passkey-hero-grid">
+                    <div>
+                        <h1>Passkeys: the key that never reaches the website</h1>
+                        <p>A passkey replaces a reusable password with a site-specific cryptographic proof. Your device keeps control of the private key. The website stores a public key that can verify signatures but cannot create them.</p>
+                    </div>
+                    <div class="vault-summary" role="img" aria-label="A device vault stores the private key while the website stores only the corresponding public key.">
+                        <div class="vault-side is-device">
+                            <span>Your authenticator</span>
+                            <strong>Private key</strong>
+                            <i class="key-shape" aria-hidden="true"></i>
+                            <small>Signs locally · never sent to the website</small>
+                        </div>
+                        <div class="vault-pair" aria-hidden="true"><span></span><b>paired</b><span></span></div>
+                        <div class="vault-side is-server">
+                            <span>example.com</span>
+                            <strong>Public key</strong>
+                            <i class="key-shape" aria-hidden="true"></i>
+                            <small>Verifies signatures · safe to store publicly</small>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <nav class="passkey-route" aria-label="Article sections">
+                <a href="#key-pair" data-section-link="key-pair" aria-current="true"><span>Key pair</span><small>What a passkey is</small></a>
+                <a href="#registration" data-section-link="registration"><span>Registration</span><small>Create the credential</small></a>
+                <a href="#authentication" data-section-link="authentication"><span>Sign-in</span><small>Prove possession</small></a>
+                <a href="#security" data-section-link="security"><span>Security</span><small>Why phishing fails</small></a>
+                <a href="#risks" data-section-link="risks"><span>Risks</span><small>What remains</small></a>
+            </nav>
+
+            <div class="passkey-layout">
+                <aside class="passkey-rail" aria-label="On this page">
+                    <span>On this page</span>
+                    <a href="#key-pair">Public and private keys</a>
+                    <a href="#ceremony-lab">Animated ceremony</a>
+                    <a href="#registration">Registration flow</a>
+                    <a href="#authentication">Authentication flow</a>
+                    <a href="#security">Passkeys vs passwords</a>
+                    <a href="#sync">Sync and recovery</a>
+                    <a href="#risks">Risks and limits</a>
+                    <a href="#sources">Sources</a>
+                </aside>
+
+                <main class="passkey-body">
+                    <section class="passkey-section" id="key-pair" data-article-section>
+                        <header class="section-heading">
+                            <h2>First: what a passkey actually is</h2>
+                            <p>A passkey is a passwordless FIDO credential—a discoverable WebAuthn credential—scoped to one relying party such as <code>example.com</code>.</p>
+                        </header>
+
+                        <div class="term-map">
+                            <div><span>Protocol family</span><strong>FIDO2</strong><p>WebAuthn between the site and browser, plus CTAP when the browser talks to an external authenticator.</p></div>
+                            <div><span>Website</span><strong>Relying party</strong><p>The service that issues challenges, verifies responses, and stores the credential record.</p></div>
+                            <div><span>Key holder</span><strong>Authenticator</strong><p>A phone, computer, password manager, or security key that creates and uses the credential.</p></div>
+                            <div><span>Credential</span><strong>Key pair + metadata</strong><p>A private key, public key, credential ID, RP ID binding, user handle, and state flags.</p></div>
+                        </div>
+
+                        <div class="key-properties">
+                            <div>
+                                <h3>The private key proves</h3>
+                                <p>The authenticator uses the private key to sign fresh ceremony data. The website never needs the private key and never receives it during registration or sign-in.</p>
+                            </div>
+                            <div>
+                                <h3>The public key verifies</h3>
+                                <p>The server stores the public key with the account and credential ID. It can verify a signature but cannot reverse the public key into the private key or impersonate the authenticator.</p>
+                            </div>
+                            <div>
+                                <h3>The site binding limits scope</h3>
+                                <p>The credential is bound to an RP ID. A credential registered for <code>example.com</code> is not offered to <code>examp1e.com</code>, even when the fake page looks identical.</p>
+                            </div>
+                            <div>
+                                <h3>The biometric is not the passkey</h3>
+                                <p>Face, fingerprint, or device PIN can locally unlock use of the private key. The biometric template and PIN stay on the device; the server receives only the cryptographic result and verification flags.</p>
+                            </div>
+                        </div>
+
+                        <div class="reasoning-check" data-quiz data-answer="public">
+                            <h3>What can a breached website database reveal?</h3>
+                            <p>An attacker steals the website's passkey credential table. Which item should be present?</p>
+                            <div>
+                                <button type="button" data-choice="private" data-feedback="The private key is controlled by the authenticator and is not stored in the relying party's credential record.">The user's private key</button>
+                                <button type="button" data-choice="public">The public key and credential ID</button>
+                                <button type="button" data-choice="biometric" data-feedback="The biometric is checked locally and is not sent to the website.">The fingerprint or face template</button>
+                            </div>
+                            <p class="quiz-feedback" aria-live="polite">Choose an answer.</p>
+                        </div>
+                    </section>
+
+                    <section class="passkey-section ceremony-section" id="ceremony-lab" data-article-section>
+                        <header class="section-heading">
+                            <h2>Watch the ceremony cross the boundary</h2>
+                            <p>Registration creates the key pair. Authentication proves possession later. Select a ceremony, press play, or choose any numbered step to inspect it directly.</p>
+                        </header>
+
+                        <div class="ceremony-lab" data-ceremony="register" data-stage="0">
+                            <div class="ceremony-toolbar">
+                                <div class="ceremony-switch" role="group" aria-label="Passkey ceremony">
+                                    <button type="button" data-ceremony-mode="register" aria-pressed="true">Create passkey</button>
+                                    <button type="button" data-ceremony-mode="signin" aria-pressed="false">Sign in</button>
+                                </div>
+                                <button type="button" class="ceremony-play" id="ceremony-play">Play registration</button>
+                            </div>
+
+                            <div class="ceremony-figure" role="img" aria-labelledby="ceremony-title ceremony-description">
+                                <span class="figure-label">Fig. 1 · Split-key ceremony</span>
+                                <div class="ceremony-caption" aria-live="polite" aria-atomic="true">
+                                    <h3 id="ceremony-title">Registration begins</h3>
+                                    <p id="ceremony-description">The website asks the browser to create a new public-key credential for its RP ID.</p>
+                                </div>
+                                <div class="ceremony-plane">
+                                    <div class="actor actor-device"><span>Authenticator</span><strong>Device vault</strong><small>Private operation</small></div>
+                                    <div class="actor actor-browser"><span>WebAuthn client</span><strong>Browser</strong><small>Origin enforcement</small></div>
+                                    <div class="actor actor-server"><span>Relying party</span><strong>Website server</strong><small>Challenge + verification</small></div>
+                                    <svg viewBox="0 0 900 250" aria-hidden="true">
+                                        <path class="ceremony-path path-left" d="M210 132 H404" />
+                                        <path class="ceremony-path path-right" d="M496 132 H690" />
+                                    </svg>
+                                    <span class="packet packet-challenge">challenge</span>
+                                    <span class="packet packet-public">public key</span>
+                                    <span class="packet packet-signature">signature</span>
+                                    <span class="private-key-state">private key stays here</span>
+                                </div>
+                                <div class="mobile-ceremony-state" aria-hidden="true">
+                                    <div class="mobile-state-route">
+                                        <span data-mobile-position="0">Device</span>
+                                        <span data-mobile-position="1">Browser</span>
+                                        <span data-mobile-position="2">Website</span>
+                                    </div>
+                                    <strong id="mobile-stage-artifact">Request begins at the website</strong>
+                                    <p>Private key: <b>remains under authenticator control</b></p>
+                                </div>
+                            </div>
+
+                            <ol class="ceremony-steps" id="ceremony-steps">
+                                <li><button type="button" data-ceremony-step="0" aria-current="step"><span>1</span><strong>Request</strong><small>Site asks to create a credential</small></button></li>
+                                <li><button type="button" data-ceremony-step="1"><span>2</span><strong>Challenge</strong><small>Server sends fresh random bytes</small></button></li>
+                                <li><button type="button" data-ceremony-step="2"><span>3</span><strong>Origin check</strong><small>Browser binds the ceremony to the site</small></button></li>
+                                <li><button type="button" data-ceremony-step="3"><span>4</span><strong>Local approval</strong><small>Face, fingerprint, PIN, or touch</small></button></li>
+                                <li><button type="button" data-ceremony-step="4"><span>5</span><strong>Key creation</strong><small>Authenticator generates the pair</small></button></li>
+                                <li><button type="button" data-ceremony-step="5"><span>6</span><strong>Store public half</strong><small>Server verifies and saves the record</small></button></li>
+                            </ol>
+                        </div>
+                    </section>
+
+                    <section class="passkey-section" id="registration" data-article-section>
+                        <header class="section-heading">
+                            <h2>Registration: creating the passkey</h2>
+                            <p>The registration ceremony binds a new credential to an account and a relying-party domain. Adding a passkey is security-sensitive because a newly bound authenticator can later sign in.</p>
+                        </header>
+
+                        <ol class="protocol-walk">
+                            <li><span>01</span><div><h3>Server creates options</h3><p>The server generates a fresh challenge and sends RP information, an opaque user handle, allowed algorithms, user-verification policy, and duplicate-credential exclusions.</p></div></li>
+                            <li><span>02</span><div><h3>Browser calls WebAuthn</h3><p>The page calls <code>navigator.credentials.create()</code>. The browser checks that the requested RP ID is valid for the calling origin.</p></div></li>
+                            <li><span>03</span><div><h3>User approves locally</h3><p>The authenticator asks for a gesture and, when required, local verification through a PIN, fingerprint, or face. This unlocks a cryptographic operation; it is not sent as account data.</p></div></li>
+                            <li><span>04</span><div><h3>Authenticator generates the pair</h3><p>A new credential ID and RP-scoped key pair are created. Authenticator data records the RP ID hash, user-presence and verification flags, backup flags, counter, credential ID, and public key.</p></div></li>
+                            <li><span>05</span><div><h3>Browser packages context</h3><p><code>clientDataJSON</code> records <code>webauthn.create</code>, the challenge, origin, and cross-origin context. The attestation object carries authenticator data and optional attestation evidence.</p></div></li>
+                            <li><span>06</span><div><h3>Server verifies and stores</h3><p>The server verifies <code>clientDataJSON.type === "webauthn.create"</code>, the exact challenge, expected origin, applicable cross-origin and top-origin policy, RP ID hash, flags, algorithm, credential uniqueness, and attestation policy. It stores the credential ID, public key, account link, counter, transports, and backup state—not the private key.</p></div></li>
+                        </ol>
+
+                        <div class="stored-record">
+                            <div class="record-server"><h3>Server record</h3><code>credential_id</code><code>public_key</code><code>user_id</code><code>counter</code><code>backup_flags</code></div>
+                            <div class="record-not"><h3>Not in the record</h3><del>private key</del><del>device PIN</del><del>fingerprint</del><del>face template</del></div>
+                        </div>
+                    </section>
+
+                    <section class="passkey-section" id="authentication" data-article-section>
+                        <header class="section-heading">
+                            <h2>Sign-in: proving possession</h2>
+                            <p>Authentication does not send the private key. It asks the authenticator to sign fresh, site-bound data, then verifies that signature with the public key stored during registration.</p>
+                        </header>
+
+                        <ol class="protocol-walk">
+                            <li><span>01</span><div><h3>Server creates a new challenge</h3><p>The challenge must be unpredictable, short-lived, tied to this attempt, and invalidated after use. Reusing a captured assertion against a new challenge fails.</p></div></li>
+                            <li><span>02</span><div><h3>Browser requests a credential</h3><p>The page calls <code>navigator.credentials.get()</code>. A username-first flow can provide allowed credential IDs; a discoverable passkey can let the authenticator identify the account.</p></div></li>
+                            <li><span>03</span><div><h3>Origin and RP ID select the credential</h3><p>The browser and authenticator use the real domain to select matching credentials. A lookalike domain cannot request the credential registered to the real site.</p></div></li>
+                            <li><span>04</span><div><h3>User authorizes locally</h3><p>User presence and optional user verification release use of the private key. The authenticator returns flags showing which checks occurred.</p></div></li>
+                            <li><span>05</span><div><h3>Authenticator signs the assertion</h3><p>It signs <code>authenticatorData || SHA-256(clientDataJSON)</code>. The signed material incorporates the RP ID hash, flags, counter, challenge, and browser-reported origin.</p></div></li>
+                            <li><span>06</span><div><h3>Server verifies before creating a session</h3><p>The server checks type, challenge, origin, RP ID hash, credential/account relationship, flags, backup state, and signature. A counter regression is a risk signal—not automatic proof of cloning.</p></div></li>
+                        </ol>
+
+                        <div class="signed-payload" aria-label="The authenticator signs authenticator data joined with the hash of client data JSON.">
+                            <span>authenticatorData: RP ID hash · flags · counter</span>
+                            <b>+</b>
+                            <span>SHA-256(serialized clientDataJSON bytes)</span>
+                            <b>→</b>
+                            <strong>private-key signature</strong>
+                        </div>
+
+                        <div class="reasoning-check" data-quiz data-answer="origin">
+                            <h3>Why does the fake site fail?</h3>
+                            <p>A phishing page perfectly copies the real login design. Why can it not request the real site's passkey?</p>
+                            <div>
+                                <button type="button" data-choice="visual" data-feedback="WebAuthn does not decide from the page's visual appearance.">The copied logo does not match pixel-for-pixel</button>
+                                <button type="button" data-choice="origin">The fake origin and RP ID do not match the credential scope</button>
+                                <button type="button" data-choice="biometric" data-feedback="A biometric can unlock the authenticator, but domain binding is what prevents use on the fake site.">The fingerprint scanner recognizes phishing</button>
+                            </div>
+                            <p class="quiz-feedback" aria-live="polite">Choose an answer.</p>
+                        </div>
+                    </section>
+
+                    <section class="passkey-section" id="security" data-article-section>
+                        <header class="section-heading">
+                            <h2>Why passkeys are safer than passwords</h2>
+                            <p>Passkeys remove several properties attackers rely on: a reusable shared secret, a secret that can be typed into the wrong origin, and a server verifier that can be cracked into a usable credential.</p>
+                        </header>
+
+                        <div class="comparison-table-wrap">
+                            <table class="comparison-table">
+                                <thead><tr><th>Attack or property</th><th>Password</th><th>Passkey</th></tr></thead>
+                                <tbody>
+                                    <tr><th>What server stores</th><td>Salted password verifier; weak passwords may be guessed offline</td><td>Public key; cannot create a valid signature</td></tr>
+                                    <tr><th>Phishing</th><td>User can type the same secret into an impostor site</td><td>Credential is scoped to the real RP ID and origin</td></tr>
+                                    <tr><th>Credential stuffing</th><td>Reused password works across services</td><td>Each credential is unique to one relying party</td></tr>
+                                    <tr><th>Replay</th><td>Same password is submitted repeatedly</td><td>Every assertion incorporates a fresh challenge</td></tr>
+                                    <tr><th>Local unlock</th><td>Website normally verifies the password</td><td>Device verifies PIN/biometric and releases only a signature</td></tr>
+                                    <tr><th>Recovery</th><td>Email, SMS, help desk, or password reset</td><td>Provider sync/recovery or another registered authenticator</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="attack-walk">
+                            <article><span>Attack 1</span><h3>Database breach</h3><p>Stolen password hashes can enable offline guessing. Stolen public keys do not let the attacker sign, though the breached server may still expose sessions, personal data, recovery controls, or passkey-binding functions.</p></article>
+                            <article><span>Attack 2</span><h3>Phishing proxy</h3><p>Passwords and manually entered OTPs can be relayed. WebAuthn's domain binding prevents the fake origin from obtaining an assertion for the real RP.</p></article>
+                            <article><span>Attack 3</span><h3>Replay</h3><p>A recorded assertion contains the previous challenge. The next sign-in uses a different challenge, so replay verification fails.</p></article>
+                        </div>
+                    </section>
+
+                    <section class="passkey-section" id="sync" data-article-section>
+                        <header class="section-heading">
+                            <h2>Synced and device-bound passkeys</h2>
+                            <p>“The private key never leaves the device” is only correct for device-bound credentials. Synced passkeys copy encrypted key material through a provider so other trusted devices can recover and use it.</p>
+                        </header>
+
+                        <div class="sync-contrast">
+                            <div><span>Multi-device</span><h3>Synced passkey</h3><p>Encrypted credential material is synchronized through a passkey provider such as iCloud Keychain or Google Password Manager. It improves recovery and multi-device use but adds the provider account and recovery process to the security boundary.</p><strong>Eligible for NIST AAL2 when properly protected</strong></div>
+                            <div><span>Single authenticator</span><h3>Device-bound passkey</h3><p>The credential is backup-ineligible and stays with one authenticator. Some device-bound credentials are hardware protected, but “device-bound” alone does not prove hardware isolation or AAL3.</p><strong>AAL3 additionally requires two factors plus a hardware-protected, isolated, non-exportable key; synced authenticators are not allowed.</strong></div>
+                        </div>
+
+                        <div class="cross-device">
+                            <h3>A phone can sign in a computer without copying the key</h3>
+                            <p>In a cross-device flow, the computer displays a QR code and establishes a nearby authenticated channel to the phone. The phone uses its passkey and returns the result; the credential does not have to be installed on the computer.</p>
+                        </div>
+                    </section>
+
+                    <section class="passkey-section" id="risks" data-article-section>
+                        <header class="section-heading">
+                            <h2>What passkeys do not solve</h2>
+                            <p>Passkeys are phishing-resistant authentication, not a force field around the entire account, device, website, or recovery system.</p>
+                        </header>
+
+                        <div class="risk-register">
+                            <article><span>Device</span><h3>Unlocked or compromised endpoint</h3><p>A person who can unlock the device may be able to use its passkeys. Malware can manipulate the local session or ask an authenticator to approve an attacker-chosen action.</p></article>
+                            <article><span>Provider</span><h3>Sync and recovery compromise</h3><p>Synced passkeys depend on encrypted cloud storage, strong provider authentication, and secure recovery. A weak provider recovery path can become the easiest route to the account.</p></article>
+                            <article><span>Website</span><h3>Implementation mistakes</h3><p>Skipping challenge, origin, RP ID hash, signature, account binding, or user-verification checks can defeat the protocol's guarantees.</p></article>
+                            <article><span>Session</span><h3>Cookie theft after sign-in</h3><p>WebAuthn protects authentication. A stolen bearer session cookie may still work until it expires or is revoked.</p></article>
+                            <article><span>Fallback</span><h3>Weaker recovery and downgrade</h3><p>If password, SMS, email, or help-desk recovery remains easier to attack, an adversary can bypass the passkey entirely.</p></article>
+                            <article><span>Privacy</span><h3>Attestation and credential metadata</h3><p>Attestation can reveal authenticator provenance. Consumer deployments commonly avoid identifying attestation unless policy needs it.</p></article>
+                            <article><span>Operations</span><h3>Deletion, loss, and shared devices</h3><p>Website records and provider copies can become out of sync. Signing out does not remove a passkey from a shared device's credential manager.</p></article>
+                            <article><span>Compatibility</span><h3>Unsupported or restricted environments</h3><p>Older platforms, embedded browsers, blocked Bluetooth, and enterprise policy can interrupt creation or cross-device use.</p></article>
+                        </div>
+
+                        <div class="reasoning-check" data-quiz data-answer="recovery">
+                            <h3>Find the weakest remaining path</h3>
+                            <p>A site adds passkeys but still lets support agents reset any account after answering two knowledge questions. What is the main risk?</p>
+                            <div>
+                                <button type="button" data-choice="crypto" data-feedback="The public/private-key ceremony can be sound while another account path remains weak.">The passkey signature becomes easier to forge</button>
+                                <button type="button" data-choice="recovery">Attackers bypass the passkey through account recovery</button>
+                                <button type="button" data-choice="iv" data-feedback="Passkey security does not depend on changing key volatility.">The public key changes too often</button>
+                            </div>
+                            <p class="quiz-feedback" aria-live="polite">Choose an answer.</p>
+                        </div>
+
+                        <div class="final-takeaway">
+                            <h2>The useful mental model</h2>
+                            <p>A password asks, “Can you repeat the shared secret?” A passkey asks, “Can your authenticator produce a fresh signature for this exact site?” That removes phishing, reuse, stuffing, and password-verifier cracking from the main sign-in path—but recovery, device security, implementation, and sessions still matter.</p>
+                        </div>
+                    </section>
+
+                    <section class="passkey-section sources-section" id="sources">
+                        <header class="section-heading">
+                            <h2>Standards and primary sources</h2>
+                        </header>
+                        <ol class="source-list">
+                            <li><a href="https://www.w3.org/TR/webauthn-3/" target="_blank" rel="noopener noreferrer">W3C Web Authentication Level 3 <span>Specification ↗</span></a></li>
+                            <li><a href="https://fidoalliance.org/specifications/" target="_blank" rel="noopener noreferrer">FIDO Alliance specifications <span>FIDO2 + CTAP ↗</span></a></li>
+                            <li><a href="https://pages.nist.gov/800-63-4/sp800-63b/" target="_blank" rel="noopener noreferrer">NIST SP 800-63B-4 <span>Authentication requirements ↗</span></a></li>
+                            <li><a href="https://developers.google.com/identity/passkeys/developer-guides" target="_blank" rel="noopener noreferrer">Google passkey developer guides <span>Implementation ↗</span></a></li>
+                            <li><a href="https://learn.microsoft.com/en-us/windows/security/identity-protection/passkeys/" target="_blank" rel="noopener noreferrer">Microsoft: Passkeys in Windows <span>Platform guidance ↗</span></a></li>
+                            <li><a href="https://support.apple.com/guide/security/icloud-keychain-security-overview-sec1c89c6f3b/web" target="_blank" rel="noopener noreferrer">Apple Platform Security: iCloud Keychain <span>Sync and recovery ↗</span></a></li>
+                        </ol>
+                    </section>
+
+                    <section class="passkey-glossary" aria-labelledby="passkey-glossary-title">
+                        <h2 id="passkey-glossary-title">Glossary</h2>
+                        <dl>
+                            <div data-glossary-term="passkey"><dt>Passkey</dt><dd>A passwordless FIDO credential: a discoverable WebAuthn credential based on an RP-scoped key pair.</dd></div>
+                            <div data-glossary-term="public-key"><dt>Public-key cryptography</dt><dd>Cryptography using a related public and private key pair.</dd></div>
+                            <div data-glossary-term="private-key"><dt>Private key</dt><dd>The secret key controlled by the authenticator and used to create signatures.</dd></div>
+                            <div data-glossary-term="public-key-value"><dt>Public key</dt><dd>The non-secret key stored by the website and used to verify signatures.</dd></div>
+                            <div data-glossary-term="rp"><dt>Relying party</dt><dd>The website or application that registers and verifies the credential.</dd></div>
+                            <div data-glossary-term="rp-id"><dt>RP ID</dt><dd>The domain identifier to which a WebAuthn credential is scoped.</dd></div>
+                            <div data-glossary-term="origin"><dt>Origin</dt><dd>The scheme, host, and port of the calling web page.</dd></div>
+                            <div data-glossary-term="authenticator"><dt>Authenticator</dt><dd>The hardware or software entity that creates credentials and signs assertions.</dd></div>
+                            <div data-glossary-term="challenge"><dt>Challenge</dt><dd>Fresh random bytes issued by the server to bind a response to one ceremony.</dd></div>
+                            <div data-glossary-term="assertion"><dt>Assertion</dt><dd>The signed authentication response returned by WebAuthn.</dd></div>
+                            <div data-glossary-term="attestation"><dt>Attestation</dt><dd>Optional evidence about an authenticator's provenance or properties.</dd></div>
+                            <div data-glossary-term="user-verification"><dt>User verification</dt><dd>A local check such as device PIN, fingerprint, or face recognition, reflected in the UV flag.</dd></div>
+                            <div data-glossary-term="discoverable"><dt>Discoverable credential</dt><dd>A credential the authenticator can find without the site supplying its credential ID first.</dd></div>
+                            <div data-glossary-term="counter"><dt>Signature counter</dt><dd>An optional authenticator value that can help detect anomalies but is only a risk signal.</dd></div>
+                        </dl>
+                    </section>
+                </main>
+            </div>
+        </article>
+
+        <div class="passkey-term-popover" id="passkey-term-popover" role="tooltip" hidden>
+            <strong id="passkey-term-title"></strong>
+            <p id="passkey-term-definition"></p>
+        </div>
+
+        <footer class="footer">
+            <p>&copy; <span id="year"></span> Brian Fong. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <script src="../../assets/js/data.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/passkeys.js?v=20260909-2"></script>
+    <script>window.initPasskeyArticle && window.initPasskeyArticle();</script>
+</body>
+</html>
