@@ -45,7 +45,7 @@ function startServer() {
 }
 
 async function assertNoClippedHeadings(page, label) {
-    const clipped = await page.$$eval('h1, h2, h3', (nodes) => nodes
+    const clipped = await page.$$eval('h1, h2, h3, h4', (nodes) => nodes
         .filter((node) => !node.closest('.passkey-glossary'))
         .filter((node) => node.scrollHeight > node.clientHeight + 1 || node.scrollWidth > node.clientWidth + 1)
         .map((node) => node.textContent.trim()));
@@ -85,7 +85,7 @@ async function run() {
         assert.equal(await page.$$eval('[data-ceremony-step]', (nodes) => nodes.length), 7);
         assert.equal(await page.$$eval('.protocol-walk', (nodes) => nodes.length), 2);
         assert.equal(await page.$$eval('.protocol-walk li', (nodes) => nodes.length), 12);
-        assert.equal(await page.$$eval('.comparison-table tbody tr', (nodes) => nodes.length), 6);
+        assert.equal(await page.$$eval('#security .comparison-table tbody tr', (nodes) => nodes.length), 6);
         assert.equal(await page.$$eval('.risk-register article', (nodes) => nodes.length), 8);
         assert.equal(await page.$$eval('[data-glossary-term]', (nodes) => nodes.length), 14);
         assert.ok(await page.$$eval('.term[data-term]', (nodes) => nodes.length) >= 25);
@@ -117,6 +117,34 @@ async function run() {
         assert.match(bodyText, /at least 16 bytes of cryptographically unpredictable random data/i);
         assert.match(bodyText, /requires an exact match before accepting the response/i);
         assert.doesNotMatch(bodyText, /\bceremony\b/i);
+
+        // Each user journey must expose one coherent screen/explanation pair.
+        for (const journey of ['create', 'return', 'phone', 'recover']) {
+            await page.click(`button[data-journey="${journey}"]`);
+            assert.equal(await page.$eval('#journey-back', (node) => node.disabled), true);
+            for (let step = 0; step < 3; step++) {
+                const visible = await page.$$eval('.journey-step', (nodes) => nodes
+                    .filter((node) => node.getClientRects().length > 0)
+                    .map((node) => ({ screen: node.querySelector('.experience-screen').textContent, explanation: node.querySelector('.experience-explainer').textContent })));
+                assert.equal(visible.length, 1);
+                assert.match(visible[0].screen, new RegExp(`${step + 1} / 3`));
+                assert.ok(visible[0].explanation.length > 100);
+                assert.match(await page.$eval('#journey-status', (node) => node.textContent), new RegExp(`Step ${step + 1} of 3`));
+                if (step < 2) await page.click('#journey-next');
+            }
+            await page.click('#journey-back');
+            assert.equal(await page.$eval('#experience-lab', (node) => node.dataset.step), '1');
+            await page.click('#journey-next');
+            assert.equal(await page.$eval('#journey-next', (node) => node.textContent), 'Restart ↺');
+            await page.click('#journey-next');
+            assert.equal(await page.$eval('#experience-lab', (node) => node.dataset.step), '0');
+        }
+        await page.focus('button[data-journey="return"]');
+        await page.keyboard.press('Enter');
+        assert.equal(await page.$eval('button[data-journey="return"]', (node) => node.getAttribute('aria-pressed')), 'true');
+        assert.equal(await page.$eval('#journey-status', (node) => node.getAttribute('role')), 'status');
+        assert.equal(await page.$$eval('.authenticator-comparison tbody tr', (nodes) => nodes.length), 6);
+        assert.match(await page.$eval('#authenticator-apps', (node) => node.textContent), /Number matching/);
 
         const flowLayout = await page.evaluate(() => {
             const steps = document.querySelector('.ceremony-steps');
@@ -179,6 +207,9 @@ async function run() {
         await page.waitForFunction(() => typeof window.__passkeyArticleCleanup === 'undefined');
         await page.click('#blogs-list a[href*="passkeys"]');
         await page.waitForSelector('#passkey-article[data-passkey-initialized="true"]');
+        await page.click('button[data-journey="phone"]');
+        await page.click('#journey-next');
+        assert.equal(await page.$eval('#experience-lab', (node) => node.dataset.step), '1', 'Journey should initialize once after SPA navigation');
 
         await page.setViewport({ width: 375, height: 667, deviceScaleFactor: 1 });
         await page.reload({ waitUntil: 'networkidle0' });
@@ -215,6 +246,16 @@ async function run() {
         assert.equal(await page.$eval('[data-mobile-position="1"]', (node) => node.getAttribute('aria-current')), 'step');
         assert.match(await page.$eval('#mobile-stage-artifact', (node) => node.textContent), /returns to the browser/i);
         await assertNoClippedHeadings(page, 'Passkey mobile');
+        for (const journey of ['create', 'return', 'phone', 'recover']) {
+            await page.click(`button[data-journey="${journey}"]`);
+            for (let step = 0; step < 3; step++) {
+                const width = await page.evaluate(() => ({ actual: document.documentElement.scrollWidth, viewport: document.documentElement.clientWidth }));
+                assert.ok(width.actual <= width.viewport, `Mobile ${journey} step ${step} overflows`);
+                await page.click('#journey-next');
+            }
+        }
+        assert.match(await page.$eval('.authenticator-comparison td', (node) => getComputedStyle(node, '::before').content), /authenticator code/);
+        assert.ok(await page.$eval('.authenticator-comparison', (node) => node.querySelector('caption').getBoundingClientRect().width >= node.getBoundingClientRect().width - 2), 'Mobile comparison caption should span the table');
 
         await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
         assert.equal(await page.$eval('.actor', (node) => getComputedStyle(node).transitionDuration), '0s');
@@ -226,6 +267,8 @@ async function run() {
         assert.equal(await noJsPage.$$eval('[data-ceremony-step]', (nodes) => nodes.length), 7);
         assert.equal(await noJsPage.$$eval('[data-glossary-term]', (nodes) => nodes.length), 14);
         assert.match(await noJsPage.$eval('.ceremony-figure', (node) => node.textContent), /Registration begins/);
+        assert.equal(await noJsPage.$$eval('.journey-step', (nodes) => nodes.filter((node) => node.getClientRects().length > 0).length), 12);
+        assert.equal(await noJsPage.$eval('.journey-controls', (node) => node.hidden), true);
         await noJsPage.close();
 
         assert.deepEqual(browserErrors, []);

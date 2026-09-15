@@ -69,6 +69,55 @@
 
         window.__passkeyArticleCleanup = cleanup;
 
+        var experience = root.querySelector('#experience-lab');
+        if (experience) {
+            var journeyMode = 'create';
+            var journeyStep = 0;
+            var journeyButtons = Array.from(experience.querySelectorAll('[data-journey]'));
+            var journeyPanels = Array.from(experience.querySelectorAll('[data-journey-panel]'));
+            var journeyBack = experience.querySelector('#journey-back');
+            var journeyNext = experience.querySelector('#journey-next');
+            var journeyStatus = experience.querySelector('#journey-status');
+
+            function renderJourney() {
+                var activePanel = journeyPanels.find(function (panel) {
+                    return panel.dataset.journeyPanel === journeyMode;
+                });
+                var steps = Array.from(activePanel.querySelectorAll('.journey-step'));
+                journeyPanels.forEach(function (panel) { panel.hidden = panel !== activePanel; });
+                steps.forEach(function (step, index) { step.hidden = index !== journeyStep; });
+                journeyButtons.forEach(function (button) {
+                    button.setAttribute('aria-pressed', String(button.dataset.journey === journeyMode));
+                });
+                journeyBack.disabled = journeyStep === 0;
+                journeyNext.textContent = journeyStep === steps.length - 1 ? 'Restart ↺' : 'Next →';
+                journeyNext.setAttribute('aria-label', journeyStep === steps.length - 1 ? 'Restart journey' : 'Next journey step');
+                journeyStatus.textContent = activePanel.querySelector('.journey-heading').textContent + ' · Step ' + (journeyStep + 1) + ' of ' + steps.length;
+                experience.dataset.step = String(journeyStep);
+                experience.dataset.journey = journeyMode;
+            }
+
+            experience.addEventListener('click', function (event) {
+                var modeButton = event.target.closest('button[data-journey]');
+                if (modeButton) {
+                    journeyMode = modeButton.dataset.journey;
+                    journeyStep = 0;
+                } else if (event.target.closest('#journey-next')) {
+                    var activePanel = journeyPanels.find(function (panel) { return panel.dataset.journeyPanel === journeyMode; });
+                    journeyStep = (journeyStep + 1) % activePanel.querySelectorAll('.journey-step').length;
+                } else if (event.target.closest('#journey-back')) {
+                    journeyStep = Math.max(0, journeyStep - 1);
+                } else {
+                    return;
+                }
+                renderJourney();
+            }, { signal: signal });
+
+            renderJourney();
+            experience.dataset.ready = 'true';
+            experience.querySelector('.journey-controls').hidden = false;
+        }
+
         function renderSteps() {
             var list = document.getElementById('ceremony-steps');
             list.innerHTML = ceremonies[mode].steps.map(function (item, index) {

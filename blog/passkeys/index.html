@@ -1,8 +1,8 @@
 <!--
-THESIS: A passkey is understandable when the reader can see the private key stay inside the authenticator while challenges, public keys, and signatures cross a site-bound flow through the browser.
+THESIS: Connect the screens a person sees to the browser and server work that makes passkeys secure, from enrollment through recovery.
 OWN-WORLD: Warm editorial paper, navy protocol lines, blue trusted state, green verified state, red rejected state, and one uninterrupted reading column.
-STORY: Separate the keys, walk registration, replay sign-in, compare the same attacks against passwords, then inspect sync, recovery, and residual risk.
-FIRST VIEWPORT: A compact title sits beside one split vault showing the device's private key and the website's public-key record.
+STORY: Separate the keys, follow the user journey, trace the protocol, compare passwords and authenticator apps, then inspect recovery and residual risk.
+FIRST VIEWPORT: A compact title introduces the end-to-end experience above a split public/private-key vault.
 FORM: Split-key vault, fifth grounded structure, with animated registration and sign-in traces and seed 59e10a1a.
 -->
 <!DOCTYPE html>
@@ -10,13 +10,13 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="How passkeys use public-key cryptography, how registration and sign-in work, why they resist phishing, and what risks remain.">
+    <meta name="description" content="Passkeys end to end: the frontend user experience, browser and backend flow, recovery, and a comparison with passwords and authenticator apps.">
     <title>Passkeys: The Key That Never Reaches the Website - Brian Fong</title>
     <script>document.documentElement.classList.replace('no-js', 'js');</script>
     <link rel="icon" type="image/png" href="../../assets/favicon.png">
     <link rel="stylesheet" href="../../assets/css/style.css">
     <link rel="stylesheet" href="../../assets/css/blog.css">
-    <link rel="stylesheet" href="../../assets/css/passkeys.css?v=20260909-3">
+    <link rel="stylesheet" href="../../assets/css/passkeys.css?v=20260915-1">
 </head>
 <body class="blog-article passkey-page">
     <header class="topbar">
@@ -46,12 +46,12 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
                     <a href="../../blog.html">← Blog</a>
                     <span>Technology</span>
                     <time datetime="2026-09-09">September 9, 2026</time>
-                    <span>15 minute read</span>
+                    <span>25 minute read</span>
                 </div>
                 <div class="passkey-hero-grid">
                     <div>
                         <h1>How passkeys work</h1>
-                        <p>Public and private keys, registration, sign-in, phishing resistance, recovery, and the risks that remain.</p>
+                        <p>The user experience, frontend-to-backend flow, and how passkeys compare with authenticator apps.</p>
                     </div>
                 </div>
             </header>
@@ -60,10 +60,13 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
                 <aside class="passkey-rail" aria-label="On this page">
                     <span>On this page</span>
                     <a href="#key-pair" data-section-link="key-pair" aria-current="true">Public and private keys</a>
+                    <a href="#user-experience" data-section-link="user-experience">The user experience</a>
+                    <a href="#frontend" data-section-link="frontend">Connecting the frontend</a>
                     <a href="#ceremony-lab" data-section-link="ceremony-lab">Animated flow</a>
                     <a href="#registration" data-section-link="registration">Registration</a>
                     <a href="#authentication" data-section-link="authentication">Sign-in</a>
                     <a href="#security" data-section-link="security">Passkeys vs passwords</a>
+                    <a href="#authenticator-apps" data-section-link="authenticator-apps">Authenticator apps</a>
                     <a href="#sync" data-section-link="sync">Sync and recovery</a>
                     <a href="#risks" data-section-link="risks">Risks and limits</a>
                     <a href="#sources" data-section-link="sources">Sources</a>
@@ -127,6 +130,127 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
                                 <button type="button" data-choice="biometric" data-feedback="The biometric is checked locally and is not sent to the website.">The fingerprint or face template</button>
                             </div>
                             <p class="quiz-feedback" aria-live="polite">Choose an answer.</p>
+                        </div>
+                    </section>
+
+                    <section class="passkey-section" id="user-experience" data-article-section>
+                        <header class="section-heading">
+                            <h2>What the person actually sees</h2>
+                            <p>Imagine Maya using a service at <code>example.com</code>. She does not handle keys or signatures. She sees an invitation, a system prompt, and a result. Follow each journey to connect those screens to the work underneath.</p>
+                        </header>
+                        <p class="journey-disclaimer">Illustrated walkthrough, not a live sign-in. These simplified screens do not collect data or create credentials. Real prompts vary by browser, device, and passkey provider.</p>
+
+                        <div class="experience-lab" id="experience-lab">
+                            <div class="journey-controls" hidden>
+                                <div class="journey-modes" role="group" aria-label="Choose a user journey">
+                                    <button type="button" data-journey="create" aria-pressed="true">Create a passkey</button>
+                                    <button type="button" data-journey="return" aria-pressed="false">Come back</button>
+                                    <button type="button" data-journey="phone" aria-pressed="false">Use a phone</button>
+                                    <button type="button" data-journey="recover" aria-pressed="false">Recover access</button>
+                                </div>
+                                <div class="journey-navigation">
+                                    <button type="button" id="journey-back" disabled aria-label="Previous journey step">← Back</button>
+                                    <p id="journey-status" role="status" aria-atomic="true">Create a passkey · Step 1 of 3</p>
+                                    <button type="button" id="journey-next" aria-label="Next journey step">Next →</button>
+                                </div>
+                            </div>
+
+                            <div class="journey-panel" data-journey-panel="create">
+                                <h3 class="journey-heading">Create a passkey</h3>
+                                <div class="journey-step">
+                                    <div class="experience-screen"><span class="screen-owner">1 / 3 · Website · Security settings</span><h4>Make your next sign-in easier</h4><p>Use your face, fingerprint, or device PIN to sign in as Maya.</p><span class="screen-action">Create a passkey</span><span class="screen-secondary">Not now</span></div>
+                                    <div class="experience-explainer"><h4>Start with a trusted account</h4><p>Maya has already signed in, with a recent security check if needed. For a new account, the service first establishes the account and any required email verification. A passkey alone does not prove ownership of an email address.</p><p>The page requests creation options from the server, which binds the challenge to Maya’s authenticated account. The website owns this invitation and lets her decline.</p></div>
+                                </div>
+                                <div class="journey-step">
+                                    <div class="experience-screen is-system"><span class="screen-owner">2 / 3 · Browser / operating system</span><h4>Create a passkey for example.com?</h4><p>Account: Maya<br>Choose a passkey provider or security key.</p><span class="screen-action">Continue with screen lock</span><span class="screen-secondary">Cancel</span></div>
+                                    <div class="experience-explainer"><h4>The website hands control to the system</h4><p>The frontend calls <code>navigator.credentials.create()</code>. Maya chooses where to save the credential and approves with her screen lock or security key. The browser and provider control these prompts; the website cannot style them or read her PIN.</p><p>The authenticator creates a key pair. The public credential returns to the page, which sends it to the server for verification.</p></div>
+                                </div>
+                                <div class="journey-step">
+                                    <div class="experience-screen is-success"><span class="screen-owner">3 / 3 · Website · Confirmed by server</span><h4>Your passkey is ready</h4><p>Next time, choose your account and unlock your device.</p><span class="screen-action">Manage passkeys</span><span class="screen-secondary">Add another way to get back in</span></div>
+                                    <div class="experience-explainer"><h4>Success comes after the save</h4><p>Show “Saving…” while the server verifies and persists the credential. Only then show success and the updated passkey list. A completed system prompt is not proof that the website saved the result.</p><p>Let Maya give it a recognizable name and review when it was created or last used. Offer another registered passkey or a carefully protected recovery method before she needs one.</p></div>
+                                </div>
+                            </div>
+
+                            <div class="journey-panel" data-journey-panel="return">
+                                <h3 class="journey-heading">Come back</h3>
+                                <div class="journey-step">
+                                    <div class="experience-screen"><span class="screen-owner">1 / 3 · Website + browser autofill</span><h4>Welcome back</h4><span class="screen-field">Email or username</span><span class="screen-action">Maya · Saved passkey</span><span class="screen-secondary">Or: Sign in with a passkey</span></div>
+                                    <div class="experience-explainer"><h4>Let the browser help her choose</h4><p>Maya focuses the username field and chooses her saved account. With conditional UI, passkeys can appear in browser autofill. An explicit “Sign in with a passkey” button offers another entry point.</p><p>The frontend obtains a challenge and calls <code>navigator.credentials.get()</code>. A discoverable credential can identify her account without a typed username.</p></div>
+                                </div>
+                                <div class="journey-step">
+                                    <div class="experience-screen is-system"><span class="screen-owner">2 / 3 · Browser / operating system</span><h4>Sign in to example.com</h4><p>Maya confirms with her face, fingerprint, or device PIN.</p><span class="screen-action">Approve on this device</span><span class="screen-secondary">Use another device or cancel</span></div>
+                                    <div class="experience-explainer"><h4>A local unlock, not a code to copy</h4><p>The authenticator signs fresh, site-bound data. The page receives the assertion and sends it to the server. Maya never transcribes a six-digit code.</p><p>This example requires user verification. The server checks that it happened, along with the challenge, origin, RP ID, account binding, and signature.</p></div>
+                                </div>
+                                <div class="journey-step">
+                                    <div class="experience-screen is-success"><span class="screen-owner">3 / 3 · Website · Authenticated session</span><h4>You’re signed in, Maya</h4><p>Continue to your account.</p><span class="screen-action">Open dashboard</span></div>
+                                    <div class="experience-explainer"><h4>The session completes the journey</h4><p>The server accepts the assertion and issues a session cookie. The frontend waits for that result before navigating to the dashboard; each protected request still needs server-side authorization.</p><p>Signing out ends the session. It does not delete the passkey, so Maya can use it again on her next visit.</p></div>
+                                </div>
+                            </div>
+
+                            <div class="journey-panel" data-journey-panel="phone">
+                                <h3 class="journey-heading">Use a phone</h3>
+                                <div class="journey-step">
+                                    <div class="experience-screen is-system"><span class="screen-owner">1 / 3 · Computer · System chooser</span><h4>Your passkey is on your phone?</h4><p>Choose another device in the browser prompt.</p><span class="screen-action">Use a phone or tablet</span><span class="screen-secondary">The browser displays a QR code</span></div>
+                                    <div class="experience-explainer"><h4>The same sign-in request, another authenticator</h4><p>Maya is at a computer without a local passkey. The browser can offer a cross-device option. Its QR code helps establish a connection to her phone; the website does not create a QR code containing her private key.</p><p>Available choices depend on platform support and policy.</p></div>
+                                </div>
+                                <div class="journey-step">
+                                    <div class="experience-screen is-system"><span class="screen-owner">2 / 3 · Nearby phone</span><h4>Scan, check the site, unlock</h4><p>Approve example.com on the phone that holds the passkey.</p><span class="screen-action">Use the phone’s screen lock</span></div>
+                                    <div class="experience-explainer"><h4>The phone performs the signature</h4><p>In the hybrid flow, Bluetooth helps establish proximity; an encrypted connection carries the authentication exchange. Both devices need the required connectivity. The phone signs and sends the result back through the computer’s browser.</p><p>This does not require copying the passkey onto the computer. Cross-device sign-in and passkey synchronization are different things.</p></div>
+                                </div>
+                                <div class="journey-step">
+                                    <div class="experience-screen is-success"><span class="screen-owner">3 / 3 · Computer · Website</span><h4>You’re signed in on this computer</h4><p>Your phone’s passkey stays with its provider.</p><span class="screen-secondary">On a shared computer, sign out when finished</span></div>
+                                    <div class="experience-explainer"><h4>A session still lives on the computer</h4><p>The server verifies the assertion and creates a session on the computer. Keeping the credential on the phone does not make an untrusted computer safe: that computer can still access the signed-in session.</p><p>If pairing fails, offer retry, another registered authenticator, or the service’s recovery route.</p></div>
+                                </div>
+                            </div>
+
+                            <div class="journey-panel" data-journey-panel="recover">
+                                <h3 class="journey-heading">Recover access</h3>
+                                <div class="journey-step">
+                                    <div class="experience-screen"><span class="screen-owner">1 / 3 · Website · Help signing in</span><h4>Can’t use your passkey?</h4><p>Try another device or a passkey you added earlier.</p><span class="screen-action">Try another sign-in method</span><span class="screen-secondary">Recover your account</span></div>
+                                    <div class="experience-explainer"><h4>A missing device need not mean a lost account</h4><p>Maya can use another registered credential, or a synced copy on a trusted device after restoring access to her provider. A device-bound key cannot be restored through sync.</p><p>If no credential is available, the site needs a separate recovery process. The server’s public key cannot reconstruct the missing private key.</p></div>
+                                </div>
+                                <div class="journey-step">
+                                    <div class="experience-screen"><span class="screen-owner">2 / 3 · Website · Recovery policy</span><h4>Verify account ownership</h4><p>Complete the recovery method you set up with this service.</p><span class="screen-secondary">Additional checks or a waiting period may apply</span></div>
+                                    <div class="experience-explainer"><h4>Recovery is its own security boundary</h4><p>The service validates recovery evidence, applies rate limits and any required delay, and notifies the account owner. Avoid promising that an email address alone is enough.</p><p>A recovery path that is easier to phish can bypass the main sign-in protection. Set its strength deliberately instead of silently downgrading authentication.</p></div>
+                                </div>
+                                <div class="journey-step">
+                                    <div class="experience-screen is-success"><span class="screen-owner">3 / 3 · Website · Security settings</span><h4>Secure your account again</h4><p>Create a replacement passkey. Review old credentials and active sessions.</p><span class="screen-action">Create a replacement</span><span class="screen-secondary">Remove the lost credential</span></div>
+                                    <div class="experience-explainer"><h4>Close the loop</h4><p>After recovery, enroll and verify a new passkey, revoke lost credentials, and review or end old sessions. Removing a website’s credential record prevents future sign-in with it; existing sessions need separate revocation.</p><p>A provider may retain its local copy after website deletion. Explain how to remove that copy too, and avoid deleting the last working sign-in method without a recovery plan.</p></div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="source-note">The invitation, system handoff, and management patterns follow <a href="https://web.dev/articles/passkey-google-ux" target="_blank" rel="noopener noreferrer">Google’s account UX walkthrough</a> and <a href="https://developers.google.com/identity/passkeys/ux/user-interface-design" target="_blank" rel="noopener noreferrer">passkey interface guidance</a>. Cross-device behavior is described by <a href="https://developers.google.com/identity/passkeys/use-cases" target="_blank" rel="noopener noreferrer">Google’s passkey use cases</a>.</p>
+                    </section>
+
+                    <section class="passkey-section" id="frontend" data-article-section>
+                        <header class="section-heading">
+                            <h2>The frontend connects the two halves</h2>
+                            <p>A native prompt returning successfully is one milestone. The whole feature includes the invitation, server verification, session, errors, and account settings. Here is an example contract for connecting them.</p>
+                        </header>
+                        <div class="integration-flow">
+                            <h3>Create: invitation → prompt → saved credential</h3>
+                            <p><code>POST /passkeys/register/options</code> uses the signed-in account and returns a short-lived challenge plus creation options. The page decodes the options, calls <code>navigator.credentials.create()</code>, then serializes the response to <code>POST /passkeys/register/verify</code>. The server verifies and stores it before the page refreshes the credential list.</p>
+                            <p>For this passwordless flow, creation options request <code>residentKey: "required"</code> so the credential is discoverable. Both flows request <code>userVerification: "required"</code>, and the server enforces the verification flag in the response.</p>
+                            <h3>Sign in: chooser → signature → session</h3>
+                            <p><code>POST /passkeys/signin/options</code> starts a short-lived attempt. The page calls <code>navigator.credentials.get()</code> with those options, then sends the result to <code>POST /passkeys/signin/verify</code>. The server resolves the account from the verified credential, consumes the challenge, and creates a new authenticated session. Do not trust a user ID supplied by the page.</p>
+                            <p>These endpoint names are illustrative. Use a maintained WebAuthn library for verification. Protect account-changing requests against CSRF, rate-limit attempts, and use a secure session cookie with <code>Secure</code>, <code>HttpOnly</code>, and an appropriate <code>SameSite</code> policy.</p>
+                        </div>
+                        <div class="key-properties">
+                            <div><h3>Bridge JSON and binary data</h3><p>WebAuthn uses binary fields; HTTP JSON commonly carries them as base64url. Feature-detect the native <code>parseCreationOptionsFromJSON()</code>, <code>parseRequestOptionsFromJSON()</code>, and credential <code>toJSON()</code> helpers, or use a library that handles the conversion. Sending undecoded JSON directly to WebAuthn is not enough.</p></div>
+                            <div><h3>Offer autofill without forcing a prompt</h3><p>Mark the username field with <code>autocomplete="username webauthn"</code>. Where supported, <code>mediation: "conditional"</code> lets a pending request wait for a passkey selection. Check <code>PublicKeyCredential.isConditionalMediationAvailable()</code> before using it; keep an explicit sign-in option available.</p></div>
+                            <div><h3>Own the request lifecycle</h3><p>Use an <code>AbortController</code> when leaving the page or switching from autofill to an explicit prompt. Prevent duplicate requests, handle expired challenges with a fresh attempt, and ignore late results from an abandoned screen. Keep a waiting autofill request from blocking other sign-in methods.</p></div>
+                            <div><h3>Design for the capabilities present</h3><p>WebAuthn requires a secure context, normally HTTPS (localhost can be used for development). Check browser capabilities rather than guessing from a device name. Lack of a built-in biometric reader does not rule out a PIN, security key, or nearby phone.</p></div>
+                        </div>
+                        <p class="source-note">API details: <a href="https://www.w3.org/TR/webauthn-3/" target="_blank" rel="noopener noreferrer">WebAuthn Level 3</a>. Autofill and request lifecycle: <a href="https://web.dev/articles/passkey-form-autofill" target="_blank" rel="noopener noreferrer">web.dev’s conditional UI guide</a>. Session handling: <a href="https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer">OWASP’s session guidance</a>.</p>
+                        <div class="experience-errors">
+                            <h3>The unhappy paths are part of the product</h3>
+                            <dl>
+                                <div><dt>Prompt dismissed or timed out</dt><dd>Say “Sign-in wasn’t completed” and offer retry or another method. <code>NotAllowedError</code> can cover several causes; it does not prove that the user has no passkey. A deliberate cancellation should not trigger an immediate new prompt.</dd></div>
+                                <div><dt>Creation worked locally; saving failed</dt><dd>Do not announce success. Offer a fresh retry and explain that a provider entry may exist without a working website registration. Handle duplicates and provide a route to manage stale entries.</dd></div>
+                                <div><dt>No usable credential or unsupported browser</dt><dd>Keep existing sign-in and recovery options discoverable. Help the user try a supported browser, another credential, or their phone without exposing whether a typed email has an account.</dd></div>
+                                <div><dt>Server rejects the response or the network fails</dt><dd>Keep the page signed out until session status is confirmed. Offer a fresh attempt; never bypass verification because the device showed a successful unlock.</dd></div>
+                            </dl>
+                            <p>Use clear field labels, keyboard-accessible actions, announced status messages, and sensible focus after an error. Measure completion through the server’s accepted session or stored credential, not just the number of button clicks.</p>
                         </div>
                     </section>
 
@@ -276,6 +400,41 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
                         </div>
                     </section>
 
+                    <section class="passkey-section" id="authenticator-apps" data-article-section>
+                        <header class="section-heading">
+                            <h2>What about authenticator apps?</h2>
+                            <p>“Authenticator app” names a container, not one protocol. An app can generate time-based one-time passwords (TOTP), approve push notifications, or even hold passkeys. Compare the method being used.</p>
+                        </header>
+                        <div class="sync-contrast">
+                            <div><span>Password + TOTP</span><h3>Type, switch apps, copy a code</h3><p>During setup, scan a QR code containing a shared secret and confirm a generated code. Later, enter your password, open the authenticator, and type the current code—commonly six digits changing every 30 seconds. Save the service’s recovery codes separately.</p></div>
+                            <div><span>Passkey with user verification</span><h3>Select an account, unlock, continue</h3><p>During setup, approve creation in the system prompt. Later, select a saved credential and unlock its use locally. The browser carries a fresh signature to the correct site; there is no password or OTP to transcribe in this flow.</p></div>
+                        </div>
+                        <div class="comparison-table-wrap">
+                            <table class="comparison-table authenticator-comparison">
+                                <caption>Typical password + TOTP versus a passkey requiring local user verification</caption>
+                                <thead><tr><th scope="col">Property</th><th scope="col">Password + authenticator code</th><th scope="col">Passkey</th></tr></thead>
+                                <tbody>
+                                    <tr><th scope="row">Server-side secret</th><td>Password verifier plus access to the TOTP seed, often encrypted at rest. Seed compromise enables future codes.</td><td>Public key and credential record. Those cannot generate signatures.</td></tr>
+                                    <tr><th scope="row">Phishing</th><td>A fake page can relay both the password and a still-valid code in real time.</td><td>The browser enforces site binding; a lookalike origin cannot request the real site’s credential.</td></tr>
+                                    <tr><th scope="row">Freshness</th><td>Code changes with time; servers limit attempts and reject reuse after successful validation. A short lifetime does not stop live phishing.</td><td>Assertion contains a server-issued challenge bound to the current attempt.</td></tr>
+                                    <tr><th scope="row">Factors</th><td>Password is knowledge; control of the TOTP seed is possession. App unlock policies vary.</td><td>Control of the key plus enforced local PIN or biometric verification can provide multiple factors in one interaction.</td></tr>
+                                    <tr><th scope="row">New device or lost phone</th><td>Restore the app’s backup, transfer seeds, or use the site’s recovery process. Backup support varies.</td><td>Use provider sync, another registered key, a nearby phone, or site recovery. Device-bound keys need a separate backup path.</td></tr>
+                                    <tr><th scope="row">Connectivity and friction</th><td>Codes generate offline, but signing in to the website still needs connectivity. Copying, expiry, and clock drift can interrupt the flow.</td><td>Local approval avoids copying codes. Cross-device flows need compatible devices and connectivity; prompts and provider choices vary.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="source-note">Code generation and validation: <a href="https://www.rfc-editor.org/rfc/rfc6238" target="_blank" rel="noopener noreferrer">RFC 6238</a>. Factor requirements and phishing resistance: <a href="https://pages.nist.gov/800-63-4/sp800-63b.html" target="_blank" rel="noopener noreferrer">NIST SP 800-63B-4</a>.</p>
+                        <div class="cross-device">
+                            <h3>Push approval is a third experience</h3>
+                            <p>A push flow asks you to approve a notification; some require matching a number shown on the sign-in screen. Number matching reduces accidental approvals and push fatigue. It does not by itself give a conventional push flow WebAuthn’s origin binding. Check which protocol the app actually uses. <a href="https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-mfa-number-match" target="_blank" rel="noopener noreferrer">Microsoft explains the number-matching experience</a>.</p>
+                        </div>
+                        <div class="challenge-detail">
+                            <h3>Does a passkey still need a six-digit code?</h3>
+                            <p>Not inherently. A service can accept a passkey with required local user verification as its complete sign-in, rather than always asking for an additional OTP. A touch that only demonstrates user presence is different from verifying a PIN or biometric; the server must enforce its intended policy. Some services still require extra checks for sensitive actions.</p>
+                            <p>My default: use passkeys where supported, and use authenticator-based MFA where passkeys are unavailable. Password + TOTP is a meaningful improvement over a password alone, but it is not phishing-resistant. If TOTP remains an alternate sign-in or recovery route, that route still shapes the account’s overall protection.</p>
+                        </div>
+                    </section>
+
                     <section class="passkey-section" id="sync" data-article-section>
                         <header class="section-heading">
                             <h2>Synced and device-bound passkeys</h2>
@@ -330,6 +489,7 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
                     <section class="passkey-section sources-section" id="sources">
                         <header class="section-heading">
                             <h2>Standards and primary sources</h2>
+                            <p>Updated <time datetime="2026-09-15">September 15, 2026</time> with the end-to-end user experience and authenticator-app comparison.</p>
                         </header>
                         <ol class="source-list">
                             <li><a href="https://www.w3.org/TR/webauthn-3/" target="_blank" rel="noopener noreferrer">W3C Web Authentication Level 3 <span>Specification ↗</span></a></li>
@@ -376,7 +536,7 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
 
     <script src="../../assets/js/data.js"></script>
     <script src="../../assets/js/main.js"></script>
-    <script src="../../assets/js/passkeys.js?v=20260909-3"></script>
+    <script src="../../assets/js/passkeys.js?v=20260915-1"></script>
     <script>window.initPasskeyArticle && window.initPasskeyArticle();</script>
 </body>
 </html>

@@ -51,7 +51,7 @@ const siteData = {
         {
             title: 'Passkeys: The Key That Never Reaches the Website',
             url: 'blog/passkeys/index.html',
-            description: 'A visual walkthrough of passkey registration and sign-in, public/private-key cryptography, phishing resistance, synchronization, recovery, and the risks that remain.',
+            description: 'Passkeys end to end: user-facing screens, frontend and backend flows, recovery, and comparisons with passwords and authenticator apps.',
             section: 'Blog',
             category: 'Technology',
             date: '2026-09-09'
