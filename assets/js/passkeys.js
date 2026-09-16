@@ -10,6 +10,8 @@
         var controller = new AbortController();
         var signal = controller.signal;
         var lab = root.querySelector('.ceremony-lab');
+        var protocolPlane = lab.querySelector('.ceremony-plane');
+        var mobileProtocol = lab.querySelector('.mobile-ceremony-state');
         var flowPanels = Array.from(root.querySelectorAll('[data-flow-mode]'));
         var ceremonies = {};
         ['register', 'signin'].forEach(function (flowMode) {
@@ -79,6 +81,9 @@
             lab.dataset.stage = String(stage);
             title.textContent = step.title;
             description.textContent = step.description;
+            var explanation = step.panel.querySelector('.experience-explainer');
+            explanation.insertBefore(protocolPlane, explanation.querySelector('details'));
+            explanation.insertBefore(mobileProtocol, explanation.querySelector('details'));
             flowPanels.forEach(function (panel) {
                 panel.hidden = panel !== step.panel;
                 if (panel.hidden) panel.querySelector('details').open = false;
@@ -134,6 +139,20 @@
         backButton.addEventListener('click', function () { setStage(stage - 1, false); }, { signal: signal });
         nextButton.addEventListener('click', function () {
             setStage((stage + 1) % ceremonies[mode].steps.length, false);
+        }, { signal: signal });
+        lab.querySelectorAll('.phone-demo button').forEach(function (button) { button.disabled = false; });
+        lab.addEventListener('click', function (event) {
+            var button = event.target.closest('.phone-demo button');
+            if (!button) return;
+            if (button.hasAttribute('data-phone-signin')) setMode('signin');
+            else if (button.hasAttribute('data-phone-cancel') || button.hasAttribute('data-phone-restart')) setStage(0, false);
+            else if (button.hasAttribute('data-phone-next')) setStage(Math.min(stage + 1, 6), false);
+            var activePhone = ceremonies[mode].steps[stage].panel.querySelector('.phone-device');
+            var target = activePhone.dataset.phoneState === 'system'
+                ? activePhone.querySelector('.phone-sheet [data-phone-next]')
+                : activePhone.querySelector('[data-phone-next], [data-phone-signin], [data-phone-restart]');
+            target = target || nextButton;
+            target.focus({ preventScroll: true });
         }, { signal: signal });
         flowPanels.forEach(function (panel) {
             panel.querySelector('details').addEventListener('toggle', function (event) {
@@ -224,7 +243,7 @@
             while ((node = walker.nextNode())) {
                 var parent = node.parentElement;
                 expression.lastIndex = 0;
-                if (!parent || !parent.closest('p') || parent.closest('.term, .passkey-glossary, script, style, code, pre, svg')) continue;
+                if (!parent || !parent.closest('p') || parent.closest('.term, .phone-demo, .passkey-glossary, script, style, code, pre, svg')) continue;
                 if (expression.test(node.nodeValue)) nodes.push(node);
             }
 

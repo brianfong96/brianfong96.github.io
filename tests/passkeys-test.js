@@ -85,6 +85,7 @@ async function run() {
         assert.equal(await page.$$eval('[data-ceremony-step]', (nodes) => nodes.length), 7);
         assert.equal(await page.$$eval('#user-experience, #frontend, #registration, #authentication, .protocol-walk', (nodes) => nodes.length), 0);
         assert.equal(await page.$$eval('.flow-panel', (nodes) => nodes.length), 14);
+        assert.equal(await page.$$eval('.phone-device', (nodes) => nodes.length), 14);
         assert.equal(await page.$$eval('#security .comparison-table tbody tr', (nodes) => nodes.length), 6);
         assert.equal(await page.$$eval('.risk-register article', (nodes) => nodes.length), 8);
         assert.equal(await page.$$eval('[data-glossary-term]', (nodes) => nodes.length), 14);
@@ -149,6 +150,25 @@ async function run() {
         assert.equal(await page.$eval('[data-ceremony-mode="register"]', (node) => node.getAttribute('aria-pressed')), 'true');
         assert.equal(await page.$$eval('.authenticator-comparison tbody tr', (nodes) => nodes.length), 6);
         assert.match(await page.$eval('#authenticator-apps', (node) => node.textContent), /Number matching/);
+
+        // Phone controls drive the same flow, with the background inert under OS sheets.
+        await page.click('.flow-panel:not([hidden]) [data-phone-next]');
+        assert.equal(await page.$eval('.ceremony-lab', (node) => node.dataset.stage), '1');
+        await page.click('#flow-next');
+        assert.equal(await page.$eval('.flow-panel:not([hidden]) .phone-website', (node) => node.inert), true);
+        await page.click('.flow-panel:not([hidden]) .phone-sheet [data-phone-next]');
+        assert.equal(await page.evaluate(() => document.activeElement.matches('button.phone-biometric')), true);
+        await page.keyboard.press('Enter');
+        assert.equal(await page.$eval('.ceremony-lab', (node) => node.dataset.stage), '4');
+        await page.click('#flow-next');
+        await page.click('#flow-next');
+        await page.click('.flow-panel:not([hidden]) [data-phone-signin]');
+        assert.equal(await page.$eval('.ceremony-lab', (node) => node.dataset.ceremony), 'signin');
+        assert.equal(await page.$eval('.ceremony-lab', (node) => node.dataset.stage), '0');
+        await page.click('[data-ceremony-step="2"]');
+        await page.click('.flow-panel:not([hidden]) [data-phone-cancel]');
+        assert.equal(await page.$eval('.ceremony-lab', (node) => node.dataset.stage), '0');
+        await page.click('[data-ceremony-mode="register"]');
 
         const flowLayout = await page.evaluate(() => {
             const steps = document.querySelector('.ceremony-steps');
@@ -241,7 +261,7 @@ async function run() {
         assert.equal(mobile.planeDisplay, 'none');
         assert.equal(mobile.packets, 'none');
         assert.equal(mobile.stepScrollWidth, mobile.stepClientWidth);
-        assert.ok(mobile.labHeight < 1200, `Passkey mobile flow is too tall: ${mobile.labHeight}px`);
+        assert.ok(mobile.labHeight < 1550, `Passkey mobile flow is too tall: ${mobile.labHeight}px`);
         assert.equal(mobile.railDisplay, 'none');
         assert.ok(mobile.heroHeight < 230, `Passkey mobile hero is too tall: ${mobile.heroHeight}px`);
         assert.ok(mobile.titleSize <= 53, `Passkey mobile title is too large: ${mobile.titleSize}px`);
@@ -265,8 +285,23 @@ async function run() {
         assert.match(await page.$eval('.authenticator-comparison td', (node) => getComputedStyle(node, '::before').content), /authenticator code/);
         assert.ok(await page.$eval('.authenticator-comparison', (node) => node.querySelector('caption').getBoundingClientRect().width >= node.getBoundingClientRect().width - 2), 'Mobile comparison caption should span the table');
 
+        await page.setViewport({ width: 320, height: 812, deviceScaleFactor: 1 });
+        for (const mode of ['register', 'signin']) {
+            await page.click(`[data-ceremony-mode="${mode}"]`);
+            for (let stage = 0; stage < 7; stage++) {
+                await page.click(`[data-ceremony-step="${stage}"]`);
+                const fits = await page.$eval('.flow-panel:not([hidden]) .phone-web-content', (node) => ({
+                    page: document.documentElement.scrollWidth <= window.innerWidth,
+                    website: node.getBoundingClientRect().bottom <= node.parentElement.getBoundingClientRect().bottom + 1
+                }));
+                assert.ok(fits.page && fits.website, `320px ${mode}/${stage}: phone content must fit above Safari controls`);
+            }
+        }
+
         await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
         assert.equal(await page.$eval('.actor', (node) => getComputedStyle(node).transitionDuration), '0s');
+        await page.click('[data-ceremony-step="3"]');
+        assert.equal(await page.$eval('.flow-panel:not([hidden]) .phone-biometric svg', (node) => getComputedStyle(node).animationName), 'none');
 
         const noJsPage = await browser.newPage();
         await noJsPage.setJavaScriptEnabled(false);
