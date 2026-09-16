@@ -1,8 +1,8 @@
 <!--
-THESIS: A passkey is understandable when the reader can see the private key stay inside the authenticator while challenges, public keys, and signatures cross a site-bound flow through the browser.
+THESIS: Connect the screens a person sees to the browser and server work that makes passkeys secure, from enrollment through recovery.
 OWN-WORLD: Warm editorial paper, navy protocol lines, blue trusted state, green verified state, red rejected state, and one uninterrupted reading column.
-STORY: Separate the keys, walk registration, replay sign-in, compare the same attacks against passwords, then inspect sync, recovery, and residual risk.
-FIRST VIEWPORT: A compact title sits beside one split vault showing the device's private key and the website's public-key record.
+STORY: Separate the keys, follow the user and protocol together in one animated flow, compare passwords and authenticator apps, then inspect recovery and residual risk.
+FIRST VIEWPORT: A compact title introduces the end-to-end experience above a split public/private-key vault.
 FORM: Split-key vault, fifth grounded structure, with animated registration and sign-in traces and seed 59e10a1a.
 -->
 <!DOCTYPE html>
@@ -10,13 +10,14 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="How passkeys use public-key cryptography, how registration and sign-in work, why they resist phishing, and what risks remain.">
+    <meta name="description" content="Passkeys end to end: the frontend user experience, browser and backend flow, recovery, and a comparison with passwords and authenticator apps.">
     <title>Passkeys: The Key That Never Reaches the Website - Brian Fong</title>
     <script>document.documentElement.classList.replace('no-js', 'js');</script>
     <link rel="icon" type="image/png" href="../../assets/favicon.png">
     <link rel="stylesheet" href="../../assets/css/style.css">
     <link rel="stylesheet" href="../../assets/css/blog.css">
-    <link rel="stylesheet" href="../../assets/css/passkeys.css?v=20260909-3">
+    <link rel="stylesheet" href="../../assets/css/passkeys.css?v=20260916-1">
+    <link rel="stylesheet" href="../../assets/css/passkeys-phone.css?v=20260916-1">
 </head>
 <body class="blog-article passkey-page">
     <header class="topbar">
@@ -46,12 +47,12 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
                     <a href="../../blog.html">← Blog</a>
                     <span>Technology</span>
                     <time datetime="2026-09-09">September 9, 2026</time>
-                    <span>15 minute read</span>
+                    <span>20 minute read</span>
                 </div>
                 <div class="passkey-hero-grid">
                     <div>
                         <h1>How passkeys work</h1>
-                        <p>Public and private keys, registration, sign-in, phishing resistance, recovery, and the risks that remain.</p>
+                        <p>The user experience, frontend-to-backend flow, and how passkeys compare with authenticator apps.</p>
                     </div>
                 </div>
             </header>
@@ -61,9 +62,8 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
                     <span>On this page</span>
                     <a href="#key-pair" data-section-link="key-pair" aria-current="true">Public and private keys</a>
                     <a href="#ceremony-lab" data-section-link="ceremony-lab">Animated flow</a>
-                    <a href="#registration" data-section-link="registration">Registration</a>
-                    <a href="#authentication" data-section-link="authentication">Sign-in</a>
                     <a href="#security" data-section-link="security">Passkeys vs passwords</a>
+                    <a href="#authenticator-apps" data-section-link="authenticator-apps">Authenticator apps</a>
                     <a href="#sync" data-section-link="sync">Sync and recovery</a>
                     <a href="#risks" data-section-link="risks">Risks and limits</a>
                     <a href="#sources" data-section-link="sources">Sources</a>
@@ -132,18 +132,14 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
 
                     <section class="passkey-section ceremony-section" id="ceremony-lab" data-article-section>
                         <header class="section-heading">
-                            <h2>Watch the flow cross the boundary</h2>
-                            <p>Registration creates the key pair. Authentication proves possession later. In both flows, the browser sits between the authenticator and website: it enforces the origin, receives the WebAuthn response, and lets page code send that response to the server over HTTPS.</p>
+                            <h2>Follow one complete passkey flow</h2>
+                            <p>Start with Maya’s first tap. Choose creation or sign-in, then follow the user’s screen and the browser, authenticator, and server together. Use Next at your own pace, or Play to animate the whole sequence.</p>
                         </header>
 
-                        <div class="challenge-detail">
-                            <h3>What the challenge actually is</h3>
-                            <p>The challenge is at least 16 bytes of cryptographically unpredictable random data generated by the server. It is not a password and does not need to stay secret. Its job is freshness: the server associates it with one short-lived request, the browser includes it in <code>clientDataJSON</code>, and the server requires an exact match before accepting the response.</p>
-                            <p>After success or failure, the server invalidates the challenge. A signature captured from an earlier sign-in contains the old challenge, so replaying it against a new request fails.</p>
-                        </div>
+                        <p class="flow-disclaimer">Interactive iPhone-style demo. Tap the phone’s controls or use Next. System sheets are representative; wording and appearance vary by iOS version and provider. No credentials or biometrics are collected.</p>
 
                         <div class="ceremony-lab" data-ceremony="register" data-stage="0">
-                            <div class="ceremony-toolbar">
+                            <div class="ceremony-toolbar" hidden>
                                 <div class="ceremony-switch" role="group" aria-label="Passkey flow">
                                     <button type="button" data-ceremony-mode="register" aria-pressed="true">Create passkey</button>
                                     <button type="button" data-ceremony-mode="signin" aria-pressed="false">Sign in</button>
@@ -151,23 +147,341 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
                                 <button type="button" class="ceremony-play" id="ceremony-play">Play registration</button>
                             </div>
 
-                            <ol class="ceremony-steps" id="ceremony-steps">
-                                <li><button type="button" data-ceremony-step="0" aria-label="Step 1: Request" aria-current="step"><span>1</span><strong>Request</strong><small>Site asks to create a credential</small></button></li>
-                                <li><button type="button" data-ceremony-step="1" aria-label="Step 2: Challenge"><span>2</span><strong>Challenge</strong><small>Server creates one-time random bytes</small></button></li>
-                                <li><button type="button" data-ceremony-step="2" aria-label="Step 3: Origin check"><span>3</span><strong>Origin check</strong><small>Browser binds the flow to the site</small></button></li>
-                                <li><button type="button" data-ceremony-step="3" aria-label="Step 4: Local approval"><span>4</span><strong>Local approval</strong><small>Face, fingerprint, PIN, or touch</small></button></li>
-                                <li><button type="button" data-ceremony-step="4" aria-label="Step 5: Key creation"><span>5</span><strong>Key creation</strong><small>Authenticator generates the pair</small></button></li>
-                                <li><button type="button" data-ceremony-step="5" aria-label="Step 6: Browser relays"><span>6</span><strong>Browser relays</strong><small>WebAuthn response returns through the browser</small></button></li>
-                                <li><button type="button" data-ceremony-step="6" aria-label="Step 7: Store public half"><span>7</span><strong>Store public half</strong><small>Server verifies and saves the record</small></button></li>
-                            </ol>
+                            <ol class="ceremony-steps" id="ceremony-steps" hidden></ol>
 
-                            <div class="ceremony-figure" role="img" aria-labelledby="ceremony-title ceremony-description">
-                                <span class="figure-label">Fig. 1 · Split-key flow</span>
+                            <div class="flow-navigation" hidden>
+                                <button type="button" id="flow-back">← Back</button>
+                                <span id="flow-progress">Step 1 of 7</span>
+                                <button type="button" id="flow-next">Next →</button>
+                            </div>
+                            <div class="ceremony-figure">
+                                <span class="figure-label">One flow · Screen, browser, device, server</span>
                                 <div class="ceremony-caption" aria-live="polite" aria-atomic="true">
-                                    <h3 id="ceremony-title">Registration begins</h3>
-                                    <p id="ceremony-description">The website asks the browser to create a new public-key credential for its RP ID.</p>
+                                    <h3 id="ceremony-title">Maya chooses to create a passkey</h3>
+                                    <p id="ceremony-description">The first tap starts in the website’s account settings.</p>
                                 </div>
-                                <div class="ceremony-plane">
+                                <div class="flow-panels">
+                                <div class="flow-panel" data-flow-mode="register" data-flow-stage="0" data-step-name="Start">
+                                    <h3 class="flow-static-title">Create a passkey · 1. <span>Maya chooses to create a passkey</span></h3>
+                                    <p class="flow-summary">The first tap starts in the website’s account settings.</p>
+                                    <div class="flow-scene">
+                                        <div class="experience-screen phone-demo">
+                                            <div class="phone-device" data-phone-state="website">
+                                                <div class="phone-display">
+                                                    <div class="phone-status" aria-hidden="true"><b>9:41</b><span class="phone-island"></span><span class="phone-status-icons"><svg viewBox="0 0 18 12"><path d="M1 9v2h2V9zm4-3v5h2V6zm4-3v8h2V3zm4-3v11h2V0z" fill="currentColor"/></svg><svg viewBox="0 0 16 12"><path d="M1 4q7-6 14 0M4 7q4-4 8 0m-5 3q1-1 2 0" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="phone-battery"></span></span></div>
+                                                    <div class="phone-website"><div class="phone-brand"><span class="phone-brand-mark">a</span><strong>atlas</strong><span class="phone-menu">•••</span></div><div class="phone-web-content"><span class="phone-back"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 5-7 7 7 7"/></svg> Account</span><h4>Security</h4>
+                <div class="phone-key-tile"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-6 0 3-3"/></svg></div><h5>A simpler way<br>to sign in.</h5><p>Use Face ID or your device passcode. No password to remember.</p>
+                <div class="phone-account"><span class="phone-avatar">M</span><span><strong>Maya Chen</strong><small>maya@example.com</small></span></div><button type="button" class="phone-button phone-button-primary" data-phone-next disabled aria-label="Create a passkey — walkthrough">Create a passkey</button><span class="phone-link">Not now</span></div></div>
+                                                    <div class="phone-browser" aria-hidden="true"><div class="phone-address"><span>ᴀA</span><span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="10" width="12" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg> example.com</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9a8 8 0 1 0 0 7m0-13v6h-6"/></svg></div><div class="phone-browser-tools"><span>‹</span><span>›</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8H5v13h14V8h-2m-5 7V2m-4 4 4-4 4 4"/></svg><svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 6C9 4 5 4 2 5v14c3-1 7-1 10 1 3-2 7-2 10-1V5c-3-1-7-1-10 1Zm0 0v14"/></svg><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="13" height="14" rx="2"/><path d="M16 7V3H3v13h4"/></svg></div></div>
+
+                                                    <div class="phone-home" aria-hidden="true"></div>
+                                                </div>
+                                            </div>
+                                            <div class="phone-caption"><span>Website in Safari</span><small>Tap the phone’s button to follow along</small></div>
+                                        </div>
+                                        <div class="experience-explainer"><h4>What is happening</h4><p>Maya is already signed in. She chooses “Create a passkey”; “Not now” lets her skip it. The frontend asks the server to begin registration for her account. No key has been created yet.</p><details class="flow-details"><summary>Technical details &amp; what can go wrong</summary><p>Adding a passkey grants future access, so require a trusted session and a recent security check when needed. For a new account, establish the account and complete any required email verification first: a passkey does not prove ownership of an email address. Example endpoint: <code>POST /passkeys/register/options</code>; protect account-changing requests against CSRF.</p></details></div>
+                                    </div>
+
+                                </div>
+                                <div class="flow-panel" data-flow-mode="register" data-flow-stage="1" data-step-name="Challenge">
+                                    <h3 class="flow-static-title">Create a passkey · 2. <span>The server creates a fresh challenge</span></h3>
+                                    <p class="flow-summary">The website prepares a one-time request while Maya waits.</p>
+                                    <div class="flow-scene">
+                                        <div class="experience-screen phone-demo">
+                                            <div class="phone-device" data-phone-state="website">
+                                                <div class="phone-display">
+                                                    <div class="phone-status" aria-hidden="true"><b>9:41</b><span class="phone-island"></span><span class="phone-status-icons"><svg viewBox="0 0 18 12"><path d="M1 9v2h2V9zm4-3v5h2V6zm4-3v8h2V3zm4-3v11h2V0z" fill="currentColor"/></svg><svg viewBox="0 0 16 12"><path d="M1 4q7-6 14 0M4 7q4-4 8 0m-5 3q1-1 2 0" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="phone-battery"></span></span></div>
+                                                    <div class="phone-website"><div class="phone-brand"><span class="phone-brand-mark">a</span><strong>atlas</strong><span class="phone-menu">•••</span></div><div class="phone-web-content"><span class="phone-back"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 5-7 7 7 7"/></svg> Account</span><h4>Security</h4>
+                <div class="phone-key-tile"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-6 0 3-3"/></svg></div><h5>A simpler way<br>to sign in.</h5><p>Use Face ID or your device passcode. No password to remember.</p>
+                <div class="phone-account"><span class="phone-avatar">M</span><span><strong>Maya Chen</strong><small>maya@example.com</small></span></div><div class="phone-button phone-button-primary phone-pending"><i class="phone-spinner"></i>Creating passkey…</div><span class="phone-link">Not now</span></div></div>
+                                                    <div class="phone-browser" aria-hidden="true"><div class="phone-address"><span>ᴀA</span><span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="10" width="12" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg> example.com</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9a8 8 0 1 0 0 7m0-13v6h-6"/></svg></div><div class="phone-browser-tools"><span>‹</span><span>›</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8H5v13h14V8h-2m-5 7V2m-4 4 4-4 4 4"/></svg><svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 6C9 4 5 4 2 5v14c3-1 7-1 10 1 3-2 7-2 10-1V5c-3-1-7-1-10 1Zm0 0v14"/></svg><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="13" height="14" rx="2"/><path d="M16 7V3H3v13h4"/></svg></div></div>
+
+                                                    <div class="phone-home" aria-hidden="true"></div>
+                                                </div>
+                                            </div>
+                                            <div class="phone-caption"><span>Website in Safari</span><small>The app waits while the protocol continues</small></div>
+                                        </div>
+                                        <div class="experience-explainer"><h4>What is happening</h4><p>The server generates at least 16 bytes of cryptographically unpredictable random data. This challenge is not a password and need not be secret. It ties the response to this short-lived attempt and Maya’s account.</p><details class="flow-details"><summary>Technical details &amp; what can go wrong</summary><p>Creation options also include RP information, an opaque user handle, allowed algorithms, and duplicate-credential exclusions. This flow requests <code>residentKey: "required"</code> for a discoverable credential and <code>userVerification: "required"</code>. The server requires an exact match before accepting the response and invalidates the challenge after success or failure. A retry gets a fresh challenge.</p></details></div>
+                                    </div>
+
+                                </div>
+                                <div class="flow-panel" data-flow-mode="register" data-flow-stage="2" data-step-name="Choose">
+                                    <h3 class="flow-static-title">Create a passkey · 3. <span>The browser opens the passkey prompt</span></h3>
+                                    <p class="flow-summary">The website hands control to the browser and credential provider.</p>
+                                    <div class="flow-scene">
+                                        <div class="experience-screen phone-demo">
+                                            <div class="phone-device" data-phone-state="system">
+                                                <div class="phone-display">
+                                                    <div class="phone-status" aria-hidden="true"><b>9:41</b><span class="phone-island"></span><span class="phone-status-icons"><svg viewBox="0 0 18 12"><path d="M1 9v2h2V9zm4-3v5h2V6zm4-3v8h2V3zm4-3v11h2V0z" fill="currentColor"/></svg><svg viewBox="0 0 16 12"><path d="M1 4q7-6 14 0M4 7q4-4 8 0m-5 3q1-1 2 0" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="phone-battery"></span></span></div>
+                                                    <div class="phone-website" inert aria-hidden="true"><div class="phone-brand"><span class="phone-brand-mark">a</span><strong>atlas</strong><span class="phone-menu">•••</span></div><div class="phone-web-content"><span class="phone-back"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 5-7 7 7 7"/></svg> Account</span><h4>Security</h4>
+                <div class="phone-key-tile"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-6 0 3-3"/></svg></div><h5>A simpler way<br>to sign in.</h5><p>Use Face ID or your device passcode. No password to remember.</p>
+                <div class="phone-account"><span class="phone-avatar">M</span><span><strong>Maya Chen</strong><small>maya@example.com</small></span></div><button type="button" class="phone-button phone-button-primary" data-phone-next disabled aria-label="Create a passkey — walkthrough">Create a passkey</button><span class="phone-link">Not now</span></div></div>
+                                                    <div class="phone-browser" aria-hidden="true"><div class="phone-address"><span>ᴀA</span><span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="10" width="12" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg> example.com</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9a8 8 0 1 0 0 7m0-13v6h-6"/></svg></div><div class="phone-browser-tools"><span>‹</span><span>›</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8H5v13h14V8h-2m-5 7V2m-4 4 4-4 4 4"/></svg><svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 6C9 4 5 4 2 5v14c3-1 7-1 10 1 3-2 7-2 10-1V5c-3-1-7-1-10 1Zm0 0v14"/></svg><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="13" height="14" rx="2"/><path d="M16 7V3H3v13h4"/></svg></div></div>
+                                                    <div class="phone-scrim"></div><div class="phone-sheet "><div class="phone-sheet-handle"></div><button type="button" class="phone-button phone-button-cancel" data-phone-cancel disabled aria-label="Cancel — walkthrough">Cancel</button><div class="phone-sheet-key"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-6 0 3-3"/></svg></div><h4>Save a passkey?</h4><p>Use Face ID to sign in to <strong>example.com</strong>. Your passkey will be saved in iCloud Keychain.</p><div class="phone-account"><span class="phone-avatar">M</span><span><strong>Maya Chen</strong><small>maya@example.com</small></span></div><button type="button" class="phone-button phone-button-primary" data-phone-next disabled aria-label="Continue — walkthrough">Continue</button><span class="phone-provider"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18a5 5 0 0 1-1-10 6 6 0 0 1 12 1 4.5 4.5 0 0 1 0 9z"/></svg> iCloud Keychain</span></div>
+                                                    <div class="phone-home" aria-hidden="true"></div>
+                                                </div>
+                                            </div>
+                                            <div class="phone-caption"><span>iOS passkey sheet</span><small>Tap the phone’s button to follow along</small></div>
+                                        </div>
+                                        <div class="experience-explainer"><h4>What is happening</h4><p>The frontend calls <code>navigator.credentials.create()</code> with the server’s options. The browser checks that the RP ID is valid for this origin. Maya chooses where to save the passkey in a system-controlled prompt.</p><details class="flow-details"><summary>Technical details &amp; what can go wrong</summary><p>WebAuthn requires a secure context, normally HTTPS; localhost works for development. Decode base64url JSON fields into binary values with <code>PublicKeyCredential.parseCreationOptionsFromJSON()</code> where supported, or a library. Feature-detect APIs and offer supported alternatives. The website can style its invitation, but cannot style the system prompt or read a device PIN.</p></details></div>
+                                    </div>
+
+                                </div>
+                                <div class="flow-panel" data-flow-mode="register" data-flow-stage="3" data-step-name="Unlock">
+                                    <h3 class="flow-static-title">Create a passkey · 4. <span>Maya approves on her authenticator</span></h3>
+                                    <p class="flow-summary">A face, fingerprint, or device PIN authorizes the private operation.</p>
+                                    <div class="flow-scene">
+                                        <div class="experience-screen phone-demo">
+                                            <div class="phone-device" data-phone-state="system">
+                                                <div class="phone-display">
+                                                    <div class="phone-status" aria-hidden="true"><b>9:41</b><span class="phone-island"></span><span class="phone-status-icons"><svg viewBox="0 0 18 12"><path d="M1 9v2h2V9zm4-3v5h2V6zm4-3v8h2V3zm4-3v11h2V0z" fill="currentColor"/></svg><svg viewBox="0 0 16 12"><path d="M1 4q7-6 14 0M4 7q4-4 8 0m-5 3q1-1 2 0" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="phone-battery"></span></span></div>
+                                                    <div class="phone-website" inert aria-hidden="true"><div class="phone-brand"><span class="phone-brand-mark">a</span><strong>atlas</strong><span class="phone-menu">•••</span></div><div class="phone-web-content"><span class="phone-back"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 5-7 7 7 7"/></svg> Account</span><h4>Security</h4>
+                <div class="phone-key-tile"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-6 0 3-3"/></svg></div><h5>A simpler way<br>to sign in.</h5><p>Use Face ID or your device passcode. No password to remember.</p>
+                <div class="phone-account"><span class="phone-avatar">M</span><span><strong>Maya Chen</strong><small>maya@example.com</small></span></div><button type="button" class="phone-button phone-button-primary" data-phone-next disabled aria-label="Create a passkey — walkthrough">Create a passkey</button><span class="phone-link">Not now</span></div></div>
+                                                    <div class="phone-browser" aria-hidden="true"><div class="phone-address"><span>ᴀA</span><span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="10" width="12" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg> example.com</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9a8 8 0 1 0 0 7m0-13v6h-6"/></svg></div><div class="phone-browser-tools"><span>‹</span><span>›</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8H5v13h14V8h-2m-5 7V2m-4 4 4-4 4 4"/></svg><svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 6C9 4 5 4 2 5v14c3-1 7-1 10 1 3-2 7-2 10-1V5c-3-1-7-1-10 1Zm0 0v14"/></svg><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="13" height="14" rx="2"/><path d="M16 7V3H3v13h4"/></svg></div></div>
+                                                    <div class="phone-scrim"></div><div class="phone-sheet is-biometric"><div class="phone-sheet-handle"></div><button type="button" class="phone-button phone-button-cancel" data-phone-cancel disabled aria-label="Cancel — walkthrough">Cancel</button><button type="button" class="phone-biometric" data-phone-next disabled aria-label="Simulate successful Face ID — walkthrough"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m8 0h3a2 2 0 0 0 2-2v-3M8 8v2m8-2v2m-4-2v5h-1m-3 3c2 2 6 2 8 0"/></svg></button><h4>Face ID</h4><p>Look at your iPhone to save this passkey.</p>
+            <div class="phone-sheet-identity"><strong>example.com</strong><span>maya@example.com</span></div>
+            <span class="phone-system-link">Use Passcode</span></div>
+                                                    <div class="phone-home" aria-hidden="true"></div>
+                                                </div>
+                                            </div>
+                                            <div class="phone-caption"><span>iOS passkey sheet</span><small>Tap Face ID to simulate approval</small></div>
+                                        </div>
+                                        <div class="experience-explainer"><h4>What is happening</h4><p>Maya unlocks her chosen authenticator. The biometric template and device PIN stay local. The website receives verification flags, not her fingerprint or face. This example requires user verification, which is stronger than a touch that only shows presence.</p><details class="flow-details"><summary>Technical details &amp; what can go wrong</summary><p>If Maya cancels or the prompt times out, return to the page with “Creation wasn’t completed” and offer retry or another method. <code>NotAllowedError</code> covers multiple causes; it does not prove there is no passkey. Do not immediately reopen a dismissed prompt. Use an <code>AbortController</code> when leaving the page and prevent duplicate requests.</p></details></div>
+                                    </div>
+
+                                </div>
+                                <div class="flow-panel" data-flow-mode="register" data-flow-stage="4" data-step-name="Create key">
+                                    <h3 class="flow-static-title">Create a passkey · 5. <span>The authenticator creates the key pair</span></h3>
+                                    <p class="flow-summary">The private key stays under authenticator control; the public half can travel.</p>
+                                    <div class="flow-scene">
+                                        <div class="experience-screen phone-demo">
+                                            <div class="phone-device" data-phone-state="system">
+                                                <div class="phone-display">
+                                                    <div class="phone-status" aria-hidden="true"><b>9:41</b><span class="phone-island"></span><span class="phone-status-icons"><svg viewBox="0 0 18 12"><path d="M1 9v2h2V9zm4-3v5h2V6zm4-3v8h2V3zm4-3v11h2V0z" fill="currentColor"/></svg><svg viewBox="0 0 16 12"><path d="M1 4q7-6 14 0M4 7q4-4 8 0m-5 3q1-1 2 0" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="phone-battery"></span></span></div>
+                                                    <div class="phone-website" inert aria-hidden="true"><div class="phone-brand"><span class="phone-brand-mark">a</span><strong>atlas</strong><span class="phone-menu">•••</span></div><div class="phone-web-content"><span class="phone-back"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 5-7 7 7 7"/></svg> Account</span><h4>Security</h4>
+                <div class="phone-key-tile"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-6 0 3-3"/></svg></div><h5>A simpler way<br>to sign in.</h5><p>Use Face ID or your device passcode. No password to remember.</p>
+                <div class="phone-account"><span class="phone-avatar">M</span><span><strong>Maya Chen</strong><small>maya@example.com</small></span></div><button type="button" class="phone-button phone-button-primary" data-phone-next disabled aria-label="Create a passkey — walkthrough">Create a passkey</button><span class="phone-link">Not now</span></div></div>
+                                                    <div class="phone-browser" aria-hidden="true"><div class="phone-address"><span>ᴀA</span><span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="10" width="12" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg> example.com</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9a8 8 0 1 0 0 7m0-13v6h-6"/></svg></div><div class="phone-browser-tools"><span>‹</span><span>›</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8H5v13h14V8h-2m-5 7V2m-4 4 4-4 4 4"/></svg><svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 6C9 4 5 4 2 5v14c3-1 7-1 10 1 3-2 7-2 10-1V5c-3-1-7-1-10 1Zm0 0v14"/></svg><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="13" height="14" rx="2"/><path d="M16 7V3H3v13h4"/></svg></div></div>
+                                                    <div class="phone-scrim"></div><div class="phone-sheet is-biometric"><div class="phone-sheet-handle"></div><div class="phone-biometric is-confirmed"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></div><h4>Approved</h4><p>Your passkey is being created.</p>
+            <div class="phone-sheet-identity"><strong>example.com</strong><span>maya@example.com</span></div>
+            <span class="phone-confirmed-caption"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg> Verified on this iPhone</span></div>
+                                                    <div class="phone-home" aria-hidden="true"></div>
+                                                </div>
+                                            </div>
+                                            <div class="phone-caption"><span>iOS passkey sheet</span><small>Slowed down to show the private-key operation</small></div>
+                                        </div>
+                                        <div class="experience-explainer"><h4>What is happening</h4><p>A new credential ID and RP-scoped key pair are created. The provider keeps the private key; the public key is prepared for the website. The provider may synchronize an encrypted copy to Maya’s other trusted devices.</p><details class="flow-details"><summary>Technical details &amp; what can go wrong</summary><p>Authenticator data includes the RP ID hash, user-presence and verification flags, backup flags, counter, credential ID, and public key. The attestation object carries that data and any attestation evidence. A device-bound credential stays with its authenticator; a synced passkey has a provider-dependent recovery and security boundary.</p></details></div>
+                                    </div>
+
+                                </div>
+                                <div class="flow-panel" data-flow-mode="register" data-flow-stage="5" data-step-name="Send back">
+                                    <h3 class="flow-static-title">Create a passkey · 6. <span>The credential returns through the browser</span></h3>
+                                    <p class="flow-summary">Page code sends the public response to the website over HTTPS.</p>
+                                    <div class="flow-scene">
+                                        <div class="experience-screen phone-demo">
+                                            <div class="phone-device" data-phone-state="website">
+                                                <div class="phone-display">
+                                                    <div class="phone-status" aria-hidden="true"><b>9:41</b><span class="phone-island"></span><span class="phone-status-icons"><svg viewBox="0 0 18 12"><path d="M1 9v2h2V9zm4-3v5h2V6zm4-3v8h2V3zm4-3v11h2V0z" fill="currentColor"/></svg><svg viewBox="0 0 16 12"><path d="M1 4q7-6 14 0M4 7q4-4 8 0m-5 3q1-1 2 0" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="phone-battery"></span></span></div>
+                                                    <div class="phone-website"><div class="phone-brand"><span class="phone-brand-mark">a</span><strong>atlas</strong><span class="phone-menu">•••</span></div><div class="phone-web-content"><span class="phone-back"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 5-7 7 7 7"/></svg> Account</span><h4>Security</h4>
+                <div class="phone-key-tile"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-6 0 3-3"/></svg></div><h5>A simpler way<br>to sign in.</h5><p>Use Face ID or your device passcode. No password to remember.</p>
+                <div class="phone-account"><span class="phone-avatar">M</span><span><strong>Maya Chen</strong><small>maya@example.com</small></span></div><div class="phone-button phone-button-primary phone-pending"><i class="phone-spinner"></i>Saving passkey…</div><span class="phone-link">Not now</span></div></div>
+                                                    <div class="phone-browser" aria-hidden="true"><div class="phone-address"><span>ᴀA</span><span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="10" width="12" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg> example.com</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9a8 8 0 1 0 0 7m0-13v6h-6"/></svg></div><div class="phone-browser-tools"><span>‹</span><span>›</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8H5v13h14V8h-2m-5 7V2m-4 4 4-4 4 4"/></svg><svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 6C9 4 5 4 2 5v14c3-1 7-1 10 1 3-2 7-2 10-1V5c-3-1-7-1-10 1Zm0 0v14"/></svg><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="13" height="14" rx="2"/><path d="M16 7V3H3v13h4"/></svg></div></div>
+
+                                                    <div class="phone-home" aria-hidden="true"></div>
+                                                </div>
+                                            </div>
+                                            <div class="phone-caption"><span>Website in Safari</span><small>The app waits while the protocol continues</small></div>
+                                        </div>
+                                        <div class="experience-explainer"><h4>What is happening</h4><p>The browser returns the credential to the page. The frontend serializes it and posts it to the server. Maya sees a saving state, because successful local creation does not mean the website has stored a working registration.</p><details class="flow-details"><summary>Technical details &amp; what can go wrong</summary><p><code>clientDataJSON</code> records the type <code>webauthn.create</code>, challenge, origin, and cross-origin context. Use credential <code>toJSON()</code> where supported or a library to encode binary fields, then call an endpoint such as <code>POST /passkeys/register/verify</code>. If saving fails, offer a fresh retry; a provider entry may already exist. Handle duplicates and help remove stale entries.</p></details></div>
+                                    </div>
+
+                                </div>
+                                <div class="flow-panel" data-flow-mode="register" data-flow-stage="6" data-step-name="Ready">
+                                    <h3 class="flow-static-title">Create a passkey · 7. <span>The server verifies and saves the passkey</span></h3>
+                                    <p class="flow-summary">Only the server’s acceptance turns “Saving…” into “Your passkey is ready.”</p>
+                                    <div class="flow-scene">
+                                        <div class="experience-screen phone-demo">
+                                            <div class="phone-device" data-phone-state="website">
+                                                <div class="phone-display">
+                                                    <div class="phone-status" aria-hidden="true"><b>9:41</b><span class="phone-island"></span><span class="phone-status-icons"><svg viewBox="0 0 18 12"><path d="M1 9v2h2V9zm4-3v5h2V6zm4-3v8h2V3zm4-3v11h2V0z" fill="currentColor"/></svg><svg viewBox="0 0 16 12"><path d="M1 4q7-6 14 0M4 7q4-4 8 0m-5 3q1-1 2 0" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="phone-battery"></span></span></div>
+                                                    <div class="phone-website"><div class="phone-brand"><span class="phone-brand-mark">a</span><strong>atlas</strong><span class="phone-menu">•••</span></div><div class="phone-web-content"><span class="phone-back"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 5-7 7 7 7"/></svg> Account</span><h4>Passkeys</h4>
+                <div class="phone-success-icon"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></div><h5>You’re all set.</h5><p>You can now sign in with a look or a touch.</p>
+                <div class="phone-credential"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-6 0 3-3"/></svg><span><strong>iCloud Keychain</strong><small>Added just now</small></span><span class="phone-active-dot"></span></div>
+                <button type="button" class="phone-button phone-button-primary" data-phone-signin disabled aria-label="Try signing in — walkthrough">Try signing in</button><span class="phone-link">Add another passkey</span></div></div>
+                                                    <div class="phone-browser" aria-hidden="true"><div class="phone-address"><span>ᴀA</span><span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="10" width="12" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg> example.com</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9a8 8 0 1 0 0 7m0-13v6h-6"/></svg></div><div class="phone-browser-tools"><span>‹</span><span>›</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8H5v13h14V8h-2m-5 7V2m-4 4 4-4 4 4"/></svg><svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 6C9 4 5 4 2 5v14c3-1 7-1 10 1 3-2 7-2 10-1V5c-3-1-7-1-10 1Zm0 0v14"/></svg><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="13" height="14" rx="2"/><path d="M16 7V3H3v13h4"/></svg></div></div>
+
+                                                    <div class="phone-home" aria-hidden="true"></div>
+                                                </div>
+                                            </div>
+                                            <div class="phone-caption"><span>Website in Safari</span><small>Tap the phone’s button to follow along</small></div>
+                                        </div>
+                                        <div class="experience-explainer"><h4>What is happening</h4><p>The server checks the response before saving the public key and linking it to Maya’s account. The page then shows success and refreshes her passkey list. She can give the credential a recognizable name and add another way to get back in.</p><details class="flow-details"><summary>Technical details &amp; what can go wrong</summary><p>Verify <code>clientDataJSON.type === "webauthn.create"</code>, challenge, expected origin, applicable cross-origin/top-origin policy, RP ID hash, flags, algorithm, uniqueness, and attestation policy using a maintained WebAuthn library. Store credential ID, public key, account link, counter, transports, and backup state—not the private key. Show created/last-used information; deleting a website record may leave a copy in the provider. Avoid removing the last working method without a recovery plan.</p></details></div>
+                                    </div>
+
+                                </div>
+                                <div class="flow-panel" data-flow-mode="signin" data-flow-stage="0" data-step-name="Start">
+                                    <h3 class="flow-static-title">Sign in · 1. <span>Maya returns to sign in</span></h3>
+                                    <p class="flow-summary">A familiar sign-in page starts the flow; no password needs to be typed.</p>
+                                    <div class="flow-scene">
+                                        <div class="experience-screen phone-demo">
+                                            <div class="phone-device" data-phone-state="website">
+                                                <div class="phone-display">
+                                                    <div class="phone-status" aria-hidden="true"><b>9:41</b><span class="phone-island"></span><span class="phone-status-icons"><svg viewBox="0 0 18 12"><path d="M1 9v2h2V9zm4-3v5h2V6zm4-3v8h2V3zm4-3v11h2V0z" fill="currentColor"/></svg><svg viewBox="0 0 16 12"><path d="M1 4q7-6 14 0M4 7q4-4 8 0m-5 3q1-1 2 0" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="phone-battery"></span></span></div>
+                                                    <div class="phone-website"><div class="phone-brand"><span class="phone-brand-mark">a</span><strong>atlas</strong><span class="phone-menu">•••</span></div><div class="phone-web-content"><div class="phone-login-heading"><span class="phone-key-tile"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-6 0 3-3"/></svg></span><h4>Welcome back.</h4><p>Your ideas are waiting for you.</p></div>
+            <div class="phone-field-label">Email</div><div class="phone-email-field">maya@example.com</div>
+            <button type="button" class="phone-button phone-button-primary" data-phone-next disabled aria-label="Sign in with a passkey — walkthrough">Sign in with a passkey</button><div class="phone-or"><span></span>or<span></span></div><span class="phone-alternate">Use a password</span><span class="phone-link">Need help signing in?</span></div></div>
+                                                    <div class="phone-browser" aria-hidden="true"><div class="phone-address"><span>ᴀA</span><span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="10" width="12" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg> example.com</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9a8 8 0 1 0 0 7m0-13v6h-6"/></svg></div><div class="phone-browser-tools"><span>‹</span><span>›</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8H5v13h14V8h-2m-5 7V2m-4 4 4-4 4 4"/></svg><svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 6C9 4 5 4 2 5v14c3-1 7-1 10 1 3-2 7-2 10-1V5c-3-1-7-1-10 1Zm0 0v14"/></svg><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="13" height="14" rx="2"/><path d="M16 7V3H3v13h4"/></svg></div></div>
+
+                                                    <div class="phone-home" aria-hidden="true"></div>
+                                                </div>
+                                            </div>
+                                            <div class="phone-caption"><span>Website in Safari</span><small>Tap the phone’s button to follow along</small></div>
+                                        </div>
+                                        <div class="experience-explainer"><h4>What is happening</h4><p>Maya chooses the passkey button. The frontend begins a sign-in attempt. With supported autofill, the page can prepare the request earlier and wait until she chooses a saved account. She does not need to remember which device holds the key.</p><details class="flow-details"><summary>Technical details &amp; what can go wrong</summary><p>If she has no usable passkey, offer another registered credential, a synced copy, or account recovery. A device-bound key cannot be restored through sync, and the server’s public key cannot reconstruct the private key. Recovery needs its own ownership checks, rate limits, and notifications; it must not silently bypass the main protection.</p></details></div>
+                                    </div>
+
+                                </div>
+                                <div class="flow-panel" data-flow-mode="signin" data-flow-stage="1" data-step-name="Challenge">
+                                    <h3 class="flow-static-title">Sign in · 2. <span>The server creates a new challenge</span></h3>
+                                    <p class="flow-summary">A fresh sign-in attempt needs fresh random data, not a previously captured response.</p>
+                                    <div class="flow-scene">
+                                        <div class="experience-screen phone-demo">
+                                            <div class="phone-device" data-phone-state="website">
+                                                <div class="phone-display">
+                                                    <div class="phone-status" aria-hidden="true"><b>9:41</b><span class="phone-island"></span><span class="phone-status-icons"><svg viewBox="0 0 18 12"><path d="M1 9v2h2V9zm4-3v5h2V6zm4-3v8h2V3zm4-3v11h2V0z" fill="currentColor"/></svg><svg viewBox="0 0 16 12"><path d="M1 4q7-6 14 0M4 7q4-4 8 0m-5 3q1-1 2 0" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="phone-battery"></span></span></div>
+                                                    <div class="phone-website"><div class="phone-brand"><span class="phone-brand-mark">a</span><strong>atlas</strong><span class="phone-menu">•••</span></div><div class="phone-web-content"><div class="phone-login-heading"><span class="phone-key-tile"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-6 0 3-3"/></svg></span><h4>Welcome back.</h4><p>Your ideas are waiting for you.</p></div>
+            <div class="phone-field-label">Email</div><div class="phone-email-field">maya@example.com</div>
+            <div class="phone-button phone-button-primary phone-pending"><i class="phone-spinner"></i>Signing in…</div><div class="phone-or"><span></span>or<span></span></div><span class="phone-alternate">Use a password</span><span class="phone-link">Need help signing in?</span></div></div>
+                                                    <div class="phone-browser" aria-hidden="true"><div class="phone-address"><span>ᴀA</span><span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="10" width="12" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg> example.com</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9a8 8 0 1 0 0 7m0-13v6h-6"/></svg></div><div class="phone-browser-tools"><span>‹</span><span>›</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8H5v13h14V8h-2m-5 7V2m-4 4 4-4 4 4"/></svg><svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 6C9 4 5 4 2 5v14c3-1 7-1 10 1 3-2 7-2 10-1V5c-3-1-7-1-10 1Zm0 0v14"/></svg><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="13" height="14" rx="2"/><path d="M16 7V3H3v13h4"/></svg></div></div>
+
+                                                    <div class="phone-home" aria-hidden="true"></div>
+                                                </div>
+                                            </div>
+                                            <div class="phone-caption"><span>Website in Safari</span><small>The app waits while the protocol continues</small></div>
+                                        </div>
+                                        <div class="experience-explainer"><h4>What is happening</h4><p>The server generates an unpredictable, short-lived challenge and binds it to this attempt. It returns request options to the frontend. Maya sees a waiting state; she never has to read or enter the challenge.</p><details class="flow-details"><summary>Technical details &amp; what can go wrong</summary><p>Example endpoint: <code>POST /passkeys/signin/options</code>. A username-first flow can supply allowed credential IDs; an empty <code>allowCredentials</code> list lets a discoverable credential identify the account. Request <code>userVerification: "required"</code> for this flow. The server consumes the challenge after use, rejects old assertions, and creates a new challenge for a retry.</p></details></div>
+                                    </div>
+
+                                </div>
+                                <div class="flow-panel" data-flow-mode="signin" data-flow-stage="2" data-step-name="Choose">
+                                    <h3 class="flow-static-title">Sign in · 3. <span>The browser selects a credential for the real site</span></h3>
+                                    <p class="flow-summary">Only credentials scoped to this relying party are available to its request.</p>
+                                    <div class="flow-scene">
+                                        <div class="experience-screen phone-demo">
+                                            <div class="phone-device" data-phone-state="system">
+                                                <div class="phone-display">
+                                                    <div class="phone-status" aria-hidden="true"><b>9:41</b><span class="phone-island"></span><span class="phone-status-icons"><svg viewBox="0 0 18 12"><path d="M1 9v2h2V9zm4-3v5h2V6zm4-3v8h2V3zm4-3v11h2V0z" fill="currentColor"/></svg><svg viewBox="0 0 16 12"><path d="M1 4q7-6 14 0M4 7q4-4 8 0m-5 3q1-1 2 0" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="phone-battery"></span></span></div>
+                                                    <div class="phone-website" inert aria-hidden="true"><div class="phone-brand"><span class="phone-brand-mark">a</span><strong>atlas</strong><span class="phone-menu">•••</span></div><div class="phone-web-content"><div class="phone-login-heading"><span class="phone-key-tile"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-6 0 3-3"/></svg></span><h4>Welcome back.</h4><p>Your ideas are waiting for you.</p></div>
+            <div class="phone-field-label">Email</div><div class="phone-email-field">maya@example.com</div>
+            <button type="button" class="phone-button phone-button-primary" data-phone-next disabled aria-label="Sign in with a passkey — walkthrough">Sign in with a passkey</button><div class="phone-or"><span></span>or<span></span></div><span class="phone-alternate">Use a password</span><span class="phone-link">Need help signing in?</span></div></div>
+                                                    <div class="phone-browser" aria-hidden="true"><div class="phone-address"><span>ᴀA</span><span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="10" width="12" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg> example.com</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9a8 8 0 1 0 0 7m0-13v6h-6"/></svg></div><div class="phone-browser-tools"><span>‹</span><span>›</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8H5v13h14V8h-2m-5 7V2m-4 4 4-4 4 4"/></svg><svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 6C9 4 5 4 2 5v14c3-1 7-1 10 1 3-2 7-2 10-1V5c-3-1-7-1-10 1Zm0 0v14"/></svg><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="13" height="14" rx="2"/><path d="M16 7V3H3v13h4"/></svg></div></div>
+                                                    <div class="phone-scrim"></div><div class="phone-sheet "><div class="phone-sheet-handle"></div><button type="button" class="phone-button phone-button-cancel" data-phone-cancel disabled aria-label="Cancel — walkthrough">Cancel</button><div class="phone-sheet-key"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-6 0 3-3"/></svg></div><h4>Sign in with a passkey?</h4><p>Use your saved passkey for <strong>example.com</strong>.</p><div class="phone-account"><span class="phone-avatar">M</span><span><strong>Maya Chen</strong><small>maya@example.com</small></span></div><button type="button" class="phone-button phone-button-primary" data-phone-next disabled aria-label="Continue — walkthrough">Continue</button><span class="phone-provider"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18a5 5 0 0 1-1-10 6 6 0 0 1 12 1 4.5 4.5 0 0 1 0 9z"/></svg> iCloud Keychain</span></div>
+                                                    <div class="phone-home" aria-hidden="true"></div>
+                                                </div>
+                                            </div>
+                                            <div class="phone-caption"><span>iOS passkey sheet</span><small>Tap the phone’s button to follow along</small></div>
+                                        </div>
+                                        <div class="experience-explainer"><h4>What is happening</h4><p>The page calls <code>navigator.credentials.get()</code>. The browser checks the site binding and offers matching accounts. Maya chooses hers. A fake site at examp1e.com cannot ask for example.com’s passkey, even if its page looks identical.</p><details class="flow-details"><summary>Technical details &amp; what can go wrong</summary><p>Decode JSON request options with <code>PublicKeyCredential.parseRequestOptionsFromJSON()</code> or a library. For autofill, annotate the username field with <code>autocomplete="username webauthn"</code>, check <code>PublicKeyCredential.isConditionalMediationAvailable()</code>, and use <code>mediation: "conditional"</code>. The request waits for selection rather than immediately opening a modal. Abort the pending request before starting an explicit prompt or leaving the page.</p></details></div>
+                                    </div>
+
+                                </div>
+                                <div class="flow-panel" data-flow-mode="signin" data-flow-stage="3" data-step-name="Unlock">
+                                    <h3 class="flow-static-title">Sign in · 4. <span>Maya authorizes use of her passkey</span></h3>
+                                    <p class="flow-summary">She unlocks the authenticator; there is no six-digit code to copy.</p>
+                                    <div class="flow-scene">
+                                        <div class="experience-screen phone-demo">
+                                            <div class="phone-device" data-phone-state="system">
+                                                <div class="phone-display">
+                                                    <div class="phone-status" aria-hidden="true"><b>9:41</b><span class="phone-island"></span><span class="phone-status-icons"><svg viewBox="0 0 18 12"><path d="M1 9v2h2V9zm4-3v5h2V6zm4-3v8h2V3zm4-3v11h2V0z" fill="currentColor"/></svg><svg viewBox="0 0 16 12"><path d="M1 4q7-6 14 0M4 7q4-4 8 0m-5 3q1-1 2 0" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="phone-battery"></span></span></div>
+                                                    <div class="phone-website" inert aria-hidden="true"><div class="phone-brand"><span class="phone-brand-mark">a</span><strong>atlas</strong><span class="phone-menu">•••</span></div><div class="phone-web-content"><div class="phone-login-heading"><span class="phone-key-tile"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-6 0 3-3"/></svg></span><h4>Welcome back.</h4><p>Your ideas are waiting for you.</p></div>
+            <div class="phone-field-label">Email</div><div class="phone-email-field">maya@example.com</div>
+            <button type="button" class="phone-button phone-button-primary" data-phone-next disabled aria-label="Sign in with a passkey — walkthrough">Sign in with a passkey</button><div class="phone-or"><span></span>or<span></span></div><span class="phone-alternate">Use a password</span><span class="phone-link">Need help signing in?</span></div></div>
+                                                    <div class="phone-browser" aria-hidden="true"><div class="phone-address"><span>ᴀA</span><span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="10" width="12" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg> example.com</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9a8 8 0 1 0 0 7m0-13v6h-6"/></svg></div><div class="phone-browser-tools"><span>‹</span><span>›</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8H5v13h14V8h-2m-5 7V2m-4 4 4-4 4 4"/></svg><svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 6C9 4 5 4 2 5v14c3-1 7-1 10 1 3-2 7-2 10-1V5c-3-1-7-1-10 1Zm0 0v14"/></svg><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="13" height="14" rx="2"/><path d="M16 7V3H3v13h4"/></svg></div></div>
+                                                    <div class="phone-scrim"></div><div class="phone-sheet is-biometric"><div class="phone-sheet-handle"></div><button type="button" class="phone-button phone-button-cancel" data-phone-cancel disabled aria-label="Cancel — walkthrough">Cancel</button><button type="button" class="phone-biometric" data-phone-next disabled aria-label="Simulate successful Face ID — walkthrough"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m8 0h3a2 2 0 0 0 2-2v-3M8 8v2m8-2v2m-4-2v5h-1m-3 3c2 2 6 2 8 0"/></svg></button><h4>Face ID</h4><p>Look at your iPhone to sign in to example.com.</p>
+            <div class="phone-sheet-identity"><strong>example.com</strong><span>maya@example.com</span></div>
+            <span class="phone-system-link">Use Passcode</span></div>
+                                                    <div class="phone-home" aria-hidden="true"></div>
+                                                </div>
+                                            </div>
+                                            <div class="phone-caption"><span>iOS passkey sheet</span><small>Tap Face ID to simulate approval</small></div>
+                                        </div>
+                                        <div class="experience-explainer"><h4>What is happening</h4><p>Maya approves locally. If her passkey is on her phone, she can choose another device, scan the browser’s QR code, and unlock on that phone. The phone can sign for the computer without installing the credential there.</p><details class="flow-details"><summary>Technical details &amp; what can go wrong</summary><p>In the hybrid flow, Bluetooth establishes proximity and an encrypted connection carries the exchange; compatible devices and connectivity are needed. If she cancels, pairing fails, or the prompt times out, say “Sign-in wasn’t completed” and offer retry or another method. <code>NotAllowedError</code> does not identify a single cause. Do not automatically reopen a dismissed prompt.</p></details></div>
+                                    </div>
+
+                                </div>
+                                <div class="flow-panel" data-flow-mode="signin" data-flow-stage="4" data-step-name="Sign">
+                                    <h3 class="flow-static-title">Sign in · 5. <span>The authenticator signs fresh context</span></h3>
+                                    <p class="flow-summary">The private key produces a signature bound to this challenge and site.</p>
+                                    <div class="flow-scene">
+                                        <div class="experience-screen phone-demo">
+                                            <div class="phone-device" data-phone-state="system">
+                                                <div class="phone-display">
+                                                    <div class="phone-status" aria-hidden="true"><b>9:41</b><span class="phone-island"></span><span class="phone-status-icons"><svg viewBox="0 0 18 12"><path d="M1 9v2h2V9zm4-3v5h2V6zm4-3v8h2V3zm4-3v11h2V0z" fill="currentColor"/></svg><svg viewBox="0 0 16 12"><path d="M1 4q7-6 14 0M4 7q4-4 8 0m-5 3q1-1 2 0" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="phone-battery"></span></span></div>
+                                                    <div class="phone-website" inert aria-hidden="true"><div class="phone-brand"><span class="phone-brand-mark">a</span><strong>atlas</strong><span class="phone-menu">•••</span></div><div class="phone-web-content"><div class="phone-login-heading"><span class="phone-key-tile"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-6 0 3-3"/></svg></span><h4>Welcome back.</h4><p>Your ideas are waiting for you.</p></div>
+            <div class="phone-field-label">Email</div><div class="phone-email-field">maya@example.com</div>
+            <button type="button" class="phone-button phone-button-primary" data-phone-next disabled aria-label="Sign in with a passkey — walkthrough">Sign in with a passkey</button><div class="phone-or"><span></span>or<span></span></div><span class="phone-alternate">Use a password</span><span class="phone-link">Need help signing in?</span></div></div>
+                                                    <div class="phone-browser" aria-hidden="true"><div class="phone-address"><span>ᴀA</span><span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="10" width="12" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg> example.com</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9a8 8 0 1 0 0 7m0-13v6h-6"/></svg></div><div class="phone-browser-tools"><span>‹</span><span>›</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8H5v13h14V8h-2m-5 7V2m-4 4 4-4 4 4"/></svg><svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 6C9 4 5 4 2 5v14c3-1 7-1 10 1 3-2 7-2 10-1V5c-3-1-7-1-10 1Zm0 0v14"/></svg><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="13" height="14" rx="2"/><path d="M16 7V3H3v13h4"/></svg></div></div>
+                                                    <div class="phone-scrim"></div><div class="phone-sheet is-biometric"><div class="phone-sheet-handle"></div><div class="phone-biometric is-confirmed"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></div><h4>Approved</h4><p>Your passkey is ready to use.</p>
+            <div class="phone-sheet-identity"><strong>example.com</strong><span>maya@example.com</span></div>
+            <span class="phone-confirmed-caption"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg> Verified on this iPhone</span></div>
+                                                    <div class="phone-home" aria-hidden="true"></div>
+                                                </div>
+                                            </div>
+                                            <div class="phone-caption"><span>iOS passkey sheet</span><small>Slowed down to show the private-key operation</small></div>
+                                        </div>
+                                        <div class="experience-explainer"><h4>What is happening</h4><p>The authenticator signs <code>authenticatorData || SHA-256(clientDataJSON)</code>. That covers the RP ID hash, verification flags, counter, challenge, and browser-reported origin. The private key stays with the authenticator.</p><details class="flow-details"><summary>Technical details &amp; what can go wrong</summary><p><code>clientDataJSON.type</code> is <code>webauthn.get</code>. The server will verify the signature over the original bytes, not a reconstructed JSON object. Copying an old assertion cannot satisfy the fresh challenge. A locally successful unlock is only one step; the website has not accepted the sign-in yet.</p></details></div>
+                                    </div>
+
+                                </div>
+                                <div class="flow-panel" data-flow-mode="signin" data-flow-stage="5" data-step-name="Send back">
+                                    <h3 class="flow-static-title">Sign in · 6. <span>The assertion returns through the browser</span></h3>
+                                    <p class="flow-summary">Page code sends the signed response to the website over HTTPS.</p>
+                                    <div class="flow-scene">
+                                        <div class="experience-screen phone-demo">
+                                            <div class="phone-device" data-phone-state="website">
+                                                <div class="phone-display">
+                                                    <div class="phone-status" aria-hidden="true"><b>9:41</b><span class="phone-island"></span><span class="phone-status-icons"><svg viewBox="0 0 18 12"><path d="M1 9v2h2V9zm4-3v5h2V6zm4-3v8h2V3zm4-3v11h2V0z" fill="currentColor"/></svg><svg viewBox="0 0 16 12"><path d="M1 4q7-6 14 0M4 7q4-4 8 0m-5 3q1-1 2 0" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="phone-battery"></span></span></div>
+                                                    <div class="phone-website"><div class="phone-brand"><span class="phone-brand-mark">a</span><strong>atlas</strong><span class="phone-menu">•••</span></div><div class="phone-web-content"><div class="phone-login-heading"><span class="phone-key-tile"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-6 0 3-3"/></svg></span><h4>Welcome back.</h4><p>Your ideas are waiting for you.</p></div>
+            <div class="phone-field-label">Email</div><div class="phone-email-field">maya@example.com</div>
+            <div class="phone-button phone-button-primary phone-pending"><i class="phone-spinner"></i>Signing in…</div><div class="phone-or"><span></span>or<span></span></div><span class="phone-alternate">Use a password</span><span class="phone-link">Need help signing in?</span></div></div>
+                                                    <div class="phone-browser" aria-hidden="true"><div class="phone-address"><span>ᴀA</span><span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="10" width="12" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg> example.com</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9a8 8 0 1 0 0 7m0-13v6h-6"/></svg></div><div class="phone-browser-tools"><span>‹</span><span>›</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8H5v13h14V8h-2m-5 7V2m-4 4 4-4 4 4"/></svg><svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 6C9 4 5 4 2 5v14c3-1 7-1 10 1 3-2 7-2 10-1V5c-3-1-7-1-10 1Zm0 0v14"/></svg><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="13" height="14" rx="2"/><path d="M16 7V3H3v13h4"/></svg></div></div>
+
+                                                    <div class="phone-home" aria-hidden="true"></div>
+                                                </div>
+                                            </div>
+                                            <div class="phone-caption"><span>Website in Safari</span><small>The app waits while the protocol continues</small></div>
+                                        </div>
+                                        <div class="experience-explainer"><h4>What is happening</h4><p>The frontend sends the credential ID, client data, authenticator data, signature, and any user handle to the server. Maya stays on the waiting screen until the server confirms an authenticated session.</p><details class="flow-details"><summary>Technical details &amp; what can go wrong</summary><p>Serialize with <code>toJSON()</code> or a library and send to an endpoint such as <code>POST /passkeys/signin/verify</code>. Resolve the account from the verified credential; never trust a page-supplied account ID. Handle network errors and ignore late results from abandoned screens. If the outcome is uncertain, confirm session status or offer a fresh attempt instead of bypassing verification.</p></details></div>
+                                    </div>
+
+                                </div>
+                                <div class="flow-panel" data-flow-mode="signin" data-flow-stage="6" data-step-name="Signed in">
+                                    <h3 class="flow-static-title">Sign in · 7. <span>The server verifies and creates a session</span></h3>
+                                    <p class="flow-summary">A verified assertion becomes a website session, and Maya reaches her account.</p>
+                                    <div class="flow-scene">
+                                        <div class="experience-screen phone-demo">
+                                            <div class="phone-device" data-phone-state="website">
+                                                <div class="phone-display">
+                                                    <div class="phone-status" aria-hidden="true"><b>9:41</b><span class="phone-island"></span><span class="phone-status-icons"><svg viewBox="0 0 18 12"><path d="M1 9v2h2V9zm4-3v5h2V6zm4-3v8h2V3zm4-3v11h2V0z" fill="currentColor"/></svg><svg viewBox="0 0 16 12"><path d="M1 4q7-6 14 0M4 7q4-4 8 0m-5 3q1-1 2 0" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="phone-battery"></span></span></div>
+                                                    <div class="phone-website"><div class="phone-brand"><span class="phone-brand-mark">a</span><strong>atlas</strong><span class="phone-menu">•••</span></div><div class="phone-web-content"><div class="phone-welcome"><span class="phone-avatar">M</span><span>Good morning, Maya</span></div><h4>Welcome back.</h4>
+            <div class="phone-dashboard-card"><span>YOUR WORKSPACE</span><strong>Room for your<br>next idea.</strong><div class="phone-art-lines"><i></i><i></i><i></i></div></div>
+            <div class="phone-signed-in"><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg> Signed in with a passkey</div>
+            <div class="phone-project-row"><span class="phone-project-icon">↗</span><span><strong>My projects</strong><small>Everything in one place</small></span></div>
+            <button type="button" class="phone-button phone-button-secondary" data-phone-restart disabled aria-label="Replay sign-in — walkthrough">Replay sign-in</button></div></div>
+                                                    <div class="phone-browser" aria-hidden="true"><div class="phone-address"><span>ᴀA</span><span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="10" width="12" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg> example.com</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9a8 8 0 1 0 0 7m0-13v6h-6"/></svg></div><div class="phone-browser-tools"><span>‹</span><span>›</span><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8H5v13h14V8h-2m-5 7V2m-4 4 4-4 4 4"/></svg><svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 6C9 4 5 4 2 5v14c3-1 7-1 10 1 3-2 7-2 10-1V5c-3-1-7-1-10 1Zm0 0v14"/></svg><svg class="phone-icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="13" height="14" rx="2"/><path d="M16 7V3H3v13h4"/></svg></div></div>
+
+                                                    <div class="phone-home" aria-hidden="true"></div>
+                                                </div>
+                                            </div>
+                                            <div class="phone-caption"><span>Website in Safari</span><small>Tap the phone’s button to follow along</small></div>
+                                        </div>
+                                        <div class="experience-explainer"><h4>What is happening</h4><p>The server verifies the response with the stored public key, consumes the challenge, and issues a session cookie. The frontend now navigates to the dashboard. Signing out ends the session; it does not remove the passkey.</p><details class="flow-details"><summary>Technical details &amp; what can go wrong</summary><p>Check type, challenge, origin and cross-origin policy, RP ID hash, credential/account binding, user verification, backup state, and signature. A counter regression is a risk signal—not automatic proof of cloning. Use a new session with <code>Secure</code>, <code>HttpOnly</code>, and appropriate <code>SameSite</code> cookies; authorize each protected request. On a shared computer, sign out. After recovery, register a replacement, revoke lost credentials, and review old sessions separately.</p></details></div>
+                                    </div>
+
+                                </div>
+                                </div>
+                                <div class="ceremony-plane" aria-hidden="true">
                                     <div class="actor actor-device"><span>Authenticator</span><strong>Device vault</strong><small>Private operation</small></div>
                                     <div class="actor actor-browser"><span>WebAuthn client</span><strong>Browser</strong><small>Origin enforcement</small></div>
                                     <div class="actor actor-server"><span>Relying party</span><strong>Website server</strong><small>Challenge + verification</small></div>
@@ -191,62 +505,7 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
                                 </div>
                             </div>
                         </div>
-                    </section>
-
-                    <section class="passkey-section" id="registration" data-article-section>
-                        <header class="section-heading">
-                            <h2>Registration: creating the passkey</h2>
-                            <p>The registration flow binds a new credential to an account and a relying-party domain. Adding a passkey is security-sensitive because a newly bound authenticator can later sign in.</p>
-                        </header>
-
-                        <ol class="protocol-walk">
-                            <li><span>01</span><div><h3>Server creates options</h3><p>The server generates a fresh challenge and sends RP information, an opaque user handle, allowed algorithms, user-verification policy, and duplicate-credential exclusions.</p></div></li>
-                            <li><span>02</span><div><h3>Browser calls WebAuthn</h3><p>The page calls <code>navigator.credentials.create()</code>. The browser checks that the requested RP ID is valid for the calling origin.</p></div></li>
-                            <li><span>03</span><div><h3>User approves locally</h3><p>The authenticator asks for a gesture and, when required, local verification through a PIN, fingerprint, or face. This unlocks a cryptographic operation; it is not sent as account data.</p></div></li>
-                            <li><span>04</span><div><h3>Authenticator generates the pair</h3><p>A new credential ID and RP-scoped key pair are created. Authenticator data records the RP ID hash, user-presence and verification flags, backup flags, counter, credential ID, and public key.</p></div></li>
-                            <li><span>05</span><div><h3>Browser packages context</h3><p><code>clientDataJSON</code> records <code>webauthn.create</code>, the challenge, origin, and cross-origin context. The attestation object carries authenticator data and optional attestation evidence.</p></div></li>
-                            <li><span>06</span><div><h3>Server verifies and stores</h3><p>The server verifies <code>clientDataJSON.type === "webauthn.create"</code>, the exact challenge, expected origin, applicable cross-origin and top-origin policy, RP ID hash, flags, algorithm, credential uniqueness, and attestation policy. It stores the credential ID, public key, account link, counter, transports, and backup state—not the private key.</p></div></li>
-                        </ol>
-
-                        <div class="stored-record">
-                            <div class="record-server"><h3>Server record</h3><code>credential_id</code><code>public_key</code><code>user_id</code><code>counter</code><code>backup_flags</code></div>
-                            <div class="record-not"><h3>Not in the record</h3><del>private key</del><del>device PIN</del><del>fingerprint</del><del>face template</del></div>
-                        </div>
-                    </section>
-
-                    <section class="passkey-section" id="authentication" data-article-section>
-                        <header class="section-heading">
-                            <h2>Sign-in: proving possession</h2>
-                            <p>Authentication does not send the private key. It asks the authenticator to sign fresh, site-bound data, then verifies that signature with the public key stored during registration.</p>
-                        </header>
-
-                        <ol class="protocol-walk">
-                            <li><span>01</span><div><h3>Server creates a new challenge</h3><p>The challenge must be unpredictable, short-lived, tied to this attempt, and invalidated after use. Reusing a captured assertion against a new challenge fails.</p></div></li>
-                            <li><span>02</span><div><h3>Browser requests a credential</h3><p>The page calls <code>navigator.credentials.get()</code>. A username-first flow can provide allowed credential IDs; a discoverable passkey can let the authenticator identify the account.</p></div></li>
-                            <li><span>03</span><div><h3>Origin and RP ID select the credential</h3><p>The browser and authenticator use the real domain to select matching credentials. A lookalike domain cannot request the credential registered to the real site.</p></div></li>
-                            <li><span>04</span><div><h3>User authorizes locally</h3><p>User presence and optional user verification release use of the private key. The authenticator returns flags showing which checks occurred.</p></div></li>
-                            <li><span>05</span><div><h3>Authenticator signs the assertion</h3><p>It signs <code>authenticatorData || SHA-256(clientDataJSON)</code>. The signed material incorporates the RP ID hash, flags, counter, challenge, and browser-reported origin.</p></div></li>
-                            <li><span>06</span><div><h3>Server verifies before creating a session</h3><p>The server checks type, challenge, origin, RP ID hash, credential/account relationship, flags, backup state, and signature. A counter regression is a risk signal—not automatic proof of cloning.</p></div></li>
-                        </ol>
-
-                        <div class="signed-payload" aria-label="The authenticator signs authenticator data joined with the hash of client data JSON.">
-                            <span>authenticatorData: RP ID hash · flags · counter</span>
-                            <b>+</b>
-                            <span>SHA-256(serialized clientDataJSON bytes)</span>
-                            <b>→</b>
-                            <strong>private-key signature</strong>
-                        </div>
-
-                        <div class="reasoning-check" data-quiz data-answer="origin">
-                            <h3>Why does the fake site fail?</h3>
-                            <p>A phishing page perfectly copies the real login design. Why can it not request the real site's passkey?</p>
-                            <div>
-                                <button type="button" data-choice="visual" data-feedback="WebAuthn does not decide from the page's visual appearance.">The copied logo does not match pixel-for-pixel</button>
-                                <button type="button" data-choice="origin">The fake origin and RP ID do not match the credential scope</button>
-                                <button type="button" data-choice="biometric" data-feedback="A biometric can unlock the authenticator, but domain binding is what prevents use on the fake site.">The fingerprint scanner recognizes phishing</button>
-                            </div>
-                            <p class="quiz-feedback" aria-live="polite">Choose an answer.</p>
-                        </div>
+                        <p class="source-note">Phone experience: <a href="https://developer.apple.com/passkeys/" target="_blank" rel="noopener noreferrer">Apple’s passkey overview</a>. Flow and API details: <a href="https://www.w3.org/TR/webauthn-3/" target="_blank" rel="noopener noreferrer">WebAuthn Level 3</a>. Screens: <a href="https://web.dev/articles/passkey-google-ux" target="_blank" rel="noopener noreferrer">Google’s UX walkthrough</a>. <a href="https://web.dev/articles/passkey-form-autofill" target="_blank" rel="noopener noreferrer">Autofill</a>, <a href="https://developers.google.com/identity/passkeys/use-cases" target="_blank" rel="noopener noreferrer">cross-device use</a>, and <a href="https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer">session handling</a>.</p>
                     </section>
 
                     <section class="passkey-section" id="security" data-article-section>
@@ -273,6 +532,51 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
                             <article><span>Attack 1</span><h3>Database breach</h3><p>Stolen password hashes can enable offline guessing. Stolen public keys do not let the attacker sign, though the breached server may still expose sessions, personal data, recovery controls, or passkey-binding functions.</p></article>
                             <article><span>Attack 2</span><h3>Phishing proxy</h3><p>Passwords and manually entered OTPs can be relayed. WebAuthn's domain binding prevents the fake origin from obtaining an assertion for the real RP.</p></article>
                             <article><span>Attack 3</span><h3>Replay</h3><p>A recorded assertion contains the previous challenge. The next sign-in uses a different challenge, so replay verification fails.</p></article>
+                        </div>
+                        <div class="reasoning-check" data-quiz data-answer="origin">
+                            <h3>Why does the fake site fail?</h3>
+                            <p>A phishing page perfectly copies the real login design. Why can it not request the real site's passkey?</p>
+                            <div>
+                                <button type="button" data-choice="visual" data-feedback="WebAuthn does not decide from the page's visual appearance.">The copied logo does not match pixel-for-pixel</button>
+                                <button type="button" data-choice="origin">The fake origin and RP ID do not match the credential scope</button>
+                                <button type="button" data-choice="biometric" data-feedback="A biometric can unlock the authenticator, but domain binding is what prevents use on the fake site.">The fingerprint scanner recognizes phishing</button>
+                            </div>
+                            <p class="quiz-feedback" aria-live="polite">Choose an answer.</p>
+                        </div>
+                    </section>
+
+                    <section class="passkey-section" id="authenticator-apps" data-article-section>
+                        <header class="section-heading">
+                            <h2>What about authenticator apps?</h2>
+                            <p>“Authenticator app” names a container, not one protocol. An app can generate time-based one-time passwords (TOTP), approve push notifications, or even hold passkeys. Compare the method being used.</p>
+                        </header>
+                        <div class="sync-contrast">
+                            <div><span>Password + TOTP</span><h3>Type, switch apps, copy a code</h3><p>During setup, scan a QR code containing a shared secret and confirm a generated code. Later, enter your password, open the authenticator, and type the current code—commonly six digits changing every 30 seconds. Save the service’s recovery codes separately.</p></div>
+                            <div><span>Passkey with user verification</span><h3>Select an account, unlock, continue</h3><p>During setup, approve creation in the system prompt. Later, select a saved credential and unlock its use locally. The browser carries a fresh signature to the correct site; there is no password or OTP to transcribe in this flow.</p></div>
+                        </div>
+                        <div class="comparison-table-wrap">
+                            <table class="comparison-table authenticator-comparison">
+                                <caption>Typical password + TOTP versus a passkey requiring local user verification</caption>
+                                <thead><tr><th scope="col">Property</th><th scope="col">Password + authenticator code</th><th scope="col">Passkey</th></tr></thead>
+                                <tbody>
+                                    <tr><th scope="row">Server-side secret</th><td>Password verifier plus access to the TOTP seed, often encrypted at rest. Seed compromise enables future codes.</td><td>Public key and credential record. Those cannot generate signatures.</td></tr>
+                                    <tr><th scope="row">Phishing</th><td>A fake page can relay both the password and a still-valid code in real time.</td><td>The browser enforces site binding; a lookalike origin cannot request the real site’s credential.</td></tr>
+                                    <tr><th scope="row">Freshness</th><td>Code changes with time; servers limit attempts and reject reuse after successful validation. A short lifetime does not stop live phishing.</td><td>Assertion contains a server-issued challenge bound to the current attempt.</td></tr>
+                                    <tr><th scope="row">Factors</th><td>Password is knowledge; control of the TOTP seed is possession. App unlock policies vary.</td><td>Control of the key plus enforced local PIN or biometric verification can provide multiple factors in one interaction.</td></tr>
+                                    <tr><th scope="row">New device or lost phone</th><td>Restore the app’s backup, transfer seeds, or use the site’s recovery process. Backup support varies.</td><td>Use provider sync, another registered key, a nearby phone, or site recovery. Device-bound keys need a separate backup path.</td></tr>
+                                    <tr><th scope="row">Connectivity and friction</th><td>Codes generate offline, but signing in to the website still needs connectivity. Copying, expiry, and clock drift can interrupt the flow.</td><td>Local approval avoids copying codes. Cross-device flows need compatible devices and connectivity; prompts and provider choices vary.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="source-note">Code generation and validation: <a href="https://www.rfc-editor.org/rfc/rfc6238" target="_blank" rel="noopener noreferrer">RFC 6238</a>. Factor requirements and phishing resistance: <a href="https://pages.nist.gov/800-63-4/sp800-63b.html" target="_blank" rel="noopener noreferrer">NIST SP 800-63B-4</a>.</p>
+                        <div class="cross-device">
+                            <h3>Push approval is a third experience</h3>
+                            <p>A push flow asks you to approve a notification; some require matching a number shown on the sign-in screen. Number matching reduces accidental approvals and push fatigue. It does not by itself give a conventional push flow WebAuthn’s origin binding. Check which protocol the app actually uses. <a href="https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-mfa-number-match" target="_blank" rel="noopener noreferrer">Microsoft explains the number-matching experience</a>.</p>
+                        </div>
+                        <div class="challenge-detail">
+                            <h3>Does a passkey still need a six-digit code?</h3>
+                            <p>Not inherently. A service can accept a passkey with required local user verification as its complete sign-in, rather than always asking for an additional OTP. A touch that only demonstrates user presence is different from verifying a PIN or biometric; the server must enforce its intended policy. Some services still require extra checks for sensitive actions.</p>
+                            <p>My default: use passkeys where supported, and use authenticator-based MFA where passkeys are unavailable. Password + TOTP is a meaningful improvement over a password alone, but it is not phishing-resistant. If TOTP remains an alternate sign-in or recovery route, that route still shapes the account’s overall protection.</p>
                         </div>
                     </section>
 
@@ -330,6 +634,7 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
                     <section class="passkey-section sources-section" id="sources">
                         <header class="section-heading">
                             <h2>Standards and primary sources</h2>
+                            <p>Updated <time datetime="2026-09-15">September 15, 2026</time> with the end-to-end user experience and authenticator-app comparison.</p>
                         </header>
                         <ol class="source-list">
                             <li><a href="https://www.w3.org/TR/webauthn-3/" target="_blank" rel="noopener noreferrer">W3C Web Authentication Level 3 <span>Specification ↗</span></a></li>
@@ -376,7 +681,7 @@ FORM: Split-key vault, fifth grounded structure, with animated registration and 
 
     <script src="../../assets/js/data.js"></script>
     <script src="../../assets/js/main.js"></script>
-    <script src="../../assets/js/passkeys.js?v=20260909-3"></script>
+    <script src="../../assets/js/passkeys.js?v=20260916-1"></script>
     <script>window.initPasskeyArticle && window.initPasskeyArticle();</script>
 </body>
 </html>
