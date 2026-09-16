@@ -49,6 +49,14 @@ const siteData = {
     ],
     blogs: [
         {
+            title: 'How to Tell What’s True',
+            url: 'blog/how-to-tell-whats-true/index.html',
+            description: 'A visual field guide to investigating news, AI media, statistics, science, history, and belief—with confidence proportional to evidence.',
+            section: 'Blog',
+            category: 'Personal Systems',
+            date: '2026-09-16'
+        },
+        {
             title: 'Passkeys: The Key That Never Reaches the Website',
             url: 'blog/passkeys/index.html',
             description: 'Passkeys end to end: user-facing screens, frontend and backend flows, recovery, and comparisons with passwords and authenticator apps.',

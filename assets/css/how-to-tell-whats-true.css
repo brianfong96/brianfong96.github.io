@@ -1,0 +1,95 @@
+.truth-page .content { background: #f4f1ea; }
+.truth-article { width: min(760px, calc(100% - 48px)); margin: 0 auto; color: #17263a; }
+.truth-hero { min-height: calc(100svh - 60px); display: flex; flex-direction: column; justify-content: center; padding: 64px 0; box-sizing: border-box; }
+.truth-meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: #5c6877; font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; }
+.truth-article a { color: #24599a; text-underline-offset: 4px; }
+.truth-hero h1 { max-width: 11ch; font-size: clamp(3.5rem, 8vw, 6rem); line-height: 1.03; letter-spacing: -.055em; margin: 28px 0 22px; padding-block: .12em; }
+.truth-deck { max-width: 48ch; font-size: clamp(1.15rem, 2vw, 1.4rem); line-height: 1.6; margin: 0 0 32px; }
+.truth-hero .truth-byline { font-size: .9rem; color: #5c6877; }
+.truth-start { margin-top: 32px; font-size: .9rem; width: fit-content; }
+.truth-chapter { min-height: calc(100svh - 60px); box-sizing: border-box; padding: clamp(72px, 12vh, 120px) 0; border-top: 1px solid #cbd3dc; scroll-margin-top: 60px; }
+.truth-kicker { color: #24599a; font-size: .76rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin: 0 0 14px; }
+.truth-chapter h2 { font-size: clamp(2rem, 4.5vw, 3.1rem); line-height: 1.12; padding-block: .12em; margin: 0 0 26px; max-width: 23ch; text-wrap: balance; }
+.truth-chapter > p:not(.truth-kicker), .truth-chapter > ul, .truth-chapter > ol { font-size: 1.08rem; line-height: 1.85; max-width: 65ch; margin: 0 0 22px; }
+.truth-chapter strong { color: #17263a; }
+.truth-chapter blockquote { margin: 30px 0; padding: 4px 0 4px 24px; border-left: 3px solid #24599a; color: #173f72; font-size: 1.25rem; line-height: 1.6; }
+.truth-chapter blockquote p { margin: 0; }
+.truth-diagram { margin: 36px 0 30px; padding: clamp(20px, 4vw, 36px); background: #fff; border: 1px solid #cbd3dc; border-radius: 6px; }
+.truth-diagram figcaption { margin-top: 24px; padding-top: 18px; border-top: 1px solid #dfe4e8; color: #5c6877; font-size: .87rem; line-height: 1.6; }
+.diagram-label { display: block; color: #5c6877; font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 22px; }
+.truth-flow { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.truth-node { flex: 1; padding: 16px 12px; border: 1px solid #9fb2c7; border-radius: 4px; background: #eef3f8; text-align: center; font-weight: 600; line-height: 1.4; }
+.truth-node small { display: block; font-weight: 400; font-size: .82rem; margin-top: 7px; color: #5c6877; }
+.truth-arrow { color: #24599a; font-size: 1.25rem; flex-shrink: 0; }
+.truth-stack { display: grid; gap: 12px; }
+.truth-row { display: grid; grid-template-columns: 32px 1fr 1fr; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid #dfe4e8; line-height: 1.5; }
+.truth-row:last-child { border-bottom: 0; }
+.truth-row > span:first-child { color: #24599a; font-size: .8rem; font-weight: 700; }
+.truth-row small { color: #5c6877; font-size: .88rem; }
+.truth-result { padding: 18px; background: #eef3f8; border-left: 3px solid #24599a; margin-top: 20px; font-size: 1.1rem; line-height: 1.5; }
+.truth-result strong { color: #173f72; }
+.source-root { max-width: 230px; margin: 0 auto; }
+.source-branches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding-top: 26px; position: relative; }
+.source-branches::before { content: ''; position: absolute; top: 0; height: 12px; left: 50%; border-left: 1px solid #9fb2c7; }
+.source-branches::after { content: ''; position: absolute; top: 12px; left: calc((100% - 36px) / 8); right: calc((100% - 36px) / 8); border-top: 1px solid #9fb2c7; }
+.source-branches .truth-node { position: relative; font-size: .9rem; }
+.source-branches .truth-node::before { content: ''; position: absolute; top: -15px; height: 14px; left: 50%; border-left: 1px solid #9fb2c7; }
+.truth-big { display: block; color: #173f72; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; letter-spacing: -.04em; line-height: 1.2; }
+.truth-metric { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.truth-metric small { display: block; margin-top: 8px; color: #5c6877; line-height: 1.5; }
+.truth-chart { display: grid; gap: 14px; }
+.truth-bar-row { display: grid; grid-template-columns: 65px 1fr 65px; align-items: center; gap: 10px; font-size: .88rem; }
+.truth-track { background: #eef3f8; height: 28px; }
+.truth-bar { background: #24599a; height: 100%; }
+.truth-axis { margin-left: 75px; margin-right: 75px; display: flex; justify-content: space-between; color: #5c6877; font-size: .75rem; }
+.truth-chart + .truth-chart { margin-top: 30px; }
+.causal-root { margin: 0 auto 14px; width: fit-content; padding: 16px 28px; }
+.causal-arrows { display: flex; justify-content: space-around; color: #24599a; font-size: 1.5rem; }
+.causal-leaves { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.causal-association { text-align: center; color: #5c6877; margin-top: 16px; border-top: 1px dashed #9fb2c7; padding-top: 12px; font-size: .85rem; }
+.truth-verdicts { display: grid; gap: 0; margin: 0; }
+.truth-verdicts > div { display: grid; grid-template-columns: 130px 1fr; gap: 20px; padding: 16px 0; border-bottom: 1px solid #dfe4e8; }
+.truth-verdicts > div:last-child { border-bottom: 0; }
+.truth-verdicts dt { font-weight: 700; color: #173f72; }
+.truth-verdicts dd { margin: 0; color: #5c6877; line-height: 1.5; }
+.truth-checklist { list-style: none; padding: 0; margin: 0; counter-reset: checks; }
+.truth-checklist li { counter-increment: checks; display: flex; gap: 16px; padding: 13px 0; border-bottom: 1px solid #dfe4e8; line-height: 1.5; }
+.truth-checklist li::before { content: counter(checks, decimal-leading-zero); color: #24599a; font-size: .8rem; padding-top: 3px; font-variant-numeric: tabular-nums; }
+.truth-closing { font-size: clamp(1.7rem, 4vw, 2.7rem); line-height: 1.3; letter-spacing: -.025em; color: #173f72; }
+.truth-sources { padding: 60px 0 90px; border-top: 1px solid #cbd3dc; scroll-margin-top: 80px; }
+.truth-sources h2 { font-size: 1.5rem; }
+.truth-sources p, .truth-sources li { color: #5c6877; font-size: .9rem; line-height: 1.7; }
+.truth-sources li { margin-bottom: 14px; }
+.truth-page a:focus-visible, .truth-page button:focus-visible { outline: 3px solid #24599a; outline-offset: 5px; }
+.truth-skip { position: fixed; top: -100px; left: 24px; z-index: 10000; padding: 12px 18px; background: white; color: #173f72; }
+.truth-skip:focus { top: 8px; }
+@media (max-width: 540px) {
+    .truth-article { width: calc(100% - 36px); }
+    .truth-hero { padding: 48px 0; }
+    .truth-hero h1 { font-size: clamp(3rem, 13vw, 4rem); }
+    .truth-chapter { padding: 64px 0; }
+    .truth-chapter > p:not(.truth-kicker) { font-size: 1rem; line-height: 1.8; }
+    .truth-flow { flex-direction: column; gap: 8px; align-items: stretch; }
+    .truth-arrow { transform: rotate(90deg); align-self: center; }
+    .truth-row { grid-template-columns: 24px 1fr; gap: 8px; }
+    .truth-row small { grid-column: 2; }
+    .source-root { margin: 0; }
+    .source-branches { grid-template-columns: 1fr; margin-left: 18px; padding: 20px 0 0 24px; border-left: 1px solid #9fb2c7; }
+    .source-branches::before, .source-branches::after { display: none; }
+    .source-branches .truth-node::before { top: 50%; left: -25px; height: 0; width: 24px; border-left: 0; border-top: 1px solid #9fb2c7; }
+    .truth-metric { gap: 14px; }
+    .truth-node { font-size: .9rem; padding: 14px 10px; }
+    .causal-leaves { gap: 12px; }
+    .truth-verdicts > div { grid-template-columns: 1fr; gap: 6px; }
+    .truth-bar-row { grid-template-columns: 48px 1fr 52px; gap: 7px; font-size: .78rem; }
+    .truth-axis { margin-left: 55px; margin-right: 59px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .truth-page, .truth-page * { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+}
+@media print {
+    .truth-page .topbar, .truth-page .sidebar, .truth-skip, .truth-start { display: none; }
+    .truth-article { width: 100%; }
+    .truth-hero, .truth-chapter { min-height: 0; padding: 32px 0; }
+    .truth-diagram { break-inside: avoid; }
+}
