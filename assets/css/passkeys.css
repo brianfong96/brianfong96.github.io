@@ -572,6 +572,8 @@
     transform: translateX(-50%);
 }
 
+.ceremony-lab[data-stage="0"] .actor-server,
+.ceremony-lab[data-stage="1"] .actor-server,
 .ceremony-lab[data-stage="2"] .actor-browser,
 .ceremony-lab[data-stage="5"] .actor-browser {
     border-color: var(--pk-blue);
@@ -1286,91 +1288,108 @@
     }
 }
 
-.journey-disclaimer,
-.source-note {
+/* One control surface keeps the user screen and protocol animation in sync. */
+.flow-disclaimer, .source-note {
     color: var(--pk-muted);
     font-size: 0.88rem;
 }
 
-.journey-disclaimer {
-    margin: 24px 0 16px;
-    padding-left: 14px;
-    border-left: 3px solid var(--pk-blue);
+.flow-disclaimer {
+    margin: 22px 0;
 }
 
-.experience-lab {
-    margin: 24px 0;
-    border: 1px solid var(--pk-line-strong);
-    border-radius: 10px;
-    overflow: hidden;
+.ceremony-lab [hidden] {
+    display: none !important;
 }
 
-.experience-lab [hidden] { display: none !important; }
+.ceremony-lab[data-ready] .flow-static-title,
+.ceremony-lab[data-ready] .flow-summary {
+    display: none;
+}
 
-.journey-controls {
-    padding: 18px;
-    background: var(--pk-white);
+.ceremony-lab:not([data-ready]) .ceremony-caption,
+.ceremony-lab:not([data-ready]) .figure-label,
+.ceremony-lab:not([data-ready]) .ceremony-plane,
+.ceremony-lab:not([data-ready]) .mobile-ceremony-state {
+    display: none;
+}
+
+.flow-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
     border-bottom: 1px solid var(--pk-line);
 }
 
-.journey-modes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.journey-controls button {
-    min-height: 44px;
-    padding: 9px 13px;
+.flow-navigation button {
+    min-height: 42px;
+    padding: 8px 14px;
     border: 1px solid var(--pk-line-strong);
     border-radius: 6px;
+    background: var(--pk-white);
     color: var(--pk-blue-deep);
-    background: transparent;
     font: inherit;
-    font-size: 0.84rem;
+    font-size: 0.82rem;
     cursor: pointer;
 }
 
-.journey-controls button[aria-pressed="true"] {
-    background: var(--pk-blue-deep);
-    border-color: var(--pk-blue-deep);
-    color: var(--pk-white);
-}
-
-.journey-controls button:focus-visible {
-    outline: 3px solid var(--pk-blue);
-    outline-offset: 3px;
-}
-
-.journey-controls button:disabled {
+.flow-navigation button:disabled {
     opacity: 0.45;
     cursor: default;
 }
 
-.journey-navigation {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 12px;
-    align-items: center;
-    margin-top: 16px;
+.flow-navigation button:focus-visible, .flow-details summary:focus-visible {
+    outline: 3px solid var(--pk-blue);
+    outline-offset: 3px;
 }
 
-.journey-navigation p {
-    margin: 0;
-    text-align: center;
+#flow-progress {
     color: var(--pk-muted);
     font-size: 0.8rem;
 }
 
-.journey-heading { padding: 24px 24px 0; }
-.experience-lab[data-ready] .journey-heading { display: none; }
-
-.journey-step {
+.flow-scene {
     display: grid;
     grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-    gap: 28px;
-    padding: 28px;
     align-items: start;
+    gap: 24px;
+    margin-top: 18px;
+}
+
+.ceremony-lab[data-ready] .flow-scene {
+    min-height: 235px;
+}
+
+.flow-details {
+    margin-top: 18px;
+    border-top: 1px solid var(--pk-line);
+    border-bottom: 1px solid var(--pk-line);
+    padding: 12px 0;
+}
+
+.flow-details summary {
+    cursor: pointer;
+    color: var(--pk-blue-deep);
+    font-size: 0.86rem;
+    font-weight: 700;
+}
+
+.flow-details p {
+    font-size: 0.9rem;
+    color: var(--pk-muted);
+    margin-bottom: 0;
+}
+
+.flow-panel code {
+    overflow-wrap: anywhere;
+}
+
+.ceremony-lab:not([data-ready]) .flow-panel + .flow-panel {
+    margin-top: 36px;
+    border-top: 2px solid var(--pk-line-strong);
+    padding-top: 24px;
 }
 
 .experience-screen {
@@ -1430,32 +1449,13 @@
 .screen-secondary { color: var(--pk-muted); text-align: center; }
 .screen-field { padding: 12px; border: 1px solid var(--pk-line-strong); border-radius: 6px; }
 
-.integration-flow { margin-top: 32px; }
-.integration-flow h3:not(:first-child) { margin-top: 28px; }
-.integration-flow code,
-#frontend code { overflow-wrap: anywhere; }
 
-.experience-errors {
-    border-top: 2px solid var(--pk-blue);
-    margin-top: 36px;
-    padding-top: 24px;
-}
-
-.experience-errors dl > div { padding: 16px 0; border-bottom: 1px solid var(--pk-line); }
-.experience-errors dt { font-weight: 700; color: var(--pk-blue-deep); }
-.experience-errors dd { margin: 8px 0 0; line-height: 1.65; color: var(--pk-muted); }
 .authenticator-comparison caption { text-align: left; margin-bottom: 16px; color: var(--pk-muted); }
-
-@media (max-width: 720px) {
-    .journey-step { grid-template-columns: minmax(0, 1fr); padding: 18px; gap: 24px; }
-    .journey-modes { display: grid; grid-template-columns: 1fr 1fr; }
-    .journey-controls { padding: 12px; }
-    .journey-navigation { gap: 8px; }
-    .journey-navigation p { font-size: 0.72rem; }
-    .experience-screen { padding: 20px; }
-}
-
 @media (max-width: 760px) {
+    .flow-scene { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+    .experience-screen { padding: 18px; }
+    .screen-owner { margin-bottom: 14px; }
+    .experience-screen p, .experience-explainer p { font-size: 0.9rem; }
     .authenticator-comparison caption { display: block; }
     .authenticator-comparison td:nth-child(2)::before { content: "Password + authenticator code"; }
 }

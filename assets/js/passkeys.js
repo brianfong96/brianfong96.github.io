@@ -1,33 +1,6 @@
 (function () {
     'use strict';
 
-    var ceremonies = {
-        register: {
-            playLabel: 'Play registration',
-            steps: [
-                { title: 'Registration begins', description: 'The website asks the browser to create a new public-key credential for its RP ID.', name: 'Request', detail: 'Site asks to create a credential' },
-                { title: 'The server creates a fresh challenge', description: 'At least 16 cryptographically unpredictable bytes are associated with this short-lived registration request.', name: 'Challenge', detail: 'Server creates one-time random bytes' },
-                { title: 'The browser binds the request to the origin', description: 'The browser checks that the requested RP ID is valid for the page that called WebAuthn.', name: 'Origin check', detail: 'Browser enforces the site boundary' },
-                { title: 'The user approves on the authenticator', description: 'A local PIN, fingerprint, face, or touch authorizes the credential operation. It is not sent to the site.', name: 'Local approval', detail: 'PIN, biometric, or physical touch' },
-                { title: 'The authenticator creates the key pair', description: 'The private key remains under authenticator control. The public key and credential ID are prepared for the site.', name: 'Key creation', detail: 'Private stays; public can travel' },
-                { title: 'The credential returns through the browser', description: 'The authenticator returns the WebAuthn credential to the browser. Page code sends that response to the website over HTTPS.', name: 'Browser relays', detail: 'Authenticator → browser → website' },
-                { title: 'The server stores the public record', description: 'After verifying challenge, origin, RP ID hash, flags, and policy, the server saves the credential ID and public key.', name: 'Store public half', detail: 'Server verifies and saves the record' }
-            ]
-        },
-        signin: {
-            playLabel: 'Play sign-in',
-            steps: [
-                { title: 'Sign-in begins', description: 'The website requests a passkey assertion instead of asking for a reusable password.', name: 'Request', detail: 'Site requests an assertion' },
-                { title: 'The server creates a new challenge', description: 'At least 16 fresh random bytes are associated with this sign-in. An old assertion contains the wrong challenge.', name: 'Challenge', detail: 'Server creates one-time bytes' },
-                { title: 'The real origin selects the credential', description: 'The browser and authenticator match only credentials scoped to this RP ID.', name: 'Site binding', detail: 'Fake domains cannot request it' },
-                { title: 'The user authorizes the private-key operation', description: 'Local user presence and optional verification release use of the private key.', name: 'Local approval', detail: 'User presence and verification' },
-                { title: 'The authenticator signs fresh context', description: 'It signs authenticator data joined with the hash of client data containing the challenge and origin.', name: 'Sign assertion', detail: 'Private key creates a signature' },
-                { title: 'The assertion returns through the browser', description: 'The authenticator returns the signed assertion to the WebAuthn client. Page code sends it to the website over HTTPS.', name: 'Browser relays', detail: 'Authenticator → browser → website' },
-                { title: 'The server verifies and creates a session', description: 'The stored public key verifies the signature only after challenge, origin, RP ID, flags, and account checks pass.', name: 'Verify', detail: 'Public key accepts or rejects' }
-            ]
-        }
-    };
-
     function initPasskeyArticle() {
         var root = document.getElementById('passkey-article');
         if (!root || root.dataset.passkeyInitialized === 'true') return;
@@ -37,6 +10,24 @@
         var controller = new AbortController();
         var signal = controller.signal;
         var lab = root.querySelector('.ceremony-lab');
+        var flowPanels = Array.from(root.querySelectorAll('[data-flow-mode]'));
+        var ceremonies = {};
+        ['register', 'signin'].forEach(function (flowMode) {
+            ceremonies[flowMode] = {
+                playLabel: flowMode === 'register' ? 'Play registration' : 'Play sign-in',
+                steps: flowPanels.filter(function (panel) { return panel.dataset.flowMode === flowMode; }).map(function (panel) {
+                    return {
+                        title: panel.querySelector('.flow-static-title span').textContent,
+                        description: panel.querySelector('.flow-summary').textContent,
+                        name: panel.dataset.stepName,
+                        detail: panel.querySelector('.flow-summary').textContent,
+                        panel: panel
+                    };
+                })
+            };
+        });
+        var backButton = document.getElementById('flow-back');
+        var nextButton = document.getElementById('flow-next');
         var playButton = document.getElementById('ceremony-play');
         var title = document.getElementById('ceremony-title');
         var description = document.getElementById('ceremony-description');
@@ -69,55 +60,6 @@
 
         window.__passkeyArticleCleanup = cleanup;
 
-        var experience = root.querySelector('#experience-lab');
-        if (experience) {
-            var journeyMode = 'create';
-            var journeyStep = 0;
-            var journeyButtons = Array.from(experience.querySelectorAll('[data-journey]'));
-            var journeyPanels = Array.from(experience.querySelectorAll('[data-journey-panel]'));
-            var journeyBack = experience.querySelector('#journey-back');
-            var journeyNext = experience.querySelector('#journey-next');
-            var journeyStatus = experience.querySelector('#journey-status');
-
-            function renderJourney() {
-                var activePanel = journeyPanels.find(function (panel) {
-                    return panel.dataset.journeyPanel === journeyMode;
-                });
-                var steps = Array.from(activePanel.querySelectorAll('.journey-step'));
-                journeyPanels.forEach(function (panel) { panel.hidden = panel !== activePanel; });
-                steps.forEach(function (step, index) { step.hidden = index !== journeyStep; });
-                journeyButtons.forEach(function (button) {
-                    button.setAttribute('aria-pressed', String(button.dataset.journey === journeyMode));
-                });
-                journeyBack.disabled = journeyStep === 0;
-                journeyNext.textContent = journeyStep === steps.length - 1 ? 'Restart ↺' : 'Next →';
-                journeyNext.setAttribute('aria-label', journeyStep === steps.length - 1 ? 'Restart journey' : 'Next journey step');
-                journeyStatus.textContent = activePanel.querySelector('.journey-heading').textContent + ' · Step ' + (journeyStep + 1) + ' of ' + steps.length;
-                experience.dataset.step = String(journeyStep);
-                experience.dataset.journey = journeyMode;
-            }
-
-            experience.addEventListener('click', function (event) {
-                var modeButton = event.target.closest('button[data-journey]');
-                if (modeButton) {
-                    journeyMode = modeButton.dataset.journey;
-                    journeyStep = 0;
-                } else if (event.target.closest('#journey-next')) {
-                    var activePanel = journeyPanels.find(function (panel) { return panel.dataset.journeyPanel === journeyMode; });
-                    journeyStep = (journeyStep + 1) % activePanel.querySelectorAll('.journey-step').length;
-                } else if (event.target.closest('#journey-back')) {
-                    journeyStep = Math.max(0, journeyStep - 1);
-                } else {
-                    return;
-                }
-                renderJourney();
-            }, { signal: signal });
-
-            renderJourney();
-            experience.dataset.ready = 'true';
-            experience.querySelector('.journey-controls').hidden = false;
-        }
-
         function renderSteps() {
             var list = document.getElementById('ceremony-steps');
             list.innerHTML = ceremonies[mode].steps.map(function (item, index) {
@@ -137,10 +79,18 @@
             lab.dataset.stage = String(stage);
             title.textContent = step.title;
             description.textContent = step.description;
+            flowPanels.forEach(function (panel) {
+                panel.hidden = panel !== step.panel;
+                if (panel.hidden) panel.querySelector('details').open = false;
+            });
+            backButton.disabled = stage === 0;
+            nextButton.textContent = stage === ceremonies[mode].steps.length - 1 ? 'Restart ↺' : 'Next →';
+            document.getElementById('flow-progress').textContent = 'Step ' + (stage + 1) + ' of ' + ceremonies[mode].steps.length;
+            if (stage === ceremonies[mode].steps.length - 1 && playTimer) stopPlayback();
             var mobilePositions = [2, 2, 1, 0, 0, 1, 2];
             var mobileArtifacts = mode === 'register'
-                ? ['Registration request starts', 'Server creates the one-time challenge', 'Browser checks the site binding', 'Local approval reaches the authenticator', 'Private/public key pair is created', 'Public key returns to the browser', 'Browser sends the public response to the website']
-                : ['Sign-in request starts', 'Server creates the one-time challenge', 'Browser selects the RP-scoped credential', 'Local approval reaches the authenticator', 'Private key creates the signature', 'Signature returns to the browser', 'Browser sends the assertion to the website'];
+                ? ['Registration request starts', 'Server creates the one-time challenge', 'Browser checks the site binding', 'Local approval reaches the authenticator', 'Private/public key pair is created', 'Public key returns to the browser', 'Server verifies and saves the passkey']
+                : ['Sign-in request starts', 'Server creates the one-time challenge', 'Browser selects the RP-scoped credential', 'Local approval reaches the authenticator', 'Private key creates the signature', 'Signature returns to the browser', 'Server verifies and creates a session'];
             document.getElementById('mobile-stage-artifact').textContent = mobileArtifacts[stage];
             root.querySelectorAll('[data-mobile-position]').forEach(function (item) {
                 if (Number(item.dataset.mobilePosition) === mobilePositions[stage]) item.setAttribute('aria-current', 'step');
@@ -181,12 +131,23 @@
             if (button) setStage(Number(button.dataset.ceremonyStep), false);
         }, { signal: signal });
 
+        backButton.addEventListener('click', function () { setStage(stage - 1, false); }, { signal: signal });
+        nextButton.addEventListener('click', function () {
+            setStage((stage + 1) % ceremonies[mode].steps.length, false);
+        }, { signal: signal });
+        flowPanels.forEach(function (panel) {
+            panel.querySelector('details').addEventListener('toggle', function (event) {
+                if (event.target.open) stopPlayback();
+            }, { signal: signal });
+        });
+
         playButton.addEventListener('click', function () {
             if (playTimer) {
                 stopPlayback();
                 return;
             }
             if (stage === ceremonies[mode].steps.length - 1) setStage(0, false);
+            ceremonies[mode].steps[stage].panel.querySelector('details').open = false;
             playButton.textContent = 'Pause';
             playTimer = window.setInterval(function () {
                 if (stage >= ceremonies[mode].steps.length - 1) {
@@ -194,7 +155,7 @@
                     return;
                 }
                 setStage(stage + 1, true);
-            }, 2400);
+            }, 8000);
         }, { signal: signal });
 
         root.querySelectorAll('[data-quiz]').forEach(function (quiz) {
@@ -393,6 +354,10 @@
 
         renderSteps();
         setStage(0, false);
+        lab.dataset.ready = 'true';
+        lab.querySelector('.ceremony-toolbar').hidden = false;
+        lab.querySelector('.ceremony-steps').hidden = false;
+        lab.querySelector('.flow-navigation').hidden = false;
         wrapTerms();
     }
 
