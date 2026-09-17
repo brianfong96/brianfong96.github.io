@@ -51,7 +51,7 @@ const siteData = {
         {
             title: 'How to Tell What’s True',
             url: 'blog/how-to-tell-whats-true/index.html',
-            description: 'A five-step framework for checking a claim, following the evidence, and deciding what to believe—explained through one simple example.',
+            description: 'The four Cs of evaluating information: Claim, Causation vs. Correlation, Context, and Consistency—with sources and visual explanations.',
             section: 'Blog',
             category: 'Personal Systems',
             date: '2026-09-16'

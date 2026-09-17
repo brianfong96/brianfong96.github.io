@@ -67,14 +67,14 @@ async function run() {
         assert.deepEqual(brokenAnchors, []);
         await page.setViewport({ width: 1440, height: 900 });
         await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
-        await page.$eval('#start', el => el.scrollIntoView({ behavior: 'instant' }));
-        await page.click('.truth-rail a[href="#fit"]');
-        await page.waitForFunction(() => document.querySelector('.truth-rail a[aria-current="location"]').hash === '#fit');
+        await page.$eval('#claim', el => el.scrollIntoView({ behavior: 'instant' }));
+        await page.click('.truth-rail a[href="#causation"]');
+        await page.waitForFunction(() => document.querySelector('.truth-rail a[aria-current="location"]').hash === '#causation');
         assert.equal(await page.$$eval('.truth-rail a[aria-current]', els => els.length), 1);
         const rail = await page.$eval('.truth-rail', el => ({ top: el.getBoundingClientRect().top, bottom: el.getBoundingClientRect().bottom }));
         assert.ok(rail.top >= 60 && rail.bottom < 900, 'Sticky TOC remains fully visible without its own scrollbar');
-        await page.$eval('#origin', el => el.scrollIntoView({ behavior: 'instant' }));
-        await page.waitForFunction(() => document.querySelector('.truth-rail a[aria-current="location"]').hash === '#origin');
+        await page.$eval('#context', el => el.scrollIntoView({ behavior: 'instant' }));
+        await page.waitForFunction(() => document.querySelector('.truth-rail a[aria-current="location"]').hash === '#context');
         await page.click('.truth-sources a[href*="blog.html"]');
         await page.waitForSelector('#blog-topic-select');
         await page.waitForFunction(() => window.__spaTransition === false);
@@ -84,15 +84,15 @@ async function run() {
         await page.waitForSelector('.truth-article');
         await page.waitForFunction(() => window.__spaTransition === false);
         await page.waitForSelector('.truth-article[data-truth-initialized="true"]');
-        await page.$eval('#practice', el => el.scrollIntoView({ behavior: 'instant' }));
-        await page.waitForFunction(() => document.querySelector('.truth-rail a[aria-current="location"]').hash === '#practice');
+        await page.$eval('#consistency', el => el.scrollIntoView({ behavior: 'instant' }));
+        await page.waitForFunction(() => document.querySelector('.truth-rail a[aria-current="location"]').hash === '#consistency');
 
         await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
         assert.equal(await page.$eval('.truth-chapter', el => getComputedStyle(el).animationName), 'none');
         await page.setJavaScriptEnabled(false);
         await page.goto(`${origin}/blog/how-to-tell-whats-true/index.html`, { waitUntil: 'networkidle0' });
-        assert.equal(await page.$$eval('.truth-diagram', els => els.filter(el => el.getBoundingClientRect().height > 0).length), 7);
-        assert.match(await page.$eval('#practice', el => el.innerText), /what would change my mind/);
+        assert.equal(await page.$$eval('.truth-diagram', els => els.filter(el => el.getBoundingClientRect().height > 0).length), 3);
+        assert.match(await page.$eval('#consistency', el => el.innerText), /what evidence would resolve it/);
         assert.deepEqual(errors, [], `Browser errors: ${errors.join(', ')}`);
         console.log('Truth blog passed: responsive layout, single document scroll, sticky TOC navigation and active section, SPA cleanup and return, reduced motion, and no-JS reading.');
     } finally {

@@ -33,6 +33,9 @@
 .truth-row small { color: #5c6877; font-size: .88rem; }
 .truth-result { padding: 18px; background: #eef3f8; border-left: 3px solid #24599a; margin-top: 20px; font-size: 1.1rem; line-height: 1.5; }
 .truth-result strong { color: #173f72; }
+.truth-causal-root { width: fit-content; margin: 0 auto; padding-inline: 28px; }
+.truth-causal-connectors { display: block; width: 100%; height: 54px; fill: none; stroke: #24599a; stroke-width: 1.5px; }
+.truth-causal-leaves { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 .source-root { max-width: 230px; margin: 0 auto; }
 .source-branches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding-top: 26px; position: relative; }
 .source-branches::before { content: ''; position: absolute; top: 0; height: 12px; left: 50%; border-left: 1px solid #9fb2c7; }
@@ -48,6 +51,8 @@
 .truth-checklist li { counter-increment: checks; display: flex; gap: 16px; padding: 13px 0; border-bottom: 1px solid #dfe4e8; line-height: 1.5; }
 .truth-checklist li::before { content: counter(checks, decimal-leading-zero); color: #24599a; font-size: .8rem; padding-top: 3px; font-variant-numeric: tabular-nums; }
 .truth-sources { padding: 60px 0 90px; border-top: 1px solid #cbd3dc; scroll-margin-top: 80px; }
+.truth-sources h2 { font-size: 1.5rem; padding-block: .12em; }
+.truth-sources li { margin-bottom: 14px; }
 .truth-sources p, .truth-sources li { color: #5c6877; font-size: .9rem; line-height: 1.7; }
 .truth-page a:focus-visible, .truth-page button:focus-visible { outline: 3px solid #24599a; outline-offset: 5px; }
 .truth-skip { position: fixed; top: -100px; left: 24px; z-index: 10000; padding: 12px 18px; background: white; color: #173f72; }
