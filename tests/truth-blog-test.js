@@ -36,6 +36,8 @@ async function run() {
         await page.waitForSelector('.truth-article');
         await page.waitForFunction(() => window.__spaTransition === false);
         assert.equal(await page.title(), 'How to Tell What’s True - Brian Fong');
+        await page.waitForSelector('.truth-article[data-truth-initialized="true"]');
+        assert.equal(await page.$('.truth-byline'), null);
 
         for (const [width, height] of [[1440, 900], [768, 1024], [390, 844], [320, 568]]) {
             await page.setViewport({ width, height });
@@ -46,7 +48,8 @@ async function run() {
                     overflow: document.documentElement.scrollWidth > innerWidth,
                     nestedScroll: all.filter(el => /auto|scroll/.test(getComputedStyle(el).overflowY) && el.scrollHeight > el.clientHeight + 1).map(el => el.className),
                     clipped: all.filter(el => el.scrollWidth > el.clientWidth + 2 && el.clientWidth > 0 && getComputedStyle(el).display !== 'inline').map(el => el.className),
-                    floating: all.filter(el => ['fixed', 'sticky'].includes(getComputedStyle(el).position)).map(el => el.className),
+                    floating: all.filter(el => !el.closest('.truth-rail') && ['fixed', 'sticky'].includes(getComputedStyle(el).position)).map(el => el.className),
+                    railDisplay: getComputedStyle(article.querySelector('.truth-rail')).display,
                     overlappingChapters: [...article.querySelectorAll('.truth-chapter')].some((el, i, sections) => i && el.getBoundingClientRect().top < sections[i - 1].getBoundingClientRect().bottom - 1),
                     minimumChapterHeight: Math.min(...[...article.querySelectorAll('.truth-chapter')].map(el => el.getBoundingClientRect().height))
                 };
@@ -55,19 +58,34 @@ async function run() {
             assert.deepEqual(layout.nestedScroll, [], `${width}px nested scrolling`);
             assert.deepEqual(layout.clipped, [], `${width}px clipped diagrams or headings`);
             assert.deepEqual(layout.floating, [], `${width}px competing floating content`);
+            assert.equal(layout.railDisplay, width >= 1100 ? 'grid' : 'none');
             assert.equal(layout.overlappingChapters, false);
             assert.ok(layout.minimumChapterHeight >= height - 61, 'Sections reserve space for one concept at a time');
         }
 
         const brokenAnchors = await page.$$eval('.truth-article a[href^="#"]', links => links.filter(link => !document.getElementById(link.hash.slice(1))).map(link => link.hash));
         assert.deepEqual(brokenAnchors, []);
+        await page.setViewport({ width: 1440, height: 900 });
+        await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
+        await page.$eval('#start', el => el.scrollIntoView({ behavior: 'instant' }));
+        await page.click('.truth-rail a[href="#causation"]');
+        await page.waitForFunction(() => document.querySelector('.truth-rail a[aria-current="location"]').hash === '#causation');
+        assert.equal(await page.$$eval('.truth-rail a[aria-current]', els => els.length), 1);
+        const rail = await page.$eval('.truth-rail', el => ({ top: el.getBoundingClientRect().top, bottom: el.getBoundingClientRect().bottom }));
+        assert.ok(rail.top >= 60 && rail.bottom < 900, 'Sticky TOC remains fully visible without its own scrollbar');
+        await page.$eval('#origin', el => el.scrollIntoView({ behavior: 'instant' }));
+        await page.waitForFunction(() => document.querySelector('.truth-rail a[aria-current="location"]').hash === '#origin');
         await page.click('.truth-sources a[href*="blog.html"]');
         await page.waitForSelector('#blog-topic-select');
         await page.waitForFunction(() => window.__spaTransition === false);
         assert.equal(await page.$eval('#blog-topic-select', el => el.value), 'Personal Systems');
+        assert.equal(await page.evaluate(() => typeof window.__truthArticleCleanup), 'undefined');
         await page.click('a[href="blog/how-to-tell-whats-true/index.html"]');
         await page.waitForSelector('.truth-article');
         await page.waitForFunction(() => window.__spaTransition === false);
+        await page.waitForSelector('.truth-article[data-truth-initialized="true"]');
+        await page.$eval('#practice', el => el.scrollIntoView({ behavior: 'instant' }));
+        await page.waitForFunction(() => document.querySelector('.truth-rail a[aria-current="location"]').hash === '#practice');
 
         await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
         assert.equal(await page.$eval('.truth-chapter', el => getComputedStyle(el).animationName), 'none');
@@ -76,7 +94,7 @@ async function run() {
         assert.equal(await page.$$eval('.truth-diagram', els => els.filter(el => el.getBoundingClientRect().height > 0).length), 16);
         assert.match(await page.$eval('#practice', el => el.innerText), /What would change my mind/);
         assert.deepEqual(errors, [], `Browser errors: ${errors.join(', ')}`);
-        console.log('Truth blog passed: category navigation, desktop/tablet/mobile layout, one document scroll, SPA return, reduced motion, and no-JS reading.');
+        console.log('Truth blog passed: responsive layout, single document scroll, sticky TOC navigation and active section, SPA cleanup and return, reduced motion, and no-JS reading.');
     } finally {
         if (browser) await browser.close();
         await new Promise(resolve => server.close(resolve));
