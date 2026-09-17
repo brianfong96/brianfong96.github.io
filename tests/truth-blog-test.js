@@ -68,8 +68,8 @@ async function run() {
         await page.setViewport({ width: 1440, height: 900 });
         await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
         await page.$eval('#start', el => el.scrollIntoView({ behavior: 'instant' }));
-        await page.click('.truth-rail a[href="#causation"]');
-        await page.waitForFunction(() => document.querySelector('.truth-rail a[aria-current="location"]').hash === '#causation');
+        await page.click('.truth-rail a[href="#fit"]');
+        await page.waitForFunction(() => document.querySelector('.truth-rail a[aria-current="location"]').hash === '#fit');
         assert.equal(await page.$$eval('.truth-rail a[aria-current]', els => els.length), 1);
         const rail = await page.$eval('.truth-rail', el => ({ top: el.getBoundingClientRect().top, bottom: el.getBoundingClientRect().bottom }));
         assert.ok(rail.top >= 60 && rail.bottom < 900, 'Sticky TOC remains fully visible without its own scrollbar');
@@ -91,8 +91,8 @@ async function run() {
         assert.equal(await page.$eval('.truth-chapter', el => getComputedStyle(el).animationName), 'none');
         await page.setJavaScriptEnabled(false);
         await page.goto(`${origin}/blog/how-to-tell-whats-true/index.html`, { waitUntil: 'networkidle0' });
-        assert.equal(await page.$$eval('.truth-diagram', els => els.filter(el => el.getBoundingClientRect().height > 0).length), 16);
-        assert.match(await page.$eval('#practice', el => el.innerText), /What would change my mind/);
+        assert.equal(await page.$$eval('.truth-diagram', els => els.filter(el => el.getBoundingClientRect().height > 0).length), 7);
+        assert.match(await page.$eval('#practice', el => el.innerText), /what would change my mind/);
         assert.deepEqual(errors, [], `Browser errors: ${errors.join(', ')}`);
         console.log('Truth blog passed: responsive layout, single document scroll, sticky TOC navigation and active section, SPA cleanup and return, reduced motion, and no-JS reading.');
     } finally {

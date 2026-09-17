@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A practical system for investigating news, AI media, statistics, science, history, and belief: confidence proportional to evidence.">
+    <meta name="description" content="A five-step framework for evaluating a claim: define it, trace the source, test the evidence, seek independent confirmation, and update your confidence.">
     <title>How to Tell What’s True - Brian Fong</title>
     <link rel="icon" type="image/png" href="../../assets/favicon.png">
     <link rel="stylesheet" href="../../assets/css/style.css">
     <link rel="stylesheet" href="../../assets/css/blog.css">
-    <link rel="stylesheet" href="../../assets/css/how-to-tell-whats-true.css?v=20260916-2">
+    <link rel="stylesheet" href="../../assets/css/how-to-tell-whats-true.css?v=20260917">
 </head>
 <body class="blog-article personal-systems-page truth-page">
     <header class="topbar">
@@ -27,299 +27,145 @@
                 <header class="truth-hero">
                     <div class="truth-meta"><a href="../../blog.html#personal-systems">Personal Systems</a><time datetime="2026-09-16">September 16, 2026</time></div>
                     <h1 id="truth-title">How to tell what’s true.</h1>
-                    <p class="truth-deck">In a world full of fake news, AI, bad science, and competing beliefs, the skill is knowing how much confidence a claim deserves.</p>
-                    <a class="truth-start" href="#start">Start with the claim <span aria-hidden="true">↓</span></a>
+                    <p class="truth-deck">A simple framework for moving from “I heard this” to “here is what the evidence supports.”</p>
+                    <a class="truth-start" href="#start">Understand the framework <span aria-hidden="true">↓</span></a>
                 </header>
 
                 <div class="truth-layout">
                     <nav class="truth-rail" aria-label="On this page">
                         <span>In this essay</span>
-                        <a href="#start">Define the claim</a>
-                        <a href="#separate">Separate the layers</a>
-                        <a href="#origin">Find the original</a>
-                        <a href="#independence">Independent evidence</a>
-                        <a href="#provenance">Media &amp; context</a>
-                        <a href="#denominator">The denominator</a>
-                        <a href="#axes">Chart framing</a>
-                        <a href="#causation">Correlation &amp; causation</a>
-                        <a href="#expertise">Experts &amp; incentives</a>
-                        <a href="#bias">Your own biases</a>
-                        <a href="#falsify">Changing your mind</a>
-                        <a href="#history">History &amp; Scripture</a>
-                        <a href="#belief">Evidence &amp; belief</a>
-                        <a href="#confidence">Calibrate confidence</a>
-                        <a href="#ai">AI as an assistant</a>
-                        <a href="#practice">The 60-second test</a>
-                        <a href="#sources">Sources</a>
+                        <a href="#start">The framework</a>
+                        <a href="#claim">1. Define the claim</a>
+                        <a href="#origin">2. Trace the source</a>
+                        <a href="#fit">3. Test the fit</a>
+                        <a href="#independence">4. Check independently</a>
+                        <a href="#confidence">5. Decide &amp; update</a>
+                        <a href="#practice">Use it yourself</a>
                     </nav>
                     <div class="truth-body">
-                <section class="truth-chapter" id="start" aria-labelledby="claim-title">
-                    <p class="truth-kicker">01 / Define the claim</p>
-                    <h2 id="claim-title">“Feels true” is where the work begins.</h2>
-                    <p>A photograph can be generated, a voice cloned, and a convincing research summary written around references that do not exist. Meanwhile, real photographs can look strange, experts can disagree honestly, and legitimate studies can turn out to be wrong.</p>
-                    <p>The useful skill is not instantly spotting truth. It is <strong>investigating a claim and deciding how much confidence it deserves</strong>.</p>
-                    <p>Consider a hypothetical headline: “Artificial sweeteners double your risk of heart attacks.” Believing it because it fits your instincts and dismissing it because it sounds sensational skip the same step: checking what was actually measured.</p>
-                    <figure class="truth-diagram">
-                        <span class="diagram-label">Turn a reaction into a research question</span>
-                        <div class="truth-flow"><div class="truth-node">“Sweeteners are bad”<small>Too vague to test</small></div><span class="truth-arrow" aria-hidden="true">→</span><div class="truth-node">Which sweetener?<small>Which people, outcome, and period?</small></div><span class="truth-arrow" aria-hidden="true">→</span><div class="truth-node">What evidence?<small>Study design, baseline risk, alternatives</small></div></div>
-                        <figcaption>A precise claim tells you what to investigate. This is an illustrative headline, not a finding about sweeteners.</figcaption>
-                    </figure>
-                    <p>Was the study observational? Were the people already at higher risk? Did the rate rise from one in ten thousand to two, or from 10% to 20%? A headline can contain true facts and still leave you with the wrong conclusion.</p>
-                </section>
+                        <section class="truth-chapter" id="start" aria-labelledby="framework-title">
+                            <p class="truth-kicker">The framework</p>
+                            <h2 id="framework-title">Keep the claim separate from the evidence.</h2>
+                            <p>Someone tells you something. It sounds plausible, fits what you already believe, and comes with a photograph. It is tempting to accept the whole story at once.</p>
+                            <p>A better starting point is to separate three things: <strong>what is being claimed, what you can check, and what conclusion that evidence allows</strong>. The gap between those is where assumptions slip in.</p>
+                            <figure class="truth-diagram">
+                                <span class="diagram-label">Three different things</span>
+                                <div class="truth-flow"><div class="truth-node">Claim<small>What someone says is true</small></div><span class="truth-arrow" aria-hidden="true">→</span><div class="truth-node">Evidence<small>What you can check</small></div><span class="truth-arrow" aria-hidden="true">→</span><div class="truth-node">Conclusion<small>What the evidence supports</small></div></div>
+                                <figcaption>The arrows are questions to work through. A claim does not become a fact just because something is offered as evidence.</figcaption>
+                            </figure>
+                            <p>We will use one fictional example throughout: a neighborhood post says, “Maple Café has closed for good.” Underneath is a photo of its shuttered storefront. How much should you believe?</p>
+                            <p>Work through five steps: define the claim, trace its source, test the fit, check independently, and decide what to believe for now.</p>
+                        </section>
 
-                <section class="truth-chapter" id="separate" aria-labelledby="separate-title">
-                    <p class="truth-kicker">02 / Separate the layers</p>
-                    <h2 id="separate-title">One sentence can hide three claims.</h2>
-                    <p>“The government increased immigration to deliberately make housing more expensive.” It sounds like one claim. It contains an observation, a causal explanation, and an allegation of intent.</p>
-                    <figure class="truth-diagram">
-                        <span class="diagram-label">Each layer needs its own evidence</span>
-                        <div class="truth-row"><span>01</span><strong>Immigration increased</strong><small>Population and migration records</small></div>
-                        <div class="truth-row"><span>02</span><strong>It raised housing prices</strong><small>Analysis of demand, supply, rates, zoning, and other causes</small></div>
-                        <div class="truth-row"><span>03</span><strong>Higher prices were intended</strong><small>Documents or testimony establishing motive</small></div>
-                        <figcaption>Evidence for an outcome does not, by itself, establish its cause or someone’s intention.</figcaption>
-                    </figure>
-                    <p>That separation is especially useful in breaking news. Footage might establish that an explosion occurred. It does not, on its own, establish an attack or a terrorist motive.</p>
-                    <p>Early reports arrive while witnesses, journalists, and officials are still working out what happened. Old footage and speculation can fill the gaps. <strong>Never let your certainty travel farther than the evidence.</strong></p>
-                </section>
+                        <section class="truth-chapter" id="claim" aria-labelledby="claim-title">
+                            <p class="truth-kicker">Step 1 / Define</p>
+                            <h2 id="claim-title">What exactly would have to be true?</h2>
+                            <p>“Closed” can mean several things. The shutters were down when the photo was taken. The café is temporarily unavailable. The business has permanently stopped operating. Those are different claims.</p>
+                            <figure class="truth-diagram">
+                                <span class="diagram-label">Make the statement precise</span>
+                                <div class="truth-row"><span>01</span><strong>What the photo might show</strong><small>The storefront was shut at one moment.</small></div>
+                                <div class="truth-row"><span>02</span><strong>What the post claims</strong><small>Maple Café has permanently stopped operating at this location.</small></div>
+                                <figcaption>“Shut when photographed” and “closed for good” need different evidence.</figcaption>
+                            </figure>
+                            <p>Write the claim in one sentence. Name the subject, the place, the time, and the specific assertion when they matter. Then ask what evidence could establish that sentence.</p>
+                            <p>For permanent closure, you would want something that bears on the business’s status: a current closure announcement, for example. A photograph of a shut door answers a much narrower question.</p>
+                            <p><strong>Leave this step with a claim you can investigate.</strong> Otherwise, you risk proving one thing while believing another.</p>
+                        </section>
 
-                <section class="truth-chapter" id="origin" aria-labelledby="origin-title">
-                    <p class="truth-kicker">03 / Follow the evidence backward</p>
-                    <h2 id="origin-title">Find the thing behind the screenshot.</h2>
-                    <p>A creator says a government report proves unemployment is twice the official figure. Before arguing about the conclusion, find the report. A broader measure of underemployment and the headline unemployment rate may describe different things.</p>
-                    <figure class="truth-diagram">
-                        <span class="diagram-label">Your investigation moves toward the original</span>
-                        <div class="truth-flow"><div class="truth-node">Viral post</div><span class="truth-arrow" aria-hidden="true">→</span><div class="truth-node">News article</div><span class="truth-arrow" aria-hidden="true">→</span><div class="truth-node">Original report<small>Read the definition and data</small></div></div>
-                        <figcaption>Every retelling is another opportunity to lose context. The original source is where you check what was actually claimed and measured.</figcaption>
-                    </figure>
-                    <p>A screenshot of a paper is not the paper. A clipped quotation is not the interview. A screenshot can be altered, fabricated, or detached from its date with very little effort.</p>
-                    <p>Find the original post or an archive; open the paper; watch the surrounding speech. If the underlying item is unavailable, look for corroboration and keep that limitation visible. Screenshots can start an investigation. They should rarely finish it.</p>
-                </section>
+                        <section class="truth-chapter" id="origin" aria-labelledby="origin-title">
+                            <p class="truth-kicker">Step 2 / Trace</p>
+                            <h2 id="origin-title">Where did the evidence come from?</h2>
+                            <p>The neighborhood post is a retelling. Follow its link to the original photograph and read what the person who took it actually said.</p>
+                            <figure class="truth-diagram">
+                                <span class="diagram-label">Follow the claim backward</span>
+                                <div class="truth-flow"><div class="truth-node">Shared post<small>“Closed for good”</small></div><span class="truth-arrow" aria-hidden="true">→</span><div class="truth-node">Original photo<small>Shuttered storefront</small></div><span class="truth-arrow" aria-hidden="true">→</span><div class="truth-node">Original caption<small>“Passed by on Monday”</small></div></div>
+                                <figcaption>The permanent-closure claim was added in the retelling. It was not part of the photographer’s account.</figcaption>
+                            </figure>
+                            <p>Now check whether the image shows the right café, when it was taken, and whether anything relevant was cropped out. An original source can still be mistaken; finding it lets you examine the evidence with less interpretation layered on top.</p>
+                            <p>If you cannot find the source, keep that gap visible. “I cannot verify this yet” is a useful result. It is not proof that the claim is false.</p>
+                            <p><strong>Leave this step knowing what the original evidence actually says.</strong></p>
+                        </section>
 
-                <section class="truth-chapter" id="independence" aria-labelledby="independence-title">
-                    <p class="truth-kicker">04 / Count independent evidence</p>
-                    <h2 id="independence-title">Twenty articles can still be one source.</h2>
-                    <p>A story repeated across twenty websites feels confirmed. But if all twenty reproduce one wire report, you have one reporting chain. Repetition has increased its reach, not its independence.</p>
-                    <figure class="truth-diagram">
-                        <span class="diagram-label">Publication count ≠ independent source count</span>
-                        <div class="truth-node source-root">One original report</div>
-                        <div class="source-branches"><div class="truth-node">Website A</div><div class="truth-node">Website B</div><div class="truth-node">Website C</div><div class="truth-node">Website D</div></div>
-                        <div class="truth-result"><strong>4 publications. 1 evidence chain.</strong></div>
-                        <figcaption>These four outlets illustrate the same dependency that can exist across twenty or fifty articles.</figcaption>
-                    </figure>
-                    <p>Stronger corroboration comes from genuinely separate observations: emergency-service records, independently captured videos, journalists at the scene, and satellite imagery. Ask whether they independently support the same specific claim.</p>
-                    <p>Even apparently separate sources can share a witness, document, or mistaken assumption. Trace those relationships before counting confirmations.</p>
-                </section>
+                        <section class="truth-chapter" id="fit" aria-labelledby="fit-title">
+                            <p class="truth-kicker">Step 3 / Test</p>
+                            <h2 id="fit-title">Does the evidence distinguish this explanation?</h2>
+                            <p>Suppose you establish that the photograph is recent and shows the right storefront. That makes it relevant. It still does not explain why the shutters were down.</p>
+                            <figure class="truth-diagram">
+                                <span class="diagram-label">One observation can fit several explanations</span>
+                                <div class="truth-node">Observed: the shutters are down.</div>
+                                <div class="truth-row"><span>A</span><strong>Outside opening hours</strong><small>The photo could look this way.</small></div>
+                                <div class="truth-row"><span>B</span><strong>Temporary repairs</strong><small>The photo could look this way.</small></div>
+                                <div class="truth-row"><span>C</span><strong>Permanent closure</strong><small>The photo could look this way.</small></div>
+                                <figcaption>The photo alone cannot choose between these explanations. They are possibilities to check, not equally likely conclusions.</figcaption>
+                            </figure>
+                            <p>The useful question is: <strong>could I see this same evidence if the claim were wrong?</strong> Here, yes. A temporarily closed café could produce exactly this photograph.</p>
+                            <p>Look for evidence that separates the possibilities. Opening hours could explain an early photo. A dated repair notice would support temporary closure. A permanent-closure announcement would support the original claim.</p>
+                            <p>You do not need to invent every imaginable alternative. Start with plausible ones that fit what you know, then identify what would distinguish them.</p>
+                        </section>
 
-                <section class="truth-chapter" id="provenance" aria-labelledby="provenance-title">
-                    <p class="truth-kicker">05 / Authenticate the context</p>
-                    <h2 id="provenance-title">A real image can tell a false story.</h2>
-                    <p>Counting fingers or inspecting reflections may reveal a problem, but a clean-looking image is not proof. Ask where the media came from, when it first appeared, and whether its location and caption fit.</p>
-                    <p>Suppose an image is captioned “Riots in Toronto today.” A reverse-image search finds the same photograph in France five years earlier. You have disproved the claimed context without deciding whether an AI generated anything.</p>
-                    <figure class="truth-diagram">
-                        <span class="diagram-label">Illustrative image check</span>
-                        <div class="truth-row"><span>01</span><strong>The file</strong><small>A genuine photograph</small></div>
-                        <div class="truth-row"><span>02</span><strong>The caption</strong><small>“Toronto, today”</small></div>
-                        <div class="truth-row"><span>03</span><strong>The earlier record</strong><small>France, five years ago</small></div>
-                        <div class="truth-result"><strong>Authentic photograph. False context.</strong></div>
-                        <figcaption>File authenticity and the truth of a claim about the file are separate questions.</figcaption>
-                    </figure>
-                    <p>Content Credentials can carry signed records about a file’s origin and edits. Their scope depends on the records available; an absent credential does not prove a fake. They also cannot establish that a scene was unstaged or that a caption is accurate. <a href="https://c2pa.org/faqs/">C2PA explains how those provenance records work.</a></p>
-                    <p>An AI detector adds another clue, not a verdict. A displayed “87%” should not automatically be read as an 87% probability that this particular file is fake. Errors, unfamiliar generators, and post-processing matter. <a href="https://www.nist.gov/programs-projects/guardians-forensic-evidence">NIST’s forensic evaluation work</a> explicitly includes compression and other real-world transformations.</p>
-                </section>
+                        <section class="truth-chapter" id="independence" aria-labelledby="independence-title">
+                            <p class="truth-kicker">Step 4 / Check</p>
+                            <h2 id="independence-title">Is there another line of evidence?</h2>
+                            <p>You find four more posts saying the café has closed. Before treating that as confirmation, check where each got its information. In this example, all four point back to the same photograph.</p>
+                            <figure class="truth-diagram">
+                                <span class="diagram-label">Repetition does not add an independent observation</span>
+                                <div class="truth-node source-root">One photograph</div>
+                                <div class="source-branches"><div class="truth-node">Post A</div><div class="truth-node">Post B</div><div class="truth-node">Post C</div><div class="truth-node">Post D</div></div>
+                                <div class="truth-result"><strong>Four retellings. One underlying observation.</strong></div>
+                                <figcaption>Count where the evidence originates, not how many times the conclusion appears.</figcaption>
+                            </figure>
+                            <p>Instead, you check the café’s own page. It has a notice dated this week: “Temporarily closed for repairs.” This is a new piece of evidence from someone in a position to know, rather than another interpretation of the photo.</p>
+                            <p>The notice is relevant testimony, not a guarantee about the future. First-hand confirmation that the café resumes serving customers would provide a different kind of check.</p>
+                            <p><strong>Seek evidence that could correct the story, not just repeat it.</strong> A source’s access to the facts matters alongside its independence.</p>
+                        </section>
 
-                <section class="truth-chapter" id="denominator" aria-labelledby="denominator-title">
-                    <p class="truth-kicker">06 / Restore the denominator</p>
-                    <h2 id="denominator-title">A big percentage can describe a small change.</h2>
-                    <p>“Crime increased 200%” sounds catastrophic. If the count went from one incident to three, that percentage is correct, but incomplete. You still need the population, period, definition, and a sense of normal variation.</p>
-                    <figure class="truth-diagram">
-                        <span class="diagram-label">Hypothetical risk · same population and period</span>
-                        <div class="truth-flow"><div class="truth-node"><span class="truth-big">1</span><small>case per 1,000,000 people</small></div><span class="truth-arrow" aria-hidden="true">→</span><div class="truth-node"><span class="truth-big">2</span><small>cases per 1,000,000 people</small></div></div>
-                        <div class="truth-metric truth-result"><div><strong>100% increase</strong><small>Relative change</small></div><div><strong>1 extra case per million</strong><small>Absolute change: 0.0001 percentage points</small></div></div>
-                        <figcaption>Both descriptions are true. You need both to understand the size of the change.</figcaption>
-                    </figure>
-                    <p>Ask: compared with what, over what period, and among whom? Is this a count, a rate, an absolute difference, or a relative change? The denominator often supplies the context the headline leaves out.</p>
-                </section>
+                        <section class="truth-chapter" id="confidence" aria-labelledby="confidence-title">
+                            <p class="truth-kicker">Step 5 / Decide &amp; update</p>
+                            <h2 id="confidence-title">State what you know, and where it stops.</h2>
+                            <p>You do not need a perfectly certain answer to reach a useful conclusion. You need an answer whose confidence matches the evidence you have.</p>
+                            <figure class="truth-diagram">
+                                <span class="diagram-label">Our conclusion so far</span>
+                                <dl class="truth-verdicts">
+                                    <div><dt>Established</dt><dd>The checked photo shows the storefront shut at that moment. A current notice says it is closed for repairs.</dd></div>
+                                    <div><dt>Best supported</dt><dd>The closure appears temporary.</dd></div>
+                                    <div><dt>Not established</dt><dd>The café has permanently stopped operating, or will reopen on a particular date.</dd></div>
+                                </dl>
+                                <figcaption>Report the narrower conclusion the evidence supports, including the uncertainty that remains.</figcaption>
+                            </figure>
+                            <p>A reasonable response is: “The café says it is temporarily closed for repairs. I haven’t found evidence of permanent closure.” That is more accurate than either repeating the rumor or promising it will reopen.</p>
+                            <p>Then name what would change your mind. A later permanent-closure announcement would weaken the temporary-closure explanation. Reliable confirmation that customers are being served again would contradict the claim that it has closed for good.</p>
+                            <p><strong>Updating is part of the method.</strong> Your conclusion is accountable to new evidence, not something you must defend indefinitely.</p>
+                        </section>
 
-                <section class="truth-chapter" id="axes" aria-labelledby="axes-title">
-                    <p class="truth-kicker">07 / Inspect the frame</p>
-                    <h2 id="axes-title">Same numbers. Different impression.</h2>
-                    <p>Imagine revenue increasing from $98 million to $102 million. A bar chart beginning at $97 million makes the visible bar grow fivefold. A chart beginning at zero shows the actual proportional change: about 4.1%.</p>
-                    <figure class="truth-diagram">
-                        <span class="diagram-label">Illustrative revenue · millions of dollars</span>
-                        <div class="truth-chart" role="img" aria-label="Truncated bar chart from 97 to 103 million: revenue 98 then 102 million. The visible bar lengths are one and five million above the baseline.">
-                            <strong>Baseline: $97m</strong>
-                            <div class="truth-bar-row"><span>Before</span><div class="truth-track"><div class="truth-bar" style="width:16.6667%"></div></div><span>$98m</span></div>
-                            <div class="truth-bar-row"><span>After</span><div class="truth-track"><div class="truth-bar" style="width:83.3333%"></div></div><span>$102m</span></div>
-                            <div class="truth-axis"><span>97</span><span>103</span></div>
-                        </div>
-                        <div class="truth-chart" role="img" aria-label="Zero-baseline bar chart from zero to 103 million: the same 98 and 102 million values show about 4.1 percent growth.">
-                            <strong>Baseline: $0</strong>
-                            <div class="truth-bar-row"><span>Before</span><div class="truth-track"><div class="truth-bar" style="width:95.1456%"></div></div><span>$98m</span></div>
-                            <div class="truth-bar-row"><span>After</span><div class="truth-track"><div class="truth-bar" style="width:99.0291%"></div></div><span>$102m</span></div>
-                            <div class="truth-axis"><span>0</span><span>103</span></div>
-                        </div>
-                        <figcaption>Bar length encodes magnitude, so its baseline matters. A narrowed axis can be useful for other chart types when the scale and purpose are clear.</figcaption>
-                    </figure>
-                    <p>Check equal time intervals, inflation adjustments, population changes, and conveniently chosen start dates. Accurate numbers can still be arranged to invite a misleading interpretation.</p>
-                </section>
-
-                <section class="truth-chapter" id="causation" aria-labelledby="causation-title">
-                    <p class="truth-kicker">08 / Test the causal story</p>
-                    <h2 id="causation-title">Moving together does not establish a cause.</h2>
-                    <p>Suppose a study finds an association between diet soda and diabetes. Even if that association is real, it does not by itself establish that diet soda causes diabetes. People already at higher risk might switch to diet drinks; other differences could influence both.</p>
-                    <figure class="truth-diagram">
-                        <span class="diagram-label">One possible alternative explanation · not a study result</span>
-                        <div class="truth-node causal-root">Pre-existing health risk</div>
-                        <div class="causal-arrows" aria-hidden="true"><span>↙</span><span>↘</span></div>
-                        <div class="causal-leaves"><div class="truth-node">Switch to diet soda</div><div class="truth-node">Later diabetes diagnosis</div></div>
-                        <div class="causal-association">An association can appear without a causal arrow between these outcomes.</div>
-                        <figcaption>A common cause can produce correlation. This diagram illustrates a possibility to investigate, not a conclusion about diet soda.</figcaption>
-                    </figure>
-                    <p>Study design is part of the evidence. Random assignment can reduce confounding, though a trial still needs appropriate measurement, follow-up, and analysis. Observational research can also inform causal questions when its assumptions and methods are justified.</p>
-                    <p>One surprising paper should rarely rewrite your worldview. Look for replication across researchers, populations, and methods. The question is whether a conclusion survives serious attempts to challenge it.</p>
-                </section>
-
-                <section class="truth-chapter" id="expertise" aria-labelledby="expertise-title">
-                    <p class="truth-kicker">09 / Weigh expertise and incentives</p>
-                    <h2 id="expertise-title">Credentials deserve attention, not a blank cheque.</h2>
-                    <p>“A professor said it, so it must be true” and “Experts have been wrong, so they do not matter” both avoid evaluating the evidence. Expertise helps when it is relevant to the question. A physicist’s prize does not make them an authority on epidemiology.</p>
-                    <figure class="truth-diagram">
-                        <span class="diagram-label">Scrutiny, not automatic acceptance or rejection</span>
-                        <div class="truth-flow"><div class="truth-node">Relevant expertise<small>How seriously should I investigate?</small></div><span class="truth-arrow" aria-hidden="true">→</span><div class="truth-node">Methods + evidence<small>Does the conclusion survive?</small></div><span class="truth-arrow" aria-hidden="true">←</span><div class="truth-node">Conflicts of interest<small>Where should I look more carefully?</small></div></div>
-                        <figcaption>Expertise and incentives guide your scrutiny. Neither substitutes for assessing the evidence.</figcaption>
-                    </figure>
-                    <p>Ask whether the person is speaking within their field, how their account fits the broader research, and whether independent work supports it. A minority interpretation is not automatically wrong, but disagreement with a well-supported consensus creates a substantial burden of explanation.</p>
-                    <p>Likewise, industry funding does not automatically make a study false. It gives you a reason to inspect study design, selective reporting, access to data, and independent replication. Governments, companies, activists, and journalists all have incentives. So do we.</p>
-                </section>
-
-                <section class="truth-chapter" id="bias" aria-labelledby="bias-title">
-                    <p class="truth-kicker">10 / Audit your own reaction</p>
-                    <h2 id="bias-title">The satisfying explanation needs checking too.</h2>
-                    <p>Fear, anger, and the pleasure of being right can pull you toward an answer before you examine it. When a post seems to prove everything you already believe, pause.</p>
-                    <blockquote><p>Would I consider this evidence equally strong if it supported the opposite position?</p></blockquote>
-                    <figure class="truth-diagram">
-                        <span class="diagram-label">Keep the standard fixed when the conclusion changes</span>
-                        <div class="truth-flow"><div class="truth-node">Supports my belief</div><span class="truth-arrow" aria-hidden="true">→</span><div class="truth-node">Same evidence standard</div><span class="truth-arrow" aria-hidden="true">←</span><div class="truth-node">Challenges my belief</div></div>
-                        <figcaption>If your standard changes with the outcome, your preference may be doing some of the reasoning.</figcaption>
-                    </figure>
-                    <p>Simple villain stories are especially tempting. Housing, inflation, wars, and health outcomes can emerge from incentives, institutions, feedback loops, mistakes, and unintended consequences. Intentional coordination is one possible explanation; ask what it explains beyond those ordinary mechanisms.</p>
-                    <p>Then steelman the alternative. Describe the opposing position so accurately that a thoughtful supporter would recognize it. “Invisible sky wizard” does not engage classical Christian theism, and “everything magically came from nothing” does not fairly summarize every atheist’s position. Criticize the strongest argument you can actually identify.</p>
-                </section>
-
-                <section class="truth-chapter" id="falsify" aria-labelledby="falsify-title">
-                    <p class="truth-kicker">11 / Leave room to be wrong</p>
-                    <h2 id="falsify-title">What would change your mind?</h2>
-                    <p>Real conspiracies occur. Calling something a conspiracy theory neither proves nor refutes it. Ask how many people would need to coordinate, what records should exist, who could expose it, and what observations would count against it.</p>
-                    <figure class="truth-diagram">
-                        <span class="diagram-label">A belief protected from every possible result</span>
-                        <div class="truth-row"><span>↳</span><strong>Evidence appears</strong><small>“That proves it.”</small></div>
-                        <div class="truth-row"><span>↳</span><strong>Evidence is missing</strong><small>“They covered it up.”</small></div>
-                        <div class="truth-row"><span>↳</span><strong>A witness disagrees</strong><small>“They are compromised.”</small></div>
-                        <div class="truth-result"><strong>If every result confirms it, the test cannot distinguish truth from error.</strong></div>
-                        <figcaption>A cover-up is possible, but it needs evidence of its own. It cannot be a universal escape hatch.</figcaption>
-                    </figure>
-                    <p>Ask in both directions: what would make you more confident, and what would make you less confident? An earlier upload should weaken a claim that a video was filmed yesterday. Repeated strong failures should weaken a claim that a treatment works.</p>
-                    <p>Not every philosophical or moral belief is a laboratory hypothesis. But refusing to respond to any counterargument or evidence still blocks learning. A commitment to truth needs some way to revise a mistaken view.</p>
-                </section>
-
-                <section class="truth-chapter" id="history" aria-labelledby="history-title">
-                    <p class="truth-kicker">12 / Match the method to the question</p>
-                    <h2 id="history-title">History has evidence, even without a replay.</h2>
-                    <p>We cannot rerun Caesar crossing the Rubicon. We reconstruct the past from manuscripts, inscriptions, archaeology, letters, coins, and other surviving records. Ask how close a source was to an event, whether its author could know, and how it relates to other sources.</p>
-                    <p>“Is the Bible true?” contains several distinct questions. Its poetry, letters, historical narratives, and theology should not all be read as the same kind of claim.</p>
-                    <figure class="truth-diagram">
-                        <span class="diagram-label">Different questions require different work</span>
-                        <div class="truth-row"><span>01</span><strong>What did the text say?</strong><small>Textual criticism: compare manuscripts and variants</small></div>
-                        <div class="truth-row"><span>02</span><strong>What happened?</strong><small>History: dating, authorship, sources, archaeology</small></div>
-                        <div class="truth-row"><span>03</span><strong>What does it mean?</strong><small>Interpretation, philosophy, and theology</small></div>
-                        <figcaption>Reconstructing a text does not automatically establish the reliability of every claim inside it.</figcaption>
-                    </figure>
-                    <p>Copies of ancient texts differ. Comparing manuscripts, translations, and quotations helps reconstruct earlier readings, while leaving some passages disputed. Modern NIV notes flag the <a href="https://www.biblegateway.com/passage/?search=Mark%2016&amp;version=NIV">longer ending of Mark</a> and <a href="https://www.biblegateway.com/passage/?search=John%207%3A53-8%3A11&amp;version=NIV">John 7:53–8:11</a>. Those differences deserve examination; they do not imply that nothing about the text can be known.</p>
-                    <p>Then investigate authorship, dating, access to witnesses, and literary relationships. Earlier sources can still err; later ones can preserve older information. If Matthew and Luke use Mark for a passage, that passage is not three wholly independent accounts. The <a href="https://bible.org/article/synoptic-problem">Synoptic Problem</a> concerns these source relationships. The same independence check used for news applies here.</p>
-                </section>
-
-                <section class="truth-chapter" id="belief" aria-labelledby="belief-title">
-                    <p class="truth-kicker">13 / Respect the reach of the evidence</p>
-                    <h2 id="belief-title">A place is not proof of a miracle.</h2>
-                    <p>Archaeology can establish that a city existed, a ruler held office, or a custom fits an author’s setting. That can support historical context without establishing every event described there.</p>
-                    <figure class="truth-diagram">
-                        <span class="diagram-label">Do not ask evidence to carry a larger claim</span>
-                        <div class="truth-flow"><div class="truth-node">A city is excavated</div><span class="truth-arrow" aria-hidden="true">→</span><div class="truth-node">The setting existed</div></div>
-                        <div class="truth-result"><strong>A miracle described in that setting still needs its own argument.</strong></div>
-                        <figcaption>Finding Jerusalem does not establish the Resurrection, just as finding Troy would not establish Athena’s intervention.</figcaption>
-                    </figure>
-                    <p>Christianity centres on the claim that Jesus rose from the dead. Historical inquiry can examine crucifixion accounts, resurrection traditions, reported appearances, and the earliest Christian movement. It can compare explanations, including resurrection, visionary experiences, developing traditions, fabrication, or combinations of natural processes.</p>
-                    <p>Merely imagining an alternative does not establish it. Compare how well each explanation accounts for the evidence, its background plausibility, and the assumptions it requires.</p>
-                    <p>At this point, philosophy matters too. Assigning miracles zero possibility rules them out in advance; allowing that God might exist does not by itself establish a particular miracle. Make those assumptions explicit. Historical evidence, philosophical arguments, and theological interpretation contribute different things to the larger question.</p>
-                </section>
-
-                <section class="truth-chapter" id="confidence" aria-labelledby="confidence-title">
-                    <p class="truth-kicker">14 / Calibrate the conclusion</p>
-                    <h2 id="confidence-title">“I don’t know yet” is a useful answer.</h2>
-                    <p>Resist forcing every claim into true or false before the evidence is ready. Confidence can be high, tentative, or low. Precise percentages are not required when the information cannot justify them.</p>
-                    <figure class="truth-diagram">
-                        <span class="diagram-label">Four useful assessments · not a probability scale</span>
-                        <dl class="truth-verdicts">
-                            <div><dt>Supported</dt><dd>The available evidence strongly supports the specific claim.</dd></div>
-                            <div><dt>Contradicted</dt><dd>The available evidence directly conflicts with it.</dd></div>
-                            <div><dt>Misleading</dt><dd>True elements are presented in a way that invites an unsupported conclusion.</dd></div>
-                            <div><dt>Unverified</dt><dd>There is not enough evidence to reach a conclusion yet.</dd></div>
-                        </dl>
-                        <figcaption>These describe the evidence available now. New information can change the assessment; “unverified” does not mean “false.”</figcaption>
-                    </figure>
-                    <p>You might be highly confident that a photo is old, uncertain where it was taken, and unconvinced by the political story attached to it. Separate those judgments instead of giving the entire package one verdict.</p>
-                    <p>Scale the effort to the stakes. A casual meme and a decision about health, money, or someone’s reputation deserve different amounts of investigation. Urgency may require action under uncertainty; it does not turn uncertainty into knowledge.</p>
-                </section>
-
-                <section class="truth-chapter" id="ai" aria-labelledby="ai-title">
-                    <p class="truth-kicker">15 / Use AI to investigate</p>
-                    <h2 id="ai-title">A research assistant needs its work checked.</h2>
-                    <p>AI can help navigate a topic, compare arguments, identify missing context, and suggest sources. It can also confidently summarize a paper that does not exist. A polished answer is the start of a trail to check.</p>
-                    <figure class="truth-diagram">
-                        <span class="diagram-label">A better research request</span>
-                        <div class="truth-stack"><div class="truth-node">Find the original source.</div><div class="truth-node">Compare the strongest evidence for and against.<small>Identify dependencies, alternative explanations, and missing context.</small></div><div class="truth-node">Separate facts, interpretation, and uncertainty.</div></div>
-                        <div class="truth-result"><strong>Then open the sources and check whether they support the answer.</strong></div>
-                        <figcaption>Delegating the search does not remove the need to verify quotations, references, and conclusions.</figcaption>
-                    </figure>
-                    <p>Useful follow-ups include: “Does this study establish causation?”, “What denominator is missing?”, “Can you steelman the opposing interpretation?”, and “What evidence would weaken this claim?”</p>
-                    <p>Use the tool to make your investigation broader and more precise. Keep the underlying evidence in view.</p>
-                </section>
-
-                <section class="truth-chapter" id="practice" aria-labelledby="practice-title">
-                    <p class="truth-kicker">16 / Put it into practice</p>
-                    <h2 id="practice-title">The 60-second truth test.</h2>
-                    <p>You do not need an academic investigation for every post. Use a quick first pass to find the weak link, then slow down when the claim matters. Sixty seconds is a triage habit, not a promise that every question can be settled.</p>
-                    <figure class="truth-diagram">
-                        <span class="diagram-label">Follow one claim through the questions</span>
-                        <ol class="truth-checklist">
-                            <li>What exactly is being claimed?</li><li>Who originally made the claim?</li><li>Can I find the primary evidence?</li><li>Is the media, quotation, or document authentic?</li><li>Does the evidence support the conclusion?</li><li>Can independent sources confirm it?</li><li>What context might be missing?</li><li>What alternative explanation fits?</li><li>What would change my mind?</li><li>How confident should I actually be?</li>
-                        </ol>
-                        <figcaption>Stop at “unverified” when you cannot resolve an important gap. Come back when better evidence is available.</figcaption>
-                    </figure>
-                    <p>Blind trust and universal distrust both fail. Synthetic media does not make all photographs useless. Scientific mistakes do not make science worthless. Disagreement does not make history unknowable.</p>
-                    <p>The aim is confidence proportional to evidence. That takes skepticism about what you are told and humility about what you already believe.</p>
-                    <div class="truth-closing">What do I know?<br>What am I inferring?<br>What am I assuming?</div>
-                    <p style="margin-top:28px">Keep those three separate, and you become harder to manipulate. Not impossible. None of us are. But harder.</p>
-                </section>
-
-                <section class="truth-sources" id="sources" aria-labelledby="sources-title">
-                    <h2 id="sources-title">Sources &amp; reading notes</h2>
-                    <p>This essay develops a practical reasoning framework. The sweetener headline, news scenarios, risks, and revenue figures are illustrative, not reports of actual studies or events. Diagrams show the specific inference discussed in their section.</p>
-                    <ol>
-                        <li><a href="https://c2pa.org/faqs/">C2PA: Content Credentials FAQ</a> — what signed provenance records can contain and the limits of an incomplete history.</li>
-                        <li><a href="https://www.nist.gov/programs-projects/guardians-forensic-evidence">NIST: Guardians of Forensic Evidence</a> — evaluating media forensics under real-world transformations.</li>
-                        <li><a href="https://www.biblegateway.com/passage/?search=Mark%2016&amp;version=NIV">Mark 16, NIV</a> and <a href="https://www.biblegateway.com/passage/?search=John%207%3A53-8%3A11&amp;version=NIV">John 7:53–8:11, NIV</a> — examples of manuscript uncertainty disclosed in translation notes.</li>
-                        <li><a href="https://bible.org/article/synoptic-problem">Daniel B. Wallace: The Synoptic Problem</a> — a scholarly treatment of Gospel source relationships from an evangelical perspective; the details of those relationships remain debated.</li>
-                    </ol>
-                    <p><a href="../../blog.html#personal-systems">← More in Personal Systems</a></p>
-                </section>
+                        <section class="truth-chapter" id="practice" aria-labelledby="practice-title">
+                            <p class="truth-kicker">Use the framework</p>
+                            <h2 id="practice-title">Five questions to carry with you.</h2>
+                            <p>For the next claim you encounter, work through the same sequence. You can stop when you have enough evidence for the decision at hand, or when you can clearly say what remains unknown.</p>
+                            <figure class="truth-diagram">
+                                <span class="diagram-label">Claim → source → fit → check → update</span>
+                                <ol class="truth-checklist">
+                                    <li>What exactly is being claimed?</li>
+                                    <li>Where is the original evidence?</li>
+                                    <li>Does it distinguish this explanation from plausible alternatives?</li>
+                                    <li>What independent evidence supports or challenges it?</li>
+                                    <li>What should I believe for now, and what would change my mind?</li>
+                                </ol>
+                                <figcaption>When an important link is missing, say so. Unverified does not mean false.</figcaption>
+                            </figure>
+                            <p>Apply the same standard whether you like the conclusion or dislike it. The point is to make the path from evidence to belief visible enough that you can notice a weak step and revise it.</p>
+                            <p>The habit to keep is simple: <strong>make your conclusion no stronger than your evidence.</strong></p>
+                        </section>
+                        <footer class="truth-sources">
+                            <p>Maple Café and every post, photograph, and notice in this example are fictional. They illustrate the reasoning process.</p>
+                            <p><a href="../../blog.html#personal-systems">← More in Personal Systems</a></p>
+                        </footer>
                     </div>
                 </div>
             </article>
         </main>
         <footer class="footer"><p>&copy; <span id="year">2026</span> Brian Fong. All Rights Reserved.</p></footer>
     </div>
-    <script src="../../assets/js/data.js?v=20260916"></script>
+    <script src="../../assets/js/data.js?v=20260917"></script>
     <script src="../../assets/js/main.js?v=8304232"></script>
     <script src="../../assets/js/how-to-tell-whats-true.js?v=20260916-2"></script>
     <script>window.initTruthArticle && window.initTruthArticle();</script>

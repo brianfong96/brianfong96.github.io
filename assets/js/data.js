@@ -51,7 +51,7 @@ const siteData = {
         {
             title: 'How to Tell What’s True',
             url: 'blog/how-to-tell-whats-true/index.html',
-            description: 'A visual field guide to investigating news, AI media, statistics, science, history, and belief—with confidence proportional to evidence.',
+            description: 'A five-step framework for checking a claim, following the evidence, and deciding what to believe—explained through one simple example.',
             section: 'Blog',
             category: 'Personal Systems',
             date: '2026-09-16'

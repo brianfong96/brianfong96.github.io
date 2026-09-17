@@ -27,7 +27,6 @@
 .truth-node { flex: 1; padding: 16px 12px; border: 1px solid #9fb2c7; border-radius: 4px; background: #eef3f8; text-align: center; font-weight: 600; line-height: 1.4; }
 .truth-node small { display: block; font-weight: 400; font-size: .82rem; margin-top: 7px; color: #5c6877; }
 .truth-arrow { color: #24599a; font-size: 1.25rem; flex-shrink: 0; }
-.truth-stack { display: grid; gap: 12px; }
 .truth-row { display: grid; grid-template-columns: 32px 1fr 1fr; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid #dfe4e8; line-height: 1.5; }
 .truth-row:last-child { border-bottom: 0; }
 .truth-row > span:first-child { color: #24599a; font-size: .8rem; font-weight: 700; }
@@ -40,19 +39,6 @@
 .source-branches::after { content: ''; position: absolute; top: 12px; left: calc((100% - 36px) / 8); right: calc((100% - 36px) / 8); border-top: 1px solid #9fb2c7; }
 .source-branches .truth-node { position: relative; font-size: .9rem; }
 .source-branches .truth-node::before { content: ''; position: absolute; top: -15px; height: 14px; left: 50%; border-left: 1px solid #9fb2c7; }
-.truth-big { display: block; color: #173f72; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; letter-spacing: -.04em; line-height: 1.2; }
-.truth-metric { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.truth-metric small { display: block; margin-top: 8px; color: #5c6877; line-height: 1.5; }
-.truth-chart { display: grid; gap: 14px; }
-.truth-bar-row { display: grid; grid-template-columns: 65px 1fr 65px; align-items: center; gap: 10px; font-size: .88rem; }
-.truth-track { background: #eef3f8; height: 28px; }
-.truth-bar { background: #24599a; height: 100%; }
-.truth-axis { margin-left: 75px; margin-right: 75px; display: flex; justify-content: space-between; color: #5c6877; font-size: .75rem; }
-.truth-chart + .truth-chart { margin-top: 30px; }
-.causal-root { margin: 0 auto 14px; width: fit-content; padding: 16px 28px; }
-.causal-arrows { display: flex; justify-content: space-around; color: #24599a; font-size: 1.5rem; }
-.causal-leaves { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.causal-association { text-align: center; color: #5c6877; margin-top: 16px; border-top: 1px dashed #9fb2c7; padding-top: 12px; font-size: .85rem; }
 .truth-verdicts { display: grid; gap: 0; margin: 0; }
 .truth-verdicts > div { display: grid; grid-template-columns: 130px 1fr; gap: 20px; padding: 16px 0; border-bottom: 1px solid #dfe4e8; }
 .truth-verdicts > div:last-child { border-bottom: 0; }
@@ -61,11 +47,8 @@
 .truth-checklist { list-style: none; padding: 0; margin: 0; counter-reset: checks; }
 .truth-checklist li { counter-increment: checks; display: flex; gap: 16px; padding: 13px 0; border-bottom: 1px solid #dfe4e8; line-height: 1.5; }
 .truth-checklist li::before { content: counter(checks, decimal-leading-zero); color: #24599a; font-size: .8rem; padding-top: 3px; font-variant-numeric: tabular-nums; }
-.truth-closing { font-size: clamp(1.7rem, 4vw, 2.7rem); line-height: 1.3; letter-spacing: -.025em; color: #173f72; }
 .truth-sources { padding: 60px 0 90px; border-top: 1px solid #cbd3dc; scroll-margin-top: 80px; }
-.truth-sources h2 { font-size: 1.5rem; }
 .truth-sources p, .truth-sources li { color: #5c6877; font-size: .9rem; line-height: 1.7; }
-.truth-sources li { margin-bottom: 14px; }
 .truth-page a:focus-visible, .truth-page button:focus-visible { outline: 3px solid #24599a; outline-offset: 5px; }
 .truth-skip { position: fixed; top: -100px; left: 24px; z-index: 10000; padding: 12px 18px; background: white; color: #173f72; }
 .truth-skip:focus { top: 8px; }
@@ -91,12 +74,8 @@
     .source-branches { grid-template-columns: 1fr; margin-left: 18px; padding: 20px 0 0 24px; border-left: 1px solid #9fb2c7; }
     .source-branches::before, .source-branches::after { display: none; }
     .source-branches .truth-node::before { top: 50%; left: -25px; height: 0; width: 24px; border-left: 0; border-top: 1px solid #9fb2c7; }
-    .truth-metric { gap: 14px; }
     .truth-node { font-size: .9rem; padding: 14px 10px; }
-    .causal-leaves { gap: 12px; }
     .truth-verdicts > div { grid-template-columns: 1fr; gap: 6px; }
-    .truth-bar-row { grid-template-columns: 48px 1fr 52px; gap: 7px; font-size: .78rem; }
-    .truth-axis { margin-left: 55px; margin-right: 59px; }
 }
 @media (prefers-reduced-motion: reduce) {
     .truth-page, .truth-page * { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
