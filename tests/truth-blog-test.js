@@ -35,7 +35,7 @@ async function run() {
         await page.click('a[href="blog/how-to-tell-whats-true/index.html"]');
         await page.waitForSelector('.truth-article');
         await page.waitForFunction(() => window.__spaTransition === false);
-        assert.equal(await page.title(), 'How to Tell What’s True - Brian Fong');
+        assert.equal(await page.title(), 'The 4C’s of Establishing What Is True - Brian Fong');
         await page.waitForSelector('.truth-article[data-truth-initialized="true"]');
         assert.equal(await page.$('.truth-byline'), null);
 

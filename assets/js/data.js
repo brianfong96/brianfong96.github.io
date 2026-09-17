@@ -49,7 +49,7 @@ const siteData = {
     ],
     blogs: [
         {
-            title: 'How to Tell What’s True',
+            title: 'The 4C’s of Establishing What Is True',
             url: 'blog/how-to-tell-whats-true/index.html',
             description: 'The four Cs of evaluating information: Claim, Causation vs. Correlation, Context, and Consistency—with sources and visual explanations.',
             section: 'Blog',
