@@ -49,6 +49,14 @@ const siteData = {
     ],
     blogs: [
         {
+            title: 'The 4C’s of Establishing What Is True',
+            url: 'blog/how-to-tell-whats-true/index.html',
+            description: 'The four Cs of evaluating information: Claim, Causation vs. Correlation, Context, and Consistency—with sources and visual explanations.',
+            section: 'Blog',
+            category: 'Personal Systems',
+            date: '2026-09-16'
+        },
+        {
             title: 'Passkeys: The Key That Never Reaches the Website',
             url: 'blog/passkeys/index.html',
             description: 'Passkeys end to end: user-facing screens, frontend and backend flows, recovery, and comparisons with passwords and authenticator apps.',

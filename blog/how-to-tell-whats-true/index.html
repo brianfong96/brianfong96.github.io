@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The four Cs of evaluating information: Claim, Causation vs. Correlation, Context, and Consistency. A practical, source-backed framework for deciding what the evidence supports.">
+    <title>The 4C’s of Establishing What Is True - Brian Fong</title>
+    <link rel="icon" type="image/png" href="../../assets/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/blog.css">
+    <link rel="stylesheet" href="../../assets/css/how-to-tell-whats-true.css?v=20260917-intro">
+</head>
+<body class="blog-article personal-systems-page truth-page">
+    <header class="topbar">
+        <a class="home-link" href="../../index.html" aria-label="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
+        <a class="blog-home-link" href="../../blog.html">All blogs</a>
+        <button id="sidebar-toggle" aria-label="Toggle navigation"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></button>
+    </header>
+    <nav class="sidebar" id="sidebar" aria-label="Primary navigation"><ul class="nav-links">
+        <li><a href="../../index.html">Home</a></li><li><a href="../../about.html">About</a></li>
+        <li><a href="../../projects.html">Projects</a></li><li><a href="../../learnings.html">Learnings</a></li><li><a href="../../blog.html">Blog</a></li>
+    </ul></nav>
+    <div class="content">
+        <a class="truth-skip" href="#claim">Skip to the essay</a>
+        <main class="truth-article">
+            <article aria-labelledby="truth-title">
+                <header class="truth-hero">
+                    <div class="truth-meta"><a href="../../blog.html#personal-systems">Personal Systems</a><time datetime="2026-09-16">September 16, 2026</time></div>
+                    <h1 id="truth-title">The 4C’s of Establishing What Is True</h1>
+                    <p class="truth-deck">In an age of technology and AI, social media feeds are full of news, images, and claims that can be hard to trust. How do you decide what is true? I’ve started using the 4C’s—Claim, Causation vs. Correlation, Context, and Consistency—as a framework to help me investigate what I read and hear. It isn’t a comprehensive or exhaustive checklist, but it gives me a useful starting point for asking better questions and deciding what the evidence supports.</p>
+                    <a class="truth-start" href="#claim">Start with the claim <span aria-hidden="true">↓</span></a>
+                </header>
+
+                <div class="truth-layout">
+                    <nav class="truth-rail" aria-label="On this page">
+                        <span>The four Cs</span>
+                        <a href="#claim">1. Claim</a>
+                        <a href="#causation">2. Causation vs. correlation</a>
+                        <a href="#context">3. Context</a>
+                        <a href="#consistency">4. Consistency</a>
+                        <a href="#sources">Sources &amp; reading notes</a>
+                    </nav>
+                    <div class="truth-body">
+                        <section class="truth-chapter" id="claim" aria-labelledby="claim-title">
+                            <div class="truth-kicker">The first C / Claim</div>
+                            <h2 id="claim-title">What is actually being claimed?</h2>
+                            <p>Before deciding whether something is true, identify what kind of statement it is and what would count as evidence for it. “I like ice cream” reports a personal preference: someone’s words and behavior may support it, but you cannot directly inspect their experience as you would a public dataset. The hypothetical statement “The introduction of AI has reduced the employment rate by 5%” makes a measurable claim about the world and a further claim about what caused the change. The second statement is more open to independent investigation once its terms are defined, but sounding precise does not make it well supported.</p>
+                            <p>Distill the statement into something specific enough to check: which people, which place, which period, which measure, and compared with what? In the AI example, “introduction” might mean a product launch, actual workplace adoption, or simply exposure to tasks that software could perform. “Employment rate” also needs a definition, because the <a href="https://www.bls.gov/cps/definitions.htm">Bureau of Labor Statistics distinguishes the employment-population ratio from the unemployment rate</a>, with different denominators. A checkable starting point would be that the proportion employed in a defined population fell from one stated value to another over a stated period, leaving the explanation for that change as a separate question.</p>
+                            <p>Statistics can be correct while the description steers you toward a distorted impression. In a hypothetical example, an employment rate falling from 60% to 57% is a decline of three percentage points, or 5% relative to its starting value, rather than evidence that 5% of the entire population lost jobs. <a href="https://ec.europa.eu/eurostat/statistics-explained/SEPDF/cache/54057.pdf">Eurostat’s explanation of percentage changes and percentage points</a> shows why those two units must be distinguished. Before accepting the narrative, check the original levels, the denominator, the chosen dates, and whether the headline describes a change in a rate or a count of people.</p>
+                            <figure class="truth-diagram">
+                                <span class="diagram-label">Hypothetical employment rate · same defined population</span>
+                                <div class="truth-flow"><div class="truth-node">60%<small>Starting rate</small></div><span class="truth-arrow" aria-hidden="true">→</span><div class="truth-node">57%<small>Ending rate</small></div></div>
+                                <div class="truth-row"><span>01</span><strong>3 percentage points lower</strong><small>60% − 57% = 3 percentage points</small></div>
+                                <div class="truth-row"><span>02</span><strong>5% lower relative to the start</strong><small>(60 − 57) ÷ 60 = 5%</small></div>
+                                <figcaption>Two descriptions of the same change, not two different findings. Neither calculation establishes that AI caused it.</figcaption>
+                            </figure>
+                            <p>Validation means following the claim to evidence that could actually support or contradict it. Open the original table, study, or transcript, check its definitions and limitations, and see whether you can reproduce the comparison rather than relying on a screenshot or summary. <a href="https://fullfact.org/about/frequently-asked-questions/">Full Fact describes a similar approach</a>, examining a statement’s assumptions and preferring primary material such as data tables over press releases. If the evidence only establishes that employment fell, preserve that narrower finding instead of silently upgrading it to “AI caused the fall.”</p>
+                        </section>
+
+                        <section class="truth-chapter" id="causation" aria-labelledby="causation-title">
+                            <div class="truth-kicker">The second C / Causation vs. correlation</div>
+                            <h2 id="causation-title">Did one thing cause the other?</h2>
+                            <p>Correlation describes an observed relationship between things, while causation says that changing one would make a difference to the other. If employment falls while AI adoption rises, the timing may motivate an investigation, but it does not isolate AI’s effect. The causal question is what employment would have looked like in the same setting without that adoption, a comparison we cannot directly observe for the very same people at the very same time. Establishing an association generally requires fewer assumptions than identifying its cause, although even the association needs reliable measurements and a fair comparison.</p>
+                            <p>Other factors may influence both sides of the relationship. In a hypothetical downturn, weaker demand could push firms to reduce staff and to adopt automation to cut costs, making AI adoption and falling employment appear together even without one fully explaining the other. The direction could also run partly backward if staffing reductions create an incentive to automate work that remains. <a href="https://www.cochrane.org/authors/handbooks-and-manuals/handbook/current/chapter-25">Cochrane’s guidance on confounding</a> explains how shared causes can make an observed association differ from the causal effect we want to estimate.</p>
+                            <figure class="truth-diagram">
+                                <span class="diagram-label">A possible shared cause · illustrative, not an empirical finding</span>
+                                <div class="truth-node truth-causal-root">Weaker demand<small>A possible influence on both decisions</small></div>
+                                <svg class="truth-causal-connectors" viewBox="0 0 600 54" preserveAspectRatio="none" aria-hidden="true"><path d="M300 0 V20 H145 V48 M300 20 H455 V48"/><path d="M140 42 L145 49 L150 42 M450 42 L455 49 L460 42"/></svg>
+                                <div class="truth-causal-leaves"><div class="truth-node">More AI adoption<small>Pressure to reduce costs</small></div><div class="truth-node">Reduced employment<small>Less work to staff</small></div></div>
+                                <div class="truth-result">The separate claim that <strong>AI adoption causes an employment decline</strong> still needs to be tested.</div>
+                                <figcaption>A shared cause can generate an association. This possibility does not prove that AI has no effect; it shows why the observed relationship alone cannot settle the question.</figcaption>
+                            </figure>
+                            <p>A credible causal study needs a defensible comparison, not just a convincing story about why the result makes sense. Random assignment can help by preventing pre-existing characteristics from determining who receives an intervention, though measurement problems, attrition, and other biases can still affect the result. When randomization is impractical, researchers can use observational designs or natural experiments, but the conclusions depend on assumptions about why the compared groups differ. The <a href="https://www.nobelprize.org/prizes/economic-sciences/2021/press-release/">2021 economics Nobel explanation</a> describes both the value of natural experiments and the difficulty of interpreting what they establish about cause and effect.</p>
+                            <p>When reading a causal headline, inspect the comparison group, the order of events, and the alternative explanations the analysis addresses. Ask whether the researchers measured actual AI use or only potential exposure, and whether the employment trend had already begun before adoption. Statistical adjustment can improve a comparison, but <a href="https://www.cochrane.org/authors/handbooks-and-manuals/handbook/current/chapter-25">unmeasured or poorly measured confounders can remain</a>, so “controlled for other factors” is not a guarantee. An article may accurately report an association yet become misleading when its headline replaces “associated with” with “caused,” which is a stronger conclusion requiring stronger evidence.</p>
+                        </section>
+
+                        <section class="truth-chapter" id="context" aria-labelledby="context-title">
+                            <div class="truth-kicker">The third C / Context</div>
+                            <h2 id="context-title">What changes when you restore the context?</h2>
+                            <p>A fact can be genuine while the story attached to it is false or misleading. An authentic photograph of a protest years ago does not establish that the same event is happening in the same place today. The problem lies in the new date, location, or caption rather than necessarily in the image itself. <a href="https://fullfact.org/toolkit/how-spot-misleading-images-online/">Full Fact’s guide to misleading images</a> documents this problem and explains how finding earlier appearances can help recover the original setting.</p>
+                            <p>Quotations need the same care, because preserving individual words does not guarantee that you have preserved their meaning. Imagine a speaker says, “We should close the plant if inspectors find it unsafe,” and a clip circulates containing only “We should close the plant.” The shortened version removes the condition and turns a contingent position into what sounds like an unconditional demand. <a href="https://reutersagency.com/about/standards-values/">Reuters’ standards for quotations</a> require journalists to represent the speaker’s meaning and provide the circumstances of the remark, a useful standard for readers checking the full recording or transcript.</p>
+                            <p>Numbers also belong to a setting, and a finding can stop answering your question when that setting changes. A result for one occupation or age group does not automatically describe the whole workforce, just as a one-month decline does not establish a lasting trend. A report published this year may analyze much older data, and a projection of possible future losses is not a count of losses that have already occurred. For the AI-employment example, check the dates of the observations, the population studied, and whether the result describes actual employment, hiring intentions, or a forecast before applying it to today’s labor market.</p>
+                            <p>Restoring context means opening the full source and checking what comes before and after the part being shared. Compare the event date with the publication date, read the question that prompted a quotation, and look for updates, corrections, or qualifications omitted from the excerpt. Sometimes that work reveals a misleading presentation; sometimes it explains why a genuine statement initially seemed implausible or contradictory. Describe the problem precisely, because “real footage with a false caption” identifies what is wrong more clearly than calling the entire item fake.</p>
+                        </section>
+
+                        <section class="truth-chapter" id="consistency" aria-labelledby="consistency-title">
+                            <div class="truth-kicker">The fourth C / Consistency</div>
+                            <h2 id="consistency-title">Do the pieces tell a compatible story?</h2>
+                            <p>Start by checking whether a claim is consistent with its own supporting material. If a headline says employment increased but its table shows a decline, inspect the units, dates, and population before deciding which part is wrong. The headline may concern the whole economy while the table concerns one sector, or a comparison may have been mislabeled. A real internal contradiction requires incompatible statements about the same thing under the same conditions, not merely two numbers that differ.</p>
+                            <p>Next compare the claim with other reporting, while checking whether those sources are actually measuring the same thing. <a href="https://www.bls.gov/web/empsit/ces_cps_trends.htm">BLS explains why its household and payroll employment surveys can differ</a>: the former counts employed people, while the latter counts payroll jobs and covers a different set of workers. A person holding two payroll jobs can contribute differently to those measures, and self-employment is included differently as well. Two reports may therefore describe different parts of the same labor market rather than one exposing the other as false.</p>
+                            <p>Agreement becomes more informative when it comes from genuinely separate evidence. Four websites repeating the same press release are four publications, but they do not provide four independent confirmations of its central claim. Trace their citations and look for another dataset, independently obtained record, or first-hand account that bears on the same question. <a href="https://reutersagency.com/about/standards-values/">Reuters recommends cross-checking information and consulting multiple sources</a>; the practical value comes from the opportunity to discover errors, not simply from increasing the number of links.</p>
+                            <figure class="truth-diagram">
+                                <span class="diagram-label">Consistent repetition can still share one mistake</span>
+                                <div class="truth-node source-root">One press release</div>
+                                <div class="source-branches"><div class="truth-node">Article A</div><div class="truth-node">Article B</div><div class="truth-node">Article C</div><div class="truth-node">Article D</div></div>
+                                <div class="truth-result"><strong>Four articles. One underlying source.</strong></div>
+                                <figcaption>Agreement among copies cannot substitute for checking the original evidence and seeking independent corroboration.</figcaption>
+                            </figure>
+                            <p>When sources genuinely disagree, identify the exact point of conflict and compare their evidence, methods, access to the facts, and any corrections. Do not settle it by counting headlines, but do not assume every dissenting claim deserves equal weight either. If the conflict remains unresolved, lower your confidence and state what evidence would resolve it rather than forcing a verdict. The four Cs work together here: a clear claim, a justified causal interpretation, intact context, and consistent evidence help you reach a conclusion you can explain and revise.</p>
+                        </section>
+                        <section class="truth-sources" id="sources" aria-labelledby="sources-title">
+                            <h2 id="sources-title">Sources &amp; reading notes</h2>
+                            <p>The AI-employment claim, numerical example, and plant quotation are hypothetical teaching examples, not reports of measured AI job losses or an actual speech. Sources support the definitions and verification methods discussed alongside them.</p>
+                            <ol>
+                                <li><a href="https://www.bls.gov/cps/definitions.htm">BLS: Concepts and Definitions</a> — labor-market measures and their denominators.</li>
+                                <li><a href="https://ec.europa.eu/eurostat/statistics-explained/SEPDF/cache/54057.pdf">Eurostat: Percentage change and percentage points</a> — the distinction between relative change and changes in rates.</li>
+                                <li><a href="https://fullfact.org/about/frequently-asked-questions/">Full Fact: Frequently asked questions</a> — checking underlying assumptions and tracing primary evidence.</li>
+                                <li><a href="https://www.cochrane.org/authors/handbooks-and-manuals/handbook/current/chapter-25">Cochrane Handbook, Chapter 25</a> — confounding and bias in non-randomized studies.</li>
+                                <li><a href="https://www.nobelprize.org/prizes/economic-sciences/2021/press-release/">Nobel Prize in Economic Sciences 2021</a> — identifying causal effects through natural experiments.</li>
+                                <li><a href="https://fullfact.org/toolkit/how-spot-misleading-images-online/">Full Fact: How to spot misleading images online</a> — recovering the context of authentic but miscaptioned media.</li>
+                                <li><a href="https://reutersagency.com/about/standards-values/">Reuters Journalistic Standards</a> — quotation context and cross-checking sources.</li>
+                                <li><a href="https://www.bls.gov/web/empsit/ces_cps_trends.htm">BLS: Comparing household and payroll surveys</a> — why different measures can produce different employment estimates.</li>
+                            </ol>
+                            <p><a href="../../blog.html#personal-systems">← More in Personal Systems</a></p>
+                        </section>
+                    </div>
+                </div>
+            </article>
+        </main>
+        <footer class="footer"><p>&copy; <span id="year">2026</span> Brian Fong. All Rights Reserved.</p></footer>
+    </div>
+    <script src="../../assets/js/data.js?v=20260917-intro"></script>
+    <script src="../../assets/js/main.js?v=8304232"></script>
+    <script src="../../assets/js/how-to-tell-whats-true.js?v=20260916-2"></script>
+    <script>window.initTruthArticle && window.initTruthArticle();</script>
+</body>
+</html>
