@@ -33,21 +33,15 @@ const siteData = {
             section: 'Projects'
         }
     ],
-    recipes: [
-        {
-            title: 'Cumin-Spiced Mega Hamburg Steaks',
-            url: 'recipes/cumin-mega-hamburg-steaks/index.html',
-            description: 'High-protein, savory 500g patties seasoned with cumin, cayenne, and chicken stock — part meatloaf, part Japanese Hamburg steak.',
-            section: 'Recipes'
-        },
-        {
-            title: 'Cantonese-Style Soy & Ginger Baked Chicken',
-            url: 'recipes/cantonese-soy-ginger-chicken/index.html',
-            description: 'Savory-sweet roast chicken with light soy, dark soy, and Shaoxing wine — crispy lacquered skin, succulent bone-in dark meat.',
-            section: 'Recipes'
-        }
-    ],
     blogs: [
+        {
+            title: 'Aurora Over Alaska',
+            url: 'blog/aurora-over-alaska/index.html',
+            description: 'An Alaska-inspired Northern Lights mocktail and gin cocktail with boreal botanicals, birch, lingonberry, and blue, emerald, violet, and pink aurora ribbons.',
+            section: 'Blog',
+            category: 'Recipes',
+            date: '2026-10-05'
+        },
         {
             title: 'The 4C’s of Establishing What Is True',
             url: 'blog/how-to-tell-whats-true/index.html',
@@ -131,7 +125,7 @@ const siteData = {
         {
             title: 'Blog',
             url: 'blog.html',
-            description: 'Finance, technology, and personal systems researched and visualized to make the underlying ideas easier to understand.',
+            description: 'Finance, technology, personal systems, and recipes researched and visualized to make the underlying ideas easier to understand.',
             section: 'Pages'
         },
         {

@@ -25,10 +25,8 @@ const PAGES = [
     { path: '/blog/expertise-is-a-system/index.html', name: 'Personal Systems Blog' },
     { path: '/blog/ai-capex-reckoning/index.html', name: 'Finance Blog', hasFinance: true },
     { path: '/blog/trump-portfolio-disclosure/index.html', name: 'Disclosure Blog', hasDisclosure: true },
-    { path: '/recipes.html', name: 'Recipes' },
+    { path: '/blog/aurora-over-alaska/index.html', name: 'Aurora Recipe' },
     { path: '/music.html', name: 'Music' },
-    { path: '/recipes/cumin-mega-hamburg-steaks/index.html', name: 'Hamburg Recipe', hasGraph: true },
-    { path: '/recipes/cantonese-soy-ginger-chicken/index.html', name: 'Chicken Recipe', hasGraph: true },
 ];
 
 const TOTAL_TRANSITIONS = 30;

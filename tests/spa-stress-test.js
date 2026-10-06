@@ -19,9 +19,8 @@ const PAGES = [
     '/blog/fiber-to-the-home/index.html',
     '/blog/ai-capex-reckoning/index.html',
     '/blog/trump-portfolio-disclosure/index.html',
-    '/recipes.html', '/music.html',
-    '/recipes/cumin-mega-hamburg-steaks/index.html',
-    '/recipes/cantonese-soy-ginger-chicken/index.html',
+    '/music.html',
+    '/blog/aurora-over-alaska/index.html',
 ];
 
 async function run() {

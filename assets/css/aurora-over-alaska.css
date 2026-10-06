@@ -1,0 +1,39 @@
+.aurora-page .content { background: #f4f1ea; }
+.aurora-article { width: min(1060px, calc(100% - 48px)); margin: auto; }
+.aurora-article a { color: #24599a; text-underline-offset: 4px; }
+.aurora-hero { padding: 115px 0 48px; border-bottom: 2px solid #17263a; }
+.aurora-kicker { color: #24599a; font-size: .76rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.aurora-hero h1 { font-size: clamp(3rem, 6.8vw, 5.5rem); line-height: 1.04; padding-block: .12em; margin: 16px 0; max-width: 13ch; text-wrap: balance; }
+.aurora-deck { max-width: 62ch; font-size: 1.2rem; line-height: 1.7; }
+.aurora-meta { display: flex; flex-wrap: wrap; gap: 12px 28px; color: #5c6877; font-size: .88rem; }
+.aurora-jumps { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 26px; }
+.aurora-layout { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 54px; }
+.aurora-rail { position: sticky; top: 90px; align-self: start; display: grid; gap: 12px; padding-top: 48px; font-size: .85rem; }
+.aurora-rail a { text-decoration: none; }
+.aurora-body { min-width: 0; }
+.aurora-chapter { padding: 48px 0; border-bottom: 1px solid #cbd3dc; scroll-margin-top: 76px; }
+.aurora-chapter h2 { font-size: clamp(2rem, 3.5vw, 2.8rem); line-height: 1.15; padding-block: .12em; margin: 10px 0 24px; }
+.aurora-chapter h3 { font-size: 1.2rem; margin: 24px 0 12px; }
+.aurora-chapter p, .aurora-chapter li { line-height: 1.75; }
+.aurora-chapter ul, .aurora-chapter ol { padding-left: 24px; }
+.aurora-chapter li { margin-bottom: 8px; }
+.aurora-note { padding: 18px 22px; background: #eef3f8; border-left: 3px solid #24599a; margin: 24px 0; }
+.aurora-note p { margin: 0; }
+.aurora-preps, .aurora-colors { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.aurora-card { padding: 20px; border: 1px solid #cbd3dc; background: white; border-radius: 6px; }
+.aurora-card h3 { margin-top: 0; }
+.aurora-card p:last-child { margin-bottom: 0; }
+.aurora-color { border-top: 4px solid var(--ribbon); }
+.aurora-guide { margin: 28px 0; padding: 24px; background: white; border: 1px solid #cbd3dc; border-radius: 6px; }
+.aurora-guide img { display: block; width: 100%; height: auto; }
+.aurora-guide figcaption { padding-top: 18px; margin-top: 16px; border-top: 1px solid #cbd3dc; color: #5c6877; font-size: .85rem; line-height: 1.6; }
+.aurora-ingredients { list-style: none; padding: 0 !important; }
+.aurora-ingredients li { padding: 9px 0; margin: 0; border-bottom: 1px solid #dfe4e8; }
+.aurora-flavors { margin: 24px 0; }
+.aurora-flavors div { padding: 14px 0; border-bottom: 1px solid #cbd3dc; display: grid; grid-template-columns: 160px 1fr; gap: 16px; }
+.aurora-flavors dt { font-weight: 700; }
+.aurora-flavors dd { margin: 0; line-height: 1.65; }
+.aurora-page a:focus-visible { outline: 3px solid #24599a; outline-offset: 4px; }
+@media (max-width: 900px) { .aurora-layout { display: block; } .aurora-rail { display: none; } }
+@media (max-width: 540px) { .aurora-article { width: calc(100% - 36px); } .aurora-hero { padding-top: 96px; } .aurora-preps, .aurora-colors { grid-template-columns: 1fr; } .aurora-flavors div { grid-template-columns: 1fr; gap: 6px; } .aurora-guide { padding: 12px; } }
+@media print { .aurora-page .topbar, .aurora-page .sidebar, .aurora-rail, .aurora-jumps { display: none; } .aurora-hero { padding-top: 0; } .aurora-layout { display: block; } .aurora-card { break-inside: avoid; } }

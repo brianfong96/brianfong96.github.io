@@ -89,9 +89,9 @@ async function run() {
         const blogEntry = await page.$eval('#blogs-list a[href*="ai-capex-reckoning"]', (link) => link.innerText);
         assert.match(blogEntry, /finance/i);
         assert.match(blogEntry, /july 30, 2026/i);
-        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 9);
+        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 10);
         assert.equal(await page.$$eval('#blogs-list a[href*="will-ai-take-over"]', (nodes) => nodes.length), 0);
-        assert.equal(await page.$$eval('#blog-topic-select option', (nodes) => nodes.length), 4);
+        assert.equal(await page.$$eval('#blog-topic-select option', (nodes) => nodes.length), 5);
         assert.match(await page.$eval('#blogs-list a[href*="expertise-is-a-system"]', (link) => link.innerText), /personal systems/i);
         assert.match(await page.$eval('#blogs-list a[href*="expertise-is-a-system"]', (link) => link.innerText), /august 1, 2026/i);
         assert.match(await page.$eval('.hero-copy', (node) => node.textContent), /interests i want to understand better/i);
@@ -116,7 +116,7 @@ async function run() {
         assert.equal(await page.$eval('#posts-heading', (node) => node.textContent), 'Latest Technology posts');
 
         await page.select('#blog-topic-select', 'all');
-        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 9);
+        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 10);
 
         assert.equal(await page.$eval('#sidebar-toggle', (button) => button.getAttribute('aria-label')), 'Open navigation');
         const stableNavLabels = await page.$$eval('#sidebar a', (nodes) => nodes.map((node) => node.textContent.trim()));

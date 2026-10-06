@@ -215,6 +215,11 @@
         } else if (!shouldShow && link) {
             link.remove();
         }
+        if (shouldShow && link) {
+            var isRecipe = /(^|\s)aurora-page(\s|$)/.test(className || '');
+            link.href = isRecipe ? '/blog.html#recipes' : '/blog.html';
+            link.textContent = isRecipe ? 'More recipes' : 'All blogs';
+        }
     }
 
     function syncPersistentNavigation(newDoc, baseUrl) {
@@ -601,7 +606,7 @@
                     ? 'No posts yet — check back soon.'
                     : 'No ' + topic.toLowerCase() + ' posts yet — check back soon.';
             }
-            if (heading) heading.textContent = topic === 'all' ? 'Latest posts' : 'Latest ' + topic + ' posts';
+            if (heading) heading.textContent = topic === 'all' ? 'Latest posts' : (topic === 'Recipes' ? 'Latest recipes' : 'Latest ' + topic + ' posts');
             if (summary) summary.textContent = selectedOption.dataset.description || '';
             populateList('blogs-list', filtered);
             if (list) attachLinkHandlers(list);
@@ -679,9 +684,13 @@
 
             link.addEventListener('click', function (event) {
                 if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                // Persistent navigation links can change destination after a page swap.
+                var currentUrl;
+                try { currentUrl = new URL(link.href, window.location.href); } catch (e) { return; }
+                if (!shouldAnimate(link, currentUrl)) return;
                 event.preventDefault();
                 closeSidebar();
-                doPageTransition(url.href);
+                doPageTransition(currentUrl.href);
             });
         });
     }
