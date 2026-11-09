@@ -1,18 +1,18 @@
 .passkey-page {
-    --pk-paper: #f4f1ea;
-    --pk-panel: #fffefa;
-    --pk-white: #ffffff;
-    --pk-ink: #17263a;
-    --pk-muted: #5c6877;
-    --pk-blue: #24599a;
-    --pk-blue-deep: #173f72;
-    --pk-blue-pale: #dbe5f0;
-    --pk-green: #247a4d;
-    --pk-green-pale: #e4f1e9;
-    --pk-red: #b43a3f;
-    --pk-red-pale: #f7e6e6;
-    --pk-line: #cbd3dc;
-    --pk-line-strong: #9fb2c7;
+    --pk-paper: #0b0f0d;
+    --pk-panel: #0b0f0d;
+    --pk-white: #111714;
+    --pk-ink: #e3eae5;
+    --pk-muted: #a7b6ac;
+    --pk-blue: #7fb2e8;
+    --pk-blue-deep: #b9d4f2;
+    --pk-blue-pale: #16263a;
+    --pk-green: #5fd38f;
+    --pk-green-pale: #11291c;
+    --pk-red: #ff7d82;
+    --pk-red-pale: #2c1517;
+    --pk-line: #2c3c33;
+    --pk-line-strong: #41574b;
     background: var(--pk-paper);
 }
 
@@ -200,7 +200,7 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     border-bottom: 1px solid var(--pk-line-strong);
-    background: rgba(244, 241, 234, 0.98);
+    background: rgba(11, 15, 13, 0.98);
 }
 
 .passkey-route a {
@@ -395,7 +395,7 @@
     margin-top: 42px;
     border: 1px solid var(--pk-line-strong);
     background: var(--pk-panel);
-    box-shadow: 0 16px 42px rgba(23, 38, 58, 0.1);
+    box-shadow: 0 16px 42px rgba(227, 234, 229, 0.1);
 }
 
 .challenge-detail {
@@ -456,7 +456,7 @@
 .ceremony-switch button:focus-visible,
 .ceremony-play:focus-visible,
 .ceremony-steps button:focus-visible {
-    outline: 3px solid rgba(36, 89, 154, 0.24);
+    outline: 3px solid rgba(127, 178, 232, 0.24);
     outline-offset: 3px;
 }
 
@@ -952,7 +952,7 @@
 .source-list a:hover,
 .source-list a:focus-visible {
     color: var(--pk-blue);
-    background: rgba(36, 89, 154, 0.05);
+    background: rgba(127, 178, 232, 0.05);
 }
 
 .source-list a > span {
@@ -1016,7 +1016,7 @@
     border: 1px solid var(--pk-blue);
     border-radius: 6px;
     background: var(--pk-white);
-    box-shadow: 0 14px 34px rgba(23, 38, 58, 0.2);
+    box-shadow: 0 14px 34px rgba(227, 234, 229, 0.2);
 }
 
 .passkey-term-popover strong {
@@ -1255,7 +1255,7 @@
         margin-bottom: 16px;
         padding: 14px;
         border: 1px solid var(--pk-line);
-        background: rgba(255, 255, 255, 0.54);
+        background: rgba(17, 23, 20, 0.54);
     }
 
     .comparison-table th,
@@ -1397,11 +1397,11 @@
     border: 1px solid var(--pk-line-strong);
     border-radius: 12px;
     background: var(--pk-white);
-    box-shadow: 0 8px 24px rgba(20, 42, 70, 0.06);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
 }
 
 .experience-screen.is-system {
-    background: var(--pk-blue-pale, #eef3f9);
+    background: var(--pk-blue-pale, #172019);
     border-color: var(--pk-blue);
 }
 

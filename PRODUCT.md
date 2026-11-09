@@ -28,7 +28,7 @@ The site is a static website hosted on GitHub Pages. Finance coverage must compa
 
 ## Brand Commitments
 
-The site uses Brian Fong's name and direct first-person voice. The dark green terminal identity remains part of the broader site and projects, while the blog uses a distinct editorial research-desk identity. Finance analysis uses navy and blue structure, green positive values, and red negative values.
+The site uses Brian Fong's name and direct first-person voice. The whole site, blog included, shares one dark signal identity: one shell, one ground, and a matrix motif made of the site's own words. The home page is a navigable map of everything on the site, and a command palette reaches any page. Finance analysis uses data-blue structure, green positive values, and red negative values on the dark ground.
 
 ## Evidence on Hand
 

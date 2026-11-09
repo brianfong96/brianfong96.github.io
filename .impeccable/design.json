@@ -1,39 +1,426 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-01T19:35:00.000Z",
+  "generatedAt": "2026-11-09T03:55:25.000Z",
   "title": "Design System: Brian Fong",
   "extensions": {
     "colorMeta": {
-      "void": { "role": "neutral", "displayName": "Void", "canonical": "#02060d", "tonalRamp": ["#02060d", "#07111f", "#14283a", "#2e4658", "#586f80", "#8899a6", "#bbc5cc", "#eef2f4"] },
-      "signal-green": { "role": "primary", "displayName": "Signal Green", "canonical": "#35ff6b", "tonalRamp": ["#00310d", "#005c1c", "#008d2c", "#00bd3c", "#19e553", "#60ff83", "#a6ffb9", "#ecfff0"] },
-      "signal-green-muted": { "role": "secondary", "displayName": "Muted Signal Green", "canonical": "#68c77d", "tonalRamp": ["#15351d", "#24552f", "#367844", "#4e9c5b", "#68c77d", "#8dda9d", "#b9eac2", "#e9f8ec"] },
-      "phosphor-text": { "role": "neutral", "displayName": "Phosphor Text", "canonical": "#c9ffd7", "tonalRamp": ["#17341f", "#285338", "#3d7650", "#599b6c", "#79c288", "#9de3aa", "#c9ffd7", "#f0fff4"] }
-      ,"editorial-paper": { "role": "neutral", "displayName": "Research Paper", "canonical": "#f4f1ea", "tonalRamp": ["#26231f", "#46423b", "#68635a", "#8d877d", "#b3ada3", "#d5d0c7", "#f4f1ea", "#fffefa"] }
-      ,"editorial-blue": { "role": "primary", "displayName": "Analytical Blue", "canonical": "#24599a", "tonalRamp": ["#101e31", "#17345a", "#1d4a80", "#24599a", "#4778b0", "#779bc5", "#b4c9de", "#edf4fa"] }
-      ,"editorial-positive": { "role": "secondary", "displayName": "Positive Green", "canonical": "#247a4d", "tonalRamp": ["#10261a", "#17442b", "#1e633e", "#247a4d", "#459468", "#77b290", "#b4d5c3", "#edf7f1"] }
-      ,"editorial-negative": { "role": "tertiary", "displayName": "Negative Red", "canonical": "#b43a3f", "tonalRamp": ["#321517", "#5b2023", "#842b30", "#b43a3f", "#ca6064", "#dd8d90", "#edbfc1", "#fbeff0"] }
+      "ink-0": {
+        "role": "neutral",
+        "displayName": "Ink 0",
+        "canonical": "#0b0f0d",
+        "tonalRamp": [
+          "#050706",
+          "#0b0f0d",
+          "#111714",
+          "#172019",
+          "#1f2a23",
+          "#31443a",
+          "#7d8f84",
+          "#e3eae5"
+        ]
+      },
+      "ink-1": {
+        "role": "neutral",
+        "displayName": "Ink 1",
+        "canonical": "#111714",
+        "tonalRamp": [
+          "#050706",
+          "#0b0f0d",
+          "#111714",
+          "#172019",
+          "#1f2a23",
+          "#31443a",
+          "#7d8f84",
+          "#e3eae5"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink 2",
+        "canonical": "#172019",
+        "tonalRamp": [
+          "#050706",
+          "#0b0f0d",
+          "#111714",
+          "#172019",
+          "#1f2a23",
+          "#31443a",
+          "#7d8f84",
+          "#e3eae5"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Ink 3",
+        "canonical": "#1f2a23",
+        "tonalRamp": [
+          "#050706",
+          "#0b0f0d",
+          "#111714",
+          "#172019",
+          "#1f2a23",
+          "#31443a",
+          "#7d8f84",
+          "#e3eae5"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Line",
+        "canonical": "#223029",
+        "tonalRamp": [
+          "#050706",
+          "#0b0f0d",
+          "#111714",
+          "#172019",
+          "#1f2a23",
+          "#31443a",
+          "#7d8f84",
+          "#e3eae5"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Line Strong",
+        "canonical": "#31443a",
+        "tonalRamp": [
+          "#050706",
+          "#0b0f0d",
+          "#111714",
+          "#172019",
+          "#1f2a23",
+          "#31443a",
+          "#7d8f84",
+          "#e3eae5"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Text",
+        "canonical": "#e3eae5",
+        "tonalRamp": [
+          "#2a322d",
+          "#4a554e",
+          "#6c7a71",
+          "#7d8f84",
+          "#a7b6ac",
+          "#c6d2ca",
+          "#e3eae5",
+          "#f6f9f7"
+        ]
+      },
+      "text-2": {
+        "role": "neutral",
+        "displayName": "Text 2",
+        "canonical": "#a7b6ac",
+        "tonalRamp": [
+          "#2a322d",
+          "#4a554e",
+          "#6c7a71",
+          "#7d8f84",
+          "#a7b6ac",
+          "#c6d2ca",
+          "#e3eae5",
+          "#f6f9f7"
+        ]
+      },
+      "text-3": {
+        "role": "neutral",
+        "displayName": "Text 3",
+        "canonical": "#7d8f84",
+        "tonalRamp": [
+          "#2a322d",
+          "#4a554e",
+          "#6c7a71",
+          "#7d8f84",
+          "#a7b6ac",
+          "#c6d2ca",
+          "#e3eae5",
+          "#f6f9f7"
+        ]
+      },
+      "signal": {
+        "role": "primary",
+        "displayName": "Signal",
+        "canonical": "#5cf08f",
+        "tonalRamp": [
+          "#04120a",
+          "#0d3a1f",
+          "#1a6a3a",
+          "#2f9c5b",
+          "#45cd76",
+          "#5cf08f",
+          "#9dffbd",
+          "#e6fff0"
+        ]
+      },
+      "signal-strong": {
+        "role": "primary",
+        "displayName": "Signal Strong",
+        "canonical": "#9dffbd",
+        "tonalRamp": [
+          "#04120a",
+          "#0d3a1f",
+          "#1a6a3a",
+          "#2f9c5b",
+          "#45cd76",
+          "#5cf08f",
+          "#9dffbd",
+          "#e6fff0"
+        ]
+      },
+      "signal-dim": {
+        "role": "primary",
+        "displayName": "Signal Dim",
+        "canonical": "#2f9c5b",
+        "tonalRamp": [
+          "#04120a",
+          "#0d3a1f",
+          "#1a6a3a",
+          "#2f9c5b",
+          "#45cd76",
+          "#5cf08f",
+          "#9dffbd",
+          "#e6fff0"
+        ]
+      },
+      "signal-ink": {
+        "role": "neutral",
+        "displayName": "Signal Ink",
+        "canonical": "#04120a",
+        "tonalRamp": [
+          "#04120a",
+          "#0d3a1f",
+          "#1a6a3a",
+          "#2f9c5b",
+          "#45cd76",
+          "#5cf08f",
+          "#9dffbd",
+          "#e6fff0"
+        ]
+      },
+      "lime": {
+        "role": "secondary",
+        "displayName": "Caveat Lime",
+        "canonical": "#d2f27a",
+        "tonalRamp": [
+          "#2b3410",
+          "#4c5c1d",
+          "#70872c",
+          "#96b33c",
+          "#bbdb57",
+          "#d2f27a",
+          "#e6f9b3",
+          "#f8fde9"
+        ]
+      },
+      "data-blue": {
+        "role": "secondary",
+        "displayName": "Data Blue",
+        "canonical": "#7fb2e8",
+        "tonalRamp": [
+          "#0d1726",
+          "#16263a",
+          "#1c3150",
+          "#3a6aa3",
+          "#5a8fca",
+          "#7fb2e8",
+          "#b9d4f2",
+          "#eef5fc"
+        ]
+      },
+      "data-blue-strong": {
+        "role": "secondary",
+        "displayName": "Data Blue Strong",
+        "canonical": "#b9d4f2",
+        "tonalRamp": [
+          "#0d1726",
+          "#16263a",
+          "#1c3150",
+          "#3a6aa3",
+          "#5a8fca",
+          "#7fb2e8",
+          "#b9d4f2",
+          "#eef5fc"
+        ]
+      },
+      "data-blue-soft": {
+        "role": "secondary",
+        "displayName": "Data Blue Soft",
+        "canonical": "#16263a",
+        "tonalRamp": [
+          "#0d1726",
+          "#16263a",
+          "#1c3150",
+          "#3a6aa3",
+          "#5a8fca",
+          "#7fb2e8",
+          "#b9d4f2",
+          "#eef5fc"
+        ]
+      },
+      "positive": {
+        "role": "secondary",
+        "displayName": "Positive",
+        "canonical": "#5fd38f",
+        "tonalRamp": [
+          "#0a1d13",
+          "#11291c",
+          "#1b3d2a",
+          "#2f7a51",
+          "#45a86f",
+          "#5fd38f",
+          "#9fe8bd",
+          "#e6f9ee"
+        ]
+      },
+      "positive-soft": {
+        "role": "secondary",
+        "displayName": "Positive Soft",
+        "canonical": "#11291c",
+        "tonalRamp": [
+          "#0a1d13",
+          "#11291c",
+          "#1b3d2a",
+          "#2f7a51",
+          "#45a86f",
+          "#5fd38f",
+          "#9fe8bd",
+          "#e6f9ee"
+        ]
+      },
+      "negative": {
+        "role": "secondary",
+        "displayName": "Negative",
+        "canonical": "#ff7d82",
+        "tonalRamp": [
+          "#1e0e0f",
+          "#2c1517",
+          "#4a2023",
+          "#8a3a3e",
+          "#c95a5f",
+          "#ff7d82",
+          "#ffb3b6",
+          "#fff0f0"
+        ]
+      },
+      "negative-soft": {
+        "role": "secondary",
+        "displayName": "Negative Soft",
+        "canonical": "#2c1517",
+        "tonalRamp": [
+          "#1e0e0f",
+          "#2c1517",
+          "#4a2023",
+          "#8a3a3e",
+          "#c95a5f",
+          "#ff7d82",
+          "#ffb3b6",
+          "#fff0f0"
+        ]
+      }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "Page thesis and primary title." },
-      "body": { "displayName": "Body", "purpose": "Readable prose, explanations, and annotations." },
-      "label": { "displayName": "Label", "purpose": "Controls, status, dates, and measurements." },
-      "editorialDisplay": { "displayName": "Editorial Display", "purpose": "Blog and finance page thesis with protected glyph extents." },
-      "editorialHeadline": { "displayName": "Editorial Headline", "purpose": "Readable article section headings with descender-safe line boxes." },
-      "editorialSection": { "displayName": "Editorial Section", "purpose": "Compact editorial section markers and reading-path anchors." },
-      "editorialBody": { "displayName": "Editorial Body", "purpose": "Blog prose, financial analysis, and annotations." },
-      "editorialLabel": { "displayName": "Editorial Label", "purpose": "Finance controls, dates, and data labels." }
+      "display": {
+        "displayName": "Display",
+        "purpose": "Page titles."
+      },
+      "articleDisplay": {
+        "displayName": "ArticleDisplay",
+        "purpose": "Article titles."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card and list titles."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Hero copy."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default copy."
+      },
+      "articleBody": {
+        "displayName": "ArticleBody",
+        "purpose": "Long-form article prose."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons, navigation, paths, map hubs."
+      },
+      "meta": {
+        "displayName": "Meta",
+        "purpose": "Dates, categories, footer, map metadata."
+      }
     },
     "shadows": [
-      { "name": "panel-depth", "value": "0 8px 24px rgba(0, 0, 0, 0.34)", "purpose": "Structural separation for layered panels." },
-      { "name": "live-signal", "value": "0 6px 22px rgba(53, 255, 107, 0.16)", "purpose": "Focus, selection, and live data." }
+      {
+        "name": "floating",
+        "value": "0 18px 40px rgba(0, 0, 0, 0.45)",
+        "purpose": "Dropdown menu and map preview."
+      },
+      {
+        "name": "palette",
+        "value": "0 30px 80px rgba(0, 0, 0, 0.6)",
+        "purpose": "Command palette dialog."
+      },
+      {
+        "name": "focus-ring",
+        "value": "0 0 0 3px rgba(92, 240, 143, 0.16)",
+        "purpose": "Input focus, with a signal border."
+      }
     ],
     "motion": [
-      { "name": "state", "value": "250ms ease-out", "purpose": "Hover and focus state changes." },
-      { "name": "arrival", "value": "550ms ease-out", "purpose": "Section and page arrival." }
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Entrances, hovers, menu, page enter."
+      },
+      {
+        "name": "press",
+        "value": "scale(0.97) 160ms",
+        "purpose": "Pressed controls."
+      },
+      {
+        "name": "page-exit",
+        "value": "200ms",
+        "purpose": "Headings scramble out; content fades up 6px."
+      },
+      {
+        "name": "page-enter",
+        "value": "420-460ms, 45ms stagger",
+        "purpose": "Content settles; in-view headings decode."
+      },
+      {
+        "name": "field-streams",
+        "value": "3-8 rows/s, x3.5 while routing",
+        "purpose": "Source field streams light the page's own words."
+      },
+      {
+        "name": "map-camera",
+        "value": "520ms quartic ease-out, log-space zoom",
+        "purpose": "Map fit, focus, and zoom-into-node before opening."
+      },
+      {
+        "name": "map-entrance",
+        "value": "900ms edges, 160ms per depth",
+        "purpose": "The tree draws out from the center once."
+      }
     ],
     "breakpoints": [
-      { "name": "compact", "value": "700px" },
-      { "name": "wide", "value": "900px" }
+      {
+        "name": "phone",
+        "value": "700px"
+      },
+      {
+        "name": "tablet",
+        "value": "900px"
+      }
     ]
   },
   "components": [
@@ -41,58 +428,127 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "A signal action for the page's primary control.",
-      "html": "<button class=\"ds-btn-primary\">COMPARE</button>",
-      "css": ".ds-btn-primary { border: 1px solid var(--accent-color, #35ff6b); border-radius: 10px; padding: 11px 18px; background: #010803; color: #35ff6b; font: 700 0.88rem/1.2 'Courier New', Consolas, monospace; letter-spacing: .12em; text-transform: uppercase; transition: transform .25s ease-out, box-shadow .25s ease-out; } .ds-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(53,255,107,.16); } .ds-btn-primary:focus-visible { outline: 2px solid #c9ffd7; outline-offset: 3px; }"
+      "description": "The one primary action in an area.",
+      "html": "<button class=\"ds-btn-primary\">Explore the map</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border:1px solid #5cf08f;border-radius:8px;background:#5cf08f;color:#04120a;font:500 .82rem/1 'Geist Mono',Consolas,monospace;letter-spacing:.04em;cursor:pointer;transition:background-color 160ms ease,transform 160ms cubic-bezier(.23,1,.32,1)}.ds-btn-primary:hover{background:#9dffbd;border-color:#9dffbd}.ds-btn-primary:active{transform:scale(.97)}.ds-btn-primary:focus-visible{outline:2px solid #5cf08f;outline-offset:3px}"
     },
     {
       "name": "Secondary Button",
       "kind": "button",
-      "description": "A quiet action that does not compete with the live signal.",
-      "html": "<button class=\"ds-btn-secondary\">METHODOLOGY</button>",
-      "css": ".ds-btn-secondary { border: 1px solid rgba(53,255,107,.28); border-radius: 10px; padding: 11px 18px; background: rgba(53,255,107,.06); color: #c9ffd7; font: 700 .88rem/1.2 'Courier New', Consolas, monospace; letter-spacing: .12em; text-transform: uppercase; } .ds-btn-secondary:hover { border-color: #35ff6b; } .ds-btn-secondary:focus-visible { outline: 2px solid #35ff6b; outline-offset: 3px; }"
+      "refersTo": "button-secondary",
+      "description": "Secondary actions and destinations.",
+      "html": "<button class=\"ds-btn-secondary\">Jump to anything <kbd>Ctrl K</kbd></button>",
+      "css": ".ds-btn-secondary{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border:1px solid #31443a;border-radius:8px;background:#172019;color:#e3eae5;font:500 .82rem/1 'Geist Mono',Consolas,monospace;cursor:pointer;transition:background-color 160ms ease,border-color 160ms ease,transform 160ms cubic-bezier(.23,1,.32,1)}.ds-btn-secondary kbd{padding:2px 6px;border:1px solid #31443a;border-radius:5px;background:#0b0f0d;color:#7d8f84;font:500 .7rem 'Geist Mono',Consolas,monospace}.ds-btn-secondary:hover{border-color:rgba(92,240,143,.32);background:#1f2a23}.ds-btn-secondary:active{transform:scale(.97)}"
     },
     {
-      "name": "Panel",
+      "name": "Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Text and search fields.",
+      "html": "<input class=\"ds-input\" placeholder=\"Filter projects and learnings\">",
+      "css": ".ds-input{width:280px;padding:12px 14px;border:1px solid #31443a;border-radius:8px;background:#111714;color:#e3eae5;font:.9rem 'Geist Mono',Consolas,monospace}.ds-input::placeholder{color:#7d8f84}.ds-input:focus{outline:none;border-color:#5cf08f;box-shadow:0 0 0 3px rgba(92,240,143,.16)}"
+    },
+    {
+      "name": "Card",
       "kind": "card",
       "refersTo": "card",
-      "description": "A layered console surface for grouped information.",
-      "html": "<section class=\"ds-panel\"><strong>OPERATING CASH FLOW</strong><p>$55.44B</p></section>",
-      "css": ".ds-panel { border: 1px solid rgba(53,255,107,.32); border-radius: 14px; padding: 24px; background: #010803; color: #c9ffd7; box-shadow: 0 8px 24px rgba(0,0,0,.34); font-family: 'Courier New', Consolas, monospace; } .ds-panel strong { color: #68c77d; letter-spacing: .1em; } .ds-panel p { margin: 8px 0 0; color: #35ff6b; font-size: 2rem; }"
+      "description": "Flat ink surface for grouped content.",
+      "html": "<div class=\"ds-card\"><h3>Sections</h3><p>About, projects, learnings, and the blog.</p></div>",
+      "css": ".ds-card{max-width:360px;padding:26px;border:1px solid #223029;border-radius:12px;background:#111714;color:#a7b6ac;font:1rem/1.6 'Segoe UI',system-ui,sans-serif;transition:border-color 180ms ease,transform 220ms cubic-bezier(.23,1,.32,1)}.ds-card h3{margin:0 0 10px;color:#e3eae5;font-weight:650;letter-spacing:-.025em}.ds-card:hover{border-color:rgba(92,240,143,.32);transform:translateY(-2px)}"
     },
     {
-      "name": "Signal Chip",
+      "name": "Topic Chip",
       "kind": "chip",
-      "description": "Compact metadata or selected metric state.",
-      "html": "<span class=\"ds-chip\">FREE CASH FLOW</span>",
-      "css": ".ds-chip { display: inline-flex; border: 1px solid rgba(53,255,107,.3); border-radius: 999px; padding: 5px 12px; background: rgba(53,255,107,.08); color: #68c77d; font: 700 .78rem/1.2 'Courier New', Consolas, monospace; letter-spacing: .1em; }"
+      "refersTo": "chip",
+      "description": "Topic and filter links.",
+      "html": "<a class=\"ds-chip\" href=\"#\">Finance</a>",
+      "css": ".ds-chip{display:inline-block;padding:6px 12px;border:1px solid #31443a;border-radius:999px;color:#a7b6ac;font:.78rem 'Geist Mono',Consolas,monospace;text-decoration:none;transition:border-color 140ms ease,color 140ms ease}.ds-chip:hover{border-color:rgba(92,240,143,.32);color:#5cf08f}"
     },
     {
-      "name": "Console Input",
-      "kind": "input",
-      "description": "A recessed search or filter field.",
-      "html": "<input class=\"ds-input\" value=\"cash flow\" aria-label=\"Filter metrics\">",
-      "css": ".ds-input { width: 100%; border: 1px solid rgba(53,255,107,.32); border-radius: 10px; padding: 12px 14px; background: #010402; color: #c9ffd7; font: 400 1rem/1.4 'Courier New', Consolas, monospace; } .ds-input:focus-visible { outline: 2px solid #35ff6b; outline-offset: 2px; border-color: #35ff6b; }"
-    },
-    {
-      "name": "Console Navigation",
+      "name": "Navigation Menu",
       "kind": "nav",
-      "description": "Compact dark navigation with active signal state.",
-      "html": "<nav class=\"ds-nav\"><a href=\"#\">ANALYSIS</a><a class=\"active\" href=\"#\">FINANCE</a></nav>",
-      "css": ".ds-nav { display: flex; gap: 10px; padding: 12px; border: 1px solid rgba(53,255,107,.24); border-radius: 10px; background: #010402; } .ds-nav a { padding: 8px 10px; color: #68c77d; font: 700 .82rem/1.2 'Courier New', Consolas, monospace; letter-spacing: .1em; text-decoration: none; } .ds-nav a.active, .ds-nav a:hover { color: #35ff6b; background: rgba(53,255,107,.08); } .ds-nav a:focus-visible { outline: 2px solid #35ff6b; outline-offset: 2px; }"
+      "refersTo": "nav",
+      "description": "Dropdown panel from the top-right toggle.",
+      "html": "<nav class=\"ds-nav\"><a class=\"is-current\" href=\"#\">home</a><a href=\"#\">about</a><a href=\"#\">projects</a><a href=\"#\">blog</a></nav>",
+      "css": ".ds-nav{width:248px;padding:8px;border:1px solid #31443a;border-radius:12px;background:#111714;box-shadow:0 18px 40px rgba(0,0,0,.45)}.ds-nav a{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:8px;color:#a7b6ac;font:.82rem 'Geist Mono',Consolas,monospace;text-decoration:none}.ds-nav a::before{content:'';width:6px;height:6px;border-radius:1px;background:#31443a}.ds-nav a:hover{background:#172019;color:#e3eae5}.ds-nav a.is-current{color:#5cf08f}.ds-nav a.is-current::before{background:#5cf08f}"
+    },
+    {
+      "name": "Command Palette",
+      "kind": "custom",
+      "refersTo": "label",
+      "description": "Jump to any page, post, topic, or tutorial.",
+      "html": "<div class=\"ds-pal\"><div class=\"ds-pal-in\">fibr</div><div class=\"ds-pal-opt is-on\"><span>Your <b>Fib</b>e<b>r</b> Is a Shared Beam</span><em>Technology</em></div><div class=\"ds-pal-opt\"><span>Passkeys</span><em>Technology</em></div></div>",
+      "css": ".ds-pal{width:420px;border:1px solid #31443a;border-radius:14px;background:#111714;box-shadow:0 30px 80px rgba(0,0,0,.6);overflow:hidden;font:.95rem 'Segoe UI',system-ui,sans-serif;color:#a7b6ac}.ds-pal-in{padding:14px 16px;border-bottom:1px solid #223029;color:#e3eae5}.ds-pal-opt{display:flex;justify-content:space-between;margin:6px;padding:10px 12px;border-radius:8px}.ds-pal-opt.is-on{background:#1f2a23;color:#e3eae5}.ds-pal-opt b{color:#5cf08f;font-weight:400}.ds-pal-opt em{font:normal .7rem 'Geist Mono',Consolas,monospace;color:#7d8f84;text-transform:uppercase}"
+    },
+    {
+      "name": "Map Node",
+      "kind": "custom",
+      "refersTo": "label",
+      "description": "Hub and page nodes on the site map; active node and its route light up.",
+      "html": "<div class=\"ds-map\"><a class=\"ds-node ds-root\">Brian Fong<small>Senior software engineer</small></a><a class=\"ds-node ds-hub\">Writing<small>10 posts</small></a><a class=\"ds-node ds-leaf is-on\">Your Fiber Is a Shared Beam</a></div>",
+      "css": ".ds-map{display:flex;gap:18px;align-items:center;padding:24px;background:#0b0f0d}.ds-node{display:flex;flex-direction:column;gap:2px;padding:7px 10px;border:1px solid #31443a;border-radius:8px;background:#111714;color:#e3eae5;font:.84rem 'Segoe UI',system-ui,sans-serif}.ds-node small{color:#7d8f84;font:.68rem 'Geist Mono',Consolas,monospace}.ds-root{border-color:#5cf08f;font-size:1.1rem;font-weight:650}.ds-root small{color:#5cf08f}.ds-hub{font-family:'Geist Mono',Consolas,monospace}.ds-leaf{border-color:transparent;background:none;color:#a7b6ac}.ds-leaf.is-on{border-color:#5cf08f;background:#172019;color:#e3eae5}"
+    },
+    {
+      "name": "Location Path",
+      "kind": "custom",
+      "refersTo": "label",
+      "description": "Page location above a title, instead of a kicker.",
+      "html": "<p class=\"ds-path\">learnings</p>",
+      "css": ".ds-path{margin:0;color:#7d8f84;font:.8rem 'Geist Mono',Consolas,monospace}.ds-path::before{content:'~/';color:#5cf08f}"
     }
   ],
   "narrative": {
-    "northStar": "Signal Intelligence Console",
-    "overview": "A personal analysis terminal with dark layered surfaces, precise phosphor-green signals, measured motion, and visible system state. A distinct light editorial research desk uses warm paper, navy ink, and analytical blue for long-form reading. Dense information remains legible through alignment, hierarchy, and interaction.",
-    "keyCharacteristics": ["Near-black layered surfaces", "Phosphor-green live signals", "Monospaced analytical voice", "Light editorial research-desk branch", "Scanning and tracing motion"],
-    "rules": [
-      { "name": "The Live Signal Rule", "body": "Brightness and glow identify activity or hierarchy.", "section": "colors" },
-      { "name": "The Restrained Glow Rule", "body": "Glow supports tonal or offset depth and never substitutes for structure.", "section": "elevation" },
-      { "name": "The Editorial Separation Rule", "body": "Blog pages use the light editorial branch without terminal glyph motion, neon glow, or monospaced body copy.", "section": "typography" },
-      { "name": "The Editorial Line-Box Rule", "body": "Display and section headings reserve block padding so Segoe UI glyphs never overrun their measured line boxes.", "section": "typography" }
+    "northStar": "Quiet Signal",
+    "overview": "A portfolio you navigate. One dark ground and one shell across the main site and the blog. The matrix motif is a source field made of the page's own words: dim, lit by slow streams, legible under the pointer. The home page's moment is a site map of everything as one graph, and a command palette reaches any page.",
+    "keyCharacteristics": [
+      "One ground, one shell, one accent across main site and blog.",
+      "Sans for reading; mono for labels, navigation, metadata, and data.",
+      "Tonal steps and 1px lines instead of glow.",
+      "Source field: the matrix motif built from real content.",
+      "Site map and command palette as primary navigation."
     ],
-    "dos": ["Use brightness to encode state.", "Align financial values with tabular numerals.", "Provide static equivalents for interactive explanations."],
-    "donts": ["Do not cover every panel in equal glow.", "Do not sacrifice body-copy measure for terminal styling.", "Do not add colors without a semantic data role."]
+    "rules": [
+      {
+        "name": "The Live Signal Rule",
+        "body": "Green marks state or action. One filled primary per area.",
+        "section": "colors"
+      },
+      {
+        "name": "The No-Glow Rule",
+        "body": "No neon halos, animated borders, scan lines, grids, or scroll reveals.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Path Rule",
+        "body": "A mono location path replaces kickers above titles.",
+        "section": "typography"
+      },
+      {
+        "name": "The Real Text Rule",
+        "body": "Decode is drawn on aria-hidden overlays; real text never changes.",
+        "section": "motion"
+      },
+      {
+        "name": "The Never-Wait Rule",
+        "body": "Every animated step has a time limit so navigation always completes.",
+        "section": "motion"
+      },
+      {
+        "name": "The Frequency Rule",
+        "body": "Keyboard-opened UI appears instantly; frequent interactions never decode.",
+        "section": "motion"
+      }
+    ],
+    "dos": [
+      "Do keep one ground and one shell on every page, articles included.",
+      "Do give every graph an equivalent list or text path.",
+      "Do gate pointer effects behind fine pointers and give touch tap-to-select."
+    ],
+    "donts": [
+      "Don't reintroduce light grounds for articles; use the data hues.",
+      "Don't decorate with random glyphs; the motif is the site's own words.",
+      "Don't hijack the scroll wheel; zoom needs a modifier.",
+      "Don't put a kicker above a heading or set prose in mono."
+    ]
   }
 }

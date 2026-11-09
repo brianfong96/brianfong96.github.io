@@ -1,18 +1,18 @@
 .fiber-page {
-    --fiber-ink: #17263a;
-    --fiber-muted: #5c6877;
-    --fiber-blue: #24599a;
-    --fiber-blue-deep: #173f72;
-    --fiber-blue-pale: #dbe5f0;
-    --fiber-blue-soft: #9fb2c7;
-    --fiber-teal: #247a4d;
-    --fiber-teal-pale: #e4f1e9;
-    --fiber-coral: #b43a3f;
-    --fiber-coral-pale: #f7e6e6;
-    --fiber-paper: #f4f1ea;
-    --fiber-panel: #fffefa;
-    --fiber-line: #cbd3dc;
-    --fiber-line-strong: #9fb2c7;
+    --fiber-ink: #e3eae5;
+    --fiber-muted: #a7b6ac;
+    --fiber-blue: #7fb2e8;
+    --fiber-blue-deep: #b9d4f2;
+    --fiber-blue-pale: #16263a;
+    --fiber-blue-soft: #41574b;
+    --fiber-teal: #5fd38f;
+    --fiber-teal-pale: #11291c;
+    --fiber-coral: #ff7d82;
+    --fiber-coral-pale: #2c1517;
+    --fiber-paper: #0b0f0d;
+    --fiber-panel: #0b0f0d;
+    --fiber-line: #2c3c33;
+    --fiber-line-strong: #41574b;
 }
 
 .fiber-page .content {
@@ -101,7 +101,7 @@
     border: 1px solid var(--fiber-line-strong);
     border-radius: 14px;
     background: var(--fiber-panel);
-    box-shadow: 0 18px 46px rgba(23, 38, 58, 0.13);
+    box-shadow: 0 18px 46px rgba(227, 234, 229, 0.13);
 }
 
 .lab-toolbar {
@@ -153,7 +153,7 @@
 
 .flow-switch button[aria-pressed="true"] {
     background: var(--fiber-blue-deep);
-    color: #fff;
+    color: #0b0f0d;
 }
 
 .flow-switch button:hover:not([aria-pressed="true"]) {
@@ -166,7 +166,7 @@
 .scope-controls button:focus-visible {
     position: relative;
     z-index: 2;
-    outline: 3px solid rgba(36, 89, 154, 0.24);
+    outline: 3px solid rgba(127, 178, 232, 0.24);
     outline-offset: 3px;
 }
 
@@ -200,7 +200,7 @@
 
 .topology-node rect,
 .topology-node path {
-    fill: #fff;
+    fill: #111714;
     stroke: var(--fiber-ink);
     stroke-width: 3;
 }
@@ -225,7 +225,7 @@
 }
 
 .olt-node text:nth-of-type(2) {
-    fill: #fff;
+    fill: #111714;
     font-size: 1.2rem;
 }
 
@@ -239,7 +239,7 @@
 }
 
 .home-node path {
-    fill: #fff;
+    fill: #111714;
     stroke: var(--fiber-blue-deep);
 }
 
@@ -250,7 +250,7 @@
 
 .signal-packets circle {
     fill: var(--fiber-blue);
-    stroke: #fff;
+    stroke: #0b0f0d;
     stroke-width: 3;
 }
 
@@ -304,7 +304,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     border-bottom: 1px solid var(--fiber-line-strong);
-    background: rgba(244, 241, 234, 0.97);
+    background: rgba(11, 15, 13, 0.97);
 }
 
 .fiber-route a {
@@ -333,7 +333,7 @@
 
 .fiber-route a:hover,
 .fiber-route a:focus-visible {
-    background: #fff;
+    background: #111714;
     color: var(--fiber-blue);
 }
 
@@ -430,7 +430,7 @@
     border: 0;
     border-bottom: 1px dotted currentColor;
     border-radius: 0;
-    background: linear-gradient(transparent 62%, #d8e7f3 62%);
+    background: linear-gradient(transparent 62%, #16263a 62%);
     color: var(--fiber-blue-deep);
     cursor: help;
     font: inherit;
@@ -443,7 +443,7 @@
 .term:focus-visible,
 .term.is-active {
     background: var(--fiber-blue-deep);
-    color: #fff;
+    color: #0b0f0d;
     outline: 2px solid var(--fiber-blue-deep);
     outline-offset: 2px;
 }
@@ -455,8 +455,8 @@
     padding: 16px 18px;
     border: 1px solid var(--fiber-blue-deep);
     border-radius: 6px;
-    background: #fff;
-    box-shadow: 0 12px 30px rgba(23, 38, 58, 0.2);
+    background: #111714;
+    box-shadow: 0 12px 30px rgba(227, 234, 229, 0.2);
     color: var(--fiber-ink);
     pointer-events: auto;
 }
@@ -617,11 +617,11 @@
     grid-template-columns: 36px minmax(0, 1fr);
     gap: 14px;
     padding: 14px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(11, 15, 13, 0.2);
 }
 
 .packet-layers li:first-child {
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-top: 1px solid rgba(11, 15, 13, 0.2);
 }
 
 .packet-layers li > span {
@@ -632,34 +632,34 @@
 
 .packet-layers strong {
     display: block;
-    color: #fff;
+    color: #0b0f0d;
     font-size: 0.98rem;
 }
 
 .packet-layers small {
     display: block;
     margin-top: 3px;
-    color: #dce8f3;
+    color: #16263a;
     font-size: 0.76rem;
     line-height: 1.4;
 }
 
 .packet-layers .term {
-    border-color: #fff;
+    border-color: #0b0f0d;
     background: transparent;
-    color: #fff;
+    color: #0b0f0d;
 }
 
 .packet-xray .term:focus,
 .packet-xray .term:focus-visible {
-    background: rgba(255, 255, 255, 0.16);
-    outline-color: #fff;
+    background: rgba(11, 15, 13, 0.16);
+    outline-color: #0b0f0d;
 }
 
 .gem-cutaway {
     align-self: center;
     padding: 22px;
-    background: #fff;
+    background: #111714;
     color: var(--fiber-ink);
 }
 
@@ -772,7 +772,7 @@
     padding: 13px 14px;
     border: 0;
     border-right: 1px solid var(--fiber-line);
-    background: #fff;
+    background: #111714;
     color: var(--fiber-muted);
     cursor: pointer;
     font-family: "Segoe UI", Arial, sans-serif;
@@ -816,7 +816,7 @@
 .scenario-controls button[aria-pressed="true"],
 .scope-controls button[aria-pressed="true"] {
     background: var(--fiber-blue-deep);
-    color: #fff;
+    color: #0b0f0d;
 }
 
 .boundary-grid {
@@ -841,7 +841,7 @@
     gap: 5px 18px;
     padding: 18px;
     border: 1px solid var(--fiber-teal);
-    background: #fff;
+    background: #111714;
     color: var(--fiber-ink);
 }
 
@@ -883,7 +883,7 @@
 .boundary-layer.is-bypassed small,
 .boundary-layer.is-absent small {
     background: var(--fiber-coral);
-    color: #fff;
+    color: #0b0f0d;
 }
 
 .exposure-output {
@@ -892,7 +892,7 @@
     align-content: center;
     gap: 0;
     min-height: 380px;
-    background: #fff;
+    background: #111714;
 }
 
 .exposure-output > div {
@@ -920,7 +920,7 @@
 }
 
 .exposure-lab[data-scenario-state="plaintext"] .exposure-output {
-    background: #fff9f7;
+    background: #111714;
 }
 
 .lab-caveat {
@@ -953,7 +953,7 @@
     margin: 0 auto 42px;
     padding: 9px;
     border: 1px solid var(--fiber-line-strong);
-    background: #fff;
+    background: #111714;
     color: var(--fiber-ink);
     font-size: 0.72rem;
     font-weight: 700;
@@ -987,7 +987,7 @@
     display: block;
     padding: 9px;
     background: var(--fiber-blue-deep);
-    color: #fff;
+    color: #0b0f0d;
     font-size: 0.72rem;
     font-weight: 700;
     text-align: center;
@@ -1015,7 +1015,7 @@
     margin: auto;
     border: 2px solid var(--fiber-line-strong);
     border-radius: 50%;
-    background: #fff;
+    background: #111714;
 }
 
 .scope-explorer[data-scope-state="onu"] .tree-a1 i,
@@ -1023,13 +1023,13 @@
 .scope-explorer[data-scope-state="ems"] .pon-tree i {
     border-color: var(--fiber-coral);
     background: var(--fiber-coral);
-    box-shadow: 0 3px 8px rgba(22, 38, 58, 0.12);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.36);
 }
 
 .scope-explorer[data-scope-state="tap"] .tree-a1 i:nth-child(-n + 2) {
     border-color: var(--fiber-coral);
     background: var(--fiber-coral);
-    box-shadow: 0 3px 8px rgba(22, 38, 58, 0.12);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.36);
 }
 
 .scope-explorer[data-scope-state="tap"] .tree-a1::after {
@@ -1038,7 +1038,7 @@
     left: 50%;
     padding: 2px 6px;
     background: var(--fiber-coral);
-    color: #fff;
+    color: #0b0f0d;
     content: "Tap";
     font-size: 0.72rem;
     font-style: normal;
@@ -1059,13 +1059,13 @@
 .scope-explorer[data-scope-state="ems"] .ems-node {
     border-color: var(--fiber-coral);
     background: var(--fiber-coral);
-    color: #fff;
+    color: #0b0f0d;
 }
 
 .scope-summary {
     align-self: stretch;
     padding: 42px;
-    background: #fff;
+    background: #111714;
 }
 
 .scope-summary strong {
@@ -1323,7 +1323,7 @@
 .final-verdict p {
     max-width: 36ch;
     margin: 0;
-    color: #fff;
+    color: #0b0f0d;
     font-size: clamp(1.6rem, 3vw, 2.35rem);
     font-weight: 700;
     line-height: 1.25;
@@ -1354,7 +1354,7 @@
 .fiber-sources a:focus-visible {
     padding-right: 12px;
     padding-left: 12px;
-    background: #fff;
+    background: #111714;
     color: var(--fiber-blue);
 }
 
@@ -1713,7 +1713,7 @@
         min-width: 150px;
         padding: 11px 16px;
         border: 1px solid var(--fiber-blue-deep);
-        background: #fff;
+        background: #111714;
         color: var(--fiber-ink);
         text-align: center;
     }
@@ -1735,11 +1735,11 @@
 
     .mobile-olt {
         background: var(--fiber-blue-deep);
-        color: #fff;
+        color: #0b0f0d;
     }
 
     .mobile-olt span {
-        color: #dce8f3;
+        color: #16263a;
     }
 
     .mobile-fiber {

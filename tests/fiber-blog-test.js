@@ -139,7 +139,7 @@ async function run() {
         await page.click('[data-scope="tap"]');
         const tapMap = await page.evaluate(() => ({
             highlighted: Array.from(document.querySelectorAll('.tree-a1 i'))
-                .filter((node) => getComputedStyle(node).backgroundColor !== 'rgb(255, 255, 255)').length,
+                .filter((node) => getComputedStyle(node).backgroundColor !== 'rgb(17, 23, 20)').length,
             marker: getComputedStyle(document.querySelector('.tree-a1'), '::after').content
         }));
         assert.equal(tapMap.highlighted, 2);

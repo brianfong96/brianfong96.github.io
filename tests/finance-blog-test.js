@@ -171,8 +171,8 @@ async function run() {
         assert.equal(await page.$eval('#sidebar-toggle', (button) => button.getAttribute('aria-expanded')), 'false');
 
         await page.$eval('a[href="blog.html"]', (link) => link.click());
-        await page.waitForFunction(() => document.querySelector('.editorial-reboot.is-active'));
-        await page.waitForFunction(() => document.body.classList.contains('blog-index') && !document.querySelector('.editorial-reboot.is-active'));
+        await page.waitForFunction(() => document.body.classList.contains('is-routing'));
+        await page.waitForFunction(() => document.body.classList.contains('blog-index') && !document.body.classList.contains('is-routing') && window.__spaTransition === false);
         await page.waitForSelector('#blogs-list a[href*="trump-portfolio-disclosure"]');
 
         await page.click('#blogs-list a[href*="trump-portfolio-disclosure"]');
@@ -304,8 +304,8 @@ async function run() {
             };
         });
         assert.equal(signedDirection.bodyClass, 'finance-page');
-        assert.equal(signedDirection.positiveColor, 'rgb(36, 122, 77)');
-        assert.equal(signedDirection.negativeColor, 'rgb(180, 58, 63)');
+        assert.equal(signedDirection.positiveColor, 'rgb(95, 211, 143)');
+        assert.equal(signedDirection.negativeColor, 'rgb(255, 125, 130)');
         assert.equal(signedDirection.positiveStartsAtMidpoint, true);
         assert.equal(signedDirection.negativeEndsAtMidpoint, true);
 
