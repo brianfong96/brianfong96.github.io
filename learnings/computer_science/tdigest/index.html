@@ -19,7 +19,7 @@
         }
         .code-stepper-pseudo {
             background: rgba(2, 6, 13, 0.95);
-            border: 1px solid rgba(53, 255, 107, 0.18);
+            border: 1px solid rgba(92, 240, 143, 0.18);
             border-radius: 12px;
             padding: 16px 0;
             font-family: 'JetBrains Mono', 'Fira Code', monospace;
@@ -37,13 +37,13 @@
             color: rgba(255, 255, 255, 0.6);
         }
         .code-stepper-pseudo .pseudo-line.active {
-            background: rgba(53, 255, 107, 0.15);
-            color: #35ff6b;
-            border-left: 3px solid #35ff6b;
+            background: rgba(92, 240, 143, 0.15);
+            color: #5cf08f;
+            border-left: 3px solid #5cf08f;
             font-weight: 600;
         }
         .code-stepper-pseudo .pseudo-line.done {
-            color: rgba(53, 255, 107, 0.45);
+            color: rgba(92, 240, 143, 0.45);
         }
         .code-stepper-pseudo .pseudo-line .line-num {
             display: inline-block;
@@ -95,7 +95,7 @@
         }
         .stepper-mini-card {
             background: rgba(2, 6, 13, 0.92);
-            border: 1px solid rgba(53,255,107,0.14);
+            border: 1px solid rgba(92, 240, 143,0.14);
             border-radius: 12px;
             padding: 12px 14px;
         }
@@ -144,7 +144,7 @@
             gap: 8px;
             padding: 8px 12px;
             border-radius: 999px;
-            border: 1px solid rgba(53,255,107,0.18);
+            border: 1px solid rgba(92, 240, 143,0.18);
             background: rgba(2,6,13,0.92);
             color: var(--text-color);
             font-family: 'JetBrains Mono', 'Fira Code', monospace;
@@ -169,15 +169,15 @@
             max-height: 220px;
             overflow-y: auto;
             overflow-x: hidden;
-            border: 1px solid rgba(53,255,107,0.14);
+            border: 1px solid rgba(92, 240, 143,0.14);
             border-radius: 12px;
             background: rgba(2,6,13,0.92);
             padding: 10px;
             scrollbar-width: thin;
-            scrollbar-color: rgba(53,255,107,0.3) transparent;
+            scrollbar-color: rgba(92, 240, 143,0.3) transparent;
         }
         .centroid-grid-wrap::-webkit-scrollbar { width: 6px; }
-        .centroid-grid-wrap::-webkit-scrollbar-thumb { background: rgba(53,255,107,0.3); border-radius: 3px; }
+        .centroid-grid-wrap::-webkit-scrollbar-thumb { background: rgba(92, 240, 143,0.3); border-radius: 3px; }
         .centroid-grid-wrap::-webkit-scrollbar-track { background: transparent; }
         .centroid-grid-inner {
             display: grid;
@@ -185,8 +185,8 @@
             gap: 5px;
         }
         .centroid-cell {
-            background: rgba(53,255,107,0.06);
-            border: 1px solid rgba(53,255,107,0.15);
+            background: rgba(92, 240, 143,0.06);
+            border: 1px solid rgba(92, 240, 143,0.15);
             border-radius: 8px;
             padding: 6px 8px;
             cursor: pointer;
@@ -196,13 +196,13 @@
         }
         .centroid-cell:hover {
             border-color: var(--accent-color);
-            background: rgba(53,255,107,0.14);
+            background: rgba(92, 240, 143,0.14);
             transform: translateY(-1px);
         }
         .centroid-cell.selected {
             border-color: var(--accent-color);
-            background: rgba(53,255,107,0.18);
-            box-shadow: 0 0 8px rgba(53,255,107,0.2);
+            background: rgba(92, 240, 143,0.18);
+            box-shadow: 0 0 8px rgba(92, 240, 143,0.2);
         }
         .centroid-cell-idx {
             font-size: 0.6rem;
@@ -234,7 +234,7 @@
             padding: 16px 20px;
             min-width: 280px;
             max-width: 380px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(53,255,107,0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(92, 240, 143,0.1);
             font-family: 'JetBrains Mono', 'Fira Code', monospace;
             font-size: 0.78rem;
             line-height: 1.8;
@@ -252,7 +252,7 @@
         }
         .centroid-popup-close {
             background: none;
-            border: 1px solid rgba(53,255,107,0.3);
+            border: 1px solid rgba(92, 240, 143,0.3);
             color: var(--text-color);
             cursor: pointer;
             border-radius: 6px;
@@ -264,7 +264,7 @@
             display: flex;
             justify-content: space-between;
             padding: 3px 0;
-            border-bottom: 1px solid rgba(53,255,107,0.08);
+            border-bottom: 1px solid rgba(92, 240, 143,0.08);
         }
         .centroid-popup-row:last-child { border-bottom: none; }
         .centroid-popup-label { color: var(--muted-text); }
@@ -272,7 +272,7 @@
         .centroid-popup-binary {
             margin-top: 10px;
             padding-top: 8px;
-            border-top: 1px solid rgba(53,255,107,0.15);
+            border-top: 1px solid rgba(92, 240, 143,0.15);
             word-break: break-all;
             font-size: 0.68rem;
             line-height: 1.7;
@@ -434,7 +434,7 @@
                                         <div class="merge-math-chip" id="td-stream-math">Waiting for the first sample...</div>
                                     </div>
                                 </div>
-                                <svg id="td-stream-svg" viewBox="0 0 760 220" style="width:100%;display:block;border:1px solid rgba(53,255,107,0.14);border-radius:12px;background:linear-gradient(180deg, rgba(2,6,13,0.96), rgba(0,10,2,0.95));margin:14px 0 18px;"></svg>
+                                <svg id="td-stream-svg" viewBox="0 0 760 220" style="width:100%;display:block;border:1px solid rgba(92, 240, 143,0.14);border-radius:12px;background:linear-gradient(180deg, rgba(2,6,13,0.96), rgba(0,10,2,0.95));margin:14px 0 18px;"></svg>
                                 <div class="hash-stream-stats">
                                     <div class="hash-card"><div class="hash-card-label">Values Added</div><div class="hash-card-value" id="td-stream-total">0</div></div>
                                     <div class="hash-card"><div class="hash-card-label">Centroid Count</div><div class="hash-card-value" id="td-stream-centroids">0</div></div>
@@ -556,7 +556,7 @@
                                         <div class="merge-math-chip" id="td-scale-current-region">region: —</div>
                                     </div>
                                 </div>
-                                <canvas id="td-scale-canvas" width="860" height="230" style="width:100%;display:block;border:1px solid rgba(53,255,107,0.14);border-radius:12px;background:rgba(2,6,13,0.92);margin:18px 0 16px;"></canvas>
+                                <canvas id="td-scale-canvas" width="860" height="230" style="width:100%;display:block;border:1px solid rgba(92, 240, 143,0.14);border-radius:12px;background:rgba(2,6,13,0.92);margin:18px 0 16px;"></canvas>
                                 <div class="ll-registers-section">
                                     <div class="ll-registers-label">CENTROID SIZE GRID — larger cells mean heavier centroids</div>
                                     <div class="centroid-grid-wrap"><div class="centroid-grid-inner" id="td-scale-grid"></div></div>
@@ -645,7 +645,7 @@
                             </tbody>
                         </table>
 
-                        <canvas id="td-accuracy-canvas" width="860" height="230" style="width:100%;display:block;border:1px solid rgba(53,255,107,0.14);border-radius:12px;background:rgba(2,6,13,0.92);margin:18px 0 10px;"></canvas>
+                        <canvas id="td-accuracy-canvas" width="860" height="230" style="width:100%;display:block;border:1px solid rgba(92, 240, 143,0.14);border-radius:12px;background:rgba(2,6,13,0.92);margin:18px 0 10px;"></canvas>
                         <div class="algo-error-legend" style="margin-bottom:16px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
                             <span class="algo-legend-item"><span class="algo-legend-dot" style="background:rgba(255,255,255,0.7);border:1px dashed rgba(255,255,255,0.45)"></span> True p99</span>
                             <span class="algo-legend-item"><span class="algo-legend-dot" style="background:var(--accent-color)"></span> Estimated p99</span>
@@ -755,7 +755,7 @@
                     <div class="hll-demo-bar">CODE STEPPER — SINGLE VALUE INSERTION</div>
                     <div class="hll-demo-body">
                         <div class="hash-input-row" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px;">
-                            <input id="td-insert-input" type="number" step="0.1" placeholder="Try 42, 120, 880..." style="flex:1;min-width:220px;padding:12px 14px;border-radius:10px;border:1px solid rgba(53,255,107,0.2);background:rgba(2,6,13,0.9);color:var(--text-color);" />
+                            <input id="td-insert-input" type="number" step="0.1" placeholder="Try 42, 120, 880..." style="flex:1;min-width:220px;padding:12px 14px;border-radius:10px;border:1px solid rgba(92, 240, 143,0.2);background:rgba(2,6,13,0.9);color:var(--text-color);" />
                             <button id="td-insert-btn" class="stream-play-btn" type="button">Insert &amp; Step</button>
                             <button id="td-insert-auto" type="button">Auto Demo</button>
                             <button id="td-insert-reset" type="button">Reset</button>
@@ -782,7 +782,7 @@
                             </div>
                             <div class="code-stepper-visual">
                                 <div class="code-stepper-header">Visualization + merge math</div>
-                                <svg id="td-insert-viz" viewBox="0 0 920 420" style="width:100%;display:block;border:1px solid rgba(53,255,107,0.14);border-radius:12px;background:linear-gradient(180deg, rgba(2,6,13,0.96), rgba(0,10,2,0.95));margin-bottom:16px;"></svg>
+                                <svg id="td-insert-viz" viewBox="0 0 920 420" style="width:100%;display:block;border:1px solid rgba(92, 240, 143,0.14);border-radius:12px;background:linear-gradient(180deg, rgba(2,6,13,0.96), rgba(0,10,2,0.95));margin-bottom:16px;"></svg>
                                 <div class="stepper-stat-grid">
                                     <div class="stepper-mini-card"><div class="stepper-mini-label">Incoming</div><div class="stepper-mini-value" id="td-insert-current-value">—</div></div>
                                     <div class="stepper-mini-card"><div class="stepper-mini-label">Nearest centroid</div><div class="stepper-mini-value" id="td-insert-nearest">—</div></div>
@@ -873,7 +873,7 @@
                         <div class="hash-input-row" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:18px 0;">
                             <div class="stream-speed-control" style="margin-left:0;">
                                 <label for="td-playground-dist">Distribution</label>
-                                <select id="td-playground-dist" style="padding:8px 10px;border-radius:8px;border:1px solid rgba(53,255,107,0.2);background:rgba(2,6,13,0.9);color:var(--text-color);">
+                                <select id="td-playground-dist" style="padding:8px 10px;border-radius:8px;border:1px solid rgba(92, 240, 143,0.2);background:rgba(2,6,13,0.9);color:var(--text-color);">
                                     <option value="uniform">uniform</option>
                                     <option value="normal" selected>normal</option>
                                     <option value="exponential">exponential</option>
@@ -882,12 +882,12 @@
                             </div>
                             <div class="stream-speed-control" style="margin-left:0;">
                                 <label for="td-playground-query">Query percentile</label>
-                                <input id="td-playground-query" type="number" min="0" max="1" step="0.01" value="0.95" style="width:90px;padding:8px 10px;border-radius:8px;border:1px solid rgba(53,255,107,0.2);background:rgba(2,6,13,0.9);color:var(--text-color);" />
+                                <input id="td-playground-query" type="number" min="0" max="1" step="0.01" value="0.95" style="width:90px;padding:8px 10px;border-radius:8px;border:1px solid rgba(92, 240, 143,0.2);background:rgba(2,6,13,0.9);color:var(--text-color);" />
                             </div>
                             <button id="td-playground-query-btn" type="button">Estimate</button>
                             <div id="td-playground-query-result" class="callout" style="margin:0;flex:1;min-width:240px;">Run the stream, then query a percentile like <strong>0.95</strong> or <strong>0.99</strong>.</div>
                         </div>
-                        <svg id="td-playground-svg" viewBox="0 0 900 260" style="width:100%;display:block;border:1px solid rgba(53,255,107,0.14);border-radius:12px;background:linear-gradient(180deg, rgba(2,6,13,0.96), rgba(0,10,2,0.95));margin-bottom:18px;"></svg>
+                        <svg id="td-playground-svg" viewBox="0 0 900 260" style="width:100%;display:block;border:1px solid rgba(92, 240, 143,0.14);border-radius:12px;background:linear-gradient(180deg, rgba(2,6,13,0.96), rgba(0,10,2,0.95));margin-bottom:18px;"></svg>
                         <div class="hash-stream-stats" style="margin-bottom:18px;">
                             <div class="hash-card"><div class="hash-card-label">Total Values</div><div class="hash-card-value" id="td-playground-total">0</div></div>
                             <div class="hash-card"><div class="hash-card-label">Centroid Count</div><div class="hash-card-value" id="td-playground-centroids">0</div></div>
@@ -1297,10 +1297,10 @@
                 return node;
             }
 
-            svg.appendChild(el('line', { x1: padX, y1: axisY, x2: W - padX, y2: axisY, stroke: 'rgba(53,255,107,0.45)', 'stroke-width': '2' }));
+            svg.appendChild(el('line', { x1: padX, y1: axisY, x2: W - padX, y2: axisY, stroke: 'rgba(92, 240, 143,0.45)', 'stroke-width': '2' }));
             for (var t = 0; t <= 10; t++) {
                 var xv = xScale(t * 100);
-                svg.appendChild(el('line', { x1: xv, y1: axisY - 6, x2: xv, y2: axisY + 6, stroke: 'rgba(53,255,107,0.18)', 'stroke-width': '1' }));
+                svg.appendChild(el('line', { x1: xv, y1: axisY - 6, x2: xv, y2: axisY + 6, stroke: 'rgba(92, 240, 143,0.18)', 'stroke-width': '1' }));
                 var txt = el('text', { x: xv, y: axisY + 22, fill: 'rgba(255,255,255,0.55)', 'font-size': '11', 'text-anchor': 'middle' });
                 txt.textContent = t * 100;
                 svg.appendChild(txt);
@@ -1324,8 +1324,8 @@
                     cx: xScale(c.mean),
                     cy: cy,
                     r: radius,
-                    fill: i === activeIndex ? 'rgba(255,255,255,0.92)' : 'rgba(53,255,107,' + (0.18 + freshness * 0.35) + ')',
-                    stroke: i === activeIndex ? 'rgba(53,255,107,0.95)' : 'rgba(154,255,87,' + (0.25 + freshness * 0.55) + ')',
+                    fill: i === activeIndex ? 'rgba(255,255,255,0.92)' : 'rgba(92, 240, 143,' + (0.18 + freshness * 0.35) + ')',
+                    stroke: i === activeIndex ? 'rgba(92, 240, 143,0.95)' : 'rgba(154,255,87,' + (0.25 + freshness * 0.55) + ')',
                     'stroke-width': i === activeIndex ? '2.5' : '1.5'
                 });
                 svg.appendChild(circle);
@@ -1428,7 +1428,7 @@
 
             svg.appendChild(el('text', { x: padLeft, y: 26, fill: 'rgba(255,255,255,0.78)', 'font-size': '14', 'font-weight': '700' }));
             svg.lastChild.textContent = 'Top: value axis + nearest centroid   |   Bottom: centroid counts';
-            svg.appendChild(el('line', { x1: padLeft, y1: axisY, x2: W - padRight, y2: axisY, stroke: 'rgba(53,255,107,0.42)', 'stroke-width': '2' }));
+            svg.appendChild(el('line', { x1: padLeft, y1: axisY, x2: W - padRight, y2: axisY, stroke: 'rgba(92, 240, 143,0.42)', 'stroke-width': '2' }));
             for (var t = 0; t <= 10; t++) {
                 var xv = xScale(t * 100);
                 svg.appendChild(el('line', { x1: xv, y1: axisY - 5, x2: xv, y2: axisY + 5, stroke: 'rgba(255,255,255,0.18)', 'stroke-width': '1' }));
@@ -1448,8 +1448,8 @@
                     cx: cx,
                     cy: cy,
                     r: 6 + Math.sqrt(c.count) * 1.6,
-                    fill: j === activeIndex ? 'rgba(255,255,255,0.92)' : 'rgba(53,255,107,0.28)',
-                    stroke: j === activeIndex ? 'rgba(53,255,107,0.95)' : 'rgba(154,255,87,0.6)',
+                    fill: j === activeIndex ? 'rgba(255,255,255,0.92)' : 'rgba(92, 240, 143,0.28)',
+                    stroke: j === activeIndex ? 'rgba(92, 240, 143,0.95)' : 'rgba(154,255,87,0.6)',
                     'stroke-width': j === activeIndex ? '2.2' : '1.3'
                 }));
                 var centroidLabel = el('text', { x: cx, y: cy + 3, fill: '#02060d', 'font-size': '10', 'font-weight': '700', 'text-anchor': 'middle' });
@@ -1502,8 +1502,8 @@
                         width: Math.max(8, barW),
                         height: Math.max(8, rowHeight - 6),
                         rx: 6,
-                        fill: r === activeIndex ? 'rgba(255,255,255,0.82)' : 'rgba(53,255,107,0.24)',
-                        stroke: r === activeIndex ? 'rgba(53,255,107,0.9)' : 'rgba(154,255,87,0.28)',
+                        fill: r === activeIndex ? 'rgba(255,255,255,0.82)' : 'rgba(92, 240, 143,0.24)',
+                        stroke: r === activeIndex ? 'rgba(92, 240, 143,0.9)' : 'rgba(154,255,87,0.28)',
                         'stroke-width': r === activeIndex ? '1.5' : '1'
                     }));
                     var barLabel = el('text', { x: padLeft + 126 + Math.max(8, barW), y: y + rowHeight / 2 + 4, fill: 'rgba(255,255,255,0.82)', 'font-size': '11' });
@@ -1606,7 +1606,7 @@
                     '<span class="centroid-cell-count">n=' + c.count + '</span>';
                 // Color intensity by count
                 var intensity = clamp(c.count / 30, 0.08, 0.5);
-                cell.style.background = 'rgba(53,255,107,' + intensity + ')';
+                cell.style.background = 'rgba(92, 240, 143,' + intensity + ')';
                 cell.style.borderColor = 'rgba(154,255,87,' + (0.15 + intensity) + ')';
                 (function (centroidData, cellEl) {
                     cellEl.addEventListener('click', function (e) {
@@ -2205,7 +2205,7 @@
                 ctx.rotate(-Math.PI / 2);
                 ctx.fillText('y: max centroid size', 0, 0);
                 ctx.restore();
-                ctx.strokeStyle = 'rgba(53,255,107,0.12)';
+                ctx.strokeStyle = 'rgba(92, 240, 143,0.12)';
                 for (var g = 0; g <= 5; g++) {
                     var gy = 20 + g * ((H - 50) / 5);
                     ctx.beginPath();
@@ -2214,7 +2214,7 @@
                     ctx.stroke();
                 }
                 ctx.beginPath();
-                ctx.strokeStyle = 'rgba(53,255,107,0.95)';
+                ctx.strokeStyle = 'rgba(92, 240, 143,0.95)';
                 ctx.lineWidth = 2.5;
                 var n = Math.max(state.digest.totalCount, 1000);
                 for (var i = 0; i <= 100; i++) {
@@ -2441,7 +2441,7 @@
                     ctx.setLineDash([]);
                 }
                 draw('true99', 'rgba(255,255,255,0.7)', [5, 4]);
-                draw('est99', 'rgba(53,255,107,0.95)');
+                draw('est99', 'rgba(92, 240, 143,0.95)');
                 draw('est50', 'rgba(154,255,87,0.95)');
                 ctx.fillStyle = 'rgba(255,255,255,0.65)';
                 ctx.font = '12px sans-serif';

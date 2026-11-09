@@ -1,31 +1,31 @@
 :root {
-    --finance-panel: #ffffff;
-    --finance-panel-raised: #f8fafc;
-    --finance-line: rgba(36, 89, 154, 0.22);
-    --finance-line-strong: rgba(36, 89, 154, 0.48);
-    --finance-positive: #247a4d;
-    --finance-positive-soft: #e4f1e9;
-    --finance-negative: #b43a3f;
-    --finance-negative-soft: #f7e6e6;
-    --finance-caveat: #24599a;
-    --finance-caveat-soft: #dbe5f0;
-    --finance-shadow: 0 14px 42px rgba(22, 38, 58, 0.12);
+    --finance-panel: #111714;
+    --finance-panel-raised: #172019;
+    --finance-line: rgba(127, 178, 232, 0.22);
+    --finance-line-strong: rgba(127, 178, 232, 0.48);
+    --finance-positive: #5fd38f;
+    --finance-positive-soft: #11291c;
+    --finance-negative: #ff7d82;
+    --finance-negative-soft: #2c1517;
+    --finance-caveat: #7fb2e8;
+    --finance-caveat-soft: #16263a;
+    --finance-shadow: 0 14px 42px rgba(0, 0, 0, 0.36);
 }
 
 .finance-page {
-    --bg-color: #f4f1ea;
-    --panel-color: #ffffff;
-    --panel-strong: #ffffff;
-    --text-color: #17263a;
-    --muted-text: #5c6877;
-    --accent-color: #24599a;
-    --accent-strong: #173f72;
-    --accent-secondary: #dbe5f0;
-    --warning-color: #b43a3f;
-    --border-color: #cbd3dc;
-    --shadow-color: rgba(22, 38, 58, 0.12);
-    --shadow-secondary: rgba(22, 38, 58, 0.06);
-    color-scheme: light;
+    --bg-color: #0b0f0d;
+    --panel-color: #111714;
+    --panel-strong: #111714;
+    --text-color: #e3eae5;
+    --muted-text: #a7b6ac;
+    --accent-color: #7fb2e8;
+    --accent-strong: #b9d4f2;
+    --accent-secondary: #16263a;
+    --warning-color: #ff7d82;
+    --border-color: #2c3c33;
+    --shadow-color: rgba(0, 0, 0, 0.36);
+    --shadow-secondary: rgba(0, 0, 0, 0.18);
+    color-scheme: dark;
     color: var(--text-color);
     background: var(--bg-color);
     font-family: "Segoe UI", Arial, sans-serif;
@@ -34,18 +34,18 @@
 
 .finance-page,
 .finance-page * {
-    scrollbar-color: #9fb2c7 #e7e3da;
+    scrollbar-color: #41574b #1f2a23;
 }
 
 .finance-page::-webkit-scrollbar-track,
 .finance-page *::-webkit-scrollbar-track {
-    background: #e7e3da;
+    background: #1f2a23;
 }
 
 .finance-page::-webkit-scrollbar-thumb,
 .finance-page *::-webkit-scrollbar-thumb {
-    border-color: #e7e3da;
-    background: #9fb2c7;
+    border-color: #1f2a23;
+    background: #41574b;
     box-shadow: none;
 }
 
@@ -66,51 +66,6 @@
     text-shadow: none;
 }
 
-.finance-page .topbar {
-    background: rgba(244, 241, 234, 0.96);
-    border-bottom-color: var(--border-color);
-    box-shadow: 0 4px 18px rgba(22, 38, 58, 0.07);
-}
-
-.finance-page .home-link,
-.finance-page #sidebar-toggle {
-    border-color: #9fb2c7;
-    background: #ffffff;
-    box-shadow: 0 3px 10px rgba(22, 38, 58, 0.08);
-    color: var(--accent-color);
-}
-
-.finance-page .blog-home-link {
-    border-color: #9fb2c7;
-    background: #ffffff;
-    box-shadow: 0 3px 10px rgba(22, 38, 58, 0.08);
-    color: var(--accent-color);
-    letter-spacing: 0;
-    text-transform: none;
-}
-
-.finance-page .sidebar {
-    background: #ffffff;
-    border-color: var(--border-color);
-    box-shadow: 0 14px 36px rgba(22, 38, 58, 0.14);
-}
-
-.finance-page .nav-links a {
-    border-color: transparent;
-    background: transparent;
-    box-shadow: none;
-    color: var(--text-color);
-    letter-spacing: 0;
-    text-transform: none;
-}
-
-.finance-page .nav-links a:hover,
-.finance-page .nav-links a:focus-visible {
-    border-color: var(--border-color);
-    background: #eef3f8;
-    color: var(--accent-color);
-}
-
 .finance-article {
     width: min(1320px, calc(100% - 40px));
     margin: 0 auto;
@@ -124,7 +79,7 @@
     border: 1px solid var(--finance-line-strong);
     border-radius: 16px;
     background: var(--finance-panel);
-    box-shadow: var(--finance-shadow), inset 0 0 0 1px rgba(36, 89, 154, 0.06);
+    box-shadow: var(--finance-shadow), inset 0 0 0 1px rgba(127, 178, 232, 0.06);
 }
 
 .finance-hero::after {
@@ -304,7 +259,7 @@
 .finance-rail a:focus-visible,
 .finance-rail a.is-active {
     color: var(--accent-color);
-    background: rgba(36, 89, 154, 0.06);
+    background: rgba(127, 178, 232, 0.06);
 }
 
 .finance-rail a.is-active::before {
@@ -395,7 +350,7 @@
 .scanner-table tbody tr:hover,
 .scanner-table tbody tr:focus-within,
 .scanner-table tbody tr.is-selected {
-    background: rgba(36, 89, 154, 0.08);
+    background: rgba(127, 178, 232, 0.08);
     color: var(--accent-strong);
 }
 
@@ -537,7 +492,7 @@
     overflow: hidden;
     border-top: 1px solid var(--finance-line);
     border-bottom: 1px solid var(--finance-line);
-    background: #dfe4e8;
+    background: #1f2a23;
 }
 
 .track-bar {
@@ -558,7 +513,7 @@
     bottom: 0;
     left: 50%;
     width: 1px;
-    background: #8491a1;
+    background: #5f7268;
 }
 
 .track-shell.is-signed .track-bar {
@@ -580,7 +535,7 @@
 }
 
 .track-bar.is-na {
-    background: repeating-linear-gradient(90deg, rgba(92, 104, 119, 0.2) 0 2px, transparent 2px 8px);
+    background: repeating-linear-gradient(90deg, rgba(167, 182, 172, 0.2) 0 2px, transparent 2px 8px);
 }
 
 .value-mark,
@@ -600,7 +555,7 @@
 }
 
 .value-mark.is-negative {
-    border-color: rgba(180, 58, 63, 0.42);
+    border-color: rgba(255, 125, 130, 0.42);
     background: var(--finance-negative-soft);
     color: var(--finance-negative);
 }
@@ -622,7 +577,7 @@
     border-radius: 10px;
     opacity: 0;
     pointer-events: none;
-    background: #ffffff;
+    background: #111714;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.46);
     color: var(--text-color);
     font-size: 0.76rem;
@@ -667,7 +622,7 @@
     overflow-x: auto;
     border-top: 1px solid var(--finance-line-strong);
     border-bottom: 1px solid var(--finance-line-strong);
-    background: #edf1f4;
+    background: #172019;
 }
 
 .cash-flow-map svg {
@@ -698,7 +653,7 @@
 .cash-flow-map .flow-group:focus .flow-path,
 .cash-flow-map .flow-group:hover .flow-path {
     opacity: 1;
-    filter: drop-shadow(0 5px 7px rgba(22, 38, 58, 0.16));
+    filter: drop-shadow(0 5px 7px rgba(0, 0, 0, 0.48));
 }
 
 .cash-flow-map .flow-group:focus {
@@ -706,7 +661,7 @@
 }
 
 .cash-flow-map .flow-node {
-    fill: #ffffff;
+    fill: #111714;
     stroke: var(--finance-line-strong);
 }
 
@@ -841,14 +796,14 @@
     height: 42px;
     overflow: hidden;
     border: 1px solid var(--finance-line-strong);
-    background: #e4e8ec;
+    background: #172019;
 }
 
 .bridge-segment {
     display: block;
     width: var(--segment);
     height: 100%;
-    border-right: 1px solid rgba(23, 38, 58, 0.28);
+    border-right: 1px solid rgba(227, 234, 229, 0.28);
 }
 
 .bridge-segment:last-child {
@@ -866,7 +821,7 @@
 }
 
 .bridge-segment.is-gain {
-    background-image: repeating-linear-gradient(135deg, rgba(36, 89, 154, 0.14) 0 5px, transparent 5px 10px);
+    background-image: repeating-linear-gradient(135deg, rgba(127, 178, 232, 0.14) 0 5px, transparent 5px 10px);
 }
 
 .bridge-segment.is-cost,
@@ -876,7 +831,7 @@
 
 .bridge-segment.is-severance,
 .bridge-key i.is-severance {
-    background: repeating-linear-gradient(135deg, rgba(180, 58, 63, 0.2) 0 4px, var(--finance-negative-soft) 4px 8px);
+    background: repeating-linear-gradient(135deg, rgba(255, 125, 130, 0.2) 0 4px, var(--finance-negative-soft) 4px 8px);
 }
 
 .bridge-key {
@@ -946,7 +901,7 @@
 .cloud-track {
     position: relative;
     height: 42px;
-    background: #dfe4e8;
+    background: #1f2a23;
     border-top: 1px solid var(--finance-line);
     border-bottom: 1px solid var(--finance-line);
 }
@@ -1147,15 +1102,7 @@
 .source-list a:hover,
 .source-list a:focus-visible {
     color: var(--accent-color);
-    background: rgba(36, 89, 154, 0.06);
-}
-
-.finance-page .footer {
-    background: #e7e3da;
-    border-top-color: var(--border-color);
-    color: var(--text-color);
-    letter-spacing: 0;
-    text-shadow: none;
+    background: rgba(127, 178, 232, 0.06);
 }
 
 @keyframes financeScan {
@@ -1176,7 +1123,7 @@
         overflow-x: auto;
         gap: 6px;
         padding: 10px;
-        background: rgba(244, 241, 234, 0.96);
+        background: rgba(11, 15, 13, 0.96);
         box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
     }
 

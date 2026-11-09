@@ -21,30 +21,59 @@
         </ul>
     </nav>
     <div class="content">
-        <header class="hero" id="home">
+        <header class="hero home-hero" id="home">
             <div class="hero-content">
-                <p class="eyebrow">Senior Software Engineer</p>
                 <h1>Brian Fong</h1>
+                <p class="hero-role">Senior software engineer</p>
                 <p class="hero-copy">I'm a senior software engineer with a background in mixed reality, game development, cybersecurity, red teaming, and AI. I build tools and experiences that solve real problems.</p>
                 <div class="hero-actions">
-                    <a href="projects.html" class="button-link primary">View Projects</a>
-                    <a href="about.html" class="button-link secondary">About Me</a>
+                    <a href="#map" class="button-link primary" data-no-spa>Explore the map</a>
+                    <button type="button" class="button-link secondary" data-open-palette>Jump to anything <kbd class="kbd-hint">Ctrl K</kbd></button>
                 </div>
             </div>
         </header>
         <main>
-            <section id="overview" class="section">
+            <section id="map" class="section map-section" aria-labelledby="map-heading">
+                <div class="section-heading map-heading">
+                    <h2 id="map-heading">Everything, connected</h2>
+                    <p>Every project, tutorial, and essay on the site as one graph. Select a node to see what it is; open it to go there.</p>
+                </div>
+                <div class="site-map" id="site-map">
+                    <div class="map-toolbar" role="group" aria-label="Filter the map">
+                        <button type="button" data-map-filter="all" aria-pressed="true">All</button>
+                        <button type="button" data-map-filter="writing" aria-pressed="false">Writing</button>
+                        <button type="button" data-map-filter="learnings" aria-pressed="false">Learnings</button>
+                        <button type="button" data-map-filter="work" aria-pressed="false">Projects</button>
+                    </div>
+                    <div class="map-viewport">
+                        <div class="map-world">
+                            <svg class="map-edges" aria-hidden="true"></svg>
+                        </div>
+                    </div>
+                    <aside class="map-preview" hidden aria-live="polite">
+                        <span class="map-preview-kind"></span>
+                        <strong class="map-preview-title"></strong>
+                        <p class="map-preview-desc"></p>
+                        <a class="map-preview-open" href="#" data-no-spa>Open <span aria-hidden="true">&rarr;</span></a>
+                    </aside>
+                    <div class="map-controls" role="group" aria-label="Zoom">
+                        <button type="button" data-map-zoom="in" aria-label="Zoom in"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg></button>
+                        <button type="button" data-map-zoom="out" aria-label="Zoom out"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10"/></svg></button>
+                        <button type="button" data-map-zoom="fit" aria-label="Fit everything"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg></button>
+                    </div>
+                    <p class="map-hint"><span class="hint-fine">Drag to pan · Ctrl + scroll to zoom · arrow keys move between nodes</span><span class="hint-touch">Drag to pan · pinch to zoom · tap a node, then Open</span></p>
+                    <p class="map-zoom-hint" aria-hidden="true">Hold Ctrl to zoom the map</p>
+                </div>
+            </section>
+
+            <section id="index" class="section">
                 <div class="section-heading">
-                    <h2>Welcome</h2>
-                    <p>This is my personal corner of the web where I share projects, learnings, and whatever else I'm working on.</p>
+                    <h2>Index</h2>
+                    <p>The same places as a plain list. I work across mixed reality, game dev, cybersecurity, and AI; right now I'm featuring R.P.R.P.G., an offline password generator that creates repeatable passwords from memorable inputs — no storage, no transmission.</p>
                 </div>
                 <div class="split-layout">
                     <div class="split-panel">
-                        <h3>What I do</h3>
-                        <p>I work across mixed reality, game dev, cybersecurity, and AI. Right now I'm featuring R.P.R.P.G., an offline password generator I built that creates repeatable passwords from memorable inputs — no storage, no transmission.</p>
-                    </div>
-                    <div class="split-panel">
-                        <h3>Explore</h3>
+                        <h3>Sections</h3>
                         <div class="section-buttons">
                             <a href="about.html" class="button-link primary">About</a>
                             <a href="projects.html" class="button-link primary">Projects</a>
@@ -59,23 +88,21 @@
                             <a href="blog.html#recipes">Recipes</a>
                         </div>
                     </div>
+                    <div class="split-panel">
+                        <h3>Search</h3>
+                        <input type="text" id="contents-search" placeholder="Filter projects and learnings" aria-label="Filter projects and learnings" />
+                        <ul id="toc-list" class="list-buttons compact-list"></ul>
+                    </div>
                 </div>
-            </section>
-
-            <section id="contents" class="section">
-                <div class="section-heading">
-                    <h2>Browse</h2>
-                    <p>Search or browse everything on the site.</p>
-                </div>
-                <input type="text" id="contents-search" placeholder="Search contents..." />
-                <ul id="toc-list" class="list-buttons"></ul>
             </section>
         </main>
         <footer class="footer">
             <p>&copy; <span id="year"></span> Brian Fong. All Rights Reserved.</p>
         </footer>
     </div>
-    <script src="assets/js/data.js?v=20261005-aurora"></script>
-    <script src="assets/js/main.js?v=20261005-aurora"></script>
+    <script src="assets/js/data.js?v=20261108-map"></script>
+    <script src="assets/js/main.js?v=20261108-map"></script>
+    <script src="assets/js/graph-view.js?v=20261108-career"></script>
+    <script src="assets/js/site-map.js?v=20261108-career"></script>
 </body>
 </html>

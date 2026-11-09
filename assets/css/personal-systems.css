@@ -1,15 +1,15 @@
 .personal-systems-page {
-    --systems-ink: #17263a;
-    --systems-muted: #5c6877;
-    --systems-blue: #24599a;
-    --systems-blue-deep: #173f72;
-    --systems-blue-pale: #e8eff6;
-    --systems-green: #247a4d;
-    --systems-green-pale: #e4f1e9;
-    --systems-red: #b43a3f;
-    --systems-red-pale: #f7e6e6;
-    --systems-paper: #f4f1ea;
-    --systems-line: #cbd3dc;
+    --systems-ink: #e3eae5;
+    --systems-muted: #a7b6ac;
+    --systems-blue: #7fb2e8;
+    --systems-blue-deep: #b9d4f2;
+    --systems-blue-pale: #172019;
+    --systems-green: #5fd38f;
+    --systems-green-pale: #11291c;
+    --systems-red: #ff7d82;
+    --systems-red-pale: #2c1517;
+    --systems-paper: #0b0f0d;
+    --systems-line: #2c3c33;
 }
 
 .personal-systems-page .content {
@@ -202,7 +202,7 @@
 
 .key-term {
     padding: 0 0.14em;
-    background: linear-gradient(transparent 58%, #dbe5f0 58%);
+    background: linear-gradient(transparent 58%, #16263a 58%);
     color: inherit;
     font-weight: 700;
 }
@@ -367,13 +367,13 @@
     padding: 34px;
     background: var(--systems-blue-deep);
     box-shadow: 0 14px 30px rgba(23, 63, 114, 0.2);
-    color: #fff;
+    color: #0b0f0d;
 }
 
 .system-audit h3,
 .system-audit p,
 .system-audit li {
-    color: #fff;
+    color: #0b0f0d;
 }
 
 .system-audit h3 {
@@ -391,13 +391,13 @@
 .system-audit ul {
     margin: 24px 0;
     padding: 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    border-top: 1px solid rgba(11, 15, 13, 0.3);
     list-style: none;
 }
 
 .system-audit li {
     padding: 13px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+    border-bottom: 1px solid rgba(11, 15, 13, 0.22);
 }
 
 .closing-line {
@@ -453,7 +453,7 @@
 .video-credit:focus-visible {
     padding-right: 12px;
     padding-left: 12px;
-    background: #fff;
+    background: #111714;
     color: var(--systems-blue);
 }
 
@@ -475,7 +475,7 @@
 .systems-sources a:focus-visible {
     padding-right: 12px;
     padding-left: 12px;
-    background: #fff;
+    background: #111714;
     color: var(--systems-blue);
 }
 

@@ -1,16 +1,16 @@
 .linda-problem-page {
-    --linda-paper: #f4f1ea;
-    --linda-white: #fff;
-    --linda-ink: #17263a;
-    --linda-muted: #5c6877;
-    --linda-blue: #24599a;
-    --linda-blue-deep: #173f72;
-    --linda-blue-pale: #dbe5f0;
-    --linda-red: #b43a3f;
-    --linda-red-pale: #f7e6e6;
-    --linda-green: #247a4d;
-    --linda-green-pale: #e4f1e9;
-    --linda-line: #cbd3dc;
+    --linda-paper: #0b0f0d;
+    --linda-white: #111714;
+    --linda-ink: #e3eae5;
+    --linda-muted: #a7b6ac;
+    --linda-blue: #7fb2e8;
+    --linda-blue-deep: #b9d4f2;
+    --linda-blue-pale: #16263a;
+    --linda-red: #ff7d82;
+    --linda-red-pale: #2c1517;
+    --linda-green: #5fd38f;
+    --linda-green-pale: #11291c;
+    --linda-line: #2c3c33;
     --linda-progress: 0;
     background: var(--linda-paper);
 }
@@ -132,7 +132,7 @@
 }
 
 .linda-problem-page .scroll-cue:focus-visible {
-    outline: 3px solid rgba(36, 89, 154, 0.22);
+    outline: 3px solid rgba(127, 178, 232, 0.22);
     outline-offset: 6px;
 }
 
@@ -298,7 +298,7 @@
     border: 0;
     border-radius: 14px;
     background: var(--linda-white);
-    box-shadow: 0 10px 24px rgba(23, 38, 58, 0.09);
+    box-shadow: 0 10px 24px rgba(227, 234, 229, 0.09);
 }
 
 .linda-problem-page .linda-profile p {
@@ -333,10 +333,10 @@
     min-height: 118px;
     align-items: center;
     padding: 22px;
-    border: 1px solid #9fb2c7;
+    border: 1px solid #41574b;
     border-radius: 6px;
     background: var(--linda-white);
-    box-shadow: 0 7px 20px rgba(23, 38, 58, 0.07);
+    box-shadow: 0 7px 20px rgba(227, 234, 229, 0.07);
     color: var(--linda-ink);
     cursor: pointer;
     font: 700 0.9rem/1.5 "Segoe UI", Arial, sans-serif;
@@ -362,7 +362,7 @@
 }
 
 .linda-problem-page .linda-choices button:focus-visible {
-    outline: 3px solid rgba(36, 89, 154, 0.25);
+    outline: 3px solid rgba(127, 178, 232, 0.25);
     outline-offset: 3px;
 }
 
@@ -713,7 +713,7 @@
 
 .linda-problem-page .product-funnel span:nth-child(2) {
     width: 86%;
-    background: #1d4b83;
+    background: #9cc3ee;
 }
 
 .linda-problem-page .product-funnel span:nth-child(3) {

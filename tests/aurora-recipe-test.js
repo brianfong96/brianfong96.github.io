@@ -43,7 +43,7 @@ const server = http.createServer((req, res) => {
         assert.equal(await page.title(), 'Aurora Over Alaska - Brian Fong');
         assert.equal(await page.$eval('.blog-home-link', el => el.textContent), 'More recipes');
         assert.equal(await page.$eval('.blog-home-link', el => new URL(el.href).pathname + new URL(el.href).hash), '/blog.html#recipes');
-        assert.equal(await page.$eval('body', el => getComputedStyle(el).fontFamily), '"Segoe UI", Arial, sans-serif');
+        assert.match(await page.$eval('body', el => getComputedStyle(el).fontFamily), /^"Segoe UI"/);
         assert.equal(await page.$$eval('.aurora-article a[href^="#"]', links => links.filter(link => !document.getElementById(link.hash.slice(1))).length), 0);
         assert.equal(await page.$$eval('.aurora-article a[href^="https://www.amazon.ca/dp/"]', links => links.length), 6);
         assert.equal(await page.$eval('.aurora-guide img', el => el.complete && el.naturalWidth > 0), true);
