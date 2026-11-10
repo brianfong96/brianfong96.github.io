@@ -27,6 +27,12 @@ const siteData = {
     ],
     projects: [
         {
+            title: 'Number Music',
+            url: 'projects/number-music/index.html',
+            description: 'Hear π, e, Avogadro\'s number, a digits file, or your own text as music. Each digit picks a note and a drum; tune the instrument, scale, and tempo while the digits animate.',
+            section: 'Projects'
+        },
+        {
             title: 'R.P.R.P.G.',
             url: 'projects/RPRPG/index.html',
             description: 'An offline password generator that turns memorable inputs into reproducible, service-specific passwords.',

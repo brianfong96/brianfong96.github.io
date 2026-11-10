@@ -705,6 +705,7 @@
         if (typeof window.initPasskeyArticle === 'function') window.initPasskeyArticle();
         if (typeof window.initSiteMap === 'function') window.initSiteMap();
         if (typeof window.initAboutGraph === 'function') window.initAboutGraph();
+        if (typeof window.initNumberMusic === 'function') window.initNumberMusic();
         Palette.bindTriggers(contentEl);
         markCurrentNav();
         attachLinkHandlers(contentEl);
