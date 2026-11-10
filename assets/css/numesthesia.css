@@ -1,4 +1,4 @@
-/* Number Music — projects/number-music
+/* Numesthesia — projects/numesthesia
  * Inherits the signal system from style.css; data hues follow DESIGN.md
  * (signal = the live note, data blue = counts and the walk's history). */
 
@@ -832,4 +832,176 @@
 
 @media (prefers-reduced-motion: reduce) {
     .nm * { transition-duration: 0ms !important; }
+}
+
+/* ── Mixing inside a track ────────────────────────────────── */
+
+.nm-track-mix {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+}
+
+.nm-mix-label {
+    color: var(--text-3);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+}
+
+.nm-mix-part,
+.nm-mix-rule {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.nm .nm-track-mix select {
+    width: auto;
+    max-width: 240px;
+    min-height: 40px;
+}
+
+.nm-mix-shape {
+    width: 16px;
+    height: 10px;
+    flex: none;
+    border: 1.5px solid var(--track);
+    border-radius: 3px;
+}
+
+.nm-mix-shape[data-shape="1"] { border-radius: 999px; }
+.nm-mix-shape[data-shape="2"] { border-radius: 1px; }
+.nm-mix-shape[data-shape="3"] { border-radius: 3px; border-style: dashed; }
+
+.nm .nm-mix-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nm .nm-mix-add .nm-icon { width: 14px; height: 14px; }
+
+/* ── Export ───────────────────────────────────────────────── */
+
+.nm-export {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
+    gap: 16px;
+    align-items: end;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    background: var(--ink-1);
+}
+
+.nm-export [hidden] { display: none; }
+
+.nm-export-length-row {
+    display: flex;
+    gap: 8px;
+}
+
+.nm .nm-export-length-row input {
+    width: 104px;
+    flex: none;
+    min-height: 40px;
+    padding: 0 12px;
+    background: var(--ink-0);
+    font-variant-numeric: tabular-nums;
+}
+
+.nm .nm-export-length-row input:disabled { opacity: 0.4; }
+
+.nm-export-length-row select { flex: 1; min-width: 0; }
+
+.nm-export .nm-check { grid-column: 1 / 2; min-height: 44px; }
+
+.nm-export-go {
+    grid-column: 2 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+}
+
+.nm-export-summary {
+    margin: 0;
+    color: var(--text-3);
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.nm .nm-export-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 22px;
+    border-color: var(--signal);
+    background: var(--signal);
+    color: var(--signal-ink);
+    order: 2;
+    transition: background-color 140ms ease, border-color 140ms ease, transform 160ms var(--ease-out), opacity 140ms ease;
+}
+
+.nm-export-progress {
+    display: block;
+    width: 100%;
+    height: 4px;
+    margin-top: 12px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--line);
+    appearance: none;
+    overflow: hidden;
+}
+
+.nm-export-progress[hidden] { display: none; }
+
+.nm-export-progress::-webkit-progress-bar { background: var(--line); }
+.nm-export-progress::-webkit-progress-value { background: var(--signal); transition: width 200ms var(--ease-out); }
+.nm-export-progress::-moz-progress-bar { background: var(--signal); }
+
+.nm-export-status {
+    margin: 10px 0 0;
+    color: var(--text-2);
+    font-size: 0.9rem;
+}
+
+.nm-export-status:empty { display: none; }
+.nm-export-status.is-error { color: #ff7d82; }
+
+.nm-notes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+@media (hover: hover) and (pointer: fine) {
+    .nm .nm-export-button:hover:not(:disabled) {
+        border-color: var(--signal-strong);
+        background: var(--signal-strong);
+    }
+}
+
+@media (max-width: 1000px) {
+    .nm-export { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .nm-export-length { grid-column: 1 / -1; }
+    .nm-export .nm-check { grid-column: 1 / -1; }
+    .nm-export-go { grid-column: 1 / -1; }
+    .nm-notes { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 600px) {
+    .nm-export { grid-template-columns: minmax(0, 1fr); padding: 14px; }
+    .nm-export-go { flex-direction: column; align-items: stretch; }
+    .nm .nm-export-button { order: 0; justify-content: center; }
+    .nm-export-summary { text-align: left; }
+    .nm .nm-track-mix select { max-width: none; flex: 1 1 0; width: 0; min-width: 0; }
+    .nm-mix-part, .nm-mix-rule { flex: 1 1 100%; }
+    .nm .nm-mix-add { flex: 1 1 100%; justify-content: center; min-height: 44px; }
 }

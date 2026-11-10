@@ -1,207 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" type="image/png" href="../../assets/favicon.png">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Number Music - Projects - Brian Fong</title>
-    <meta name="description" content="Layer up to six tracks of π, e, Avogadro's number, the speed of light, sequences, a digits file, or your own text. Every digit picks a note or a drum and how long it rings; tune it all or randomize the mix." />
-    <link rel="stylesheet" href="../../assets/css/style.css" />
-    <link rel="stylesheet" href="../../assets/css/number-music.css" />
+    <title>Numesthesia - Projects - Brian Fong</title>
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href="../numesthesia/index.html" />
+    <meta http-equiv="refresh" content="0; url=../numesthesia/index.html" />
+    <script>
+        // Number Music is now Numesthesia. Keep shared #mix= links working.
+        location.replace('../numesthesia/index.html' + location.hash);
+    </script>
+    <style>
+        body { margin: 0; padding: 40px 20px; background: #0b0f0d; color: #e3eae5; font-family: "Segoe UI", system-ui, sans-serif; }
+        a { color: #5cf08f; }
+    </style>
 </head>
 <body>
-    <header class="topbar">
-        <a class="home-link" href="../../index.html" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
-        <button id="sidebar-toggle" aria-label="Toggle navigation"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></button>
-    </header>
-    <nav class="sidebar" id="sidebar">
-        <ul class="nav-links">
-            <li><a href="../../index.html">Home</a></li>
-            <li><a href="../../about.html">About</a></li>
-            <li><a href="../../projects.html">Projects</a></li>
-            <li><a href="../../learnings.html">Learnings</a></li>
-        </ul>
-    </nav>
-    <div class="content">
-        <header class="hero small">
-            <div class="hero-content">
-                <p class="eyebrow">projects/number-music</p>
-                <h1>Number Music</h1>
-                <p class="hero-copy">Pick numbers and listen to them. Each digit chooses a note or a drum and how long it rings, so π, e, the speed of light, or your own name becomes a track. Layer up to six, retune them, or roll the dice and hear what the constants make together.</p>
-                <a href="../../projects.html" class="back-button"><svg class="nm-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg>All projects</a>
-            </div>
-        </header>
-
-        <main class="nm" id="number-music">
-            <section class="nm-studio" aria-label="Number Music player">
-                <div class="nm-stage">
-                    <div class="nm-stage-head">
-                        <div class="nm-now">
-                            <h2 class="nm-source-name" id="nm-source-name">π</h2>
-                            <p class="nm-source-value" id="nm-source-value">3.14159 26535 89793…</p>
-                        </div>
-                        <p class="nm-count">digit <span id="nm-pos">1</span> / <span id="nm-len">0</span></p>
-                    </div>
-
-                    <div class="nm-roll-wrap">
-                        <canvas class="nm-roll" id="nm-roll" aria-hidden="true"></canvas>
-                    </div>
-
-                    <p class="nm-tape" id="nm-tape" aria-label="Digits around the playhead on the selected track"></p>
-
-                    <div class="nm-transport">
-                        <button type="button" class="nm-play" id="nm-play">
-                            <svg class="nm-icon nm-icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14l12-7z" fill="currentColor" stroke="none"/></svg>
-                            <svg class="nm-icon nm-icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor" stroke="none"/></svg>
-                            <span class="nm-play-label">Play</span>
-                        </button>
-                        <button type="button" class="nm-icon-button" id="nm-restart" aria-label="Back to the start" title="Back to the start">
-                            <svg class="nm-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M18 6l-9 6 9 6z"/></svg>
-                        </button>
-                        <button type="button" class="nm-icon-button" id="nm-loop" aria-pressed="true" aria-label="Loop each track when its digits run out" title="Loop each track when its digits run out">
-                            <svg class="nm-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 0 1 4-4h12"/><path d="M7 22l-3-3 3-3"/><path d="M20 13v2a4 4 0 0 1-4 4H4"/></svg>
-                        </button>
-                        <label class="nm-seek">
-                            <span class="nm-visually-hidden">Playhead position in steps</span>
-                            <input type="range" id="nm-seek" min="0" max="1" value="0" step="1" />
-                        </label>
-                    </div>
-                    <p class="nm-hint"><kbd>Space</kbd> plays or pauses · <kbd>←</kbd> <kbd>→</kbd> step through the score · click a lane to select its track</p>
-                </div>
-
-                <div class="nm-panel">
-                    <fieldset class="nm-group">
-                        <legend>Key and tempo</legend>
-                        <div class="nm-field-row">
-                            <div class="nm-field">
-                                <label for="nm-scale">Scale</label>
-                                <select id="nm-scale"></select>
-                            </div>
-                            <div class="nm-field nm-field-narrow">
-                                <label for="nm-key">Key</label>
-                                <select id="nm-key"></select>
-                            </div>
-                        </div>
-                        <div class="nm-range">
-                            <label for="nm-tempo">Tempo <output id="nm-tempo-out" for="nm-tempo">112 bpm</output></label>
-                            <input type="range" id="nm-tempo" min="40" max="260" value="112" />
-                        </div>
-                        <div class="nm-range">
-                            <label for="nm-gate">Sustain <output id="nm-gate-out" for="nm-gate">85%</output></label>
-                            <input type="range" id="nm-gate" min="15" max="100" value="85" />
-                        </div>
-                    </fieldset>
-
-                    <fieldset class="nm-group">
-                        <legend>Mix</legend>
-                        <div class="nm-range">
-                            <label for="nm-space">Space <output id="nm-space-out" for="nm-space">30%</output></label>
-                            <input type="range" id="nm-space" min="0" max="100" value="30" />
-                        </div>
-                        <div class="nm-range">
-                            <label for="nm-volume">Volume <output id="nm-volume-out" for="nm-volume">70%</output></label>
-                            <input type="range" id="nm-volume" min="0" max="100" value="70" />
-                        </div>
-                        <label class="nm-check"><input type="checkbox" id="nm-drone" /> <span>Drone on the key note</span></label>
-                    </fieldset>
-
-                    <fieldset class="nm-group">
-                        <legend>Your numbers</legend>
-                        <div class="nm-custom" id="nm-custom">
-                            <div class="nm-switch" role="radiogroup" aria-label="Read the box as">
-                                <button type="button" role="radio" aria-checked="true" data-nm-mode="digits">Digits</button>
-                                <button type="button" role="radio" aria-checked="false" data-nm-mode="text">Text → ASCII</button>
-                            </div>
-                            <label class="nm-visually-hidden" for="nm-input">Your number or text</label>
-                            <textarea id="nm-input" rows="3" spellcheck="false" placeholder="Type or paste digits, e.g. 8675309"></textarea>
-                            <p class="nm-ascii" id="nm-ascii" hidden></p>
-                            <div class="nm-custom-actions">
-                                <button type="button" id="nm-use">Use on selected track</button>
-                                <label class="nm-file">
-                                    <input type="file" id="nm-file" accept=".txt,text/plain" />
-                                    <svg class="nm-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3m-5 5 5-5 5 5M5 21h14"/></svg>
-                                    Import .txt
-                                </label>
-                            </div>
-                            <p class="nm-message" id="nm-message" role="status"></p>
-                        </div>
-                    </fieldset>
-                </div>
-            </section>
-
-            <section class="nm-section nm-tracks-section" aria-labelledby="nm-tracks-title">
-                <div class="section-heading">
-                    <h2 id="nm-tracks-title">Tracks</h2>
-                    <p>Each track plays its own number on its own sound, all on one clock. Mix constants against each other, or let the dice pick everything: numbers, sounds, note lengths, octaves, key, scale, and tempo.</p>
-                </div>
-                <div class="nm-tracks" id="nm-tracks"></div>
-                <div class="nm-track-actions">
-                    <button type="button" id="nm-add">
-                        <svg class="nm-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-                        Add track
-                    </button>
-                    <div class="nm-random">
-                        <label class="nm-visually-hidden" for="nm-random-count">Number of random tracks</label>
-                        <select id="nm-random-count"></select>
-                        <label class="nm-check"><input type="checkbox" id="nm-random-keep" /> <span>Keep key, scale and tempo</span></label>
-                        <button type="button" class="nm-randomize" id="nm-randomize">
-                            <svg class="nm-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg>
-                            Randomize
-                        </button>
-                    </div>
-                    <button type="button" id="nm-share">
-                        <svg class="nm-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg>
-                        Copy link to this mix
-                    </button>
-                </div>
-                <p class="nm-mix-message" id="nm-mix-message" role="status"></p>
-            </section>
-
-            <section class="nm-section nm-watch" aria-labelledby="nm-watch-title">
-                <div class="section-heading">
-                    <h2 id="nm-watch-title">Watch the digits</h2>
-                    <p>The circle draws a line from each digit to the next, one colour per track. The bars count how often each digit has played; in a normal number like π (we think) every bar settles toward one in ten.</p>
-                </div>
-                <div class="nm-watch-grid">
-                    <figure class="nm-card">
-                        <canvas class="nm-circle" id="nm-circle" aria-hidden="true"></canvas>
-                        <figcaption class="nm-card-text" id="nm-circle-text">Press play to start the walk.</figcaption>
-                    </figure>
-                    <figure class="nm-card">
-                        <canvas class="nm-hist" id="nm-hist" aria-hidden="true"></canvas>
-                        <figcaption class="nm-card-text" id="nm-hist-text">No digits played yet.</figcaption>
-                    </figure>
-                </div>
-            </section>
-
-            <section class="nm-section nm-map" aria-labelledby="nm-map-title">
-                <div class="section-heading">
-                    <h2 id="nm-map-title">How a digit becomes a note</h2>
-                    <p>Digits climb the scale from the key note, so 0 is the root and 9 sits high in the second octave. A step is an eighth note, and the score draws each note as long as it is held. The table follows the selected track: <strong id="nm-table-track">Track 1</strong>.</p>
-                </div>
-                <div class="nm-table-wrap">
-                    <table class="nm-table">
-                        <thead>
-                            <tr><th scope="col">Digit</th><th scope="col">Note</th><th scope="col">Frequency</th><th scope="col">Length</th><th scope="col" id="nm-table-drum">Drum</th></tr>
-                        </thead>
-                        <tbody id="nm-table-body"></tbody>
-                    </table>
-                </div>
-                <div class="nm-notes">
-                    <p><strong>Text → ASCII.</strong> Each character becomes its character code, written out and joined: “Hi” is 72 and 105, so it plays 7-2-1-0-5. Characters beyond ASCII use their Unicode code point.</p>
-                    <p><strong>Importing a file.</strong> A .txt file of digits plays as written on the selected track. Spaces, line breaks, and decimal points are skipped; any other character is ignored and counted.</p>
-                    <p><strong>Where the digits come from.</strong> Constants are computed to 1,200 digits with mpmath. Since the 2019 SI redefinition, c, h, e, k, and N<sub>A</sub> are exact, and so are R, F, ħ, σ, and the others built from them. G and the particle values are measured (CODATA 2022) and end where the measurement does. Short numbers loop.</p>
-                </div>
-            </section>
-        </main>
-
-        <footer class="footer">
-            <p>&copy; <span id="year"></span> Brian Fong. All Rights Reserved.</p>
-        </footer>
-    </div>
-    <script src="../../assets/js/data.js?v=20261110-number-music"></script>
-    <script src="../../assets/js/main.js?v=20261110-number-music"></script>
-    <script src="../../assets/js/number-music-data.js?v=20261110"></script>
-    <script src="../../assets/js/number-music.js?v=20261110b"></script>
+    <p>Number Music is now <a href="../numesthesia/index.html">Numesthesia</a>.</p>
 </body>
 </html>

@@ -1,4 +1,4 @@
-/* Number Music — turn the digits of numbers into a multi-track song.
+/* Numesthesia — turn the digits of numbers into a multi-track song.
  *
  * Every track reads one number. Each digit picks a scale degree (or, on
  * a drum kit, a drum) and a note length chosen by the track's length
@@ -8,9 +8,9 @@
  * clock; the canvases read the schedule back so the picture matches
  * what you hear.
  *
- * Digits for the constants come from number-music-data.js (generated
+ * Digits for the constants come from numesthesia-data.js (generated
  * with mpmath); sequences and patterns are generated here.
- * Exposes window.initNumberMusic for the site's page transitions.
+ * Exposes window.initNumesthesia for the site's page transitions.
  */
 (function () {
     'use strict';
@@ -209,7 +209,7 @@
         if (src.digits) return src.digits;
         if (digitCache[src.id]) return digitCache[src.id];
         var d = '';
-        if (src.data) d = (window.NUMBER_MUSIC_DIGITS || {})[src.data] || '';
+        if (src.data) d = (window.NUMESTHESIA_DIGITS || {})[src.data] || '';
         else if (src.gen) d = PATTERNS[src.gen]();
         digitCache[src.id] = d || '0';
         return digitCache[src.id];
@@ -303,6 +303,194 @@
     var LENGTH_BY_ID = {};
     LENGTHS.forEach(function (l) { LENGTH_BY_ID[l.id] = l; });
 
+    // ── Mixing inside a track ──────────────────────────────────────
+    // A track can weave up to four numbers into one digit stream. Each
+    // number keeps its own place, so switching back resumes where it left off.
+    var SWITCH_RULES = [
+        { id: 'blocks8', name: 'Swap every 8 digits', block: 8 },
+        { id: 'blocks4', name: 'Swap every 4 digits', block: 4 },
+        { id: 'blocks16', name: 'Swap every 16 digits', block: 16 },
+        { id: 'blocks32', name: 'Swap every 32 digits', block: 32 },
+        { id: 'interleave', name: 'Take turns, digit by digit', block: 1 },
+        { id: 'led', name: 'Each digit picks the next number' },
+        { id: 'random', name: 'Random stretches' }
+    ];
+    var SWITCH_BY_ID = {};
+    SWITCH_RULES.forEach(function (r) { SWITCH_BY_ID[r.id] = r; });
+    var MAX_MIX = 3;
+
+    function weave(parts, ruleId, seed) {
+        var P = parts.length, longest = 0;
+        parts.forEach(function (p) { longest = Math.max(longest, p.length); });
+        var target = Math.max(64, Math.min(4800, longest * P));
+        var rule = SWITCH_BY_ID[ruleId] || SWITCH_RULES[0];
+        var ptr = parts.map(function () { return 0; });
+        var out = [], origin = new Uint8Array(target), cur = 0, block = 0;
+        function take(k) {
+            var p = parts[k], d = p.charAt(ptr[k] % p.length);
+            ptr[k]++;
+            origin[out.length] = k;
+            out.push(d);
+            return d.charCodeAt(0) - 48;
+        }
+        while (out.length < target) {
+            if (rule.id === 'led') {
+                cur = take(cur) % P;
+            } else {
+                var n = rule.id === 'random' ? 2 + Math.floor(rand01(seed, block) * 15) : rule.block;
+                for (var j = 0; j < n && out.length < target; j++) take(cur);
+                cur = (cur + 1) % P;
+                block++;
+            }
+        }
+        return { digits: out.join(''), origin: origin };
+    }
+
+    // ── Arranger: music theory as an algorithm ─────────────────────
+    // A tuned randomizer. It picks a mood, then fills roles the way a
+    // small band would, with rules that keep the result consonant:
+    //  • Scales: pentatonic and modal scales have few or no semitone
+    //    clashes, so any two digits sound fine together. Darker moods
+    //    allow minor, harmonic minor and Phrygian colour.
+    //  • Register: bass sits two octaves under the lead, the counter-line
+    //    an octave over it, the pad in the middle and quieter, so parts
+    //    don't mask each other.
+    //  • Rhythm: drums stay on the step grid; bass and pad move slowly
+    //    (long notes), the lead moves at the step, the counter-line
+    //    moves fastest. That's the classic division of labour.
+    //  • Repetition: short constants (c, h, 1/7…) loop into riffs, so
+    //    they make good bass lines and grooves; long irrationals wander,
+    //    so they carry melodies.
+    //  • Phrasing: when a track mixes in a second number, it swaps on
+    //    power-of-two phrase lengths (8 or 16 digits), like an A/B section.
+    //  • Balance: the lead is loudest; pad and texture sit underneath;
+    //    tempo, space, sustain and drone follow the mood.
+    var MOODS = {
+        chill: {
+            name: 'Chill', bpm: [68, 92], gate: [70, 95], space: [35, 60], drone: 0.5,
+            scales: ['minorPent', 'majorPent', 'dorian', 'lydian', 'yo'],
+            lead: ['kalimba', 'glass', 'bell', 'flute', 'marimba'], bass: ['bass', 'pad'], pad: ['pad', 'strings'],
+            counter: ['kalimba', 'bell', 'glass'], drums: ['hand', 'acoustic'], texture: ['ratchet', 'hand']
+        },
+        groove: {
+            name: 'Groove', bpm: [92, 124], gate: [55, 85], space: [10, 30], drone: 0.15,
+            scales: ['dorian', 'minorPent', 'mixolydian', 'blues'],
+            lead: ['pluck', 'lead', 'marimba', 'steel', 'organ'], bass: ['bass'], pad: ['organ', 'pad'],
+            counter: ['pluck', 'chip', 'marimba'], drums: ['groove', 'tr808', 'acoustic'], texture: ['ratchet', 'hand']
+        },
+        upbeat: {
+            name: 'Upbeat', bpm: [118, 152], gate: [45, 80], space: [10, 30], drone: 0.1,
+            scales: ['majorPent', 'major', 'lydian', 'mixolydian'],
+            lead: ['chip', 'lead', 'pluck', 'steel'], bass: ['bass', 'chip'], pad: ['strings', 'pad'],
+            counter: ['bell', 'kalimba', 'glass'], drums: ['electro', 'tr808'], texture: ['ratchet', 'electro']
+        },
+        epic: {
+            name: 'Epic', bpm: [72, 104], gate: [80, 100], space: [40, 70], drone: 0.6,
+            scales: ['minor', 'harmonic', 'dorian', 'phrygian'],
+            lead: ['strings', 'lead', 'bell', 'organ'], bass: ['bass', 'toms'], pad: ['strings', 'organ', 'pad'],
+            counter: ['bell', 'glass', 'toms'], drums: ['acoustic', 'tr808'], texture: ['hand', 'ratchet']
+        }
+    };
+    var ROLE_ORDER = ['lead', 'drums', 'bass', 'pad', 'counter', 'texture'];
+    var ROLE_NAMES = { lead: 'lead', drums: 'drums', bass: 'bass', pad: 'pad', counter: 'counter-melody', texture: 'texture' };
+
+    // rng() returns [0, 1). Dice by default; the digits of a number when asked.
+    function diceRng() { return Math.random; }
+    function digitRng(digits) {
+        var pos = 0, L = digits.length;
+        return function () {
+            var v = 0;
+            for (var k = 0; k < 4; k++) { v = v * 10 + (digits.charCodeAt(pos % L) - 48); pos++; }
+            return v / 10000;
+        };
+    }
+    function pickR(rng, arr) { return arr[Math.floor(rng() * arr.length) % arr.length]; }
+    function rangeR(rng, lo, hi) { return Math.round(lo + rng() * (hi - lo)); }
+
+    function riffSources(all) {
+        return all.filter(function (s) {
+            return (s.digits && s.digits.length <= 16) || ['seventh', 'seventeenth', 'fibMod10', 'thueMorse', 'kolakoski'].indexOf(s.id) >= 0;
+        });
+    }
+    function melodySources(all) {
+        return all.filter(function (s) { return (s.group === 'math' && !s.digits) || !!s.data || (s.group === 'custom' && s.digits.length > 16); });
+    }
+    function patternSources(all) { return all.filter(function (s) { return s.group === 'pattern'; }); }
+
+    function arrange(n, rng, all, moodId) {
+        var mood = MOODS[moodId] || MOODS[pickR(rng, Object.keys(MOODS))];
+        var melodies = melodySources(all), riffs = riffSources(all), patterns = patternSources(all);
+        var used = {};
+        function fresh(pool) {
+            var options = pool.filter(function (s) { return !used[s.id]; });
+            var s = pickR(rng, options.length ? options : pool);
+            used[s.id] = true;
+            return s.id;
+        }
+        var tracks = [];
+        for (var k = 0; k < n; k++) {
+            var role = ROLE_ORDER[k % ROLE_ORDER.length], t;
+            if (role === 'lead') {
+                t = { instrument: pickR(rng, mood.lead), octave: rng() < 0.6 ? 0 : 1, volume: 0.82,
+                    length: pickR(rng, mood.name === 'Groove' ? ['steady', 'swing', 'parity', 'previous'] : ['steady', 'parity', 'grouped', 'previous', 'fibonacci']),
+                    sourceId: fresh(melodies) };
+                if (t.instrument === 'strings' || t.instrument === 'lead') t.octave = 0;
+                if (rng() < 0.55) { t.mixIds = [fresh(melodies)]; t.switchRule = pickR(rng, ['blocks8', 'blocks16']); }
+            } else if (role === 'drums') {
+                var kit = pickR(rng, mood.drums);
+                t = { instrument: kit, octave: 0, volume: 0.72, length: kit === 'groove' ? 'steady' : pickR(rng, ['steady', 'steady', 'zero']),
+                    sourceId: fresh(rng() < 0.5 ? riffs : melodies) };
+                if (rng() < 0.45) { t.mixIds = [fresh(riffs)]; t.switchRule = 'blocks16'; }
+            } else if (role === 'bass') {
+                t = { instrument: pickR(rng, mood.bass), octave: -2, volume: 0.76,
+                    length: pickR(rng, ['slow', 'parity', 'grouped']), sourceId: fresh(riffs) };
+                if (t.instrument === 'pad' || t.instrument === 'chip') t.octave = -1;
+            } else if (role === 'pad') {
+                t = { instrument: pickR(rng, mood.pad), octave: rng() < 0.5 ? 0 : -1, volume: 0.46,
+                    length: pickR(rng, ['slow', 'inverse']), sourceId: fresh(melodies) };
+            } else if (role === 'counter') {
+                t = { instrument: pickR(rng, mood.counter), octave: 1, volume: 0.52,
+                    length: pickR(rng, ['fast', 'parityInv', 'steady']), sourceId: fresh(patterns) };
+                if (rng() < 0.4) { t.mixIds = [fresh(patterns)]; t.switchRule = 'interleave'; }
+            } else {
+                t = { instrument: pickR(rng, mood.texture), octave: 0, volume: 0.44,
+                    length: pickR(rng, ['fast', 'oddRest', 'steady']), sourceId: fresh(all) };
+            }
+            t.role = role;
+            t.seed = Math.floor(rng() * 4294967295) >>> 0;
+            tracks.push(t);
+        }
+        return {
+            mood: mood, tracks: tracks,
+            scale: pickR(rng, mood.scales), key: Math.floor(rng() * 12) % 12,
+            bpm: rangeR(rng, mood.bpm[0], mood.bpm[1]), gate: rangeR(rng, mood.gate[0], mood.gate[1]),
+            space: rangeR(rng, mood.space[0], mood.space[1]), drone: rng() < mood.drone
+        };
+    }
+
+    // Truly random: anything goes, including mixing inside tracks.
+    function chaos(n, rng, all) {
+        var instruments = INSTRUMENTS.concat(KITS), tracks = [];
+        for (var k = 0; k < n; k++) {
+            var t = {
+                sourceId: pickR(rng, all).id, instrument: pickR(rng, instruments).id, length: pickR(rng, LENGTHS).id,
+                octave: pickR(rng, [-2, -1, 0, 1, 2]), volume: Math.round((0.55 + rng() * 0.4) * 100) / 100,
+                seed: Math.floor(rng() * 4294967295) >>> 0
+            };
+            if (rng() < 0.4) {
+                var m = 1 + Math.floor(rng() * MAX_MIX);
+                t.mixIds = [];
+                for (var j = 0; j < m; j++) t.mixIds.push(pickR(rng, all).id);
+                t.switchRule = pickR(rng, SWITCH_RULES).id;
+            }
+            tracks.push(t);
+        }
+        return {
+            tracks: tracks, scale: pickR(rng, SCALES).id, key: Math.floor(rng() * 12) % 12,
+            bpm: rangeR(rng, 70, 190), gate: rangeR(rng, 35, 100), space: rangeR(rng, 5, 65), drone: rng() < 0.3
+        };
+    }
+
     var TRACK_COLORS = ['#5cf08f', '#7fb2e8', '#d2f27a', '#f0b86e', '#6fd6d6', '#f29bb8'];
     var MAX_TRACKS = 6;
 
@@ -344,9 +532,10 @@
 
     // ── Audio engine ───────────────────────────────────────────────
 
-    function Engine() {
+    // Pass an OfflineAudioContext to render a file instead of playing live.
+    function Engine(givenCtx) {
         var AC = window.AudioContext || window.webkitAudioContext;
-        var ctx = new AC();
+        var ctx = givenCtx || new AC();
         var master = ctx.createGain();
         var comp = ctx.createDynamicsCompressor();
         comp.threshold.value = -14; comp.ratio.value = 4; comp.attack.value = 0.004; comp.release.value = 0.2;
@@ -583,7 +772,7 @@
                 lp.connect(g); g.connect(bus);
                 drone = { g: g, oscs: oscs };
             },
-            close: function () { try { ctx.close(); } catch (e) {} }
+            close: function () { if (!givenCtx) { try { ctx.close(); } catch (e) {} } }
         };
     }
 
@@ -667,10 +856,10 @@
 
     // ── Page ───────────────────────────────────────────────────────
 
-    function initNumberMusic() {
-        var root = document.getElementById('number-music');
+    function initNumesthesia() {
+        var root = document.getElementById('numesthesia');
         if (!root || root.dataset.nmReady === 'true') return;
-        if (typeof window.__numberMusicCleanup === 'function') window.__numberMusicCleanup();
+        if (typeof window.__numesthesiaCleanup === 'function') window.__numesthesiaCleanup();
         root.dataset.nmReady = 'true';
 
         var $ = function (id) { return document.getElementById(id); };
@@ -683,6 +872,12 @@
             drone: $('nm-drone'), tempo: $('nm-tempo'), gate: $('nm-gate'),
             tracks: $('nm-tracks'), add: $('nm-add'), randomCount: $('nm-random-count'),
             randomKeep: $('nm-random-keep'), randomize: $('nm-randomize'), share: $('nm-share'),
+            randomStyle: $('nm-random-style'), randomDigits: $('nm-random-digits'),
+            exportFormat: $('nm-export-format'), exportQuality: $('nm-export-quality'), exportQualityField: $('nm-export-quality-field'),
+            exportAmount: $('nm-export-amount'), exportAmountLabel: $('nm-export-amount-label'), exportUnit: $('nm-export-unit'),
+            exportStart: $('nm-export-start'), exportFade: $('nm-export-fade'), exportFadeField: $('nm-export-fade-field'),
+            exportButton: $('nm-export'), exportStatus: $('nm-export-status'), exportProgress: $('nm-export-progress'),
+            exportSummary: $('nm-export-summary'),
             mixMessage: $('nm-mix-message'),
             circle: $('nm-circle'), hist: $('nm-hist'), circleText: $('nm-circle-text'), histText: $('nm-hist-text'),
             table: $('nm-table-body'), tableDrum: $('nm-table-drum'), tableTrack: $('nm-table-track')
@@ -764,6 +959,7 @@
             var t = {
                 id: ++trackSeq, color: color,
                 sourceId: opts.sourceId || 'pi', instrument: opts.instrument || 'bell',
+                mixIds: (opts.mixIds || []).slice(0, MAX_MIX), switchRule: SWITCH_BY_ID[opts.switchRule] ? opts.switchRule : 'blocks8',
                 length: opts.length || 'steady', octave: opts.octave || 0,
                 volume: opts.volume == null ? 0.8 : opts.volume,
                 mute: !!opts.mute, solo: !!opts.solo,
@@ -778,7 +974,15 @@
         function computeTimeline(t) {
             var src = findSource(t.sourceId) || SOURCES[0];
             t.sourceId = src.id;
-            t.digits = sourceDigits(src);
+            t.mixIds = t.mixIds.map(function (id) { return findSource(id) ? id : 'e'; });
+            if (t.mixIds.length) {
+                var woven = weave([sourceDigits(src)].concat(t.mixIds.map(function (id) { return sourceDigits(findSource(id)); })), t.switchRule, t.seed);
+                t.digits = woven.digits;
+                t.origin = woven.origin;
+            } else {
+                t.digits = sourceDigits(src);
+                t.origin = null;
+            }
             var L = t.digits.length;
             t.lens = new Float32Array(L);
             t.rests = new Uint8Array(L);
@@ -835,11 +1039,28 @@
                         '<button type="button" class="nm-small" data-act="solo" aria-pressed="' + t.solo + '">Solo</button>' +
                         '<button type="button" class="nm-small nm-remove" data-act="remove" aria-label="Remove track ' + (k + 1) + '" title="Remove track"' + (state.tracks.length === 1 ? ' disabled' : '') + '>' +
                             '<svg class="nm-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>' +
+                    '</div>' +
+                    '<div class="nm-track-mix">' +
+                        '<span class="nm-mix-label">Mix in</span>' +
+                        t.mixIds.map(function (id, j) {
+                            return '<div class="nm-mix-part"><label class="nm-visually-hidden" for="' + pid + '-mix' + j + '">Mixed-in number ' + (j + 2) + '</label>' +
+                                '<span class="nm-mix-shape" data-shape="' + (j + 1) + '" aria-hidden="true"></span>' +
+                                '<select id="' + pid + '-mix' + j + '" data-mix="' + j + '">' + srcHtml + '</select>' +
+                                '<button type="button" class="nm-small nm-remove" data-act="unmix" data-j="' + j + '" aria-label="Stop mixing in number ' + (j + 2) + '">' +
+                                '<svg class="nm-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>';
+                        }).join('') +
+                        (t.mixIds.length < MAX_MIX ? '<button type="button" class="nm-small nm-mix-add" data-act="mixadd">' +
+                            '<svg class="nm-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>' + (t.mixIds.length ? 'Another number' : 'Another number in this track') + '</button>' : '') +
+                        (t.mixIds.length ? '<div class="nm-mix-rule"><label class="nm-visually-hidden" for="' + pid + '-sw">How the numbers switch</label><select id="' + pid + '-sw" data-k="switchRule">' +
+                            SWITCH_RULES.map(function (r) { return '<option value="' + r.id + '">' + r.name + '</option>'; }).join('') + '</select></div>' : '') +
                     '</div>';
                 row.querySelector('[data-k="sourceId"]').value = t.sourceId;
                 row.querySelector('[data-k="instrument"]').value = t.instrument;
                 row.querySelector('[data-k="length"]').value = t.length;
                 row.querySelector('[data-k="octave"]').value = String(t.octave);
+                t.mixIds.forEach(function (id, j) { row.querySelector('[data-mix="' + j + '"]').value = id; });
+                var sw = row.querySelector('[data-k="switchRule"]');
+                if (sw) sw.value = t.switchRule;
                 el.tracks.appendChild(row);
             });
             el.add.disabled = state.tracks.length >= MAX_TRACKS;
@@ -862,6 +1083,7 @@
             updateHead();
             renderTable();
             redraw();
+            updateSeekMax();
         }
 
         function trackChanged(t, rebuildTimeline) {
@@ -968,19 +1190,20 @@
             redraw();
         }
 
-        function playDigit(t, i, s, when) {
+        function playDigit(t, i, s, when, eng, ch) {
+            eng = eng || engine; ch = ch || t.channel;
             var d = t.digits.charCodeAt(i) - 48, g = globals();
             var lenSec = t.lens[i] * stepDur();
-            if (t.rests[i] || !t.channel) return d;
+            if (t.rests[i] || !ch) return d;
             if (isKit(t.instrument)) {
                 if (t.instrument === 'ratchet') {
-                    for (var h = 0; h < d; h++) engine.drum(t.channel, 'hatC', when + h * lenSec / d, h === 0 ? 1 : 0.6);
+                    for (var h = 0; h < d; h++) eng.drum(ch, 'hatC', when + h * lenSec / d, h === 0 ? 1 : 0.6);
                 } else {
                     var piece = kitPiece(t.instrument, d, s);
-                    if (piece) engine.drum(t.channel, piece, when, t.instrument === 'groove' ? 0.35 + d * 0.07 : 0.65 + d * 0.04);
+                    if (piece) eng.drum(ch, piece, when, t.instrument === 'groove' ? 0.35 + d * 0.07 : 0.65 + d * 0.04);
                 }
             } else {
-                engine.note(t.channel, t.instrument, midiToFreq(midiFor(t, d)), when, Math.max(0.03, lenSec * g.gate), 1);
+                eng.note(ch, t.instrument, midiToFreq(midiFor(t, d)), when, Math.max(0.03, lenSec * g.gate), 1);
             }
             return d;
         }
@@ -1042,9 +1265,16 @@
             var t = focused();
             if (!t) return;
             var src = findSource(t.sourceId) || SOURCES[0];
-            el.name.textContent = src.name;
             el.name.style.setProperty('--track', t.color);
-            el.value.textContent = sourceValue(src);
+            if (t.mixIds.length) {
+                var parts = [src].concat(t.mixIds.map(findSource));
+                var at = t.origin ? t.origin[currentIndex(t, positionNow())] : 0;
+                el.name.textContent = parts.map(function (p2) { return p2.short || p2.name; }).join(' + ');
+                el.value.textContent = SWITCH_BY_ID[t.switchRule].name + ' · now ' + parts[at].name;
+            } else {
+                el.name.textContent = src.name;
+                el.value.textContent = sourceValue(src);
+            }
             var i = currentIndex(t, positionNow());
             el.pos.textContent = (i + 1).toLocaleString();
             el.len.textContent = t.digits.length.toLocaleString();
@@ -1062,6 +1292,7 @@
 
         function updateSeekMax() {
             el.seek.max = String(Math.max(1, Math.ceil(maxTotal())));
+            if (typeof updateExportSummary === 'function' && el.exportSummary) updateExportSummary();
         }
 
         function updateStatsText() {
@@ -1136,7 +1367,8 @@
                 var src = findSource(t.sourceId) || SOURCES[0];
                 c.fillStyle = muted ? colors.text3 : t.color;
                 c.font = '600 12px ' + MONO;
-                c.fillText(String(k + 1) + ' ' + (src.short || src.name).slice(0, narrow ? 5 : 9), 10, y0 + 22);
+                var laneLabel = (src.short || src.name).slice(0, narrow ? 4 : 7) + (t.mixIds.length ? '+' + t.mixIds.length : '');
+                c.fillText(String(k + 1) + ' ' + laneLabel, 10, y0 + 22);
                 c.fillStyle = colors.text3;
                 c.font = '500 10px ' + MONO;
                 var inst = INSTRUMENT_NAME[t.instrument] || '';
@@ -1177,7 +1409,9 @@
                     var isCur = S >= s && S < s + len && (state.playing || S > 0 || s === 0);
                     var past = s + len <= S;
                     var grow = isCur && !reduceMotion.matches ? t.flash * 3 : 0;
-                    var r = kit ? h / 2 : 4;
+                    // Mixed-in numbers draw with their own corner shape.
+                    var shapes = kit ? [h / 2, 4, 1, h / 2] : [4, h / 2, 1, 4];
+                    var r = shapes[t.origin ? t.origin[i] : 0];
                     roundRect(c, x - grow / 2, y - h / 2 - grow / 2, w + grow, h + grow, r);
                     if (t.rests[i]) {
                         c.setLineDash([2, 3]);
@@ -1416,36 +1650,41 @@
         // ── Randomize ──
         function randomize() {
             var n = parseInt(el.randomCount.value, 10) || 3;
-            var keep = el.randomKeep.checked;
-            var sources = allSources(), instruments = INSTRUMENTS.concat(KITS), lengths = LENGTHS;
-            var list = [];
-            for (var k = 0; k < n; k++) {
-                list.push({
-                    sourceId: pick(sources).id,
-                    instrument: pick(instruments).id,
-                    length: pick(lengths).id,
-                    octave: pick([-2, -1, 0, 1, 2]),
-                    volume: Math.round((0.55 + Math.random() * 0.4) * 100) / 100
-                });
+            var keep = el.randomKeep.checked, style = el.randomStyle.value;
+            var t0 = focused();
+            var fromDigits = el.randomDigits.checked && t0;
+            // Rolling with a number: its digits make every choice and it stays
+            // the first track, so the same number always gives the same song.
+            var seedSrc = fromDigits ? findSource(t0.sourceId) : null;
+            var rng = fromDigits ? digitRng(sourceDigits(seedSrc)) : diceRng();
+            var all = allSources();
+            var plan = style === 'chaos' ? chaos(n, rng, all) : arrange(n, rng, all, style === 'theory' ? null : style);
+            if (seedSrc) {
+                plan.tracks[0].sourceId = seedSrc.id;
+                plan.tracks[0].mixIds = (plan.tracks[0].mixIds || []).filter(function (id) { return id !== seedSrc.id; });
             }
             if (!keep) {
-                el.key.value = String(Math.floor(Math.random() * 12));
-                el.scale.value = pick(SCALES).id;
-                el.tempo.value = String(70 + Math.floor(Math.random() * 121));
-                el.gate.value = String(35 + Math.floor(Math.random() * 66));
-                el.space.value = String(5 + Math.floor(Math.random() * 60));
-                el.drone.checked = Math.random() < 0.3;
+                el.key.value = String(plan.key);
+                el.scale.value = plan.scale;
+                el.tempo.value = String(plan.bpm);
+                el.gate.value = String(plan.gate);
+                el.space.value = String(plan.space);
+                el.drone.checked = !!plan.drone;
                 syncOutputs();
                 if (engine) engine.setSpace(el.space.value / 100);
             }
             resetStats();
-            setTracks(list);
+            setTracks(plan.tracks);
             var g = globals();
-            setMixMessage('Random mix: ' + plural(n, 'track') + ' in ' + NOTE_NAMES[g.key] + ' ' + SCALE_BY_ID[g.scale].name.toLowerCase() + ' at ' + g.bpm + ' bpm. ' +
-                state.tracks.map(function (t, k) {
-                    var src = findSource(t.sourceId);
-                    return (k + 1) + ') ' + src.name + ' on ' + INSTRUMENT_NAME[t.instrument].toLowerCase() + ', ' + LENGTH_BY_ID[t.length].name.charAt(0).toLowerCase() + LENGTH_BY_ID[t.length].name.slice(1);
-                }).join('; ') + '.');
+            var lead = (plan.mood ? plan.mood.name + ' arrangement' : 'Fully random mix') + (fromDigits ? ', rolled from the digits of ' + (findSource(t0.sourceId) || {}).name : '') +
+                ': ' + NOTE_NAMES[g.key] + ' ' + SCALE_BY_ID[g.scale].name.toLowerCase() + ' at ' + g.bpm + ' bpm. ';
+            setMixMessage(lead + state.tracks.map(function (t, k) {
+                var names = [findSource(t.sourceId)].concat(t.mixIds.map(findSource)).map(function (x) { return x.name; }).join(' + ');
+                var role = plan.tracks[k].role ? ROLE_NAMES[plan.tracks[k].role] + ': ' : '';
+                return (k + 1) + ') ' + role + names + ' on ' + INSTRUMENT_NAME[t.instrument].toLowerCase() + ', ' +
+                    LENGTH_BY_ID[t.length].name.charAt(0).toLowerCase() + LENGTH_BY_ID[t.length].name.slice(1) +
+                    (t.mixIds.length ? ' (' + SWITCH_BY_ID[t.switchRule].name.toLowerCase() + ')' : '');
+            }).join('; ') + '.');
         }
 
         // ── Share links ──
@@ -1456,12 +1695,15 @@
                 v: 1, k: g.key, sc: g.scale, t: g.bpm, ga: Math.round(g.gate * 100),
                 sp: parseInt(el.space.value, 10), vo: parseInt(el.volume.value, 10), dr: el.drone.checked ? 1 : 0, lp: state.loop ? 1 : 0,
                 tr: state.tracks.map(function (t) {
-                    var src = findSource(t.sourceId), sid = t.sourceId;
-                    if (src.group === 'custom') {
-                        if (src.digits.length > 400) sid = 'pi';
-                        else used[src.id] = src;
+                    function keepable(id) {
+                        var src = findSource(id);
+                        if (src.group !== 'custom') return id;
+                        if (src.digits.length > 400) return 'pi';
+                        used[src.id] = src;
+                        return id;
                     }
-                    return [sid, t.instrument, t.length, t.octave, Math.round(t.volume * 100), t.mute ? 1 : 0, t.solo ? 1 : 0, t.seed];
+                    return [keepable(t.sourceId), t.instrument, t.length, t.octave, Math.round(t.volume * 100), t.mute ? 1 : 0, t.solo ? 1 : 0, t.seed,
+                        t.mixIds.map(keepable), t.switchRule];
                 }),
                 cu: Object.keys(used).map(function (id) { var s = used[id]; return [s.id, s.name, s.digits, s.short]; })
             };
@@ -1493,7 +1735,9 @@
                     length: LENGTH_BY_ID[a[2]] ? a[2] : 'steady',
                     octave: Math.max(-2, Math.min(2, a[3] | 0)),
                     volume: Math.max(0, Math.min(1, (a[4] == null ? 80 : a[4]) / 100)),
-                    mute: !!a[5], solo: !!a[6], seed: a[7] >>> 0
+                    mute: !!a[5], solo: !!a[6], seed: a[7] >>> 0,
+                    mixIds: Array.isArray(a[8]) ? a[8].filter(function (id) { return findSource(id); }).slice(0, MAX_MIX) : [],
+                    switchRule: SWITCH_BY_ID[a[9]] ? a[9] : 'blocks8'
                 };
             });
             if (!list.length) throw new Error('no tracks');
@@ -1512,6 +1756,344 @@
             }
         }
 
+        // ── Export ──
+        // Audio renders offline (faster than real time) through the same
+        // engine; MIDI and CSV are written from the same note schedule.
+        var MP3_URL = 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js';
+        var MP3_SRI = 'sha384-xuasJXVcyv3hZq0eYpelEkBC8l4yufatZXDsKuyCU2rqfhDCb+ftuE/mSfZAteiK';
+        var MAX_AUDIO_SECONDS = 20 * 60, MAX_DATA_SECONDS = 60 * 60;
+        var GM_PROGRAM = { bell: 14, pluck: 25, glass: 98, marimba: 12, kalimba: 108, steel: 114, organ: 16, flute: 73, strings: 48, pad: 89, lead: 81, chip: 80, bass: 38, toms: 117 };
+        var GM_DRUM = { kick: 36, kick808: 35, snare: 38, clap: 39, hatC: 42, hatO: 46, tomL: 45, tomM: 47, tomH: 50, rim: 37, cowbell: 56, shaker: 70, congaL: 64, congaH: 63, bongo: 60, clave: 75, zap: 40, zapHi: 81, noise: 49 };
+        var FORMATS = {
+            wav: { ext: 'wav', label: 'WAV', audio: true, quality: [['44100', '44.1 kHz, 16-bit'], ['48000', '48 kHz, 16-bit']] },
+            mp3: { ext: 'mp3', label: 'MP3', audio: true, quality: [['192', '192 kbps'], ['320', '320 kbps'], ['128', '128 kbps']] },
+            midi: { ext: 'mid', label: 'MIDI' },
+            csv: { ext: 'csv', label: 'CSV' }
+        };
+        var exporting = false;
+
+        function setExportStatus(text, isError) {
+            el.exportStatus.textContent = text;
+            el.exportStatus.classList.toggle('is-error', !!isError);
+        }
+        function setProgress(frac) {
+            if (frac == null) { el.exportProgress.hidden = true; return; }
+            el.exportProgress.hidden = false;
+            el.exportProgress.value = Math.max(0, Math.min(1, frac));
+        }
+
+        function syncQuality() {
+            var f = FORMATS[el.exportFormat.value];
+            el.exportQuality.innerHTML = '';
+            (f.quality || []).forEach(function (q) {
+                var o = document.createElement('option'); o.value = q[0]; o.textContent = q[1]; el.exportQuality.appendChild(o);
+            });
+            el.exportQualityField.hidden = !f.quality;
+            el.exportFadeField.hidden = !f.audio;
+            updateExportSummary();
+        }
+
+        function exportStartStep() { return el.exportStart.value === 'playhead' ? Math.floor(positionNow()) : 0; }
+
+        // Length of the export in steps, from the amount and unit.
+        function exportSteps() {
+            var amount = Math.max(0, parseFloat(el.exportAmount.value) || 0);
+            var unit = el.exportUnit.value, sd = stepDur();
+            if (unit === 'seconds') return amount / sd;
+            if (unit === 'minutes') return amount * 60 / sd;
+            if (unit === 'bars') return amount * 8;          // a 4/4 bar is eight eighth-note steps
+            if (unit === 'digits') {
+                var t = focused(), L = t.digits.length, n = Math.round(amount);
+                if (!state.loop) n = Math.min(n, L);
+                return Math.floor(n / L) * t.total + t.starts[n % L];
+            }
+            if (unit === 'once') return maxTotal();           // every track plays through once
+            return 0;
+        }
+
+        function updateExportSummary() {
+            if (!state.tracks.length) return;
+            var unit = el.exportUnit.value;
+            el.exportAmount.disabled = unit === 'once';
+            el.exportAmountLabel.textContent = unit === 'digits' ? 'Digits on track ' + (state.focus + 1) : 'Length';
+            var steps = exportSteps(), secs = steps * stepDur();
+            var f = FORMATS[el.exportFormat.value];
+            var cap = f.audio ? MAX_AUDIO_SECONDS : MAX_DATA_SECONDS;
+            var mins = Math.floor(secs / 60), rest = Math.round(secs % 60);
+            if (rest === 60) { mins++; rest = 0; }
+            var text = mins + ':' + (rest < 10 ? '0' : '') + rest + ' long · ' + Math.round(steps).toLocaleString() + ' steps · ' + plural(state.tracks.length, 'track');
+            if (f.audio) {
+                var sr = el.exportFormat.value === 'wav' ? parseInt(el.exportQuality.value || '44100', 10) : 44100;
+                var bytes = el.exportFormat.value === 'wav' ? secs * sr * 4 : secs * (parseInt(el.exportQuality.value || '192', 10) * 1000 / 8);
+                text += ' · about ' + (bytes > 1e6 ? (bytes / 1e6).toFixed(1) + ' MB' : Math.max(1, Math.round(bytes / 1e3)) + ' KB');
+            }
+            el.exportSummary.textContent = text;
+            var tooLong = secs > cap, empty = steps < 0.5;
+            el.exportButton.disabled = exporting || tooLong || empty;
+            if (tooLong) setExportStatus('That is longer than the ' + (cap / 60) + '-minute limit for ' + f.label + '. Shorten it to export.', true);
+            else if (empty) setExportStatus('Set a length above zero to export.', true);
+            else if (!exporting && el.exportStatus.classList.contains('is-error')) setExportStatus('');
+        }
+
+        // Every note that starts inside [startS, endS), in time order per track.
+        function eachExportNote(startS, endS, cb) {
+            state.tracks.forEach(function (t, k) {
+                forEachNote(t, startS, endS, function (i, s) {
+                    if (s < startS - 1e-9 || s >= endS - 1e-9) return;
+                    cb(t, k, i, s);
+                });
+            });
+        }
+
+        function exportName() {
+            var parts = state.tracks.map(function (t) { return t.sourceId.replace(/^u\d+$/, 'yours'); });
+            var unique = parts.filter(function (p, i) { return parts.indexOf(p) === i; }).slice(0, 4);
+            return 'numesthesia-' + unique.join('-').toLowerCase().replace(/[^a-z0-9-]+/g, '') + '.' + FORMATS[el.exportFormat.value].ext;
+        }
+
+        function download(blob, name) {
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url; a.download = name; a.style.display = 'none';
+            document.body.appendChild(a); a.click();
+            setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 4000);
+        }
+
+        function renderAudio(startS, steps, sampleRate) {
+            var OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+            if (!OAC) return Promise.reject(new Error('This browser cannot render audio offline.'));
+            var sd = stepDur(), seconds = steps * sd;
+            var off = new OAC(2, Math.max(1, Math.ceil(seconds * sampleRate)), sampleRate);
+            var eng = Engine(off);
+            eng.setVolume(el.volume.value / 100);
+            eng.setSpace(el.space.value / 100);
+            if (el.drone.checked) eng.setDrone(true, 48 + globals().key);
+            var n = state.tracks.length, solo = anySolo();
+            var chans = state.tracks.map(function (t, k) {
+                var ch = eng.channel();
+                ch.setVolume(!t.mute && (!solo || t.solo) ? t.volume : 0);
+                ch.setPan(n > 1 ? (k / (n - 1) - 0.5) * 0.7 : 0);
+                return ch;
+            });
+            var endS = startS + steps;
+            function scheduleChunk(a, b) {
+                eachExportNote(a, Math.min(b, endS), function (t, k, i, s) {
+                    playDigit(t, i, s, (s - startS) * sd, eng, chans[k]);
+                });
+            }
+            // Schedule in chunks while rendering when the browser can pause the
+            // render; otherwise schedule everything up front.
+            var chunk = Math.max(8, Math.round(10 / sd));
+            var canSuspend = typeof off.suspend === 'function';
+            if (canSuspend) {
+                scheduleChunk(startS, startS + chunk);
+                for (var c = startS + chunk; c < endS; c += chunk) {
+                    (function (from) {
+                        var at = (from - startS) * sd - 2;
+                        if (at <= 0) { scheduleChunk(from, from + chunk); return; }
+                        try {
+                            off.suspend(at).then(function () {
+                                scheduleChunk(from, from + chunk);
+                                setProgress(0.05 + 0.8 * (from - startS) / steps);
+                                off.resume();
+                            });
+                        } catch (e) { scheduleChunk(from, from + chunk); }
+                    })(c);
+                }
+            } else {
+                scheduleChunk(startS, endS);
+            }
+            return off.startRendering().then(function (buffer) {
+                if (el.exportFade.checked) {
+                    var fadeLen = Math.min(buffer.length, Math.round(Math.min(3, seconds / 4) * sampleRate));
+                    for (var ch = 0; ch < buffer.numberOfChannels; ch++) {
+                        var data = buffer.getChannelData(ch), start = buffer.length - fadeLen;
+                        for (var j = 0; j < fadeLen; j++) data[start + j] *= Math.pow(1 - j / fadeLen, 2);
+                    }
+                }
+                return buffer;
+            });
+        }
+
+        function toInt16(f) { var v = Math.max(-1, Math.min(1, f)); return v < 0 ? v * 0x8000 : v * 0x7fff; }
+
+        function encodeWav(buffer) {
+            var chs = buffer.numberOfChannels, len = buffer.length, sr = buffer.sampleRate;
+            var out = new DataView(new ArrayBuffer(44 + len * chs * 2));
+            function str(o, s) { for (var i = 0; i < s.length; i++) out.setUint8(o + i, s.charCodeAt(i)); }
+            str(0, 'RIFF'); out.setUint32(4, 36 + len * chs * 2, true); str(8, 'WAVE');
+            str(12, 'fmt '); out.setUint32(16, 16, true); out.setUint16(20, 1, true); out.setUint16(22, chs, true);
+            out.setUint32(24, sr, true); out.setUint32(28, sr * chs * 2, true); out.setUint16(32, chs * 2, true); out.setUint16(34, 16, true);
+            str(36, 'data'); out.setUint32(40, len * chs * 2, true);
+            var data = [];
+            for (var c = 0; c < chs; c++) data.push(buffer.getChannelData(c));
+            var o = 44;
+            for (var i = 0; i < len; i++) for (c = 0; c < chs; c++) { out.setInt16(o, toInt16(data[c][i]), true); o += 2; }
+            return new Blob([out], { type: 'audio/wav' });
+        }
+
+        var lamePromise = null;
+        function loadLame() {
+            if (window.lamejs && window.lamejs.Mp3Encoder) return Promise.resolve(window.lamejs);
+            if (lamePromise) return lamePromise;
+            lamePromise = new Promise(function (resolve, reject) {
+                var sc = document.createElement('script');
+                sc.src = MP3_URL; sc.integrity = MP3_SRI; sc.crossOrigin = 'anonymous'; sc.async = true;
+                sc.onload = function () { window.lamejs && window.lamejs.Mp3Encoder ? resolve(window.lamejs) : reject(new Error('The MP3 encoder did not load.')); };
+                sc.onerror = function () { lamePromise = null; reject(new Error('Could not load the MP3 encoder. Check your connection, or export WAV instead.')); };
+                document.head.appendChild(sc);
+            });
+            return lamePromise;
+        }
+
+        function encodeMp3(buffer, kbps, onProgress) {
+            return loadLame().then(function (lame) {
+                var enc = new lame.Mp3Encoder(2, buffer.sampleRate, kbps);
+                var L = buffer.getChannelData(0), R = buffer.numberOfChannels > 1 ? buffer.getChannelData(1) : L;
+                var block = 1152, parts = [], i = 0;
+                var l16 = new Int16Array(block), r16 = new Int16Array(block);
+                return new Promise(function (resolve) {
+                    function step() {
+                        var until = Math.min(buffer.length, i + block * 200);
+                        for (; i < until; i += block) {
+                            var n = Math.min(block, buffer.length - i);
+                            var lb = n === block ? l16 : new Int16Array(n), rb = n === block ? r16 : new Int16Array(n);
+                            for (var j = 0; j < n; j++) { lb[j] = toInt16(L[i + j]); rb[j] = toInt16(R[i + j]); }
+                            var bytes = enc.encodeBuffer(lb, rb);
+                            if (bytes.length) parts.push(new Uint8Array(bytes));
+                        }
+                        onProgress(i / buffer.length);
+                        if (i < buffer.length) setTimeout(step, 0);
+                        else {
+                            var tail = enc.flush();
+                            if (tail.length) parts.push(new Uint8Array(tail));
+                            resolve(new Blob(parts, { type: 'audio/mpeg' }));
+                        }
+                    }
+                    step();
+                });
+            });
+        }
+
+        function buildMidi(startS, steps) {
+            var TPQ = 480, STEP = TPQ / 2, g = globals();
+            function vlq(n) {
+                var bytes = [n & 0x7f];
+                while ((n >>= 7)) bytes.unshift((n & 0x7f) | 0x80);
+                return bytes;
+            }
+            function text(type, s) {
+                var b = Array.from(new TextEncoder().encode(s)).slice(0, 120);
+                return [0xff, type].concat(vlq(b.length), b);
+            }
+            function chunk(events) {
+                var body = [];
+                events.sort(function (a, b) { return a.tick - b.tick || a.order - b.order; });
+                var last = 0;
+                events.forEach(function (e) { body = body.concat(vlq(e.tick - last), e.data); last = e.tick; });
+                body = body.concat([0, 0xff, 0x2f, 0]);
+                var n = body.length;
+                return [0x4d, 0x54, 0x72, 0x6b, (n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255].concat(body);
+            }
+            var tempo = Math.round(60000000 / g.bpm);
+            var conductor = chunk([
+                { tick: 0, order: 0, data: text(0x03, 'Numesthesia') },
+                { tick: 0, order: 0, data: [0xff, 0x51, 3, (tempo >> 16) & 255, (tempo >> 8) & 255, tempo & 255] },
+                { tick: 0, order: 0, data: [0xff, 0x58, 4, 4, 2, 24, 8] }
+            ]);
+            var perTrack = state.tracks.map(function () { return []; });
+            var melodicChannels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12], nextCh = 0;
+            var chanOf = state.tracks.map(function (t) { return isKit(t.instrument) ? 9 : melodicChannels[nextCh++]; });
+            var solo = anySolo();
+            state.tracks.forEach(function (t, k) {
+                var ch = chanOf[k], src = findSource(t.sourceId), ev = perTrack[k];
+                ev.push({ tick: 0, order: 0, data: text(0x03, 'Track ' + (k + 1) + ': ' + src.name + ' (' + INSTRUMENT_NAME[t.instrument] + ')') });
+                if (ch !== 9) ev.push({ tick: 0, order: 0, data: [0xc0 | ch, GM_PROGRAM[t.instrument] || 0] });
+                var audibleNow = !t.mute && (!solo || t.solo);
+                ev.push({ tick: 0, order: 0, data: [0xb0 | ch, 7, Math.round((audibleNow ? t.volume : 0) * 127)] });
+                var pan = state.tracks.length > 1 ? (k / (state.tracks.length - 1) - 0.5) * 0.7 : 0;
+                ev.push({ tick: 0, order: 0, data: [0xb0 | ch, 10, Math.round(64 + pan * 63)] });
+            });
+            function note(k, ch, tick, dur, key, vel) {
+                key = Math.max(0, Math.min(127, key)); vel = Math.max(1, Math.min(127, Math.round(vel)));
+                perTrack[k].push({ tick: tick, order: 2, data: [0x90 | ch, key, vel] });
+                perTrack[k].push({ tick: tick + Math.max(1, dur), order: 1, data: [0x80 | ch, key, 0] });
+            }
+            eachExportNote(startS, startS + steps, function (t, k, i, s) {
+                if (t.rests[i]) return;
+                var d = t.digits.charCodeAt(i) - 48, ch = chanOf[k];
+                var tick = Math.round((s - startS) * STEP), lenTicks = Math.round(t.lens[i] * STEP);
+                if (isKit(t.instrument)) {
+                    if (t.instrument === 'ratchet') {
+                        for (var h = 0; h < d; h++) note(k, ch, tick + Math.round(h * lenTicks / d), 30, GM_DRUM.hatC, h ? 70 : 105);
+                    } else {
+                        var piece = kitPiece(t.instrument, d, s);
+                        if (piece) note(k, ch, tick, 60, GM_DRUM[piece], (t.instrument === 'groove' ? 0.35 + d * 0.07 : 0.65 + d * 0.04) * 110);
+                    }
+                } else {
+                    note(k, ch, tick, Math.round(lenTicks * g.gate), midiFor(t, d), 96);
+                }
+            });
+            var tracks = [conductor].concat(perTrack.map(chunk));
+            var header = [0x4d, 0x54, 0x68, 0x64, 0, 0, 0, 6, 0, 1, 0, tracks.length, (TPQ >> 8) & 255, TPQ & 255];
+            var bytes = header;
+            tracks.forEach(function (tr) { bytes = bytes.concat(tr); });
+            return new Blob([new Uint8Array(bytes)], { type: 'audio/midi' });
+        }
+
+        function buildCsv(startS, steps) {
+            var sd = stepDur(), rows = [['track', 'number', 'sound', 'digit_index', 'digit', 'start_step', 'start_seconds', 'length_steps', 'rest', 'note', 'midi', 'frequency_hz', 'drum']];
+            var list = [];
+            eachExportNote(startS, startS + steps, function (t, k, i, s) { list.push([s, k, t, i]); });
+            list.sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; });
+            list.forEach(function (r) {
+                var s = r[0], k = r[1], t = r[2], i = r[3], d = t.digits.charCodeAt(i) - 48, kit = isKit(t.instrument);
+                var midi = midiFor(t, d), piece = kit ? (t.instrument === 'ratchet' ? (d ? 'hatC x' + d : '') : kitPiece(t.instrument, d, s) || '') : '';
+                rows.push([k + 1, findSource(t.sourceId).name, INSTRUMENT_NAME[t.instrument], i, d,
+                    +(s - startS).toFixed(4), +((s - startS) * sd).toFixed(4), +t.lens[i].toFixed(4), t.rests[i] ? 1 : 0,
+                    kit || t.rests[i] ? '' : noteName(midi), kit || t.rests[i] ? '' : midi,
+                    kit || t.rests[i] ? '' : midiToFreq(midi).toFixed(2), PIECE_NAMES[piece] || piece]);
+            });
+            var csv = rows.map(function (row) {
+                return row.map(function (v) { v = String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(',');
+            }).join('\r\n');
+            return new Blob(['﻿' + csv + '\r\n'], { type: 'text/csv' });
+        }
+
+        function runExport() {
+            if (exporting || !state.tracks.length) return;
+            var fmt = el.exportFormat.value, f = FORMATS[fmt];
+            var startS = exportStartStep(), steps = exportSteps();
+            if (steps < 0.5) return;
+            var name = exportName();
+            exporting = true;
+            el.exportButton.disabled = true;
+            setExportStatus(f.audio ? 'Rendering audio…' : 'Writing ' + f.label + '…');
+            setProgress(f.audio ? 0.02 : null);
+            var job;
+            if (fmt === 'midi') job = Promise.resolve(buildMidi(startS, steps));
+            else if (fmt === 'csv') job = Promise.resolve(buildCsv(startS, steps));
+            else {
+                var sr = fmt === 'wav' ? parseInt(el.exportQuality.value, 10) : 44100;
+                job = renderAudio(startS, steps, sr).then(function (buffer) {
+                    if (fmt === 'wav') { setProgress(0.95); return encodeWav(buffer); }
+                    setExportStatus('Encoding MP3…');
+                    return encodeMp3(buffer, parseInt(el.exportQuality.value, 10), function (p) { setProgress(0.85 + p * 0.15); });
+                });
+            }
+            job.then(function (blob) {
+                download(blob, name);
+                var size = blob.size > 1e6 ? (blob.size / 1e6).toFixed(1) + ' MB' : Math.max(1, Math.round(blob.size / 1e3)) + ' KB';
+                setExportStatus('Saved ' + name + ' (' + size + ').');
+            }).catch(function (err) {
+                setExportStatus((err && err.message) || 'The export failed. Try a shorter length or another format.', true);
+            }).then(function () {
+                exporting = false;
+                setProgress(null);
+                updateExportSummary();
+            });
+        }
+
         // ── Controls ──
         function syncOutputs() {
             $('nm-tempo-out').textContent = el.tempo.value + ' bpm';
@@ -1525,10 +2107,15 @@
 
         on(el.tracks, 'change', function (e) {
             var t = trackFromRow(e.target), k = e.target.dataset.k;
+            if (t && e.target.dataset.mix != null) {
+                t.mixIds[parseInt(e.target.dataset.mix, 10)] = e.target.value;
+                trackChanged(t, true);
+                return;
+            }
             if (!t || !k || k === 'volume') return;
             if (k === 'octave') { t.octave = parseInt(e.target.value, 10); trackChanged(t, false); return; }
             t[k] = e.target.value;
-            trackChanged(t, k === 'sourceId' || k === 'length');
+            trackChanged(t, k === 'sourceId' || k === 'length' || k === 'switchRule');
         });
         on(el.tracks, 'input', function (e) {
             var t = trackFromRow(e.target);
@@ -1544,6 +2131,21 @@
             if (!t) return;
             var act = btn.dataset.act;
             if (act === 'focus') setFocus(k);
+            else if (act === 'mixadd' && t.mixIds.length < MAX_MIX) {
+                var taken = [t.sourceId].concat(t.mixIds);
+                var options = SOURCES.filter(function (s2) { return taken.indexOf(s2.id) < 0 && (s2.data || s2.gen); });
+                t.mixIds.push(pick(options.length ? options : SOURCES).id);
+                renderTracks();
+                trackChanged(t, true);
+                var sel = el.tracks.querySelector('[data-track="' + t.id + '"] [data-mix="' + (t.mixIds.length - 1) + '"]');
+                if (sel) sel.focus();
+            } else if (act === 'unmix') {
+                t.mixIds.splice(parseInt(btn.dataset.j, 10), 1);
+                renderTracks();
+                trackChanged(t, true);
+                var again = el.tracks.querySelector('[data-track="' + t.id + '"] [data-act="mixadd"]');
+                if (again) again.focus();
+            }
             else if (act === 'mute' || act === 'solo') {
                 t[act] = !t[act];
                 btn.setAttribute('aria-pressed', String(t[act]));
@@ -1571,6 +2173,10 @@
             setMixMessage('Added track ' + state.tracks.length + ': ' + findSource(t.sourceId).name + ' on ' + INSTRUMENT_NAME[t.instrument].toLowerCase() + '.');
         });
         on(el.randomize, 'click', randomize);
+        on(el.exportFormat, 'change', syncQuality);
+        [el.exportQuality, el.exportUnit, el.exportStart].forEach(function (x) { on(x, 'change', updateExportSummary); });
+        on(el.exportAmount, 'input', updateExportSummary);
+        on(el.exportButton, 'click', runExport);
         on(el.share, 'click', copyShareLink);
 
         on(el.roll, 'click', function (e) {
@@ -1619,6 +2225,7 @@
         on(el.tempo, 'input', function () {
             if (state.playing && engine) { var now = engine.now(); state.S0 = stepAt(now); state.t0 = now; }
             syncOutputs();
+            updateExportSummary();
         });
         on(el.gate, 'input', syncOutputs);
         on(el.space, 'input', function () { syncOutputs(); if (engine) engine.setSpace(el.space.value / 100); });
@@ -1680,9 +2287,9 @@
             listeners = [];
             if (engine) { engine.close(); engine = null; }
             if (observer) observer.disconnect();
-            window.__numberMusicCleanup = null;
+            window.__numesthesiaCleanup = null;
         }
-        window.__numberMusicCleanup = cleanup;
+        window.__numesthesiaCleanup = cleanup;
         var host = root.closest('.content');
         if ('MutationObserver' in window && host) {
             observer = new MutationObserver(function () { if (!root.isConnected) cleanup(); });
@@ -1691,6 +2298,7 @@
 
         // ── Start ──
         syncOutputs();
+        syncQuality();
         var loaded = false;
         var m = /[#&]mix=([A-Za-z0-9_-]+)/.exec(location.hash);
         if (m) {
@@ -1707,6 +2315,6 @@
         if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
     }
 
-    window.initNumberMusic = initNumberMusic;
-    initNumberMusic();
+    window.initNumesthesia = initNumesthesia;
+    initNumesthesia();
 }());

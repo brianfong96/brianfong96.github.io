@@ -27,8 +27,8 @@ const siteData = {
     ],
     projects: [
         {
-            title: 'Number Music',
-            url: 'projects/number-music/index.html',
+            title: 'Numesthesia',
+            url: 'projects/numesthesia/index.html',
             description: 'Layer up to six tracks of π, e, Avogadro\'s number, sequences, a digits file, or your own text. Each digit picks a note or a drum and how long it rings; tune everything or randomize the mix.',
             section: 'Projects'
         },
