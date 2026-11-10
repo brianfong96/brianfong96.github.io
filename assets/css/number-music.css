@@ -49,8 +49,6 @@
 }
 
 .nm-stage {
-    position: sticky;
-    top: calc(var(--topbar-h) + 16px);
     padding: 22px 22px 18px;
     min-width: 0;
 }
@@ -66,12 +64,24 @@
 .nm-now { min-width: 0; }
 
 .nm-source-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     margin: 0;
     font-size: 1.5rem;
     font-weight: 650;
     letter-spacing: -0.02em;
     line-height: 1.2;
     overflow-wrap: anywhere;
+}
+
+.nm-source-name::before {
+    content: "";
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--track, var(--signal));
 }
 
 .nm-source-value {
@@ -103,7 +113,8 @@
 .nm-roll {
     display: block;
     width: 100%;
-    height: clamp(260px, 36vh, 360px);
+    height: 450px;
+    cursor: pointer;
 }
 
 .nm-tape {
@@ -128,7 +139,7 @@
     min-width: 1.5em;
     margin: 0 0.15em;
     border-radius: 4px;
-    background: var(--signal);
+    background: var(--track, var(--signal));
     color: var(--signal-ink);
     font-weight: 600;
     text-align: center;
@@ -218,10 +229,8 @@
 
 .nm-group legend + * { clear: both; }
 
-.nm-preset-group + .nm-preset-group { margin-top: 12px; }
-
-.nm-preset-label,
 .nm-field label,
+.nm-tf label,
 .nm-range label {
     display: flex;
     justify-content: space-between;
@@ -232,40 +241,14 @@
     letter-spacing: 0.04em;
 }
 
-.nm-preset-label { display: block; }
-
 .nm-range output {
     color: var(--text);
     font-variant-numeric: tabular-nums;
 }
 
-.nm-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-
-.nm .nm-chip {
-    min-height: 34px;
-    padding: 0 12px;
-    border-radius: 999px;
-    background: var(--ink-0);
-    color: var(--text-2);
-    font-size: 0.78rem;
-    letter-spacing: 0.02em;
-    transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, transform 160ms var(--ease-out);
-}
-
-.nm .nm-chip[aria-pressed="true"] {
-    border-color: var(--signal);
-    background: var(--signal);
-    color: var(--signal-ink);
-}
-
 /* Custom input */
 
 .nm-custom {
-    margin-top: 16px;
     padding: 14px;
     border: 1px dashed var(--line-strong);
     border-radius: var(--radius-control);
@@ -342,11 +325,12 @@
 
 .nm-custom-actions {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     margin-top: 10px;
 }
 
-.nm-custom-actions > * { flex: 1; }
+.nm-custom-actions > * { flex: 1 1 auto; }
 
 .nm .nm-custom-actions button,
 .nm-file {
@@ -517,13 +501,16 @@
         background: var(--signal-strong);
     }
 
-    .nm .nm-chip:hover:not([aria-pressed="true"]),
+    .nm .nm-small:hover:not([aria-pressed="true"]):not(:disabled),
     .nm .nm-switch button:hover:not([aria-checked="true"]) {
         background: var(--ink-3);
         color: var(--text);
     }
 
-    .nm .nm-chip[aria-pressed="true"]:hover { background: var(--signal-strong); }
+    .nm .nm-randomize:hover {
+        border-color: var(--signal-strong);
+        background: var(--signal-strong);
+    }
 
     .nm-file:hover {
         border-color: var(--signal-line);
@@ -532,6 +519,157 @@
 
     .nm select:hover { border-color: var(--signal-line); }
 }
+
+
+/* ── Tracks ───────────────────────────────────────────────── */
+
+.nm-tracks {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nm-track {
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1.4fr) 72px minmax(110px, 0.8fr) auto;
+    gap: 12px;
+    align-items: end;
+    padding: 12px 14px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    background: var(--ink-1);
+    transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.nm-track.is-focus {
+    border-color: color-mix(in srgb, var(--track) 55%, var(--line));
+    background: color-mix(in srgb, var(--track) 4%, var(--ink-1));
+}
+
+.nm-tf { min-width: 0; }
+
+.nm-tf label output {
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.nm-tf input[type="range"] { height: 40px; }
+
+.nm .nm-track-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 40px;
+    padding: 0 10px 0 8px;
+    border-color: transparent;
+    background: transparent;
+    color: var(--text-2);
+    white-space: nowrap;
+    transition: background-color 140ms ease, color 140ms ease, transform 160ms var(--ease-out);
+}
+
+.nm .nm-track-name[aria-pressed="true"] { color: var(--text); }
+
+.nm-swatch {
+    width: 12px;
+    height: 12px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--track);
+}
+
+.nm-track-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.nm .nm-small {
+    min-height: 40px;
+    padding: 0 10px;
+    background: var(--ink-0);
+    color: var(--text-2);
+    font-size: 0.74rem;
+    transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, transform 160ms var(--ease-out);
+}
+
+.nm .nm-small[data-act="mute"][aria-pressed="true"] {
+    border-color: var(--line-strong);
+    background: var(--ink-3);
+    color: var(--text);
+}
+
+.nm .nm-small[data-act="solo"][aria-pressed="true"] {
+    border-color: var(--signal-line);
+    background: var(--signal-soft);
+    color: var(--signal);
+}
+
+.nm .nm-remove {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    padding: 0;
+}
+
+.nm .nm-remove .nm-icon { width: 16px; height: 16px; }
+
+.nm button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.nm-track-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.nm-track-actions > button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+}
+
+.nm-random {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 14px;
+    margin-left: auto;
+    padding: 6px 6px 6px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    background: var(--ink-1);
+}
+
+.nm-random select { width: auto; min-width: 118px; }
+
+.nm-random .nm-check { min-height: 40px; font-size: 0.88rem; }
+
+.nm .nm-randomize {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 18px;
+    border-color: var(--signal);
+    background: var(--signal);
+    color: var(--signal-ink);
+    transition: background-color 140ms ease, border-color 140ms ease, transform 160ms var(--ease-out);
+}
+
+.nm-mix-message {
+    max-width: 90ch;
+    margin: 12px 0 0;
+    color: var(--text-2);
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+.nm-mix-message:empty { display: none; }
 
 /* ── Watch + mapping sections ─────────────────────────────── */
 
@@ -636,6 +774,20 @@
 
 /* ── Responsive ───────────────────────────────────────────── */
 
+@media (max-width: 1180px) {
+    .nm-track {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        row-gap: 10px;
+    }
+    .nm-track-name { grid-column: 1 / 4; grid-row: 1; justify-self: start; }
+    .nm-track-buttons { grid-column: 4 / 7; grid-row: 1; justify-self: end; }
+    .nm-tf-source { grid-column: 1 / 4; }
+    .nm-tf-sound { grid-column: 4 / 7; }
+    .nm-tf-length { grid-column: 1 / 4; }
+    .nm-tf-oct { grid-column: 4 / 5; }
+    .nm-tf-level { grid-column: 5 / 7; }
+}
+
 @media (max-width: 1000px) {
     .nm-studio { grid-template-columns: minmax(0, 1fr); }
     .nm-stage { position: static; }
@@ -649,6 +801,20 @@
 }
 
 @media (max-width: 600px) {
+    .nm-track { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 10px 12px 12px; }
+    .nm-track-name { grid-column: 1 / 2; }
+    .nm-track-buttons { grid-column: 2 / 3; }
+    .nm-tf-source { grid-column: 1 / 3; }
+    .nm-tf-sound { grid-column: 1 / 3; }
+    .nm-tf-length { grid-column: 1 / 3; }
+    .nm-tf-oct { grid-column: 1 / 2; }
+    .nm-tf-level { grid-column: 2 / 3; }
+    .nm .nm-small { min-height: 44px; }
+    .nm .nm-remove { width: 44px; }
+    .nm-random { margin-left: 0; width: 100%; padding: 10px; }
+    .nm-random select { flex: 1; }
+    .nm .nm-randomize { flex-basis: 100%; justify-content: center; }
+    .nm-track-actions > button { flex: 1; justify-content: center; }
     .nm { --nm-width: calc(100% - 32px); }
     .nm-stage { padding: 16px 16px 14px; }
     .nm-roll-wrap { margin: 0 -16px; }
@@ -658,7 +824,6 @@
     .nm-transport { flex-wrap: wrap; }
     .nm-seek { flex-basis: 100%; order: 3; }
     .nm .nm-play { flex: 1; justify-content: center; }
-    .nm .nm-chip { min-height: 40px; }
     .nm .nm-switch button { min-height: 40px; }
     .nm .nm-custom-actions button, .nm-file { min-height: 44px; }
     .nm select { min-height: 44px; }

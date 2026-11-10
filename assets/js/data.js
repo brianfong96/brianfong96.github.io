@@ -29,7 +29,7 @@ const siteData = {
         {
             title: 'Number Music',
             url: 'projects/number-music/index.html',
-            description: 'Hear π, e, Avogadro\'s number, a digits file, or your own text as music. Each digit picks a note and a drum; tune the instrument, scale, and tempo while the digits animate.',
+            description: 'Layer up to six tracks of π, e, Avogadro\'s number, sequences, a digits file, or your own text. Each digit picks a note or a drum and how long it rings; tune everything or randomize the mix.',
             section: 'Projects'
         },
         {
