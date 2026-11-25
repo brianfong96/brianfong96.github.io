@@ -90,6 +90,7 @@
 @media(max-width:1000px){.estate-shell{width:min(760px,calc(100% - 40px));display:block;padding-top:82px}.estate-nav{position:static;max-height:none;overflow:visible;border-bottom:1px solid var(--line-strong);margin-bottom:24px}.estate-nav details{padding:0}.estate-nav summary{font-size:17px;min-height:46px}.estate-nav a{font-size:16px}.estate-shell .estate{padding-top:0}}
 @media(max-width:500px){.estate-shell{width:calc(100% - 32px)}.estate .story-metric{padding-top:16px;padding-bottom:18px}.estate .tax-metric,.estate .good-metric{padding-left:12px}.estate .metric-label{font-size:17px}}
 
+@media(max-width:1000px){.estate-nav{position:sticky;top:var(--topbar-h);z-index:4;max-height:calc(100vh - 76px);overflow-y:auto;background:var(--bg-color)}.estate section{scroll-margin-top:126px}.estate-nav summary{padding:12px 6px}.estate #answer{scroll-margin-top:126px!important}}
 </style>
 </head>
 <body class="finance-page">
@@ -101,20 +102,22 @@
 <p class="meta">Finance · Canadian estate planning · November 25, 2026</p>
 <h1>How much of your RRSP will your children inherit?</h1>
 <p class="lead">A $650,000 retirement account can turn into a much smaller inheritance. But withdrawing it too early has a cost, too.</p>
-<p>Meet Linda, a 67-year-old retiree who wants to pass her retirement savings to two adult sons. The original proposal is to withdraw a little each year and give the cash to them. But is that actually better than staying invested and insuring the future tax bill?</p><p>We will follow the same money through three possible plans:</p><ol class="scenario-map"><li><strong>Plan 1 · Give a little every year</strong> Withdraw enough to fund both sons’ TFSAs.</li><li><strong>Plan 2 · Withdraw more while alive</strong> Pay income tax gradually and invest the remaining money outside her RRSP.</li><li><strong>Plan 3 · Keep more invested and insure the risk</strong> Let the registered account compound, with a policy protecting against premature death.</li></ol><p>The test is not which plan pays the least tax. It is which leaves the family with more after-tax money, without putting Linda’s retirement at risk.</p>
+<p>Meet Linda, a 67-year-old retiree who wants to pass her retirement savings to two adult sons. The original proposal is to withdraw a little each year and give the cash to them. But is that actually better than staying invested and insuring the future tax bill?</p><p>We will test three plans, using the same starting savings: small annual gifts, faster withdrawals, and keeping more invested with insurance.</p>
 <a class="jump" href="#calculator">Already understand the basics? Go to the calculator ↓</a>
 </header>
 <section id="claim">
 <p class="chapter">01 / The problem</p>
 <h2>Linda has $650,000 saved. Her family may receive much less.</h2>
-<p>The original infographic gives Linda’s age, her $650,000 RRSP, and two adult sons. It suggests annual gifts of about $7,000 to each. To calculate the tax and compare plans, we need a few more assumptions.</p><div class="assumptions"><p><strong>From the original:</strong> age 67, $650,000 RRSP, two adult sons, Ontario example.</p><p><strong>Assumed for the model:</strong> $35,000 of other annual income (including $9,000 OAS), pension covers living costs, no eligible spousal rollover, and $50,000 of separate cash reserves. The first graphic isolates the RRSP; later comparisons include that reserve.</p></div>
-<p>Her Registered Retirement Savings Plan (RRSP) has not yet been taxed as income. If she dies, the remaining amount is generally included in her final tax return.</p>
+<p>Linda has not paid income tax on this $650,000 yet. If she dies today, the balance is generally included in her final tax return. Here is the modeled cost.</p>
+
 <div class="panel" id="death-now"><p>Estimated extra tax: approximately $322,000. About $328,000 of her RRSP would remain after tax.</p></div>
+<div class="assumptions"><p><strong>From the original:</strong> age 67, $650,000 RRSP, two adult sons, Ontario example.</p><p><strong>Assumed for the model:</strong> $35,000 of other annual income (including $9,000 OAS), pension covers living costs, no eligible spousal rollover, and $50,000 of separate cash reserves. The first graphic isolates the RRSP; later comparisons include that reserve.</p></div>
 <p>Canada generally does not tax a cash inheritance or gift itself. The problem is the income tax on money coming out of the RRSP. The highest tax rate does not apply to every dollar.</p>
 <details><summary>Where did this example come from?</summary>
 <p>A Financial Fitness infographic proposes that Linda withdraw money gradually and give each son about $583 a month to put in his Tax-Free Savings Account (TFSA). It states her age, RRSP balance and the Ontario top marginal tax rate, but not her pension income, investment return, living costs or life expectancy.</p>
 <figure><img src="original-infographic.jpg" alt="Original Financial Fitness RRSP Estate Tax Trap infographic, with Linda's $650,000 RRSP and proposed gifts to two adult sons." onerror="this.hidden=true;this.nextElementSibling.hidden=false"><p class="note" hidden>Original image file is not yet available on this site. The source's claim is transcribed above.</p><figcaption class="meta">Source: supplied Financial Fitness infographic; publication details unverified.</figcaption></figure>
 </details>
+<h3>Three ways to address this tax bill</h3><p>We will follow the same money through three possible plans:</p><ol class="scenario-map"><li><strong>Plan 1 · Give a little every year</strong> Withdraw enough to fund both sons’ TFSAs.</li><li><strong>Plan 2 · Withdraw more while alive</strong> Pay income tax gradually and invest the remaining money outside her RRSP.</li><li><strong>Plan 3 · Keep more invested and insure the risk</strong> Let the registered account compound, with a policy protecting against premature death.</li></ol><p>The test is not which plan pays the least tax. It is which leaves the family with more after-tax money, without putting Linda’s retirement at risk.</p>
 </section>
 <section id="withdrawal">
 <p class="chapter">02 / Moving money to the children</p>
@@ -231,5 +234,5 @@
 <ul class="source-list"><li><a href="https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/rrsps-related-plans/death-rrsp-annuitant.html">CRA: death of an RRSP annuitant</a></li><li><a href="https://www.canada.ca/en/revenue-agency/services/tax/individuals/segments/tax-rates-brackets.html">CRA: federal and provincial tax brackets</a></li><li><a href="https://www.canada.ca/en/services/benefits/publicpensions/cpp/old-age-security/recovery-tax.html">Government of Canada: OAS recovery tax</a></li><li><a href="https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/tax-free-savings-account.html">CRA: TFSA rules</a></li><li><a href="https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/registered-retirement-income-fund-rrif.html">CRA: RRIF rules</a></li><li><a href="https://www.canada.ca/en/financial-consumer-agency/services/insurance/life.html">Financial Consumer Agency: life insurance</a></li></ul>
 </section>
 </main></div><footer class="footer"><p>© <span id="year">2026</span> Brian Fong. All Rights Reserved.</p></footer></div>
-<script src="model.js"></script><script src="guide.js?v=20261125-story"></script><script src="visual-story.js?v=20261125-visual2"></script><script src="../../assets/js/data.js"></script><script src="../../assets/js/main.js"></script>
+<script src="model.js"></script><script src="comparison.js?v=20261125-1"></script><script src="visual-story.js?v=20261125-visual3"></script><script src="../../assets/js/data.js"></script><script src="../../assets/js/main.js"></script>
 </body></html>
