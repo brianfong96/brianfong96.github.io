@@ -55,24 +55,59 @@
 .estate .source-list{font-size:17px}.estate .skip{position:absolute;left:-999px}.estate .skip:focus{position:static}
 @media(max-width:500px){.estate{width:calc(100% - 32px);padding-top:82px;font-size:18px}.estate section{padding:35px 0 24px}.estate .money-line span{flex-basis:155px}.estate .money-line strong{font-size:1.1rem}}
 @media(prefers-reduced-motion:reduce){.estate *{transition:none!important;scroll-behavior:auto!important}}
+
+/* A single article rail plus a quiet navigation-only rail. */
+.estate-shell{width:min(1140px,calc(100% - 40px));margin:0 auto;padding-top:100px;display:grid;grid-template-columns:205px minmax(0,760px);justify-content:center;align-items:start;gap:44px}
+.estate-shell .estate{width:100%;min-width:0;margin:0;padding:0 0 64px}
+.estate-nav{position:sticky;top:86px;max-height:calc(100vh - 100px);overflow-y:auto;min-width:0;font-size:15px;line-height:1.5}
+.estate-nav details{margin:0;padding:8px 0}.estate-nav summary{font-weight:650;color:var(--muted-text);padding:10px 6px;cursor:pointer}
+.estate-nav ol{list-style:none;padding:0;margin:8px 0}.estate-nav a{display:block;padding:11px 12px;border-left:2px solid var(--line-strong);text-decoration:none;color:var(--muted-text);border-radius:0 6px 6px 0;min-height:42px}
+.estate-nav a:hover{color:var(--text);background:var(--ink-2)}.estate-nav a[aria-current="location"]{border-left-color:var(--signal);color:var(--signal-strong);background:var(--signal-soft);font-weight:650}
+.estate-nav a:focus-visible,.estate-nav summary:focus-visible{outline:3px solid var(--signal);outline-offset:2px}
+.estate .story-metric{padding:20px 0 22px;border-bottom:1px solid var(--line-strong)}
+.estate .metric-label{font-size:18px;font-weight:650;line-height:1.35;margin:0 0 8px}
+.estate .metric-value{font-size:clamp(2.1rem,7vw,3.55rem);line-height:1.05;letter-spacing:-.045em;font-weight:750;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.estate .metric-caption{font-size:16px;color:var(--muted-text);line-height:1.5;margin:12px 0 0}
+.estate .source-metric .metric-value{color:var(--accent-strong);font-size:clamp(2rem,5.5vw,2.8rem)}
+.estate .tax-metric{border-left:4px solid #ee8d90;padding-left:16px;background:linear-gradient(90deg,rgba(238,141,144,.09),transparent 85%)}
+.estate .tax-metric .metric-value,.estate .tax-metric .metric-label{color:#ffabab}
+.estate .good-metric{border-left:4px solid var(--signal);padding-left:16px;background:linear-gradient(90deg,rgba(92,240,143,.07),transparent 85%)}
+.estate .good-metric .metric-value,.estate .good-metric .metric-label{color:var(--signal-strong)}
+.estate .flow-arrow{font-size:26px;color:var(--muted-text);line-height:1.2;margin:12px 0;text-align:center}
+.estate .track.split{height:36px;margin:14px 0 20px}.estate .equation{padding:12px 0;border-bottom:1px solid var(--line-strong)}
+.estate .coverage-track{height:24px;position:relative;background:var(--ink-3);border-radius:4px;margin:20px 4px 8px}
+.estate .coverage-active{height:100%;background:#7fb2e8;border-radius:4px}
+.estate .death-marker{position:absolute;top:-6px;height:36px;width:4px;background:#fff;border:1px solid #111;transform:translateX(-50%)}
+.estate .coverage-label{display:flex;justify-content:space-between;color:var(--muted-text);font-size:16px}
+.estate .stacked-wealth{display:flex;overflow:hidden;height:32px;background:var(--ink-3);border-radius:4px;margin:12px 0 20px}
+.estate .wealth-part{flex:none;height:100%}.estate .registered{background:#7fb2e8}.estate .gifted{background:#5cf08f}.estate .reserve{background:#879c94}.estate .insured{background:#d6b8fa}
+.estate .swatch{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:8px}
+.estate .scenario-block{margin:26px 0;padding:6px 0 20px;border-bottom:1px solid var(--line-strong)}.estate .scenario-block h3{margin:0 0 14px}
+.estate .measure strong{font-size:clamp(1.2rem,3vw,1.65rem)}.estate .measure .track{height:24px}
+.estate .story-metric+.note,.estate .story-metric+p{margin-top:18px}
+.estate .scenario-map{list-style:none;padding:0;margin:18px 0 24px}.estate .scenario-map li{padding:12px 0;border-bottom:1px solid var(--line-strong);margin:0}.estate .scenario-map strong{display:block;color:var(--accent-strong)}
+.estate .assumptions{border-top:1px solid var(--line-strong);border-bottom:1px solid var(--line-strong);padding:15px 0;margin:18px 0 24px}.estate .assumptions p{margin:0 0 10px}.estate .assumptions p:last-child{margin:0}
+@media(max-width:1000px){.estate-shell{width:min(760px,calc(100% - 40px));display:block;padding-top:82px}.estate-nav{position:static;max-height:none;overflow:visible;border-bottom:1px solid var(--line-strong);margin-bottom:24px}.estate-nav details{padding:0}.estate-nav summary{font-size:17px;min-height:46px}.estate-nav a{font-size:16px}.estate-shell .estate{padding-top:0}}
+@media(max-width:500px){.estate-shell{width:calc(100% - 32px)}.estate .story-metric{padding-top:16px;padding-bottom:18px}.estate .tax-metric,.estate .good-metric{padding-left:12px}.estate .metric-label{font-size:17px}}
+
 </style>
 </head>
 <body class="finance-page">
 <header class="topbar"><a class="home-link" href="../../index.html" aria-label="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a><a class="blog-home-link" href="../../blog.html">All blogs</a><button id="sidebar-toggle" aria-label="Toggle navigation"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></button></header>
 <nav class="sidebar" id="sidebar" aria-label="Primary navigation"><ul class="nav-links"><li><a href="../../index.html">Home</a></li><li><a href="../../about.html">About</a></li><li><a href="../../projects.html">Projects</a></li><li><a href="../../learnings.html">Learnings</a></li><li><a href="../../blog.html">Blog</a></li></ul></nav>
-<div class="content"><main class="estate" id="article">
+<div class="content"><div class="estate-shell"><aside class="estate-nav"><nav id="article-toc" aria-label="Article contents"><details id="mobile-contents" open><summary>Contents</summary><ol><li><a href="#claim">01 · The $322k tax problem</a></li><li><a href="#withdrawal">02 · Move money gradually</a></li><li><a href="#growth">03 · What growth changes</a></li><li><a href="#timing">04 · RRSP vs. TFSA</a></li><li><a href="#insurance">05 · Protect against early death</a></li><li><a href="#combined">06 · Invest longer + insurance</a></li><li><a href="#calculator">07 · Compare your own plans</a></li><li><a href="#meaning">08 · What to take away</a></li><li><a href="#method">09 · Assumptions and sources</a></li></ol></details></nav></aside><main class="estate" id="article">
 <a class="skip" href="#calculator">Skip to full calculator</a>
 <header>
 <p class="meta">Finance · Canadian estate planning · November 25, 2026</p>
 <h1>How much of your RRSP will your children inherit?</h1>
 <p class="lead">A $650,000 retirement account can turn into a much smaller inheritance. But withdrawing it too early has a cost, too.</p>
-<p>Meet Linda. Follow her money through taxes, investments and life insurance, then try the same decisions with your own numbers.</p>
+<p>Meet Linda, a 67-year-old retiree who wants to pass her retirement savings to two adult sons. The original proposal is to withdraw a little each year and give the cash to them. But is that actually better than staying invested and insuring the future tax bill?</p><p>We will follow the same money through three possible plans:</p><ol class="scenario-map"><li><strong>Plan 1 · Give a little every year</strong> Withdraw enough to fund both sons’ TFSAs.</li><li><strong>Plan 2 · Withdraw more while alive</strong> Pay income tax gradually and invest the remaining money outside her RRSP.</li><li><strong>Plan 3 · Keep more invested and insure the risk</strong> Let the registered account compound, with a policy protecting against premature death.</li></ol><p>The test is not which plan pays the least tax. It is which leaves the family with more after-tax money, without putting Linda’s retirement at risk.</p>
 <a class="jump" href="#calculator">Already understand the basics? Go to the calculator ↓</a>
 </header>
 <section id="claim">
 <p class="chapter">01 / The problem</p>
 <h2>Linda has $650,000 saved. Her family may receive much less.</h2>
-<p>Linda is 67, lives in Ontario and has two adult sons. She wants her retirement savings to eventually go to them. Suppose her pension covers her living expenses and she has no spouse eligible for a tax-deferred transfer.</p>
+<p>The original infographic gives Linda’s age, her $650,000 RRSP, and two adult sons. It suggests annual gifts of about $7,000 to each. To calculate the tax and compare plans, we need a few more assumptions.</p><div class="assumptions"><p><strong>From the original:</strong> age 67, $650,000 RRSP, two adult sons, Ontario example.</p><p><strong>Assumed for the model:</strong> $35,000 of other annual income (including $9,000 OAS), pension covers living costs, no eligible spousal rollover, and $50,000 of separate cash reserves. The first graphic isolates the RRSP; later comparisons include that reserve.</p></div>
 <p>Her Registered Retirement Savings Plan (RRSP) has not yet been taxed as income. If she dies, the remaining amount is generally included in her final tax return.</p>
 <div class="panel" id="death-now"><p>Estimated extra tax: approximately $322,000. About $328,000 of her RRSP would remain after tax.</p></div>
 <p>Canada generally does not tax a cash inheritance or gift itself. The problem is the income tax on money coming out of the RRSP. The highest tax rate does not apply to every dollar.</p>
@@ -88,6 +123,7 @@
 <div class="panel" id="gift-flow"><p>Withdraw approximately $17,665, pay $3,665 in estimated tax, and gift $14,000 to the two sons.</p></div>
 <p>The $14,000 gift is not a $14,000 RRSP withdrawal. Linda needs to withdraw extra to pay the income tax. Once she gives the money away, it belongs to her children.</p>
 <p class="takeaway">This is the infographic's central idea: spread the taxable withdrawals over time, and let the next generation's investments grow tax-free where possible.</p>
+<h3>Could Linda transfer more each year?</h3><p>Instead of targeting only $14,000 of gifts, suppose she withdraws $60,000 a year. With $35,000 of other income, this takes her to $95,000 before deductions, close to the modeled 2026 OAS recovery threshold. This is an example, not an optimized withdrawal recommendation.</p><div class="panel"><p class="small-label">Year 1 · Larger withdrawal plan</p><div class="story-metric source-metric"><div class="metric-label">Gross RRSP withdrawal</div><div class="metric-value">$60,000</div></div><div class="flow-arrow" aria-hidden="true">↓</div><div class="story-metric tax-metric"><div class="metric-label">Estimated additional income tax</div><div class="metric-value">$15,938</div></div><div class="story-metric good-metric"><div class="metric-label">Cash available to transfer</div><div class="metric-value">$44,062</div></div><div class="money-line"><span>Children’s combined TFSA contributions</span><strong>$14,000</strong></div><div class="money-line"><span>Invested in taxable accounts</span><strong>$30,062</strong></div><p class="note">Assumes unused TFSA room of $14,000 and no other spending needs.</p></div><p>Now we have two different withdrawal speeds. The next question is whether either one can keep up with investment growth.</p>
 </section>
 <section id="growth">
 <p class="chapter">03 / The missing piece</p>
@@ -141,8 +177,9 @@
 <p>Try 5 years, then 20 years. Term insurance may be very valuable if death occurs early, but it pays nothing after expiry. Permanent insurance can last longer, but premiums reduce the money available to invest, and coverage can lapse if premiums cannot be funded.</p>
 <p class="takeaway">Insurance protects against the timing of death. It does not protect an aggressive portfolio from a market crash, and a fixed payout may not cover a growing tax bill.</p>
 </section>
+<section id="combined"><p class="chapter">06 / The combined strategy</p><h2>What if Linda invests aggressively and insures the tax bill instead?</h2><p>So far we have looked at withdrawals, investment growth and insurance separately. Now compare the original dilemma directly: pay tax gradually and give the money away, or leave more inside the RRSP to grow while buying term insurance.</p><p>Plan A withdraws $60,000 a year (or the applicable mandatory minimum). Plan B keeps as much in the RRSP as possible, withdrawing only mandatory minimums or money needed for expenses and premiums. It buys $350,000 of 10-year term coverage at the illustrative $225 monthly premium.</p><div class="panel"><p class="small-label">Choose the investment assumptions</p><div class="button-stack" id="combo-rates" role="group" aria-label="Investment assumptions"><button type="button" data-mode="equal5" aria-pressed="false">Same balanced investments · 5% in both plans</button><button type="button" data-mode="equal8" aria-pressed="true">Same aggressive investments · 8% in both plans</button><button type="button" data-mode="mixed" aria-pressed="false">Different portfolios · 3% withdrawal plan, 8% holding plan</button></div><p class="small-label">When does Linda die?</p><div class="choices" id="combo-years" role="group" aria-label="Years until death"><button type="button" data-year="1" aria-pressed="false">1 year</button><button type="button" data-year="5" aria-pressed="false">5 years</button><button type="button" data-year="10" aria-pressed="true">10 years</button><button type="button" data-year="20" aria-pressed="false">20 years</button><button type="button" data-year="30" aria-pressed="false">30 years</button></div><div id="combined-result" aria-live="polite"></div></div><p>Notice that money paid out in taxes is not the only cost. Compare the money already in the children’s investments, the net RRSP remaining at death, the cash reserve, and the policy payout. These four pieces add up to total family wealth.</p><p class="takeaway">Try the 10-year and 20-year scenarios. Once the term expires, an aggressive RRSP may still have a substantial tax liability, with no insurance benefit to offset it.</p><p>These examples assume smooth annual returns; aggressive investing also carries loss and sequence-of-returns risk. The full calculator lets you test a market decline, other insurance costs and different withdrawal amounts.</p></section>
 <section id="calculator">
-<p class="chapter">06 / Put the pieces together</p>
+<p class="chapter">07 / Put the pieces together</p>
 <h2>Compare two plans with your own numbers.</h2>
 <p>The examples above use Linda's fixed assumptions. This calculator is independent: change the starting finances, investments or insurance to explore your own scenario.</p>
 <p>Choose two plans and an age. The calculator already has Linda’s numbers filled in; open “Change the numbers” only if you want to adjust them.</p>
@@ -176,7 +213,7 @@
 <details><summary>Show detailed annual calculations</summary><label for="ledger-strategy">Strategy</label><select id="ledger-strategy"></select><div class="tablewrap" tabindex="0" role="region" aria-label="Annual calculations, scroll horizontally for more columns"><table id="ledger"></table></div></details>
 </section>
 <section id="meaning">
-<p class="chapter">07 / What to take away</p>
+<p class="chapter">08 / What to take away</p>
 <h2>Keep enough for retirement, then plan the transfer.</h2>
 <p>There is no single best withdrawal amount for every retiree. Start by estimating living and long-term care expenses. Gifts cannot be reclaimed, so prioritize the retiree's financial security.</p>
 <p>Next, compare the income tax cost of withdrawing today with the tax cost of leaving a large account until death. Use available TFSA room, realistic investment returns and actual life insurance quotes. A policy is most useful when its benefit protects against a risk the family cannot otherwise afford.</p>
@@ -184,7 +221,7 @@
 <p class="takeaway">The aim is not the lowest tax bill by itself. It is enough money for the retiree throughout life and the most sustainable after-tax wealth for the family.</p>
 </section>
 <section id="method">
-<p class="chapter">08 / Notes and references</p>
+<p class="chapter">09 / Notes and references</p>
 <h2>How the estimates are calculated</h2>
 <details><summary>Model assumptions and limitations</summary>
 <p>Each year the calculator applies investment growth, determines planned or required RRIF withdrawals, calculates incremental progressive income tax and OAS recovery, funds spending and premiums, then gives surplus cash to the children. Gifts go to available TFSA room first, then to taxable investments. At death the remaining registered account is included in income in the same year; any active insurance benefit is added to family wealth.</p>
@@ -193,6 +230,6 @@
 <h3>Canadian government references</h3>
 <ul class="source-list"><li><a href="https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/rrsps-related-plans/death-rrsp-annuitant.html">CRA: death of an RRSP annuitant</a></li><li><a href="https://www.canada.ca/en/revenue-agency/services/tax/individuals/segments/tax-rates-brackets.html">CRA: federal and provincial tax brackets</a></li><li><a href="https://www.canada.ca/en/services/benefits/publicpensions/cpp/old-age-security/recovery-tax.html">Government of Canada: OAS recovery tax</a></li><li><a href="https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/tax-free-savings-account.html">CRA: TFSA rules</a></li><li><a href="https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/registered-retirement-income-fund-rrif.html">CRA: RRIF rules</a></li><li><a href="https://www.canada.ca/en/financial-consumer-agency/services/insurance/life.html">Financial Consumer Agency: life insurance</a></li></ul>
 </section>
-</main><footer class="footer"><p>© <span id="year">2026</span> Brian Fong. All Rights Reserved.</p></footer></div>
-<script src="model.js"></script><script src="guide.js?v=20261125-story"></script><script src="../../assets/js/data.js"></script><script src="../../assets/js/main.js"></script>
+</main></div><footer class="footer"><p>© <span id="year">2026</span> Brian Fong. All Rights Reserved.</p></footer></div>
+<script src="model.js"></script><script src="guide.js?v=20261125-story"></script><script src="visual-story.js?v=20261125-visual2"></script><script src="../../assets/js/data.js"></script><script src="../../assets/js/main.js"></script>
 </body></html>
