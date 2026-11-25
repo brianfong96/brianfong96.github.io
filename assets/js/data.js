@@ -41,6 +41,14 @@ const siteData = {
     ],
     blogs: [
         {
+            title: 'The RRSP Estate Tax Trade-off',
+            url: 'blog/rrsp-estate-planning/index.html',
+            description: 'An interactive Canadian estate planning guide: compare gradual RRSP withdrawals, portfolio returns, term and permanent insurance, and after-tax inheritance over 1–30 years.',
+            section: 'Blog',
+            category: 'Finance',
+            date: '2026-11-25'
+        },
+        {
             title: 'Aurora Over Alaska',
             url: 'blog/aurora-over-alaska/index.html',
             description: 'An Alaska-inspired Northern Lights mocktail and gin cocktail with boreal botanicals, birch, lingonberry, and blue, emerald, violet, and pink aurora ribbons.',
