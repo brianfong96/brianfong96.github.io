@@ -74,7 +74,7 @@
 <h2>Linda has $650,000 saved. Her family may receive much less.</h2>
 <p>Linda is 67, lives in Ontario and has two adult sons. She wants her retirement savings to eventually go to them. Suppose her pension covers her living expenses and she has no spouse eligible for a tax-deferred transfer.</p>
 <p>Her Registered Retirement Savings Plan (RRSP) has not yet been taxed as income. If she dies, the remaining amount is generally included in her final tax return.</p>
-<div class="panel" id="death-now"><p>Loading Linda's estimated tax breakdown…</p></div>
+<div class="panel" id="death-now"><p>Estimated extra tax: approximately $322,000. About $328,000 of her RRSP would remain after tax.</p></div>
 <p>Canada generally does not tax a cash inheritance or gift itself. The problem is the income tax on money coming out of the RRSP. The highest tax rate does not apply to every dollar.</p>
 <details><summary>Where did this example come from?</summary>
 <p>A Financial Fitness infographic proposes that Linda withdraw money gradually and give each son about $583 a month to put in his Tax-Free Savings Account (TFSA). It states her age, RRSP balance and the Ontario top marginal tax rate, but not her pension income, investment return, living costs or life expectancy.</p>
@@ -85,7 +85,7 @@
 <p class="chapter">02 / Moving money to the children</p>
 <h2>Pay a smaller amount of tax each year.</h2>
 <p>Rather than leave the entire RRSP to be taxed in one year, Linda could withdraw a manageable amount each year. She gives the after-tax cash to her sons, who can invest it in their TFSAs if they have available contribution room.</p>
-<div class="panel" id="gift-flow"><p>Loading the annual gift example…</p></div>
+<div class="panel" id="gift-flow"><p>Withdraw approximately $17,665, pay $3,665 in estimated tax, and gift $14,000 to the two sons.</p></div>
 <p>The $14,000 gift is not a $14,000 RRSP withdrawal. Linda needs to withdraw extra to pay the income tax. Once she gives the money away, it belongs to her children.</p>
 <p class="takeaway">This is the infographic's central idea: spread the taxable withdrawals over time, and let the next generation's investments grow tax-free where possible.</p>
 </section>
@@ -145,9 +145,14 @@
 <p class="chapter">06 / Put the pieces together</p>
 <h2>Compare two plans with your own numbers.</h2>
 <p>The examples above use Linda's fixed assumptions. This calculator is independent: change the starting finances, investments or insurance to explore your own scenario.</p>
-<p>Start with the defaults if you are unsure. You can change everything later.</p>
+<p>Choose two plans and an age. The calculator already has Linda’s numbers filled in; open “Change the numbers” only if you want to adjust them.</p>
 <noscript><p class="warning">Enable JavaScript to use the interactive calculations.</p></noscript>
-<form id="calculator-form">
+<p class="note" id="assumptions-summary"></p>
+<h3>Choose what you want to compare</h3>
+<div class="button-stack" id="calc-pairs" role="group" aria-label="Choose two strategies"><button type="button" data-pair="timing" aria-pressed="true">Withdraw more vs. keep more invested</button><button type="button" data-pair="termHold" aria-pressed="false">Keep more invested, with or without term insurance</button><button type="button" data-pair="combined" aria-pressed="false">Withdraw more vs. keep invested + term insurance</button><details><summary>More comparisons</summary><div class="button-stack"><button type="button" data-pair="termDraw" aria-pressed="false">Withdraw more, with or without term insurance</button><button type="button" data-pair="permanent" aria-pressed="false">Term vs. permanent insurance</button><button type="button" data-pair="original" aria-pressed="false">Original gift strategy vs. larger withdrawals</button></div></details></div>
+<h3>Choose a life expectancy scenario</h3>
+<div class="choices" id="calc-years" role="group" aria-label="Years until death"><button type="button" data-year="1" aria-pressed="false">1 year</button><button type="button" data-year="5" aria-pressed="false">5 years</button><button type="button" data-year="10" aria-pressed="true">10 years</button><button type="button" data-year="20" aria-pressed="false">20 years</button><button type="button" data-year="30" aria-pressed="false">30 years</button></div>
+<details id="edit-assumptions"><summary>Change the numbers (optional)</summary><p>These inputs update the comparison below. Leave them unchanged to use Linda's example.</p><form id="calculator-form">
 <fieldset><legend>Starting finances</legend>
 <div id="basic-fields"></div>
 <div class="field"><label for="province">Province</label><select id="province"><option value="ON">Ontario</option><option value="BC">British Columbia</option></select></div>
@@ -156,21 +161,15 @@
 <p class="note">Presets set both RRSP strategies and the children's TFSA to the same return, with taxable investments one percentage point lower. Use detailed settings for different returns.</p>
 <div id="calc-rates" class="button-stack" role="group" aria-label="Annual investment return"><button type="button" data-rate="3" aria-pressed="false">Conservative example · 3%</button><button type="button" data-rate="5" aria-pressed="true">Balanced example · 5%</button><button type="button" data-rate="8" aria-pressed="false">Aggressive example · 8%</button></div>
 </fieldset>
-<details><summary>Change insurance, investment or other assumptions</summary>
+<details><summary>More detailed settings</summary>
 <p class="note">All amounts are Canadian dollars. Defaults assume a $50,000 separate cash reserve, $35,000 pension income including OAS, and no unmet retirement expenses.</p>
 <h3>Insurance</h3><div id="insurance-fields"></div>
 <h3>Individual investment returns and market stress</h3><div id="return-fields"></div>
 <h3>Other retirement and gift assumptions</h3><div id="other-fields"></div>
 </details>
 <button type="button" id="reset">Reset to Linda's example</button>
-</form>
-<p class="error" id="calc-error" role="alert"></p>
-<p class="note" id="assumptions-summary"></p>
-<h3>Choose what you want to compare</h3>
-<div class="button-stack" id="calc-pairs" role="group" aria-label="Choose two strategies"><button type="button" data-pair="timing" aria-pressed="true">Withdraw more vs. keep more invested</button><button type="button" data-pair="termDraw" aria-pressed="false">Withdraw more, with or without term insurance</button><button type="button" data-pair="termHold" aria-pressed="false">Keep more invested, with or without term insurance</button><button type="button" data-pair="combined" aria-pressed="false">Withdraw more vs. keep invested + term insurance</button><button type="button" data-pair="permanent" aria-pressed="false">Term vs. permanent insurance</button><button type="button" data-pair="original" aria-pressed="false">Original gift strategy vs. larger withdrawals</button></div>
-<h3>Choose a life expectancy scenario</h3>
-<div class="choices" id="calc-years" role="group" aria-label="Years until death"><button type="button" data-year="1" aria-pressed="false">1 year</button><button type="button" data-year="5" aria-pressed="false">5 years</button><button type="button" data-year="10" aria-pressed="true">10 years</button><button type="button" data-year="20" aria-pressed="false">20 years</button><button type="button" data-year="30" aria-pressed="false">30 years</button></div>
-<div class="panel" id="answer" aria-live="polite"></div>
+</form><p><a href="#answer">See the updated comparison ↓</a></p></details><p class="error" id="calc-error" role="alert"></p>
+<div class="panel" id="answer" aria-live="polite" style="scroll-margin-top:80px"></div>
 <details><summary>See exactly where the money comes from</summary><div id="pair-breakdown"></div></details>
 <details><summary>See the same two plans over 1, 5, 10, 20 and 30 years</summary><div id="timeline"></div></details>
 <details><summary>Compare all six plans at the selected age</summary><div id="all-strategies"></div></details>
