@@ -24,7 +24,7 @@ bind("lesson-rates","rate",v=>{rate=Number(v);growth();});bind("lesson-years","y
 let iy=5,policy="term";
 function insurance(){
  const a=M.project(p,"draw",iy).at(-1),b=M.project(p,policy==="term"?"drawTerm":"drawPerm",iy).at(-1),d=b.wealth-a.wealth,cost=a.wealth-(b.wealth-b.payout),term=policy==="term";
- const end=term?p.term:b.lapseYear?b.lapseYear-1:30;
+ const projected=M.project(p,policy==="term"?"drawTerm":"drawPerm",30).at(-1);const end=term?Math.min(p.term,projected.lapseYear?projected.lapseYear-1:p.term):projected.lapseYear?projected.lapseYear-1:30;
  const status=b.lapseYear?"Policy lapsed in year "+b.lapseYear+".":b.payout>0?"Death while policy is active.":"Term expired. No death benefit.";
  $("insurance-result").innerHTML='<p class="small-label">Age '+(p.age+iy)+' · '+iy+' years after buying insurance</p><div class="coverage-track" aria-hidden="true"><div class="coverage-active" style="width:'+pct(Math.min(30,end),30)+'"></div><div class="death-marker" style="left:'+pct(iy,30)+'"></div></div><div class="coverage-label"><span>67 · start</span><span>97</span></div><p class="note">'+(term?"10-year coverage ends around age 77.":"Permanent coverage continues if premiums are maintained.")+' Marker: selected death age '+(p.age+iy)+'.</p>'+metric("Estimated tax at death",b.terminalTax,"tax-metric","The tax is still owed")+metric("Insurance pays the family",b.payout,"good-metric",status)+'<div class="equation">'+line("Monthly premium",term?p.termPremium:p.permPremium)+line("Total premiums paid",b.paid,"tax-text")+line("Cost including foregone growth and extra taxes",cost,"tax-text")+'</div><div class="rule"></div><h3>What the family ends up with</h3>'+bar("Without insurance",a.wealth,Math.max(a.wealth,b.wealth),"neutral")+bar("With insurance",b.wealth,Math.max(a.wealth,b.wealth))+metric(d>=0?"Insurance leaves the family more":"Insurance leaves the family less",Math.abs(d),d>=0?"good-metric":"tax-metric","After premiums and their investment opportunity cost")+'<p class="note">Same $60,000 withdrawal plan and 5% return. Death in year 10 is assumed just before the term expires.</p>';
 }
@@ -46,5 +46,9 @@ let scheduled=false;
 function mark(){scheduled=false;let current=sections[0];for(const section of sections){if(section.getBoundingClientRect().top<=140)current=section;else break;}for(const a of links){if(a.getAttribute("href")==="#"+current.id)a.setAttribute("aria-current","location");else a.removeAttribute("aria-current");}}
 window.addEventListener("scroll",()=>{if(!scheduled){scheduled=true;window.requestAnimationFrame(mark);}},{passive:true});
 window.addEventListener("resize",mark);mark();
-for(const a of links)a.addEventListener("click",()=>{const details=$("mobile-contents");if(details&&details.open)details.open=false;});
+const contents=$("mobile-contents"), narrow=window.matchMedia("(max-width: 1000px)");
+function syncContents(){contents.open=!narrow.matches;}
+syncContents();
+if(narrow.addEventListener)narrow.addEventListener("change",syncContents);else narrow.addListener(syncContents);
+for(const a of links)a.addEventListener("click",()=>{if(narrow.matches)contents.open=false;});
 })();
