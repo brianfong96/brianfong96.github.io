@@ -41,6 +41,14 @@ const siteData = {
     ],
     blogs: [
         {
+            title: 'How AI Helped Prove the Riemann Hypothesis',
+            url: 'blog/ai-riemann-hypothesis/index.html',
+            description: 'Explore the Alpöge–Claude proof at three levels, with real prime data, theta-series visuals, the four-term error budget, and a technical proof reader.',
+            section: 'Blog',
+            category: 'Technology',
+            date: '2026-11-26'
+        },
+        {
             title: 'The RRSP Estate Tax Trade-off',
             url: 'blog/rrsp-estate-planning/index.html',
             description: 'An interactive Canadian estate planning guide: compare gradual RRSP withdrawals, portfolio returns, term and permanent insurance, and after-tax inheritance over 1–30 years.',
