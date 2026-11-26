@@ -18,6 +18,6 @@ const h=fs.readFileSync(path.join(dir,'index.html'),'utf8'),j=fs.readFileSync(pa
 const ids=[...h.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
 assert.equal(new Set(ids).size,ids.length);
 for(const m of h.matchAll(/href="#([^"]+)"/g))assert.ok(ids.includes(m[1]),m[1]);
-for(const m of j.matchAll(/\b(?:\$|put|num|svg)\('([^']+)'/g))assert.ok(ids.includes(m[1])||m[1]==='rh-term-',m[1]);
+for(const m of j.matchAll(/(?:\$|\bput|\bnum|\bsvg)\('([^']+)'/g))assert.ok(ids.includes(m[1])||m[1]==='rh-term-',m[1]);
 assert.ok(fs.readFileSync(path.join(__dirname,'../assets/js/data.js'),'utf8').includes('blog/ai-riemann-hypothesis/index.html'));
 console.log('Riemann article model and markup checks passed');
