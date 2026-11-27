@@ -8,7 +8,6 @@
 (function () {
     'use strict';
 
-    function slug(s) { return s.toLowerCase().replace(/\s+/g, '-'); }
 
     function formatDate(d) {
         try {
@@ -26,31 +25,27 @@
             return n;
         }
         var root = add({ kind: 'root', area: 'about', title: 'Brian Fong', meta: 'Senior software engineer', kicker: 'About', desc: 'Mixed reality, game development, cybersecurity, red teaming, and AI. Open the career map.', url: 'about.html' });
-        var writing = add({ kind: 'hub', area: 'writing', title: 'Writing', meta: (data.blogs || []).length + ' posts', desc: 'Research and visual explanations across finance, technology, personal systems, and recipes.', url: 'blog.html' }, root);
-        var learn = add({ kind: 'hub', area: 'learnings', title: 'Learnings', meta: (data.learnings || []).length + ' tutorials', desc: 'Interactive tutorials with explanations, pseudocode, and animations.', url: 'learnings.html' }, root);
-        var work = add({ kind: 'hub', area: 'work', title: 'Projects', meta: (data.projects || []).length + ' built', desc: "Things I've built.", url: 'projects.html' }, root);
+        var writing = add({ kind: 'hub', area: 'writing', title: '~/posts', meta: (data.posts || []).length + ' posts', desc: 'Tutorials, research, and guides across computer science, technology, finance, personal systems, and recipes.', url: 'posts.html' }, root);
+        var work = add({ kind: 'hub', area: 'work', title: '~/projects', meta: (data.projects || []).length + ' built', desc: "Things I've built.", url: 'projects.html' }, root);
 
-        var topics = {};
-        (data.blogs || []).forEach(function (b) {
-            var cat = b.category || 'Other';
-            if (!topics[cat]) topics[cat] = add({ kind: 'topic', area: 'writing', title: cat, meta: '', kicker: 'Topic', desc: '', url: 'blog.html#' + slug(cat), count: 0 }, writing);
-            topics[cat].count++;
-            add({ kind: 'leaf', area: 'writing', title: b.title, meta: cat + (b.date ? ' / ' + formatDate(b.date) : ''), desc: b.description || '', url: b.url }, topics[cat]);
-        });
-        Object.keys(topics).forEach(function (k) { topics[k].meta = topics[k].count + (topics[k].count === 1 ? ' post' : ' posts'); });
-        (data.learnings || []).forEach(function (l) {
-            add({ kind: 'leaf', area: 'learnings', title: l.title, meta: l.category || 'Learnings', desc: l.description || '', url: l.url }, learn);
+        (data.folders || []).forEach(function (f) {
+            var items = (data.posts || []).filter(function (p) { return p.folder === f.slug; });
+            if (!items.length) return;
+            var topic = add({ kind: 'topic', area: 'writing', title: f.slug + '/', meta: items.length + (items.length === 1 ? ' post' : ' posts'), kicker: 'Folder', desc: f.description || '', url: 'posts/' + f.slug + '/' }, writing);
+            items.forEach(function (b) {
+                add({ kind: 'leaf', area: 'writing', title: b.title, meta: f.name + (b.date ? ' / ' + formatDate(b.date) : ''), desc: b.description || '', url: b.url }, topic);
+            });
         });
         (data.projects || []).forEach(function (p) {
-            add({ kind: 'leaf', area: 'work', title: p.title, meta: 'Project', desc: p.description || '', url: p.url }, work);
+            add({ kind: 'leaf', area: 'work', title: p.title, meta: 'Project' + (p.date ? ' / ' + formatDate(p.date) : ''), desc: p.description || '', url: p.url }, work);
         });
         return { nodes: nodes, edges: edges, root: root };
     }
 
     function seed(root) {
         root.x = 0; root.y = 0; root.angle = 0;
-        var hubAngles = { writing: -0.15, learnings: Math.PI * 0.86, work: Math.PI * 1.32 };
-        var hubDist = { writing: 300, learnings: 280, work: 250 };
+        var hubAngles = { writing: -0.1, work: Math.PI * 1.05 };
+        var hubDist = { writing: 300, work: 260 };
         root.children.forEach(function (h) {
             h.angle = hubAngles[h.area];
             h.x = Math.cos(h.angle) * hubDist[h.area];

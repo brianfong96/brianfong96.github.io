@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Posts - Brian Fong</title>
+    <link rel="stylesheet" href="assets/css/style.css?v=20261127-posts" />
+</head>
+<body class="posts-index">
+    <header class="topbar">
+        <a class="home-link" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
+        <button id="sidebar-toggle" aria-label="Toggle navigation"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></button>
+    </header>
+    <nav class="sidebar" id="sidebar">
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="posts.html">Posts</a></li>
+        </ul>
+    </nav>
+    <div class="content">
+        <header class="hero small">
+            <div class="hero-content">
+                <p class="eyebrow">posts</p>
+                <h1>Posts</h1>
+                <p class="hero-copy">Tutorials, research, and practical guides on the things I'm learning or have learned. Some are interactive walkthroughs with pseudocode and animation; others are source-backed essays with visual models.</p>
+            </div>
+        </header>
+        <main>
+            <section class="section">
+                <div class="section-heading">
+                    <h2>Directory</h2>
+                    <p>Every post, filed by topic. Open a folder to see its posts in detail, or jump straight to a file.</p>
+                </div>
+                <div class="dir-tree" id="post-tree" data-tree="posts"></div>
+            </section>
+        </main>
+        <footer class="footer">
+            <p>&copy; <span id="year"></span> Brian Fong. All Rights Reserved.</p>
+        </footer>
+    </div>
+    <script src="assets/js/data.js?v=20261127-posts"></script>
+    <script src="assets/js/main.js?v=20261127-posts"></script>
+</body>
+</html>

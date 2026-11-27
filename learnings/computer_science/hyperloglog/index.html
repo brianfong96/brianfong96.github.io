@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HyperLogLog - Learnings - Brian Fong</title>
-    <link rel="stylesheet" href="../../../assets/css/style.css" />
+    <link rel="stylesheet" href="../../../assets/css/style.css?v=20261127-posts" />
     <link rel="stylesheet" href="../../../assets/css/learnings.css" />
 </head>
 <body>
@@ -18,7 +18,7 @@
             <li><a href="../../../index.html">Home</a></li>
             <li><a href="../../../about.html">About</a></li>
             <li><a href="../../../projects.html">Projects</a></li>
-            <li><a href="../../../learnings.html">Learnings</a></li>
+            <li><a href="../../../posts.html">Posts</a></li>
         </ul>
     </nav>
     <div class="content">
@@ -27,7 +27,7 @@
                 <p class="eyebrow">Learnings</p>
                 <h1>HyperLogLog</h1>
                 <p class="hero-copy">A probabilistic data structure that estimates the number of distinct elements in a dataset using a fixed, tiny amount of memory — with remarkable accuracy.</p>
-                <a href="../../../learnings.html" class="back-button">&#8592; Back to Learnings</a>
+                <a href="../../../posts/computer-science/" class="back-button">&#8592; Back to Computer Science</a>
             </div>
         </header>
         <main>
@@ -804,7 +804,7 @@ M[0..m-1] = 0                   <span class="cm">// all registers start at zero<
                 <div class="callout"><strong>Summary:</strong> Hash every element. Split the hash into a register index (top b bits) and a suffix. Track the max leading-zero position (ρ) per register. Estimate cardinality with α_m × m² × harmonic_mean(2<sup>-M[j]</sup>). That's it.</div>
                 <div class="step-nav-cards only-prev">
                     <button class="step-btn prev" data-step="6"><span class="step-btn-arrow">←</span><div class="step-btn-text"><span class="step-btn-label">Previous</span><span class="step-btn-name">Live Playground</span></div></button>
-                    <a href="../../../learnings.html" class="step-btn next" style="text-decoration:none"><div class="step-btn-text"><span class="step-btn-label">View All</span><span class="step-btn-name">Learnings</span></div><span class="step-btn-arrow">→</span></a>
+                    <a href="../../../posts/computer-science/" class="step-btn next" style="text-decoration:none"><div class="step-btn-text"><span class="step-btn-label">View All</span><span class="step-btn-name">Computer Science</span></div><span class="step-btn-arrow">→</span></a>
                 </div>
             </section>
 
@@ -814,8 +814,8 @@ M[0..m-1] = 0                   <span class="cm">// all registers start at zero<
         </footer>
     </div>
 
-    <script src="../../../assets/js/data.js"></script>
-    <script src="../../../assets/js/main.js"></script>
+    <script src="../../../assets/js/data.js?v=20261127-posts"></script>
+    <script src="../../../assets/js/main.js?v=20261127-posts"></script>
     <script src="../terms/glossary.js"></script>
     <script>
     (function () {

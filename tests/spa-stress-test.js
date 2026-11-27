@@ -15,7 +15,7 @@ const browserExecutable = [
 const GLYPHS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴΞΨΩΦΣΛΠΔ';
 
 const PAGES = [
-    '/index.html', '/about.html', '/projects.html', '/blog.html',
+    '/index.html', '/about.html', '/projects.html', '/posts.html', '/posts/finance/',
     '/blog/fiber-to-the-home/index.html',
     '/blog/ai-capex-reckoning/index.html',
     '/blog/trump-portfolio-disclosure/index.html',

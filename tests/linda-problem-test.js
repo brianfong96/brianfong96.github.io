@@ -72,14 +72,12 @@ async function run() {
             if (message.type() === 'error') browserErrors.push(message.text());
         });
 
-        await page.goto(`${origin}/blog.html`, { waitUntil: 'networkidle0' });
-        await page.select('#blog-topic-select', 'Personal Systems');
-        await page.waitForSelector('#blogs-list a[href*="linda-problem"]');
-        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 3);
-        assert.match(await page.$eval('#blogs-list a[href*="linda-problem"]', (link) => link.innerText), /august 20, 2026/i);
-        assert.match(await page.$eval('#blogs-list a[href*="linda-problem"]', (link) => link.innerText), /personal systems/i);
+        await page.goto(`${origin}/posts/personal-systems/`, { waitUntil: 'networkidle0' });
+        await page.waitForSelector('#folder-posts a[href*="linda-problem"]');
+        assert.equal(await page.$$eval('#folder-posts > li', (nodes) => nodes.length), 3);
+        assert.match(await page.$eval('#folder-posts a[href*="linda-problem"]', (link) => link.innerText), /august 20, 2026/i);
 
-        await page.$eval('#blogs-list a[href*="linda-problem"]', (link) => link.click());
+        await page.$eval('#folder-posts a[href*="linda-problem"]', (link) => link.click());
         await page.waitForFunction(() => window.location.pathname.includes('/blog/linda-problem/'));
         await page.waitForSelector('.linda-article[data-linda-initialized="true"]');
 
@@ -132,10 +130,10 @@ async function run() {
         assert.ok(await page.$eval('.linda-progress', (node) => Number(getComputedStyle(node).getPropertyValue('--linda-progress')) > 0.3));
 
         await page.click('.blog-home-link');
-        await page.waitForFunction(() => window.location.pathname.endsWith('/blog.html'));
+        await page.waitForFunction(() => window.location.pathname.startsWith('/posts/'));
         await page.waitForFunction(() => typeof window.__lindaProblemCleanup === 'undefined');
-        await page.waitForSelector('#blogs-list a[href*="linda-problem"]');
-        await page.$eval('#blogs-list a[href*="linda-problem"]', (link) => link.click());
+        await page.waitForSelector('#folder-posts a[href*="linda-problem"]');
+        await page.$eval('#folder-posts a[href*="linda-problem"]', (link) => link.click());
         await page.waitForSelector('.linda-article[data-linda-initialized="true"]');
         assert.equal(await page.evaluate(() => typeof window.__lindaProblemCleanup), 'function');
 
@@ -155,10 +153,10 @@ async function run() {
             return [style.fontSize, style.letterSpacing, style.paddingTop, style.paddingBottom];
         });
         assert.deepEqual(returnedHomeHeading, baselineHomeHeading);
-        await directPage.click('a[href="blog.html"]');
-        await directPage.waitForFunction(() => window.location.pathname.endsWith('/blog.html'));
-        await directPage.waitForSelector('#blogs-list a[href*="linda-problem"]');
-        await directPage.$eval('#blogs-list a[href*="linda-problem"]', (link) => link.click());
+        await directPage.click('a[href="posts/personal-systems/"]');
+        await directPage.waitForFunction(() => window.location.pathname.startsWith('/posts/'));
+        await directPage.waitForSelector('#folder-posts a[href*="linda-problem"]');
+        await directPage.$eval('#folder-posts a[href*="linda-problem"]', (link) => link.click());
         await directPage.waitForSelector('.linda-article[data-linda-initialized="true"]');
         assert.equal(await directPage.evaluate(() => typeof window.__lindaProblemCleanup), 'function');
         await directPage.close();

@@ -73,11 +73,10 @@ async function run() {
             if (message.type() === 'error') browserErrors.push(message.text());
         });
 
-        await page.goto(`${origin}/blog.html`, { waitUntil: 'networkidle0' });
-        await page.select('#blog-topic-select', 'Finance');
-        const listing = await page.$eval('#blogs-list a[href*="pricing-the-move"]', (node) => node.textContent);
+        await page.goto(`${origin}/posts/finance/`, { waitUntil: 'networkidle0' });
+        const listing = await page.$eval('#folder-posts a[href*="pricing-the-move"]', (node) => node.textContent);
         assert.match(listing, /Options, Calls, Puts, and Greeks/);
-        await page.click('#blogs-list a[href*="pricing-the-move"]');
+        await page.click('#folder-posts a[href*="pricing-the-move"]');
         await page.waitForSelector('#options-guide[data-options-initialized="true"]');
         await page.waitForFunction(() => window.__spaTransition === false);
         await page.waitForSelector('#msft-history-chart[data-rendered="true"]');
@@ -168,7 +167,7 @@ async function run() {
         await assertNoClippedHeadings(page, 'Options desktop');
 
         await page.click('.blog-home-link');
-        await page.waitForFunction(() => window.location.pathname.endsWith('/blog.html'));
+        await page.waitForFunction(() => window.location.pathname.startsWith('/posts/'));
         await page.waitForFunction(() => typeof window.__optionsVolatilityCleanup === 'undefined');
 
         await page.setViewport({ width: 375, height: 667, deviceScaleFactor: 1 });

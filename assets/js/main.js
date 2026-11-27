@@ -36,8 +36,22 @@
         icon.href = new URL(icon.getAttribute('href'), window.location.href).href;
     });
 
-    function isArticlePage(className) {
-        return /(^|\s)(blog-article|finance-page)(\s|$)/.test(className || '');
+    // The post (from siteData) that lives at the current path, if any.
+    function currentPost() {
+        if (typeof siteData === 'undefined') return null;
+        var path = window.location.pathname.replace(/index\.html$/, '');
+        return (siteData.posts || []).find(function (p) {
+            return path.endsWith('/' + p.url.replace(/index\.html$/, ''));
+        }) || null;
+    }
+
+    function folderName(slug) {
+        var f = ((typeof siteData !== 'undefined' && siteData.folders) || []).find(function (x) { return x.slug === slug; });
+        return f ? f.name : slug;
+    }
+
+    function formatDate(iso) {
+        return new Date(iso + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     }
 
     // ────────────────────────────────────────────────────────────
@@ -80,7 +94,7 @@
                 if (i < 60) parts.push(el.textContent);
             });
             var text = parts.join('  /  ').replace(/\s+/g, ' ').trim().toLowerCase();
-            return text.length > 40 ? text + '  /  ' : 'brian fong  /  projects  /  learnings  /  blog  /  ';
+            return text.length > 40 ? text + '  /  ' : 'brian fong  /  projects  /  posts  /  ';
         }
 
         function measure() {
@@ -469,24 +483,23 @@
         if (contentAnim) { contentAnim.cancel(); contentAnim = null; }
     }
 
-    function syncBlogHomeLink(className) {
+    // On a post, the top bar carries its folder path back: ~/posts/<folder>
+    function syncBlogHomeLink() {
         if (!topbar) return;
         var link = topbar.querySelector('.blog-home-link');
-        var shouldShow = isArticlePage(className);
-        if (shouldShow && !link) {
+        var post = currentPost();
+        if (post && !link) {
             link = document.createElement('a');
             link.className = 'blog-home-link';
-            link.href = '/blog.html';
-            link.textContent = 'All blogs';
             topbar.insertBefore(link, toggleBtn);
-            attachLinkHandlers(topbar);
-        } else if (!shouldShow && link) {
+        } else if (!post && link) {
             link.remove();
         }
-        if (shouldShow && link) {
-            var isRecipe = /(^|\s)aurora-page(\s|$)/.test(className || '');
-            link.href = isRecipe ? '/blog.html#recipes' : '/blog.html';
-            link.textContent = isRecipe ? 'More recipes' : 'All blogs';
+        if (post && link) {
+            link.href = '/posts/' + post.folder + '/';
+            link.textContent = '~/posts/' + post.folder;
+            link.setAttribute('aria-label', 'More in ' + folderName(post.folder));
+            attachLinkHandlers(topbar);
         }
     }
 
@@ -619,12 +632,12 @@
                 syncPersistentNavigation(newDoc, baseUrl);
                 if (newBody) {
                     body.className = newBody.className + ' is-routing';
-                    syncBlogHomeLink(newBody.className);
                 }
                 if (newTitle) document.title = newTitle.textContent;
                 Field.seed();
                 if (!skipPushState) history.pushState(null, '', href);
                 loadedPath = window.location.pathname;
+                syncBlogHomeLink();
                 scrollToTarget(href);
                 reinitPage();
 
@@ -663,11 +676,14 @@
     // ── Re-initialize page features after SPA swap ──
     function markCurrentNav() {
         var currentPath = window.location.pathname;
+        // Everything under a section lights that section's link.
+        var section = /^\/(posts|blog|learnings)\//.test(currentPath) ? '/posts.html'
+            : /^\/projects\//.test(currentPath) ? '/projects.html' : null;
         document.querySelectorAll('.nav-links a').forEach(function (link) {
             link.classList.remove('is-current');
             try {
                 var u = new URL(link.getAttribute('href'), window.location.href);
-                if (u.pathname === currentPath) link.classList.add('is-current');
+                if (u.pathname === currentPath || u.pathname === section) link.classList.add('is-current');
             } catch (e) {}
         });
     }
@@ -687,10 +703,9 @@
     function populateAll() {
         if (typeof siteData === 'undefined') return;
         populateList('projects-list', siteData.projects || []);
-        populateList('learnings-list', siteData.learnings || []);
-        initBlogTopicFilter();
-        populateLearningsToc();
-        var all = [].concat(siteData.projects || [], siteData.learnings || []);
+        renderTree();
+        renderFolder();
+        var all = [].concat(siteData.projects || [], siteData.posts || []);
         populateList('toc-list', all);
     }
 
@@ -806,11 +821,7 @@
                 if (item.date) {
                     var date = document.createElement('time');
                     date.dateTime = item.date;
-                    date.textContent = new Date(item.date + 'T00:00:00').toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
+                    date.textContent = formatDate(item.date);
                     meta.appendChild(date);
                 }
                 a.appendChild(meta);
@@ -831,86 +842,114 @@
         });
     }
 
-    function initBlogTopicFilter() {
-        var selector = document.getElementById('blog-topic-select');
-        var blogs = siteData.blogs || [];
-        if (!selector) {
-            populateList('blogs-list', blogs);
-            return;
+    // ── Directory tree: ~/ → posts/<folder>/<file>, projects/<file> ──
+    var ICON_FOLDER = '<svg class="dir-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>';
+    var ICON_FILE = '<svg class="dir-icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6z"/></svg>';
+
+    function treeFolder(name, href, count) {
+        var folder = document.createElement('div');
+        folder.className = 'dir-folder';
+        var header = document.createElement(href ? 'a' : 'div');
+        header.className = 'dir-folder-header';
+        if (href) header.href = href;
+        header.innerHTML = ICON_FOLDER + '<span class="dir-folder-name"></span>';
+        header.querySelector('.dir-folder-name').textContent = name + '/';
+        if (count != null) {
+            var c = document.createElement('span');
+            c.className = 'dir-count';
+            c.textContent = count + (count === 1 ? ' item' : ' items');
+            header.appendChild(c);
         }
-
-        var hashTopic = decodeURIComponent(window.location.hash.slice(1)).replace(/-/g, ' ').toLowerCase();
-        var matchingOption = Array.from(selector.options).find(function (option) {
-            return option.value.toLowerCase() === hashTopic;
-        });
-        selector.value = matchingOption ? matchingOption.value : 'all';
-
-        function applyTopic() {
-            var topic = selector.value;
-            var selectedOption = selector.options[selector.selectedIndex];
-            var filtered = topic === 'all' ? blogs : blogs.filter(function (item) {
-                return item.category === topic;
-            });
-            var list = document.getElementById('blogs-list');
-            var heading = document.getElementById('posts-heading');
-            var summary = document.getElementById('topic-summary');
-
-            if (list) {
-                list.dataset.emptyMessage = topic === 'all'
-                    ? 'No posts yet — check back soon.'
-                    : 'No ' + topic.toLowerCase() + ' posts yet — check back soon.';
-            }
-            if (heading) heading.textContent = topic === 'all' ? 'Latest posts' : (topic === 'Recipes' ? 'Latest recipes' : 'Latest ' + topic + ' posts');
-            if (summary) summary.textContent = selectedOption.dataset.description || '';
-            populateList('blogs-list', filtered);
-            if (list) attachLinkHandlers(list);
+        if (href) {
+            var open = document.createElement('span');
+            open.className = 'dir-open';
+            open.setAttribute('aria-hidden', 'true');
+            open.textContent = 'open →';
+            header.appendChild(open);
         }
-
-        if (!selector._topicHandled) {
-            selector._topicHandled = true;
-            selector.addEventListener('change', function () {
-                var slug = selector.value === 'all' ? '' : '#' + selector.value.toLowerCase().replace(/\s+/g, '-');
-                window.history.replaceState(null, '', window.location.pathname + window.location.search + slug);
-                applyTopic();
-            });
-        }
-        applyTopic();
+        var children = document.createElement('div');
+        children.className = 'dir-children';
+        folder.appendChild(header);
+        folder.appendChild(children);
+        return { el: folder, children: children };
     }
 
-    function populateLearningsToc() {
-        var container = document.getElementById('toc-cs');
-        if (!container || typeof siteData === 'undefined') return;
-        container.innerHTML = '';
-        var items = (siteData.learnings || []).filter(function (item) {
-            return item.category === 'Computer Science';
+    function treeFile(item) {
+        var file = document.createElement('a');
+        file.href = item.url;
+        file.className = 'dir-file';
+        file.innerHTML = ICON_FILE + '<span class="dir-file-body"><span class="dir-file-name"></span><span class="dir-file-desc"></span></span>';
+        file.querySelector('.dir-file-name').textContent = item.title;
+        file.querySelector('.dir-file-desc').textContent = item.description || '';
+        if (item.date) {
+            var t = document.createElement('time');
+            t.className = 'dir-date';
+            t.dateTime = item.date;
+            t.title = formatDate(item.date);
+            t.textContent = item.date;
+            file.appendChild(t);
+        }
+        return file;
+    }
+
+    function renderTree() {
+        var host = document.getElementById('post-tree');
+        if (!host) return;
+        host.innerHTML = '';
+        var root = treeFolder('~', null);
+        root.el.classList.add('dir-root');
+        var posts = treeFolder('posts', null, (siteData.posts || []).length);
+        (siteData.folders || []).forEach(function (f) {
+            var items = (siteData.posts || []).filter(function (p) { return p.folder === f.slug; });
+            var node = treeFolder(f.slug, 'posts/' + f.slug + '/', items.length);
+            items.forEach(function (p) { node.children.appendChild(treeFile(p)); });
+            posts.children.appendChild(node.el);
         });
-        items.forEach(function (item) {
-            var file = document.createElement('a');
-            file.href = item.url;
-            file.className = 'toc-file';
-            file.innerHTML =
-                '<svg class="toc-icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6z"/></svg>' +
-                '<span class="toc-file-name"></span>' +
-                '<span class="toc-file-desc"></span>';
-            file.querySelector('.toc-file-name').textContent = item.title;
-            file.querySelector('.toc-file-desc').textContent = item.description || '';
-            container.appendChild(file);
+        var projects = treeFolder('projects', 'projects.html', (siteData.projects || []).length);
+        (siteData.projects || []).forEach(function (p) { projects.children.appendChild(treeFile(p)); });
+        root.children.appendChild(posts.el);
+        root.children.appendChild(projects.el);
+        host.appendChild(root.el);
+        attachLinkHandlers(host);
+    }
+
+    // ── Folder page: posts/<slug>/ lists its posts in detail ──
+    function renderFolder() {
+        var list = document.getElementById('folder-posts');
+        if (!list) return;
+        var slug = list.dataset.folder;
+        var folder = (siteData.folders || []).find(function (f) { return f.slug === slug; }) || { slug: slug, name: slug };
+        // Folder pages sit two levels deep; data URLs are root-relative.
+        var items = (siteData.posts || []).filter(function (p) { return p.folder === slug; }).map(function (p) {
+            return { title: p.title, url: '../../' + p.url, description: p.description, date: p.date };
         });
+        var desc = document.querySelector('[data-folder-description]');
+        if (desc) desc.textContent = folder.description || '';
+        var count = document.querySelector('[data-folder-count]');
+        if (count) count.textContent = items.length + (items.length === 1 ? ' post' : ' posts') + ', newest first.';
+        populateList('folder-posts', items);
+        attachLinkHandlers(list);
+
+        var siblings = document.getElementById('folder-siblings');
+        if (siblings) {
+            siblings.innerHTML = '';
+            (siteData.folders || []).forEach(function (f) {
+                if (f.slug === slug) return;
+                var a = document.createElement('a');
+                a.href = '../' + f.slug + '/';
+                a.innerHTML = ICON_FOLDER + '<span></span>';
+                a.querySelector('span').textContent = f.slug + '/';
+                siblings.appendChild(a);
+            });
+            var proj = document.createElement('a');
+            proj.href = '../../projects.html';
+            proj.innerHTML = ICON_FOLDER + '<span>~/projects/</span>';
+            siblings.appendChild(proj);
+            attachLinkHandlers(siblings);
+        }
     }
 
     // ── Link handling ──
-    function ensureBlogNavigation() {
-        if (!sidebar || sidebar.querySelector('a[href$="blog.html"]')) return;
-        var list = sidebar.querySelector('.nav-links');
-        if (!list) return;
-        var item = document.createElement('li');
-        var link = document.createElement('a');
-        link.href = '/blog.html';
-        link.textContent = 'Blog';
-        item.appendChild(link);
-        list.appendChild(item);
-    }
-
     function shouldAnimate(link, url) {
         var href = link.getAttribute('href');
         if (!href || href.startsWith('#')) return false;
@@ -974,21 +1013,17 @@
             var base = [
                 { title: 'Home', kind: 'Page', url: '/index.html' },
                 { title: 'About', kind: 'Page', url: '/about.html', hint: 'career graph' },
-                { title: 'Projects', kind: 'Page', url: '/projects.html' },
-                { title: 'Learnings', kind: 'Page', url: '/learnings.html' },
-                { title: 'Blog', kind: 'Page', url: '/blog.html' },
+                { title: 'Projects', kind: 'Page', url: '/projects.html', hint: '~/projects' },
+                { title: 'Posts', kind: 'Page', url: '/posts.html', hint: '~/posts blog learnings' },
                 { title: 'Music', kind: 'Page', url: '/music.html' }
             ];
             if (typeof siteData !== 'undefined') {
-                var topics = {};
-                (siteData.blogs || []).forEach(function (b) {
+                (siteData.folders || []).forEach(function (f) {
+                    base.push({ title: f.name, kind: 'Folder', url: '/posts/' + f.slug + '/', hint: '~/posts/' + f.slug + ' ' + f.description });
+                });
+                (siteData.posts || []).forEach(function (b) {
                     base.push({ title: b.title, kind: b.category || 'Post', url: '/' + b.url, hint: b.description });
-                    if (b.category) topics[b.category] = true;
                 });
-                Object.keys(topics).forEach(function (t) {
-                    base.push({ title: t, kind: 'Topic', url: '/blog.html#' + t.toLowerCase().replace(/\s+/g, '-') });
-                });
-                (siteData.learnings || []).forEach(function (l) { base.push({ title: l.title, kind: 'Learning', url: '/' + l.url, hint: l.description }); });
                 (siteData.projects || []).forEach(function (p) { base.push({ title: p.title, kind: 'Project', url: '/' + p.url, hint: p.description }); });
             }
             return base;
@@ -1155,8 +1190,7 @@
     window.spaNavigate = function (href) { closeSidebar(); doPageTransition(href); };
     window.__spaTransition = false;
     Palette.bindTriggers(document);
-    ensureBlogNavigation();
-    syncBlogHomeLink(body.className);
+    syncBlogHomeLink();
     Field.seed();
     markCurrentNav();
     attachLinkHandlers();

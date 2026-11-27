@@ -207,12 +207,17 @@ body.is-routing .signal-field { opacity: 0.75; }
 }
 
 .topbar .blog-home-link {
+    display: inline-block;
+    max-width: min(46vw, 260px);
     padding: 0 14px;
+    overflow: hidden;
     font-family: var(--font-mono);
-    font-size: 0.74rem;
+    font-size: 0.76rem;
     font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    line-height: 38px;
+    letter-spacing: 0.02em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 #sidebar-toggle {
@@ -382,7 +387,7 @@ body.sidebar-open { overflow: hidden; }
 
 .hero-content { position: relative; }
 
-/* Location path, e.g. ~/learnings — the page's place in the site */
+/* Location path, e.g. ~/posts/finance — the page's place in the site */
 .eyebrow {
     display: inline-flex;
     align-items: center;
@@ -748,6 +753,161 @@ select:focus {
     position: absolute;
     left: 0;
     color: var(--line-strong);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Directory tree — ~/posts and ~/projects as a file system.
+   Folders open their own page; files open the post.
+   ────────────────────────────────────────────────────────────── */
+.dir-tree {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+.dir-folder-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    max-width: 100%;
+    padding: 6px 10px;
+    margin: 2px 0;
+    border-radius: var(--radius-control);
+    color: var(--signal);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+a.dir-folder-header { transition: background-color 160ms ease, color 160ms ease; }
+
+.dir-icon { flex-shrink: 0; opacity: 0.75; }
+
+.dir-count {
+    color: var(--text-3);
+    font-size: 0.72rem;
+    font-weight: 400;
+}
+
+.dir-open {
+    color: var(--text-3);
+    font-size: 0.72rem;
+    font-weight: 400;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 160ms ease, transform 200ms var(--ease-out);
+}
+
+a.dir-folder-header:focus-visible .dir-open { opacity: 1; transform: none; }
+
+@media (hover: hover) and (pointer: fine) {
+    a.dir-folder-header:hover { background: var(--signal-soft); color: var(--signal-strong); }
+    a.dir-folder-header:hover .dir-open { opacity: 1; transform: none; color: var(--signal); }
+}
+
+.dir-children {
+    margin-left: 17px;
+    padding-left: 14px;
+    border-left: 1px solid rgba(92, 240, 143, 0.15);
+}
+
+.dir-root > .dir-folder-header { padding-left: 0; }
+
+.dir-file {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: start;
+    gap: 10px;
+    padding: 10px 14px;
+    margin: 4px 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-control);
+    background: rgba(11, 15, 13, 0.72);
+    color: var(--text);
+    text-decoration: none;
+    transition: border-color 180ms ease, background-color 180ms ease, transform 220ms var(--ease-out);
+}
+
+.dir-file .dir-icon { margin-top: 3px; color: var(--text-3); }
+
+.dir-file-body { min-width: 0; }
+
+.dir-file-name {
+    display: inline;
+    margin-right: 10px;
+    color: var(--signal);
+    font-weight: 600;
+}
+
+.dir-file-desc {
+    color: var(--text-2);
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    line-height: 1.45;
+}
+
+.dir-date {
+    color: var(--text-3);
+    font-size: 0.74rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .dir-file:hover {
+        border-color: var(--signal-line);
+        background: var(--ink-2);
+        transform: translateX(3px);
+    }
+    .dir-file:hover .dir-icon { color: var(--signal); }
+}
+
+.dir-file:active { transform: scale(0.99); }
+
+@media (max-width: 640px) {
+    .dir-children { margin-left: 8px; padding-left: 10px; }
+    .dir-file { grid-template-columns: auto 1fr; gap: 4px 10px; padding: 10px 12px; }
+    .dir-date { grid-column: 2; }
+    .dir-file-name { display: block; margin: 0 0 2px; }
+}
+
+/* Folder page: the other folders, as chips */
+.folder-siblings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.folder-siblings a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-control);
+    color: var(--text-2);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: border-color 140ms ease, color 140ms ease;
+}
+
+.folder-siblings a:hover,
+.folder-siblings a:focus-visible {
+    border-color: var(--signal-line);
+    color: var(--signal);
+}
+
+.eyebrow a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px dotted var(--line-strong);
+}
+
+.eyebrow a:hover,
+.eyebrow a:focus-visible { color: var(--signal); border-color: var(--signal-line); }
+
+@media (prefers-reduced-motion: reduce) {
+    .dir-file, .dir-file:hover, .dir-open { transition: none; transform: none; }
 }
 
 .empty-state-item { margin-bottom: 0; }

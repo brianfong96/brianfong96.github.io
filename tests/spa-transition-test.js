@@ -20,7 +20,7 @@ const PAGES = [
     { path: '/index.html', name: 'Home' },
     { path: '/about.html', name: 'About', hasGraph: true },
     { path: '/projects.html', name: 'Projects' },
-    { path: '/blog.html', name: 'Blog' },
+    { path: '/posts.html', name: 'Posts' },
     { path: '/blog/fiber-to-the-home/index.html', name: 'Fiber Security Blog', hasFiber: true },
     { path: '/blog/expertise-is-a-system/index.html', name: 'Personal Systems Blog' },
     { path: '/blog/ai-capex-reckoning/index.html', name: 'Finance Blog', hasFinance: true },

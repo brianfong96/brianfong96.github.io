@@ -125,7 +125,7 @@ components:
 
 **Creative North Star: "Quiet Signal"**
 
-The site is a portfolio you navigate. Every page — home, projects, learnings, about, the blog index, and every article — shares one dark ground and one shell: the top bar, a command palette, dropdown navigation, footer, type pairing, and green signal accent. Articles keep their own layouts and data visualisations but use the same palette, so moving between the main site and the blog never changes worlds.
+The site is a portfolio you navigate. Every page — home, projects, the posts directory and its folders, about, and every article — shares one dark ground and one shell: the top bar, a command palette, dropdown navigation, footer, type pairing, and green signal accent. Articles keep their own layouts and data visualisations but use the same palette, so moving between the main site and the blog never changes worlds.
 
 Three ideas carry the identity:
 
@@ -170,7 +170,7 @@ Articles keep a separate data vocabulary so charts stay readable next to the sig
 - **Lead** (1.12rem, 1.7): hero copy, max 62ch. **Body** (1rem, 1.6): default; article prose 1.06rem at 1.8.
 - **Label / Meta** (mono, 0.7–0.82rem, +0.04em).
 
-**The Path Rule.** Pages show a mono location path (`~/learnings`) above the title, never a marketing kicker; on the home page the role sits below the name.
+**The Path Rule.** Pages show a mono location path (`~/posts/finance`) above the title, never a marketing kicker; on the home page the role sits below the name.
 
 **The Line-Box Rule.** Display headings reserve `0.12em` (`0.16em` on articles) of block padding.
 
@@ -228,11 +228,11 @@ A fixed 60px bar holds the home icon, an "All blogs" / "More recipes" link on ar
 A modal dialog with a combobox input and a listbox. It searches pages, posts, topics, tutorials, and projects using subsequence matching, with matched letters highlighted in signal. ↑/↓ move, Enter opens through the page transition, Esc closes and returns focus. The empty state suggests what to type.
 
 ### Site map
-- Nodes are real links. You are the root; Writing, Learnings, and Projects are hubs; blog topics and individual pages hang beneath them.
+- Nodes are real links. You are the root; `~/posts` and `~/projects` are hubs; post folders and individual pages hang beneath them.
 - Layout: seeded radial fans, then a rectangle-overlap relaxation pass (no label collisions). In portrait the tree is rotated 90° so it grows downward.
 - Input: drag to pan (vertical swipes still scroll the page on touch); Ctrl/⌘ + wheel or pinch to zoom (a plain wheel scrolls the page and shows a hint); +/−/fit buttons.
 - Keyboard: arrow keys move spatially between nodes, Enter opens, Esc fits.
-- Filters: All / Writing / Learnings / Projects mute the rest and fit the camera.
+- Filters: All / Posts / Projects mute the rest and fit the camera.
 - Preview: a card top-right (a bottom sheet on phones) with kind, title, description, and Open. On touch, the first tap selects and Open navigates.
 - The Index section below repeats the same destinations as plain links and a filterable list.
 
@@ -263,3 +263,7 @@ Selection, caret, focus ring, scrollbars, and `kbd` hints are themed from the pa
 - **Don't** add glow, animated borders, scan lines, grid overlays, or scroll-triggered reveals.
 - **Don't** put a kicker above a heading, set prose in mono, or mutate real text for an effect.
 - **Don't** hijack the scroll wheel; zoom needs a modifier.
+
+## Posts directory
+
+Blog posts and learnings are one collection: **posts**, filed into folders (`~/posts/computer-science`, `technology`, `finance`, `personal-systems`, `recipes`). `posts.html` draws the whole site as a file tree (`~/` → `posts/<folder>/<file>` and `projects/<file>`), every file stamped with its ISO date. Each folder opens its own page (`posts/<folder>/`) listing its posts as detail cards, newest first. Articles keep their original URLs; the top bar on any post shows its folder path (`~/posts/<folder>`) as the way back. Add a post by adding one entry to `siteData.posts` in `assets/js/data.js` with a `folder` and `date`; add a folder by adding it to `siteData.folders` and creating `posts/<slug>/index.html` from an existing folder page.
