@@ -805,12 +805,72 @@ a.dir-folder-header:focus-visible .dir-open { opacity: 1; transform: none; }
 }
 
 .dir-children {
-    margin-left: 17px;
+    margin-left: 11px;
     padding-left: 14px;
     border-left: 1px solid rgba(92, 240, 143, 0.15);
 }
 
-.dir-root > .dir-folder-header { padding-left: 0; }
+.dir-children[hidden] { display: none; }
+
+.dir-root > .dir-row > .dir-folder-header { padding-left: 0; }
+.dir-root > .dir-children { margin-left: 7px; }
+
+.dir-row {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+/* − / + beside each folder: collapses its contents */
+.dir-toggle {
+    display: inline-grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    background: var(--ink-1);
+    color: var(--text-2);
+    font: 600 0.85rem/1 var(--font-mono);
+    cursor: pointer;
+    transition: border-color 140ms ease, color 140ms ease, background-color 140ms ease;
+}
+
+.dir-toggle:hover,
+.dir-toggle:focus-visible {
+    border-color: var(--signal-line);
+    color: var(--signal);
+    background: var(--ink-2);
+}
+
+.dir-toggle:active { transform: scale(0.94); }
+
+.dir-folder.is-collapsed > .dir-row .dir-icon { opacity: 0.5; }
+
+.dir-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+}
+
+.dir-all {
+    padding: 6px 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-control);
+    background: var(--ink-1);
+    color: var(--text-2);
+    font: 500 0.78rem/1.2 var(--font-mono);
+    cursor: pointer;
+    transition: border-color 140ms ease, color 140ms ease;
+}
+
+.dir-all:hover,
+.dir-all:focus-visible {
+    border-color: var(--signal-line);
+    color: var(--signal);
+}
 
 .dir-file {
     display: grid;
@@ -864,7 +924,7 @@ a.dir-folder-header:focus-visible .dir-open { opacity: 1; transform: none; }
 .dir-file:active { transform: scale(0.99); }
 
 @media (max-width: 640px) {
-    .dir-children { margin-left: 8px; padding-left: 10px; }
+    .dir-children { margin-left: 11px; padding-left: 8px; }
     .dir-file { grid-template-columns: auto 1fr; gap: 4px 10px; padding: 10px 12px; }
     .dir-date { grid-column: 2; }
     .dir-file-name { display: block; margin: 0 0 2px; }

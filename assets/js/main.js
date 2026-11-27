@@ -846,9 +846,35 @@
     var ICON_FOLDER = '<svg class="dir-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>';
     var ICON_FILE = '<svg class="dir-icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6z"/></svg>';
 
-    function treeFolder(name, href, count) {
+    // Collapsed folders, by path; kept across re-renders (e.g. back/forward).
+    var treeCollapsed = new Set();
+    var treeSeq = 0;
+
+    function setFolderOpen(folder, open) {
+        var btn = folder.querySelector(':scope > .dir-row > .dir-toggle');
+        var kids = folder.querySelector(':scope > .dir-children');
+        if (!btn || !kids) return;
+        kids.hidden = !open;
+        folder.classList.toggle('is-collapsed', !open);
+        btn.setAttribute('aria-expanded', String(open));
+        btn.textContent = open ? '−' : '+';
+        if (open) treeCollapsed.delete(folder.dataset.path); else treeCollapsed.add(folder.dataset.path);
+    }
+
+    function syncTreeAll(host) {
+        var btn = host.querySelector('.dir-all');
+        if (!btn) return;
+        var anyOpen = !!host.querySelector('.dir-folder[data-path]:not(.is-collapsed)');
+        btn.textContent = anyOpen ? '− Collapse all' : '+ Expand all';
+        btn.setAttribute('aria-pressed', String(!anyOpen));
+    }
+
+    function treeFolder(name, href, count, path) {
         var folder = document.createElement('div');
         folder.className = 'dir-folder';
+        var row = document.createElement('div');
+        row.className = 'dir-row';
+        folder.appendChild(row);
         var header = document.createElement(href ? 'a' : 'div');
         header.className = 'dir-folder-header';
         if (href) header.href = href;
@@ -869,8 +895,19 @@
         }
         var children = document.createElement('div');
         children.className = 'dir-children';
-        folder.appendChild(header);
+        children.id = 'dir-children-' + (++treeSeq);
+        if (path) {
+            folder.dataset.path = path;
+            var toggle = document.createElement('button');
+            toggle.type = 'button';
+            toggle.className = 'dir-toggle';
+            toggle.setAttribute('aria-controls', children.id);
+            toggle.setAttribute('aria-label', (name === '~' ? 'home' : name) + ' folder');
+            row.appendChild(toggle);
+        }
+        row.appendChild(header);
         folder.appendChild(children);
+        if (path) setFolderOpen(folder, !treeCollapsed.has(path));
         return { el: folder, children: children };
     }
 
@@ -896,20 +933,46 @@
         var host = document.getElementById('post-tree');
         if (!host) return;
         host.innerHTML = '';
+
+        var bar = document.createElement('div');
+        bar.className = 'dir-toolbar';
+        var all = document.createElement('button');
+        all.type = 'button';
+        all.className = 'dir-all';
+        bar.appendChild(all);
+        host.appendChild(bar);
+
         var root = treeFolder('~', null);
         root.el.classList.add('dir-root');
-        var posts = treeFolder('posts', null, (siteData.posts || []).length);
+        var posts = treeFolder('posts', null, (siteData.posts || []).length, 'posts');
         (siteData.folders || []).forEach(function (f) {
             var items = (siteData.posts || []).filter(function (p) { return p.folder === f.slug; });
-            var node = treeFolder(f.slug, 'posts/' + f.slug + '/', items.length);
+            var node = treeFolder(f.slug, 'posts/' + f.slug + '/', items.length, 'posts/' + f.slug);
             items.forEach(function (p) { node.children.appendChild(treeFile(p)); });
             posts.children.appendChild(node.el);
         });
-        var projects = treeFolder('projects', 'projects.html', (siteData.projects || []).length);
+        var projects = treeFolder('projects', 'projects.html', (siteData.projects || []).length, 'projects');
         (siteData.projects || []).forEach(function (p) { projects.children.appendChild(treeFile(p)); });
         root.children.appendChild(posts.el);
         root.children.appendChild(projects.el);
         host.appendChild(root.el);
+
+        if (!host._dirBound) host.addEventListener('click', function (e) {
+            var toggle = e.target.closest('.dir-toggle');
+            if (toggle && host.contains(toggle)) {
+                var folder = toggle.closest('.dir-folder');
+                setFolderOpen(folder, folder.classList.contains('is-collapsed'));
+                syncTreeAll(host);
+                return;
+            }
+            if (e.target.closest('.dir-all')) {
+                var open = !host.querySelector('.dir-folder[data-path]:not(.is-collapsed)');
+                host.querySelectorAll('.dir-folder[data-path]').forEach(function (f) { setFolderOpen(f, open); });
+                syncTreeAll(host);
+            }
+        });
+        host._dirBound = true;
+        syncTreeAll(host);
         attachLinkHandlers(host);
     }
 
