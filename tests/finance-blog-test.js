@@ -76,47 +76,25 @@ async function run() {
             assert.deepEqual(clipped, [], `${label} has clipped headings: ${JSON.stringify(clipped)}`);
         }
 
-        await page.goto(`${origin}/blog.html`, { waitUntil: 'networkidle0' });
-        await page.waitForSelector('#blogs-list a[href*="linda-problem"]');
-        await page.waitForSelector('#blogs-list a[href*="tech-layoffs"]');
-        await page.waitForSelector('#blogs-list a[href*="expertise-is-a-system"]');
-        await page.waitForSelector('#blogs-list a[href*="fiber-to-the-home"]');
-        await page.waitForSelector('#blogs-list a[href*="ai-capex-reckoning"]');
-        await page.waitForSelector('#blogs-list a[href*="trump-portfolio-disclosure"]');
-        await page.waitForSelector('#blogs-list a[href*="pricing-the-move"]');
-        await page.waitForSelector('#blogs-list a[href*="passkeys"]');
+        await page.goto(`${origin}/posts.html`, { waitUntil: 'networkidle0' });
+        for (const slug of ['linda-problem', 'tech-layoffs', 'expertise-is-a-system', 'fiber-to-the-home', 'ai-capex-reckoning', 'trump-portfolio-disclosure', 'pricing-the-move', 'passkeys', 'hyperloglog', 'tdigest']) {
+            await page.waitForSelector(`#post-tree a.dir-file[href*="${slug}"]`);
+        }
+        assert.equal(await page.$$eval('#post-tree a.dir-file[href^="blog/"]', (nodes) => nodes.length), 11);
+        assert.equal(await page.$$eval('#post-tree a[href*="will-ai-take-over"]', (nodes) => nodes.length), 0);
+        assert.deepEqual(await page.$$eval('#post-tree a.dir-folder-header[href^="posts/"] .dir-folder-name', (nodes) => nodes.map((n) => n.textContent)),
+            ['computer-science/', 'technology/', 'finance/', 'personal-systems/', 'recipes/']);
+        assert.equal(await page.$$eval('#post-tree a.dir-folder-header[href="projects.html"]', (nodes) => nodes.length), 1);
+        assert.equal(await page.$eval('#post-tree a.dir-file[href*="hyperloglog"] time', (node) => node.dateTime), '2026-05-27');
+        assert.equal(await page.$eval('#post-tree a.dir-file[href*="ai-capex-reckoning"] time', (node) => node.dateTime), '2026-07-30');
 
-        const blogEntry = await page.$eval('#blogs-list a[href*="ai-capex-reckoning"]', (link) => link.innerText);
-        assert.match(blogEntry, /finance/i);
-        assert.match(blogEntry, /july 30, 2026/i);
-        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 10);
-        assert.equal(await page.$$eval('#blogs-list a[href*="will-ai-take-over"]', (nodes) => nodes.length), 0);
-        assert.equal(await page.$$eval('#blog-topic-select option', (nodes) => nodes.length), 5);
-        assert.match(await page.$eval('#blogs-list a[href*="expertise-is-a-system"]', (link) => link.innerText), /personal systems/i);
-        assert.match(await page.$eval('#blogs-list a[href*="expertise-is-a-system"]', (link) => link.innerText), /august 1, 2026/i);
-        assert.match(await page.$eval('.hero-copy', (node) => node.textContent), /interests i want to understand better/i);
-
-        await page.select('#blog-topic-select', 'Finance');
-        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 3);
-        assert.equal(await page.$$eval('#blogs-list a[href*="expertise-is-a-system"]', (nodes) => nodes.length), 0);
-        assert.equal(await page.$eval('#posts-heading', (node) => node.textContent), 'Latest Finance posts');
-        assert.equal(await page.evaluate(() => window.location.hash), '#finance');
-
-        await page.select('#blog-topic-select', 'Personal Systems');
-        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 3);
-        assert.equal(await page.$$eval('#blogs-list a[href*="how-to-tell-whats-true"]', (nodes) => nodes.length), 1);
-        assert.equal(await page.$$eval('#blogs-list a[href*="linda-problem"]', (nodes) => nodes.length), 1);
-        assert.equal(await page.$$eval('#blogs-list a[href*="expertise-is-a-system"]', (nodes) => nodes.length), 1);
-        assert.equal(await page.$eval('#posts-heading', (node) => node.textContent), 'Latest Personal Systems posts');
-
-        await page.select('#blog-topic-select', 'Technology');
-        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 3);
-        assert.equal(await page.$$eval('#blogs-list a[href*="tech-layoffs"]', (nodes) => nodes.length), 1);
-        assert.equal(await page.$$eval('#blogs-list a[href*="fiber-to-the-home"]', (nodes) => nodes.length), 1);
-        assert.equal(await page.$eval('#posts-heading', (node) => node.textContent), 'Latest Technology posts');
-
-        await page.select('#blog-topic-select', 'all');
-        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 10);
+        for (const [slug, count, heading] of [['finance', 4, 'Finance'], ['technology', 3, 'Technology'], ['computer-science', 4, 'Computer Science'], ['personal-systems', 3, 'Personal Systems']]) {
+            await page.goto(`${origin}/posts/${slug}/`, { waitUntil: 'networkidle0' });
+            assert.equal(await page.$$eval('#folder-posts > li', (nodes) => nodes.length), count, `${slug} count`);
+            assert.equal(await page.$eval('h1', (node) => node.textContent), heading);
+        }
+        assert.equal(await page.$$eval('#folder-posts a[href*="how-to-tell-whats-true"]', (nodes) => nodes.length), 1);
+        assert.match(await page.$eval('#folder-posts a[href*="expertise-is-a-system"]', (link) => link.innerText), /august 1, 2026/i);
 
         assert.equal(await page.$eval('#sidebar-toggle', (button) => button.getAttribute('aria-label')), 'Open navigation');
         const stableNavLabels = await page.$$eval('#sidebar a', (nodes) => nodes.map((node) => node.textContent.trim()));
@@ -126,9 +104,9 @@ async function run() {
         }
         assert.equal(await page.$eval('#sidebar-toggle', (button) => button.getAttribute('aria-expanded')), 'false');
         assert.deepEqual(await page.$$eval('#sidebar a', (nodes) => nodes.map((node) => node.textContent.trim())), stableNavLabels);
-        assert.equal(await page.$$eval('#sidebar a', (nodes) => nodes.some((node) => /blog/i.test(node.textContent))), true);
+        assert.equal(await page.$$eval('#sidebar a', (nodes) => nodes.some((node) => /posts/i.test(node.textContent))), true);
 
-        await page.click('#blogs-list a[href*="expertise-is-a-system"]');
+        await page.click('#folder-posts a[href*="expertise-is-a-system"]');
         await page.waitForFunction(() => window.location.pathname.includes('/blog/expertise-is-a-system/'));
         await page.waitForSelector('.practice-loop');
         await assertNoClippedHeadings('Personal Systems desktop');
@@ -158,8 +136,8 @@ async function run() {
         await page.setViewport({ width: 1280, height: 900, deviceScaleFactor: 1 });
 
         await page.click('.blog-home-link');
-        await page.waitForFunction(() => window.location.pathname.endsWith('/blog.html'));
-        await page.waitForSelector('#blogs-list a[href*="expertise-is-a-system"]');
+        await page.waitForFunction(() => window.location.pathname === '/posts/personal-systems/');
+        await page.waitForSelector('#folder-posts a[href*="expertise-is-a-system"]');
 
         await page.goto(`${origin}/index.html`, { waitUntil: 'networkidle0' });
         const terminalNavLabels = await page.$$eval('#sidebar a', (nodes) => nodes.map((node) => node.textContent.trim()));
@@ -170,12 +148,12 @@ async function run() {
         assert.deepEqual(await page.$$eval('#sidebar a', (nodes) => nodes.map((node) => node.textContent.trim())), terminalNavLabels);
         assert.equal(await page.$eval('#sidebar-toggle', (button) => button.getAttribute('aria-expanded')), 'false');
 
-        await page.$eval('a[href="blog.html"]', (link) => link.click());
+        await page.$eval('.section-buttons a[href="posts.html"]', (link) => link.click());
         await page.waitForFunction(() => document.body.classList.contains('is-routing'));
-        await page.waitForFunction(() => document.body.classList.contains('blog-index') && !document.body.classList.contains('is-routing') && window.__spaTransition === false);
-        await page.waitForSelector('#blogs-list a[href*="trump-portfolio-disclosure"]');
+        await page.waitForFunction(() => document.body.classList.contains('posts-index') && !document.body.classList.contains('is-routing') && window.__spaTransition === false);
+        await page.waitForSelector('#post-tree a[href*="trump-portfolio-disclosure"]');
 
-        await page.click('#blogs-list a[href*="trump-portfolio-disclosure"]');
+        await page.click('#post-tree a[href*="trump-portfolio-disclosure"]');
         await page.waitForFunction(() => window.location.pathname.includes('/blog/trump-portfolio-disclosure/'));
         await page.waitForFunction(() => document.getElementById('trump-disclosure').dataset.snapshotState === 'ready');
         await page.waitForFunction(() => document.getElementById('trump-disclosure').dataset.holdingsState === 'ready');
@@ -254,10 +232,10 @@ async function run() {
         await page.setViewport({ width: 1280, height: 900, deviceScaleFactor: 1 });
 
         await page.click('.blog-home-link');
-        await page.waitForFunction(() => window.location.pathname.endsWith('/blog.html'));
-        await page.waitForSelector('#blogs-list a[href*="ai-capex-reckoning"]');
+        await page.waitForFunction(() => window.location.pathname === '/posts/finance/');
+        await page.waitForSelector('#folder-posts a[href*="ai-capex-reckoning"]');
 
-        await page.click('#blogs-list a[href*="ai-capex-reckoning"]');
+        await page.click('#folder-posts a[href*="ai-capex-reckoning"]');
         await page.waitForFunction(() => window.location.pathname.includes('/blog/ai-capex-reckoning/'));
         await page.waitForSelector('#company-tracks .company-track');
         await page.waitForSelector('#cash-flow-map .flow-group');

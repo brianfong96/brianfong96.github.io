@@ -31,8 +31,9 @@ async function run() {
         page.on('pageerror', error => errors.push(error.message));
         page.on('response', response => { if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`); });
         await page.goto(`${origin}/blog.html#personal-systems`, { waitUntil: 'networkidle0' });
-        assert.equal(await page.$eval('#blog-topic-select', el => el.value), 'Personal Systems');
-        await page.click('a[href="blog/how-to-tell-whats-true/index.html"]');
+        await page.waitForFunction(() => window.location.pathname === '/posts/personal-systems/');
+        await page.waitForSelector('#folder-posts a[href*="how-to-tell-whats-true"]');
+        await page.click('#folder-posts a[href*="how-to-tell-whats-true"]');
         await page.waitForSelector('.truth-article');
         await page.waitForFunction(() => window.__spaTransition === false);
         assert.equal(await page.title(), 'The 4C’s of Establishing What Is True - Brian Fong');
@@ -75,12 +76,12 @@ async function run() {
         assert.ok(rail.top >= 60 && rail.bottom < 900, 'Sticky TOC remains fully visible without its own scrollbar');
         await page.$eval('#context', el => el.scrollIntoView({ behavior: 'instant' }));
         await page.waitForFunction(() => document.querySelector('.truth-rail a[aria-current="location"]').hash === '#context');
-        await page.click('.truth-sources a[href*="blog.html"]');
-        await page.waitForSelector('#blog-topic-select');
+        await page.click('.truth-sources a[href*="posts/personal-systems/"]');
+        await page.waitForSelector('#folder-posts a');
         await page.waitForFunction(() => window.__spaTransition === false);
-        assert.equal(await page.$eval('#blog-topic-select', el => el.value), 'Personal Systems');
+        assert.equal(await page.$eval('#folder-posts', el => el.dataset.folder), 'personal-systems');
         assert.equal(await page.evaluate(() => typeof window.__truthArticleCleanup), 'undefined');
-        await page.click('a[href="blog/how-to-tell-whats-true/index.html"]');
+        await page.click('#folder-posts a[href*="how-to-tell-whats-true"]');
         await page.waitForSelector('.truth-article');
         await page.waitForFunction(() => window.__spaTransition === false);
         await page.waitForSelector('.truth-article[data-truth-initialized="true"]');

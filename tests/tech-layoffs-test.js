@@ -161,14 +161,12 @@ async function run() {
             if (message.type() === 'error') browserErrors.push(message.text());
         });
 
-        await page.goto(`${origin}/blog.html`, { waitUntil: 'networkidle0' });
-        await page.select('#blog-topic-select', 'Technology');
-        await page.waitForSelector('#blogs-list a[href*="tech-layoffs"]');
-        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 3);
-        assert.match(await page.$eval('#blogs-list a[href*="tech-layoffs"]', (link) => link.innerText), /august 21, 2026/i);
-        assert.match(await page.$eval('#blogs-list a[href*="tech-layoffs"]', (link) => link.innerText), /technology/i);
+        await page.goto(`${origin}/posts/technology/`, { waitUntil: 'networkidle0' });
+        await page.waitForSelector('#folder-posts a[href*="tech-layoffs"]');
+        assert.equal(await page.$$eval('#folder-posts > li', (nodes) => nodes.length), 3);
+        assert.match(await page.$eval('#folder-posts a[href*="tech-layoffs"]', (link) => link.innerText), /august 21, 2026/i);
 
-        await page.click('#blogs-list a[href*="tech-layoffs"]');
+        await page.click('#folder-posts a[href*="tech-layoffs"]');
         await page.waitForFunction(() => window.location.pathname.includes('/blog/tech-layoffs/'));
         await page.waitForSelector('.layoffs-article[data-layoffs-state="ready"]');
 
@@ -325,10 +323,9 @@ async function run() {
         assert.equal(await page.$eval('.timeline-bar', (node) => getComputedStyle(node).transitionDuration), '0s');
 
         await page.click('.blog-home-link');
-        await page.waitForFunction(() => window.location.pathname.endsWith('/blog.html'));
+        await page.waitForFunction(() => window.location.pathname.startsWith('/posts/'));
         await page.waitForFunction(() => typeof window.__techLayoffsCleanup === 'undefined');
-        await page.select('#blog-topic-select', 'Technology');
-        await page.click('#blogs-list a[href*="tech-layoffs"]');
+        await page.click('#folder-posts a[href*="tech-layoffs"]');
         await page.waitForSelector('.layoffs-article[data-layoffs-state="ready"]');
         assert.equal(await page.evaluate(() => typeof window.__techLayoffsCleanup), 'function');
 

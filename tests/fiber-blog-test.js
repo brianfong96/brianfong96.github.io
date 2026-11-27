@@ -73,16 +73,16 @@ async function run() {
         });
 
         await page.goto(`${origin}/index.html`, { waitUntil: 'networkidle0' });
-        await page.$eval('.nav-links a[href$="blog.html"]', (link) => link.click());
-        await page.waitForFunction(() => window.location.pathname.endsWith('/blog.html'));
-        await page.waitForSelector('#blog-topic-select');
-        await page.select('#blog-topic-select', 'Technology');
-        await page.waitForSelector('#blogs-list a[href*="fiber-to-the-home"]');
-        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 3);
-        assert.match(await page.$eval('#blogs-list a[href*="fiber-to-the-home"]', (node) => node.innerText), /technology/i);
-        assert.match(await page.$eval('#blogs-list a[href*="fiber-to-the-home"]', (node) => node.innerText), /august 13, 2026/i);
+        await page.$eval('.nav-links a[href$="posts.html"]', (link) => link.click());
+        await page.waitForFunction(() => window.location.pathname.endsWith('/posts.html'));
+        await page.waitForSelector('#post-tree a.dir-file[href*="fiber-to-the-home"]');
+        await page.$eval('#post-tree a[href="posts/technology/"]', (link) => link.click());
+        await page.waitForFunction(() => window.location.pathname === '/posts/technology/');
+        await page.waitForSelector('#folder-posts a[href*="fiber-to-the-home"]');
+        assert.equal(await page.$$eval('#folder-posts > li', (nodes) => nodes.length), 3);
+        assert.match(await page.$eval('#folder-posts a[href*="fiber-to-the-home"]', (node) => node.innerText), /august 13, 2026/i);
 
-        await page.$eval('#blogs-list a[href*="fiber-to-the-home"]', (link) => link.click());
+        await page.$eval('#folder-posts a[href*="fiber-to-the-home"]', (link) => link.click());
         await page.waitForFunction(() => window.location.pathname.includes('/blog/fiber-to-the-home/'));
         await page.waitForSelector('.fiber-article[data-fiber-initialized="true"]');
         await page.waitForSelector('.fiber-topology');
@@ -105,10 +105,10 @@ async function run() {
         await assertNoClippedHeadings(page, 'Fiber desktop');
 
         await page.$eval('.blog-home-link', (link) => link.click());
-        await page.waitForFunction(() => window.location.pathname.endsWith('/blog.html'));
+        await page.waitForFunction(() => window.location.pathname.startsWith('/posts/'));
         await page.waitForFunction(() => typeof window.__fiberSecurityCleanup === 'undefined');
-        await page.waitForSelector('#blogs-list a[href*="fiber-to-the-home"]');
-        await page.click('#blogs-list a[href*="fiber-to-the-home"]');
+        await page.waitForSelector('#folder-posts a[href*="fiber-to-the-home"]');
+        await page.click('#folder-posts a[href*="fiber-to-the-home"]');
         await page.waitForFunction(() => window.location.pathname.includes('/blog/fiber-to-the-home/'));
         await page.waitForSelector('.fiber-article[data-fiber-initialized="true"]');
         assert.equal(await page.evaluate(() => typeof window.__fiberSecurityCleanup), 'function');

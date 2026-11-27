@@ -70,13 +70,12 @@ async function run() {
             if (message.type() === 'error') browserErrors.push(message.text());
         });
 
-        await page.goto(`${origin}/blog.html`, { waitUntil: 'networkidle0' });
-        await page.select('#blog-topic-select', 'Technology');
-        assert.equal(await page.$$eval('#blogs-list > li', (nodes) => nodes.length), 3);
-        const listing = await page.$eval('#blogs-list a[href*="passkeys"]', (node) => node.textContent);
+        await page.goto(`${origin}/posts/technology/`, { waitUntil: 'networkidle0' });
+        assert.equal(await page.$$eval('#folder-posts > li', (nodes) => nodes.length), 3);
+        const listing = await page.$eval('#folder-posts a[href*="passkeys"]', (node) => node.textContent);
         assert.match(listing, /Passkeys: The Key That Never Reaches the Website/);
         assert.match(listing, /September 9, 2026/i);
-        await page.click('#blogs-list a[href*="passkeys"]');
+        await page.click('#folder-posts a[href*="passkeys"]');
         await page.waitForSelector('#passkey-article[data-passkey-initialized="true"]');
         await page.waitForFunction(() => window.__spaTransition === false);
 
@@ -231,9 +230,9 @@ async function run() {
         await assertNoClippedHeadings(page, 'Passkey desktop');
 
         await page.click('.blog-home-link');
-        await page.waitForFunction(() => window.location.pathname.endsWith('/blog.html'));
+        await page.waitForFunction(() => window.location.pathname.startsWith('/posts/'));
         await page.waitForFunction(() => typeof window.__passkeyArticleCleanup === 'undefined');
-        await page.click('#blogs-list a[href*="passkeys"]');
+        await page.click('#folder-posts a[href*="passkeys"]');
         await page.waitForSelector('#passkey-article[data-passkey-initialized="true"]');
         await page.click('#flow-next');
         assert.equal(await page.$eval('.ceremony-lab', (node) => node.dataset.stage), '1', 'Flow should initialize once after SPA navigation');
