@@ -89,7 +89,11 @@
         // ── Render nodes ──
         nodes.forEach(function (n) {
             var el = document.createElement(n.url ? 'a' : 'button');
-            if (n.url) { el.href = n.url; el.setAttribute('data-no-spa', ''); }
+            if (n.url) {
+                el.href = n.url;
+                el.setAttribute('data-no-spa', '');
+                if (n.external) { el.target = '_blank'; el.rel = 'noopener noreferrer'; }
+            }
             else el.type = 'button';
             el.className = 'map-node is-' + n.kind + (opts.nodeClass ? ' ' + opts.nodeClass : '');
             if (n.id) el.id = n.id;
@@ -224,7 +228,17 @@
             preview.querySelector('.map-preview-desc').textContent = n.desc || '';
             var openBtn = preview.querySelector('.map-preview-open');
             openBtn.hidden = !n.url;
-            if (n.url) { openBtn.href = n.url; openBtn._node = n; }
+            if (n.url) {
+                openBtn.href = n.url;
+                openBtn._node = n;
+                if (n.external) { openBtn.target = '_blank'; openBtn.rel = 'noopener noreferrer'; }
+                else { openBtn.removeAttribute('target'); openBtn.removeAttribute('rel'); }
+                openBtn.textContent = (n.cta || 'Open') + ' ';
+                var arrow = document.createElement('span');
+                arrow.setAttribute('aria-hidden', 'true');
+                arrow.textContent = n.external ? '↗' : '→';
+                openBtn.appendChild(arrow);
+            }
             if (opts.onSelect) opts.onSelect(n);
             if (o.reveal) {
                 var r = n.el.getBoundingClientRect(), vr = viewport.getBoundingClientRect();
@@ -237,6 +251,8 @@
         function open(n) {
             if (!n) return;
             if (!n.url) { setActive(n); centerOn(n, Math.max(cam.k, opts.revealK || 0.9), true); return; }
+            // Off-site: open beside the map, never route through the SPA.
+            if (n.external) { setActive(n); window.open(n.url, '_blank', 'noopener'); return; }
             // Resolve now: by the time the camera lands, the location may have changed.
             var href = new URL(n.url, window.location.href).href;
             setActive(n);

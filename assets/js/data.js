@@ -1,4 +1,91 @@
 const siteData = {
+    // The career map: drawn in full on the About page and as the About
+    // branch of the home map. Children are listed in the order they happened.
+    about: {
+        id: 'center', kind: 'root', area: 'about', title: 'Brian Fong', meta: 'Senior software engineer', kicker: 'Start here',
+        desc: 'Senior security software engineer on CyberShield, the Microsoft Red Team program for continuous, AI-driven offensive security. My path runs through mixed reality, game development, cloud security, red teaming, and AI.',
+        children: [
+            {
+                id: 'edu', area: 'study', tag: '2014–2019', title: 'Education',
+                desc: 'I earned my Bachelor of Science in Computer Science from Simon Fraser University. During that time, I interned at Microsoft for three terms and also worked as a Microsoft contractor for an additional term.'
+            },
+            {
+                id: 'microsoft', area: 'microsoft', tag: '2018–now', title: 'Microsoft',
+                desc: 'Every stop of my career so far has been at Microsoft: three internships while I studied, then full time from 2020 — security first, then AI, and now the two together.',
+                children: [
+                    {
+                        id: 'internships', area: 'intern', tag: '2018–2019', title: 'Internships',
+                        desc: 'Three internship terms across Vancouver and Redmond: mixed reality, the Windows 3D engine, and the Azure Red Team.',
+                        children: [
+                            {
+                                id: 'mr', area: 'intern', tag: 'Fall 2018', title: 'Mixed Reality',
+                                desc: 'I started my software engineering career as an intern at Microsoft Vancouver through the Garage program, where I got the chance to work on the HoloLens. I helped build a mixed reality application in partnership with BC Cancer to support cancer research.',
+                                children: [
+                                    {
+                                        id: 'bigpark', area: 'intern', tag: 'Internship', title: 'Big Park',
+                                        desc: 'I interned at Microsoft Big Park, where I worked on the 3D engine in Windows.',
+                                        children: [
+                                            {
+                                                id: 'azurert', area: 'intern', tag: 'Internship', title: 'Azure Red Team Intern',
+                                                desc: 'I interned at Microsoft in Redmond on the Azure Red Team, where I worked on visualizing attack graphs across the company on the HoloLens. I also had the chance to mentor the Garage program team of interns there.'
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'career', area: 'career', tag: '2020–now', title: 'Career',
+                        desc: 'Full time since March 2020: cloud security, more than five years of red teaming, a year building AI, and now offensive security driven by AI agents.',
+                        children: [
+                            {
+                                id: 'cyber', area: 'career', tag: 'March 2020', title: 'Azure Core Security',
+                                desc: 'This is where I started my full-time software engineering career in Redmond, right when COVID work-from-home began. I worked at Microsoft in Azure Core Security Services on trusted VMs.',
+                                children: [
+                                    {
+                                        id: 'redteam', area: 'career', tag: '5+ years', title: 'Microsoft Red Team',
+                                        desc: "I spent more than five years red teaming, first on the Azure Red Team and then the Microsoft Red Team. I helped build a graph of cloud assets to identify attack paths and developed a system to programmatically find every attack path that violates a security boundary.",
+                                        children: [
+                                            {
+                                                id: 'copilot', area: 'career', tag: '1 year', title: 'M365 Copilot',
+                                                desc: 'I spent a year on M365 Copilot, building AI-powered experiences that help people get more done — and learning firsthand how AI systems are built, shipped, and run at scale.',
+                                                children: [
+                                                    {
+                                                        id: 'cybershield', area: 'career', tag: 'Current', title: 'CyberShield',
+                                                        desc: "Where I am now. CyberShield is the Microsoft Red Team program that takes our red team capability beyond Microsoft's own estate to select customers. Its mandate is to move red teaming from point-in-time, human-led engagements to a continuous, software-driven model powered by agentic AI. I build the offensive platform behind it, working with red team operators to automate reconnaissance, vulnerability discovery, exploitation, and post-exploitation across cloud, identity, network, and endpoint, and turning operational lessons into capabilities that scale. It brings my red teaming and AI work together."
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'hobby', area: 'personal', tag: 'Personal', title: 'Hobby',
+                desc: 'Outside of work I spend my time on creative and physical pursuits that keep me sharp and energized.',
+                children: [
+                    {
+                        id: 'gamedev', area: 'personal', tag: 'Creative', title: 'Game Dev',
+                        desc: 'Game dev is a hobby I like to pursue in my free time. I work primarily with Unity, which is actually how I landed my first internship at Microsoft. I enjoy prototyping interactive experiences, experimenting with mechanics, and building things just for the fun of it.'
+                    },
+                    {
+                        id: 'writing', area: 'personal', tag: 'Creative', title: 'Writing',
+                        desc: 'I love telling stories. I write fiction for the fun of building worlds and characters and seeing where they go, and I publish it as serials on Royal Road.',
+                        url: 'https://www.royalroad.com/profile/979817/fictions', external: true, cta: 'Read on Royal Road'
+                    },
+                    {
+                        id: 'ma', area: 'personal', tag: 'Physical', title: 'Martial Arts',
+                        desc: "I've been learning LiuHeBaFa for over a decade under Mario Lam. Beyond the physical practice, it has taught me a great deal about applying its theories and philosophies to different facets of my life. It complements the mental work of engineering with a discipline that demands focus, consistency, and continuous self-reflection."
+                    }
+                ]
+            }
+        ]
+    },
     // ~/posts/<slug>/ — each folder is a topic with its own page.
     folders: [
         { slug: 'computer-science', name: 'Computer Science', description: 'Interactive tutorials on data structures and analytics, with explanations, pseudocode, and animations.' },
