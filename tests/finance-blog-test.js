@@ -80,7 +80,7 @@ async function run() {
         for (const slug of ['linda-problem', 'tech-layoffs', 'expertise-is-a-system', 'fiber-to-the-home', 'ai-capex-reckoning', 'trump-portfolio-disclosure', 'pricing-the-move', 'passkeys', 'hyperloglog', 'tdigest']) {
             await page.waitForSelector(`#post-tree a.dir-file[href*="${slug}"]`);
         }
-        assert.equal(await page.$$eval('#post-tree a.dir-file[href^="blog/"]', (nodes) => nodes.length), 10);
+        assert.equal(await page.$$eval('#post-tree a.dir-file[href^="blog/"]', (nodes) => nodes.length), 11);
         assert.equal(await page.$$eval('#post-tree a[href*="will-ai-take-over"]', (nodes) => nodes.length), 0);
         assert.deepEqual(await page.$$eval('#post-tree a.dir-folder-header[href^="posts/"] .dir-folder-name', (nodes) => nodes.map((n) => n.textContent)),
             ['computer-science/', 'technology/', 'finance/', 'personal-systems/', 'recipes/']);
@@ -88,7 +88,7 @@ async function run() {
         assert.equal(await page.$eval('#post-tree a.dir-file[href*="hyperloglog"] time', (node) => node.dateTime), '2026-05-27');
         assert.equal(await page.$eval('#post-tree a.dir-file[href*="ai-capex-reckoning"] time', (node) => node.dateTime), '2026-07-30');
 
-        for (const [slug, count, heading] of [['finance', 3, 'Finance'], ['technology', 3, 'Technology'], ['computer-science', 4, 'Computer Science'], ['personal-systems', 3, 'Personal Systems']]) {
+        for (const [slug, count, heading] of [['finance', 4, 'Finance'], ['technology', 3, 'Technology'], ['computer-science', 4, 'Computer Science'], ['personal-systems', 3, 'Personal Systems']]) {
             await page.goto(`${origin}/posts/${slug}/`, { waitUntil: 'networkidle0' });
             assert.equal(await page.$$eval('#folder-posts > li', (nodes) => nodes.length), count, `${slug} count`);
             assert.equal(await page.$eval('h1', (node) => node.textContent), heading);
