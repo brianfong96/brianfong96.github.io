@@ -5,9 +5,18 @@ const siteData = {
         { slug: 'technology', name: 'Technology', description: 'Systems, security, AI, their limits, and their human consequences.' },
         { slug: 'finance', name: 'Finance', description: 'Companies, capital, market expectations, and the quality of reported earnings.' },
         { slug: 'personal-systems', name: 'Personal Systems', description: 'Practice, judgment, learning, and sustainable growth.' },
+        { slug: 'civic-infrastructure', name: 'Civic & Infrastructure', description: 'Source-backed investigations of public infrastructure, local government, engineering decisions, and the economics of everyday systems.' },
         { slug: 'recipes', name: 'Recipes', description: 'Drinks, flavors, and practical guides to making them.' }
     ],
     posts: [
+        {
+            title: 'Why Do Coquitlam’s Streetlights Feel So Dim?',
+            url: 'blog/coquitlam-street-lighting/index.html',
+            description: 'A source-backed FAQ on the LED streetlight conversion, directional optics, road visibility in rain, costs, and what residents can do. Interactive luminance and retrofit cost models.',
+            category: 'Civic & Infrastructure',
+            folder: 'civic-infrastructure',
+            date: '2026-11-27'
+        },
         {
             title: 'The RRSP Estate Tax Trade-off',
             url: 'blog/rrsp-estate-planning/index.html',
@@ -156,7 +165,7 @@ const siteData = {
         {
             title: 'Posts',
             url: 'posts.html',
-            description: 'Tutorials, research, and guides across computer science, technology, finance, personal systems, and recipes.',
+            description: 'Tutorials, research, and guides across computer science, technology, finance, personal systems, civic infrastructure, and recipes.',
             section: 'Pages'
         },
         {
