@@ -25,7 +25,7 @@
             return n;
         }
         var root = add({ kind: 'root', area: 'about', title: 'Brian Fong', meta: 'Senior software engineer', kicker: 'About', desc: 'Mixed reality, game development, cybersecurity, red teaming, and AI. Open the career map.', url: 'about.html' });
-        var writing = add({ kind: 'hub', area: 'writing', title: '~/posts', meta: (data.posts || []).length + ' posts', desc: 'Tutorials, research, and guides across computer science, technology, finance, personal systems, and recipes.', url: 'posts.html' }, root);
+        var writing = add({ kind: 'hub', area: 'writing', title: '~/posts', meta: (data.posts || []).length + ' posts', desc: 'Tutorials, research, and guides across computer science, technology, finance, personal systems, civic infrastructure, and recipes.', url: 'posts.html' }, root);
         var work = add({ kind: 'hub', area: 'work', title: '~/projects', meta: (data.projects || []).length + ' built', desc: "Things I've built.", url: 'projects.html' }, root);
 
         (data.folders || []).forEach(function (f) {

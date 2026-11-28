@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why do Coquitlam's streetlights feel so dim? | Brian Fong</title>
+<meta name="description" content="A source-backed FAQ about Coquitlam's LED streetlight conversion, optical coverage, wet-weather driver visibility, costs and ways to request improvements.">
+<link rel="canonical" href="https://brianfong96.github.io/blog/coquitlam-street-lighting/">
+<link rel="icon" href="../../assets/favicon.png">
+<link rel="stylesheet" href="../../assets/css/style.css?v=20261127-posts">
+<style>
+.street-shell{width:min(1140px,calc(100% - 40px));margin:auto;padding:100px 0 64px;display:grid;grid-template-columns:205px minmax(0,760px);justify-content:center;gap:44px;align-items:start}
+.street-article{min-width:0;color:var(--text);font-size:1.06rem;line-height:1.8}
+.street-article h1{font-size:clamp(2.45rem,6vw,4.3rem);line-height:1.08;letter-spacing:-.035em;margin:12px 0 20px;padding-block:.08em;text-wrap:balance}
+.street-article h2{font-size:clamp(1.65rem,4vw,2.2rem);line-height:1.2;letter-spacing:-.025em;margin:0 0 18px}
+.street-article h3{font-size:1.22rem;line-height:1.4;margin:28px 0 10px}
+.street-article p{margin:0 0 18px;text-wrap:pretty}
+.street-article a{color:var(--signal-strong);text-underline-offset:3px}
+.street-article .meta,.street-article .fig-label{font:500 .82rem/1.6 var(--font-mono);color:var(--text-2)}
+.street-article .deck{font-size:clamp(1.12rem,2.5vw,1.3rem);line-height:1.65}
+.street-article .note,.street-article figcaption{font-size:.91rem;line-height:1.65;color:var(--text-2)}
+.street-article section{padding:42px 0 34px;border-top:1px solid var(--line-strong);scroll-margin-top:82px}
+.street-article [id]{scroll-margin-top:82px}
+.street-article .panel,.street-article fieldset{min-width:0;background:var(--ink-1);border:1px solid var(--line-strong);border-radius:12px;padding:clamp(16px,3vw,26px);margin:22px 0}
+.street-article .panel p:last-child{margin-bottom:0}
+.street-article .takeaway{border-left:3px solid var(--signal);padding-left:16px;margin:22px 0}
+.street-article .caveat{border-left:3px solid var(--lime);padding-left:14px}
+.street-article .metric{padding:18px 0;border-bottom:1px solid var(--line-strong)}
+.street-article .metric:last-of-type{border-bottom:0}
+.street-article .metric strong{display:block;font-size:clamp(2rem,7vw,3.35rem);line-height:1.08;font-weight:750;letter-spacing:-.04em;color:var(--text);font-variant-numeric:tabular-nums;margin:6px 0}
+.street-article .metric span{display:block}
+.street-article .label{font-weight:650}
+.street-article .bar{height:12px;background:var(--ink-3);border-radius:4px;overflow:hidden;margin:8px 0 12px}
+.street-article .bar i{display:block;height:100%;background:#7fb2e8}
+.street-article .rowline{display:flex;justify-content:space-between;align-items:baseline;gap:6px 18px;flex-wrap:wrap}
+.street-article .rowline strong{font-variant-numeric:tabular-nums}
+.street-article .table-wrap{overflow-x:auto;max-width:100%}
+.street-article table{width:100%;border-collapse:collapse;font-size:.94rem;font-variant-numeric:tabular-nums}
+.street-article th,.street-article td{padding:10px 8px;border-bottom:1px solid var(--line-strong);text-align:left;vertical-align:top}
+.street-article th{color:var(--text-2);font-size:.83rem}
+.street-article .number{text-align:right;white-space:nowrap}
+.street-article figure{margin:22px 0}
+.street-article figure svg{display:block;width:100%;height:auto}
+.street-article .figure-frame{background:#0b0f0d;border:1px solid var(--line);border-radius:8px;padding:10px;margin:12px 0}
+.street-article .figure-frame svg text{font-family:var(--font-sans)}
+.street-article ul,.street-article ol{padding-left:24px;margin:12px 0 20px}
+.street-article li{margin:0 0 9px}
+.street-article .source-list{font-size:.95rem}
+.street-article label{display:block;font-weight:650;margin:14px 0 5px}
+.street-article input[type=number]{width:100%;max-width:100%;font:inherit;color:var(--text);background:var(--ink-2);border:1px solid #718479;border-radius:8px;padding:10px 12px;min-height:46px;font-variant-numeric:tabular-nums}
+.street-article button{font:inherit;min-height:44px;background:var(--ink-2);color:var(--text);border:1px solid var(--line-strong);padding:9px 14px;border-radius:8px;cursor:pointer}
+.street-article button[aria-pressed=true]{border-color:var(--signal);color:var(--signal-strong);background:var(--signal-soft)}
+.street-article .switch{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.street-article .switch button{flex:1}
+.street-article .plot{display:flex;align-items:end;gap:8px;height:140px;border-bottom:1px solid var(--line-strong);margin:24px 0 8px}
+.street-article .plot div{flex:1;min-width:0;position:relative;background:#7fb2e8;border-radius:4px 4px 0 0;height:var(--h)}
+.street-article .plot span{position:absolute;bottom:calc(100% + 2px);width:100%;text-align:center;font:500 .72rem/1.2 var(--font-mono);color:var(--text)}
+.street-article .result{border-top:1px solid var(--line-strong);padding-top:14px;margin-top:20px}
+.street-article .result strong{font-size:clamp(1.6rem,5vw,2.4rem);display:block;line-height:1.2;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.street-article .formula{font-family:var(--font-mono);font-size:.86rem;overflow-wrap:anywhere}
+.street-article .skip{position:absolute;left:-9999px}.street-article .skip:focus{position:static}
+.street-nav{position:sticky;top:84px;max-height:calc(100vh - 100px);overflow:auto;font-size:.9rem;line-height:1.45;color:var(--text-2)}
+.street-nav summary{font-weight:650;cursor:pointer;padding:10px 6px}
+.street-nav ol{list-style:none;padding:0;margin:8px 0}
+.street-nav a{display:block;padding:10px 12px;border-left:2px solid var(--line-strong);color:var(--text-2);text-decoration:none;min-height:42px}
+.street-nav a:hover,.street-nav a:focus-visible{color:var(--signal-strong);border-color:var(--signal);background:var(--ink-2)}
+@media(max-width:850px){.street-shell{width:min(760px,calc(100% - 32px));display:block;padding-top:84px}.street-nav{position:static;max-height:none;margin-bottom:22px}.street-nav ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.street-article section{padding:32px 0 24px}}
+@media(max-width:420px){.street-article{font-size:1rem}.street-article th,.street-article td{padding:8px 5px}.street-article .number{white-space:normal}.street-nav ol{display:block}}
+@media(prefers-reduced-motion:reduce){.street-article *{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body class="blog-article civic-infrastructure-page">
+<header class="topbar">
+<a class="home-link" href="../../index.html" aria-label="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
+<a class="blog-home-link" href="../../posts/civic-infrastructure/">~/posts/civic-infrastructure</a>
+<button id="sidebar-toggle" aria-label="Toggle navigation"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></button>
+</header>
+<nav class="sidebar" id="sidebar" aria-label="Primary navigation"><ul class="nav-links"><li><a href="../../index.html">Home</a></li><li><a href="../../about.html">About</a></li><li><a href="../../projects.html">Projects</a></li><li><a href="../../posts.html">Posts</a></li></ul></nav>
+<div class="content">
+<div class="street-shell">
+<nav class="street-nav" aria-label="On this page"><details open><summary>On this page</summary><ol>
+<li><a href="#answer">The short answer</a></li><li><a href="#rollout">What changed?</a></li><li><a href="#spread">Why directional fixtures?</a></li><li><a href="#pilot">What was tested?</a></li><li><a href="#standards">Who sets brightness?</a></li><li><a href="#rain">Why rain changes visibility</a></li><li><a href="#drivers">Are drivers better off?</a></li><li><a href="#upgrade">Can we make it brighter?</a></li><li><a href="#cost">What would it cost?</a></li><li><a href="#action">What can residents do?</a></li><li><a href="#sources">Sources &amp; limitations</a></li>
+</ol></details></nav>
+<main class="street-article" id="street-article">
+<a class="skip" href="#answer">Skip to the FAQ</a>
+<header>
+<p class="meta"><a href="../../posts/civic-infrastructure/">Civic &amp; Infrastructure</a> · <time datetime="2026-11-27">November 27, 2026</time> · Coquitlam, BC</p>
+<h1>Why do Coquitlam's streetlights feel so dim?</h1>
+<p class="deck">Why can driving through Coquitlam on a rainy night feel dark even after the city spent millions on an LED retrofit? The answer involves a small local pilot, a citywide conversion, the physics of wet pavement, and the difference between making light and making things visible.</p>
+</header>
+<section id="answer">
+<h2>The short answer</h2>
+<p><strong>Did the city actually make the roads darker?</strong> The available evidence does not establish that. The pilot reported improved road lighting at three sites. The subsequent retrofit was designed to meet lighting guidance or retain previous road luminance. Neither is a citywide before-and-after driver visibility study. Less stray light, different optics, pole spacing, weather and glare can change what drivers see even when average road luminance is unchanged or higher.</p>
+<figure class="panel">
+<div class="metric"><span class="label">Completed LED conversions</span><strong>9,800</strong><span class="note">2023 annual report <a href="#s2">[2]</a></span></div>
+<div class="metric"><span class="label">Original conversion estimate</span><strong>$6.49M</strong><span class="note">2018 plan, not final expenditure <a href="#s1">[1]</a></span></div>
+<div class="metric"><span class="label">Projected electricity reduction</span><strong>57%</strong><div class="bar" aria-hidden="true"><i style="width:57%"></i></div><span class="note">Forecast, not a verified realized saving <a href="#s1">[1]</a></span></div>
+<figcaption>Completed quantity, projected capital cost and projected energy savings are different kinds of evidence.</figcaption></figure>
+</section>
+<section id="rollout">
+<h2>Which areas were upgraded, and what changed?</h2>
+<p>The 2018 plan covered five maintenance zones. The map in <a href="https://coquitlam.ca.granicus.com/MetaViewer.php?clip_id=90&amp;meta_id=3464&amp;view_id=2#page=16">Attachment B</a> identifies the geography. The following is the original schedule, not a street-by-street completion log. The city confirmed completion in 2023. <a href="#s1">[1]</a> <a href="#s2">[2]</a></p>
+<div class="table-wrap"><table><caption class="note">Planned 2018–2022 rollout (CAD)</caption><thead><tr><th scope="col">Year / approximate zone</th><th scope="col" class="number">Lights</th><th scope="col" class="number">Estimate</th></tr></thead><tbody>
+<tr><td>2018 · Northern southwest</td><td class="number">1,980</td><td class="number">$1.26M</td></tr><tr><td>2019 · Southern southwest</td><td class="number">1,660</td><td class="number">$1.08M</td></tr><tr><td>2020 · Northwest / plateau</td><td class="number">1,710</td><td class="number">$1.05M</td></tr><tr><td>2021 · Northeast</td><td class="number">2,220</td><td class="number">$1.48M</td></tr><tr><td>2022 · City Centre / central</td><td class="number">1,940</td><td class="number">$1.62M</td></tr><tr><th scope="row">Total</th><td class="number">9,510</td><td class="number">$6.49M</td></tr></tbody></table></div>
+<p>The majority of the older inventory used high-pressure sodium (HPS), with some metal halide. About 3,500 existing cobra heads were slated for LED replacement. Most of roughly 6,000 decorative post-top fixtures were to gain a davit adapter arm and an LED cobra head on the existing pole. Approximately 1,100 decorative fixtures were intended to keep their appearance, including in Burquitlam, Austin Heights, Maillardville and City Centre. Roughly 2,000 BC Hydro-owned lights were outside the original municipal program; their current conversion status is not established here. <a href="#s1">[1]</a></p>
+<p><strong>How much did it actually cost?</strong> The 2018 estimate works out to about $682 per planned fixture ($6.49M / 9,510). The annual report confirms the count completed, but I have not found a final project-level expenditure or realized energy savings. The original forecast was $446,000 annual electricity savings and 14–17 years for cost recovery, including maintenance assumptions. <a href="#s1">[1]</a> <a href="#s2">[2]</a></p>
+</section>
+<section id="spread">
+<h2>Why did the city choose directional lights?</h2>
+<p><strong>Directional does not necessarily mean less useful coverage.</strong> A luminaire has a three-dimensional intensity distribution shaped by its lens and reflector. A cobra head can throw light along a road and across multiple lanes while avoiding upper windows and the sky. A globe or post-top fixture may illuminate more of the surroundings, depending on its optics. The shape of the housing alone does not specify the beam. <a href="#s3">[3]</a> <a href="#s4">[4]</a></p>
+<figure class="panel">
+<div class="fig-label">Conceptual cross-section / not measured photometry</div>
+<div class="figure-frame"><svg viewBox="0 0 340 208" role="img" aria-labelledby="beam-title beam-desc">
+<title id="beam-title">Old post-top and directional cobra lighting</title><desc id="beam-desc">A post-top globe spreads light toward a nearby house, sidewalk, road and sky. A directional head on an arm focuses more light on the road. Actual footprints vary with the optics.</desc>
+<rect width="340" height="208" rx="7" fill="#111714"/><g fill="#a7b6ac" font-size="11" text-anchor="middle"><text x="85" y="17">Post-top example</text><text x="255" y="17">Cobra-head example</text></g>
+<g fill="#1f2a23" stroke="#31443a"><path d="M6 126V94L28 76 50 94V126Z"/><path d="M176 126V94L198 76 220 94V126Z"/></g>
+<g fill="#4a5650"><path d="M0 146H170V167H0Z"/><path d="M170 146H340V167H170Z"/></g><g fill="#829088"><path d="M0 141H44V146H0Z"/><path d="M170 141H214V146H170Z"/></g>
+<ellipse cx="71" cy="65" rx="66" ry="44" fill="#f2c77a" opacity=".12"/><path d="M71 58L3 146H167Z" fill="#f2c77a" opacity=".22"/><path d="M71 141V67" stroke="#879c94" stroke-width="3"/><circle cx="71" cy="58" r="8" fill="#f2c77a"/>
+<path d="M257 55L217 146H337Z" fill="#b9d4f2" opacity=".27"/><path d="M218 141V58Q218 50 228 50H264" fill="none" stroke="#879c94" stroke-width="3"/><rect x="247" y="49" width="21" height="6" rx="3" fill="#d8e7f4"/>
+<path d="M170 6V201" stroke="#31443a" stroke-dasharray="4 4"/><g fill="#e3eae5" font-size="10" text-anchor="middle"><text x="85" y="184">More light outside road</text><text x="255" y="184">Controlled distribution</text><text x="85" y="198" fill="#a7b6ac">Possible spill into homes</text><text x="255" y="198" fill="#a7b6ac">Depends on selected optic</text></g></svg></div>
+<figcaption>Illustration of a trade-off, not a claim that every decorative fixture is broad or every cobra head leaves the sidewalk dark.</figcaption></figure>
+<h3>What controls the spread?</h3>
+<ul><li><strong>Photometric distribution:</strong> lens/reflector geometry determines the luminous intensity in each direction. IES Type II and III distributions, for example, are elongated patterns suited to different road widths; a file for the exact optic is more useful than a single beam angle.</li><li><strong>Height, tilt and arm length:</strong> change where the light lands. Greater height generally broadens the footprint while reducing illuminance for a fixed intensity. Tilting can increase glare or spill.</li><li><strong>Pole spacing and road width:</strong> determine overlap, the darkest locations and whether pedestrians are inside the designed area.</li><li><strong>Output, trees and maintenance:</strong> lumens scale available light; vegetation and degraded or obstructed optics change the delivered result.</li></ul>
+<p>For a simple symmetric cone over flat ground, footprint diameter is approximately 2h × tan(beam angle / 2). Real roadway lights are asymmetric and must be assessed with photometric data. Higher output is not the same as wider optics. <a href="#s3">[3]</a> <a href="#s4">[4]</a></p>
+<h3>Why this fixture mix?</h3>
+<p>Cost, optical control and energy efficiency were explicitly discussed in the 2017 pilot and 2018 conversion plan. Decorative LED heads could cost three to four times as much as cobra-style heads. The city also wanted to reduce light entering neighbouring properties and the sky. <a href="#s1">[1]</a></p>
+<figure class="panel"><div class="fig-label">2017 preliminary business case / 9,000 fixtures</div>
+<div class="rowline"><span>60% decorative / 40% cobra</span><strong>$8.4M</strong></div><div class="bar"><i style="width:100%"></i></div>
+<div class="rowline"><span>15% decorative / 85% cobra (preferred)</span><strong>$5.9M</strong></div><div class="bar"><i style="width:70.24%"></i></div>
+<div class="rowline"><span>0% decorative / 100% cobra</span><strong>$5.1M</strong></div><div class="bar"><i style="width:60.71%"></i></div>
+<p class="takeaway"><strong>$2.5M</strong> difference between keeping the original fixture mix and the preferred 85% cobra option.</p>
+<figcaption>Attachment A, Attachment 5 of the 2018 report. These are the earlier scenario estimates, not final expenditures. They compare fixture styles, not the cost of choosing a broader LED lens. <a href="#s1">[1]</a></figcaption></figure>
+<p>Could the city have selected directional fixtures with wider sidewalk coverage? Yes, in principle. But that changes the optimization problem: required road and pedestrian lighting, glare, spill, spacing and energy. We cannot infer which optic was chosen at every existing pole or whether cost prevented a wider distribution without the actual design schedules and procurement records.</p>
+</section>
+<section id="pilot">
+<h2>What was actually tested?</h2>
+<p>Coquitlam and DMD &amp; Associates replaced 15 HPS post-top fixtures with LED davit heads in August 2016: five each on Galloway Avenue, Parkway Boulevard and Primrose Lane. The pilot included fixture selection, lighting design, measurements before and after installation, visual assessment and a resident survey. Consultation concluded in January 2017. <a href="#s1">[1]</a></p>
+<figure class="panel"><div class="fig-label">Pilot scale and resident feedback</div>
+<div class="metric"><span class="label">Pilot fixtures / completed rollout</span><strong>15 / 9,800</strong><span class="note">About 0.15% of the eventual program count; not a representative sampling claim.</span></div>
+<div class="metric"><span class="label">Residents who provided feedback</span><strong>36</strong><span class="note">Approximately 150 households contacted; residents and households are different units.</span></div>
+<div class="rowline"><span>Respondents preferring LED visibility</span><strong>67%</strong></div><div class="bar"><i style="width:67%"></i></div>
+<div class="rowline"><span>Liked the appearance or had no preference</span><strong>~85%</strong></div><div class="bar"><i style="width:85%"></i></div>
+<figcaption>Percentages are of respondents, not all contacted households. The 2017 report also describes improved lighting levels and road uniformity at all three sites. <a href="#s1">[1]</a></figcaption></figure>
+<p class="caveat"><strong>What this does not establish:</strong> quantified citywide gains, matched wet-weather visibility, sidewalk vertical illuminance at every street, crash reductions attributable to the retrofit, or results across all possible pole spacings. The council summary reports a favorable measurement outcome without publishing the full before/after measurement grids and test conditions there. The original <a href="https://coquitlam.ca.granicus.com/MetaViewer.php?clip_id=90&amp;meta_id=3464&amp;view_id=2#page=5">pilot report and attachments</a> include before-and-after photographs and survey results.</p>
+</section>
+<section id="standards">
+<h2>Who dictates brightness? Did they adjust it?</h2>
+<p>A consultant selected wattages to meet Transportation Association of Canada (TAC) guidance or maintain the existing road luminance. The plan specified 3000 K for local streets and 4000 K for busier corridors. Kelvin describes color, not output. LED efficiency permits lower input watts with similar or better useful illumination; it does not guarantee that result. <a href="#s1">[1]</a></p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Measure</th><th scope="col">What it tells us</th></tr></thead><tbody><tr><td>Watt (W)</td><td>Electrical power consumption</td></tr><tr><td>Lumen (lm)</td><td>Total visible light emitted</td></tr><tr><td>Candela (cd)</td><td>Light intensity in a particular direction</td></tr><tr><td>Lux (lx)</td><td>Light falling on a surface, e.g. sidewalk or pedestrian</td></tr><tr><td>cd/m²</td><td>Luminance: light leaving a surface toward an observer</td></tr><tr><td>Average:min ratio</td><td>How far the darkest point falls below average</td></tr><tr><td>Kelvin (K)</td><td>Correlated color temperature</td></tr></tbody></table></div>
+<p>Road classification, traffic, pedestrian activity, geometry, uniformity and glare matter. Here is a real local example: the Hall Avenue design drawing specifies a 53 W, 4000 K, Type 2ES LED on a 7.6 m davit pole. It sets average road luminance at ≥0.4 cd/m², calculates 0.57 cd/m² and an average:min ratio of 2.07 against a maximum of 4.0. These are design calculations, not field measurements or citywide requirements. <a href="#s5">[5]</a> Other streets may have different design values.</p>
+</section>
+<section id="rain">
+<h2>Why does wet asphalt affect perceived brightness?</h2>
+<p>Dry textured pavement scatters light across a broad range of angles. A film of water can fill surface irregularities and add a specular, more mirror-like reflection. Under a given viewing geometry, light may reflect toward or away from the driver, producing streaks, glare and dark gaps. The road can have a higher average luminance while its minimum luminance and visibility worsen. <a href="#s6">[6]</a> <a href="#s7">[7]</a></p>
+<figure class="panel"><div class="fig-label">Reflection at one point / schematic</div>
+<div class="figure-frame"><svg viewBox="0 0 340 187" role="img" aria-labelledby="rain-title rain-desc"><title id="rain-title">Diffuse and specular reflection</title><desc id="rain-desc">Dry rough asphalt scatters incident light in many directions. On wet asphalt the dominant specular ray reflects at the same angle to the surface normal as the incident ray.</desc>
+<rect width="340" height="187" rx="8" fill="#111714"/><path d="M170 5V180" stroke="#31443a" stroke-dasharray="4 4"/><g fill="#e3eae5" font-size="11" text-anchor="middle"><text x="85" y="18">Dry / diffuse</text><text x="255" y="18">Wet / specular</text></g>
+<g stroke="#e8c77f" stroke-width="2" fill="none"><path d="M35 43L85 125"/><path d="M205 43L255 125"/></g><g stroke="#b9d4f2" stroke-width="2" fill="none"><path d="M85 125L17 78M85 125L46 52M85 125L85 42M85 125L126 52M85 125L155 78"/><path d="M255 125L305 43"/></g>
+<g fill="#e8c77f"><circle cx="35" cy="43" r="4"/><circle cx="205" cy="43" r="4"/></g><path d="M6 128L20 125 34 129 48 124 62 128 76 125 90 129 104 125 118 128 132 124 146 129 164 126V145H6Z" fill="#56625c"/><path d="M176 125H334V145H176Z" fill="#34433d"/><path d="M176 125H334" stroke="#7fb2e8" stroke-width="3"/><path d="M255 34V125" stroke="#a7b6ac" stroke-dasharray="3 4"/><g fill="#a7b6ac" font-size="10" text-anchor="middle"><text x="85" y="164">Light scattered broadly</text><text x="255" y="164">Reflection concentrated</text><text x="255" y="177">around the mirror direction</text></g></svg></div>
+<figcaption>Not an optical simulation; the wet road still has diffuse components. Which direction looks bright depends on source, observer and pavement geometry.</figcaption></figure>
+<h3>Can the road be brighter on average but harder to see?</h3>
+<p>Try the illustrative luminance profile. It deliberately uses the same average for both states, so the effect of uniformity is isolated. The values are synthetic, not measurements of Coquitlam.</p>
+<figure class="panel" id="street-lab">
+<div class="switch" role="group" aria-label="Illustrative pavement profile"><button type="button" data-profile="dry" aria-pressed="true">More even</button><button type="button" data-profile="wet" aria-pressed="false">Bright streaks / gaps</button></div>
+<div class="fig-label">Luminance across six positions (cd/m²)</div>
+<div class="plot" id="street-plot" role="img" aria-label="Six values: 0.5, 0.6, 0.7, 0.5, 0.6, 0.7"><div style="--h:31.25%"><span>0.5</span></div><div style="--h:37.5%"><span>0.6</span></div><div style="--h:43.75%"><span>0.7</span></div><div style="--h:31.25%"><span>0.5</span></div><div style="--h:37.5%"><span>0.6</span></div><div style="--h:43.75%"><span>0.7</span></div></div>
+<div class="result" aria-live="polite"><div class="rowline"><span>Average luminance</span><b id="street-avg">0.60 cd/m²</b></div><div class="rowline"><span>Minimum luminance</span><b id="street-min">0.50 cd/m²</b></div><div class="rowline"><span>Average:min (lower is more even)</span><b id="street-ratio">1.20</b></div></div>
+<figcaption>Average alone misses dark gaps. A real design must also consider object-to-background contrast and glare; perfect uniformity is not itself a guarantee of visibility. <a href="#s4">[4]</a></figcaption></figure>
+<p>Glare from headlights and reflected lights can add veiling luminance inside the eye, washing out contrast. Visual adaptation, target size, clothing reflectance and reaction time all matter. Wet-road markings can lose retroreflectivity as water changes the optics. This is not unique to LEDs. <a href="#s4">[4]</a> <a href="#s6">[6]</a> <a href="#s7">[7]</a></p>
+</section>
+<section id="drivers">
+<h2>Are drivers better off after the change?</h2>
+<p><strong>At the pilot sites, the city's measured road-lighting indicators improved.</strong> That is evidence in favor of the selected design at those sites. It is not evidence that every driver can detect hazards at greater distances on every converted street. <a href="#s1">[1]</a></p>
+<p>Broader research also finds that performance depends on the full installation rather than the lamp technology alone. A 2018 simulation comparing HPS and LEDs across pavement conditions found that wet roads can increase mean luminance while decreasing longitudinal uniformity. A review of driver and pedestrian lighting research discusses uncertainty in pavement reflection properties and the limitations of luminance design in wet weather. Neither study measured Coquitlam. <a href="#s6">[6]</a> <a href="#s7">[7]</a></p>
+<p class="takeaway">The best local test would compare matched dry and wet nighttime conditions, with measured average and minimum luminance, glare, vertical pedestrian illuminance, and object-detection performance. A crash analysis would additionally need traffic exposure, road changes and a comparison group.</p>
+</section>
+<section id="upgrade">
+<h2>Could Coquitlam make the lights brighter or spread them further?</h2>
+<p>Yes, but the right intervention depends on the diagnosed deficiency. Some LED drivers support reprogramming or remote dimming; others have fixed settings. I have not verified which controls are installed throughout Coquitlam, or whether any streetlights are being intentionally dimmed.</p>
+<ol><li>Check for failed lamps, tree obstructions and incorrect tilt.</li><li>Obtain the existing fixture's lumen output, optic/IES file, drive current, mounting height, spacing and dimming schedule if any.</li><li>Model broader optics or revised output on the existing poles. Increasing power alone cannot fix a poor distribution and can increase glare.</li><li>Where poles are too far apart, add targeted pedestrian lighting or poles rather than over-lighting the bright spots.</li><li>Trial representative sites, measure dry and wet performance, then compare safety and costs.</li></ol>
+</section>
+<section id="cost">
+<h2>How much could improvements cost?</h2>
+<p>Replacing a fixture is far cheaper than building a new pole, foundation and electrical connection. Coquitlam's historical $682 per fixture is a project-average retrofit benchmark. Nearby Port Coquitlam publishes an approximate $15,000 per luminaire and $100 per metre of conduit for development works. Neither is a current Coquitlam upgrade quote. <a href="#s1">[1]</a> <a href="#s8">[8]</a></p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Scenario</th><th scope="col">Illustrative capital assumption (CAD)</th></tr></thead><tbody><tr><td>Adjust existing driver</td><td>$150–400 per light, if supported</td></tr><tr><td>Replace existing head</td><td>$700–1,500 per light</td></tr><tr><td>Add new pole / light</td><td>$8,000–20,000+ per light; trenching can add cost</td></tr><tr><td>Replace 100 heads</td><td>$70,000–150,000</td></tr><tr><td>Replace 9,800 heads</td><td>$6.86–14.70M</td></tr></tbody></table></div>
+<p class="note">These ranges are scenario assumptions, not bids or official Coquitlam cost estimates. Engineering, mobilization, wiring, permits and traffic management could change costs.</p>
+<h3>Model a targeted retrofit</h3>
+<p>BC Hydro's 2026 Rate Schedule 1702 for qualifying customer-owned unmetered public-area lights lists 4.23 cents per billing watt per month. Actual municipal billing and fixture wattage must be verified. <a href="#s9">[9]</a></p>
+<fieldset id="street-calculator"><legend>Illustrative cost calculator</legend><label for="street-n">Number of existing fixtures</label><input id="street-n" type="number" min="0" max="100000" step="1" value="100">
+<label for="street-old">Current billing watts per fixture</label><input id="street-old" type="number" min="0" max="1000" value="35">
+<label for="street-new">Proposed billing watts per fixture</label><input id="street-new" type="number" min="0" max="1000" value="70">
+<label for="street-unit">Installed cost per existing fixture (CAD)</label><input id="street-unit" type="number" min="0" max="1000000" value="1000">
+<div class="result" aria-live="polite"><div class="metric"><span>Capital cost</span><strong id="street-capital">$100,000</strong></div><div class="metric"><span>Annual change in electricity bill</span><strong id="street-energy">$1,777</strong></div><div class="metric"><span>10-year incremental capital + electricity</span><strong id="street-ten">$117,766</strong></div></div>
+<p class="formula">N × installed cost + N × (new W − old W) × $0.0423 × 12 × years</p><p class="note">Assumes the cited unmetered tariff applies, no rate increases or discounting, reusable poles and wiring, and excludes maintenance, engineering and taxes. Negative electricity change indicates savings. Watts are not brightness.</p></fieldset>
+</section>
+<section id="action">
+<h2>What can residents actually do?</h2>
+<p>Contact <a href="https://www.coquitlam.ca/155/Engineering-Public-Works">Coquitlam Engineering and Public Works</a> at <a href="tel:6049273500">604-927-3500</a> or <a href="mailto:epw@coquitlam.ca">epw@coquitlam.ca</a>. The city accepts <a href="https://www.coquitlam.ca/188/Street-Maintenance-Concerns">streetlight outage reports</a> for both city metal poles and BC Hydro wooden poles. <a href="#s10">[10]</a></p>
+<p>For a lighting-quality concern, give the street segment, pole IDs if visible from a safe location, date, weather and whether the problem is dark pavement, glare, pedestrians or lane markings. Ask for a nighttime engineering review and the applicable design targets; avoid walking into traffic to take measurements.</p>
+<p>Request the pre- and post-retrofit lighting calculations, as-built fixture specifications, driver settings, any post-conversion measurements and final expenditure. Ask how the city assesses wet-weather visibility and pedestrian coverage. If a deficiency is verified, ask about maintenance, a targeted retrofit or the capital plan.</p>
+<p>For larger neighbourhood improvements, Coquitlam's Local Area Services program generally uses a 60% owner / 40% city cost share and a petition threshold of at least half of owners representing at least half of assessed value. Its walking page mentions street lighting as one possible component of local improvements; confirm eligibility and cost-sharing for a lighting-only project before assuming it applies. <a href="#s11">[11]</a></p>
+<p class="takeaway"><strong>Bottom line:</strong> the meaningful question is not simply whether the bulb is brighter. It is whether the installation gives drivers and pedestrians sufficient usable visibility in the actual conditions where they travel.</p>
+</section>
+<section id="sources">
+<h2>Sources and research notes</h2>
+<p>Municipal documents establish what was proposed, tested and reported. Engineering literature explains the physical mechanisms but cannot establish how any particular Coquitlam street performs. All numerical scenarios and diagrams are explicitly labeled.</p>
+<ol class="source-list">
+<li id="s1"><a href="https://coquitlam.ca.granicus.com/MetaViewer.php?clip_id=90&amp;meta_id=3464&amp;view_id=2">Coquitlam, Update – LED Street Light Conversion Program (May 22, 2018)</a>. Includes April 25, 2017 pilot report, fixture comparisons, survey and preliminary business case (PDF pp. 5–15), maintenance zone map (p. 16), and cost recovery. See pp. 2–4 for updated rollout and forecast.</li>
+<li id="s2"><a href="https://www.coquitlam.ca/ArchiveCenter/ViewFile/Item/362#page=29">Coquitlam 2023 Annual Report, printed p. 27</a>. Reports completion of 9,800 conversions.</li>
+<li id="s3"><a href="https://highways.dot.gov/safety/other/visibility/roadway-visibility-research-needs-assessment/appendix-roadway-lighting">FHWA, Roadway Visibility Research Needs Assessment, Appendix A</a>. Fixture distributions, BUG ratings, roadway classification and design variables.</li>
+<li id="s4"><a href="https://highways.fhwa.dot.gov/sites/fhwa.dot.gov/files/2023-05/FHWA-Lighting-Handbook_0.pdf">FHWA Lighting Handbook (2023)</a>. Lighting quantities, glare, contrast, uniformity, pedestrian design and photometric principles; US guidance, not a Coquitlam regulation. See also <a href="https://www.fhwa.dot.gov/publications/research/safety/14051/003.cfm">FHWA, Design Criteria for Adaptive Roadway Lighting</a>.</li>
+<li id="s5"><a href="https://publicdocs.coquitlam.ca/CoquitlamDoc/getdocIF.asp?doc=3790630">Coquitlam public engineering drawing, Hall Avenue streetlighting luminance design criteria</a>. Specific example of optic, wattage and design targets.</li>
+<li id="s6"><a href="https://www.sciencedirect.com/science/article/pii/S2210670717313409">Optimisation of lighting quality and energy efficiency of LED luminaires in roadway lighting systems on different road surfaces</a> (2018), <em>Sustainable Cities and Society</em>. Simulation study of dry/wet surfaces, lamp types, spacing and mounting height.</li>
+<li id="s7"><a href="https://journals.sagepub.com/doi/10.1177/1477153517739055">Road lighting research for drivers and pedestrians: The basis of luminance and illuminance recommendations</a> (2018), <em>Lighting Research &amp; Technology</em>. Review of evidence and limitations of road-surface luminance calculations.</li>
+<li id="s8"><a href="https://www.portcoquitlam.ca/business-development/property-development-building/small-scale-multi-unit-housing">Port Coquitlam, Small-Scale Multi-Unit Housing</a>. Indicative offsite streetlighting and conduit costs.</li>
+<li id="s9"><a href="https://app.bchydro.com/accounts-billing/rates-energy-use/electricity-rates/non-residential-rates/street-lighting-service-rates.html">BC Hydro, street lighting service and related rates</a>. Rate Schedule 1702; rate checked November 2026.</li>
+<li id="s10"><a href="https://www.coquitlam.ca/155/Engineering-Public-Works">Coquitlam Engineering and Public Works</a> and <a href="https://www.coquitlam.ca/188/Street-Maintenance-Concerns">Street Maintenance Concerns</a>. Contact and reporting responsibilities.</li>
+<li id="s11"><a href="https://coquitlam.ca/190/Local-Area-Services-Program">Coquitlam Local Area Services Program</a> and <a href="https://www.coquitlam.ca/172/Walking">Walking</a>. Petition rules and neighbourhood improvement scope.</li>
+</ol>
+<p class="note">Evidence still missing: audited final project spending, a complete as-built fixture/optic inventory, raw pilot photometry and weather conditions, citywide post-conversion measurements and a matched crash or detection study. No independent field measurements were taken for this article.</p>
+<p><a href="../../posts/civic-infrastructure/">← More in Civic &amp; Infrastructure</a></p>
+</section>
+</main></div>
+<footer class="footer"><p>&copy; <span id="year">2026</span> Brian Fong. All Rights Reserved.</p></footer></div>
+<script src="../../assets/js/data.js?v=20261127-posts"></script><script src="../../assets/js/main.js?v=20261127-posts"></script>
+<script>
+(function(){
+ var root=document.getElementById('street-article');if(!root||root.dataset.initialized)return;root.dataset.initialized='true';
+ var byId=function(id){return root.querySelector('#'+id);};
+ var profiles={dry:[0.5,0.6,0.7,0.5,0.6,0.7],wet:[0.1,1.4,0.2,1.4,0.1,0.4]};
+ var buttons=root.querySelectorAll('[data-profile]');
+ function profile(key){var values=profiles[key];if(!values)return;var avg=values.reduce(function(a,b){return a+b;},0)/values.length,min=Math.min.apply(null,values);buttons.forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.profile===key));});var plot=byId('street-plot');Array.from(plot.children).forEach(function(bar,i){bar.style.setProperty('--h',(values[i]/1.6*100)+'%');bar.firstElementChild.textContent=values[i].toFixed(1);});plot.setAttribute('aria-label','Six luminance values: '+values.join(', '));byId('street-avg').textContent=avg.toFixed(2)+' cd/m²';byId('street-min').textContent=min.toFixed(2)+' cd/m²';byId('street-ratio').textContent=(avg/min).toFixed(2);}
+ buttons.forEach(function(b){b.addEventListener('click',function(){profile(b.dataset.profile);});});
+ var inputs=['street-n','street-old','street-new','street-unit'].map(byId);
+ var money=new Intl.NumberFormat('en-CA',{style:'currency',currency:'CAD',maximumFractionDigits:0});
+ function calculate(){var values=inputs.map(function(el){var v=Number(el.value);return Math.min(Number(el.max),Math.max(0,Number.isFinite(v)?v:0));});var n=Math.floor(values[0]),capital=n*values[3],energy=n*(values[2]-values[1])*.0423*12;byId('street-capital').textContent=money.format(capital);byId('street-energy').textContent=money.format(energy);byId('street-ten').textContent=money.format(capital+10*energy);}
+ inputs.forEach(function(el){el.addEventListener('input',calculate);});profile('dry');calculate();
+})();
+</script>
+</body></html>
